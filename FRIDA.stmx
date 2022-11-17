@@ -5,14 +5,14 @@
 		<name>FRIDA</name>
 		<uuid>47ab2f19-6823-40cc-817b-660f8bbe54ad</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.1.1" isee:build_number="2811" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.2" isee:build_number="2850" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
 		<stop>2100</stop>
 		<dt reciprocal="true">8</dt>
 	</sim_specs>
-	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="" isee:design_custom="false" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="false"/>
+	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="suggesting" isee:design="" isee:design_custom="false" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="true" rifp="false"/>
 	<isee:multiplayer_settings include_chat="true" allow_observers="false" advance_time_increment="1" max_advance_time_in_ms="0" model_stops_when_players_drop="false" observer_start_page="home_page" enabled="false"/>
 	<isee:time_formats default_format="Builtin">
 		<isee:time_format name="Builtin" type="adaptive"/>
@@ -35,6 +35,7 @@
 			<isee:parameter name="Public_sector.Basic_rate_of_technological_advance" min="0" max="0.5" scaling="100"/>
 			<isee:parameter name="Labour_market.Unemployment_rate_in_1980" min="0" max="0.2" scaling="100"/>
 			<isee:parameter name="Energy.ROC_in_tCO2_per_toe" min="-0.1" max="0" scaling="100"/>
+			<isee:parameter name="Demand.corrupt_consumption_fraction" min="0" max="0.3" scaling="100"/>
 			<isee:payoff name="Payoff" action="min"/>
 		</isee:optimizer_specs>
 	</isee:optimizer_specs_list>
@@ -401,7 +402,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="412" isee:scroll_y="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="412" isee:scroll_y="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1023,11 +1024,11 @@
 				<units>1</units>
 			</aux>
 			<aux name="Govmnt investment in\npublic capacity" access="output">
-				<eqn>Permanent_govmnt_cash_inflow-Govmnt_purchases</eqn>
+				<eqn>Full_govmnt_investment_in_public_capacity*(1-government_investment_corruption_fraction)</eqn>
 				<units>G$/year</units>
 			</aux>
 			<aux name="Basic income tax\nrate owners">
-				<eqn>0.401170278142596</eqn>
+				<eqn>0.317456899311041</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Basic income tax\nrate workers">
@@ -1087,12 +1088,8 @@
 				<eqn>Govmnt_spending/GDP</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="Control: (C+I+G) = GDP">
-				<eqn>(Consumption_demand+Investment_in_new_capacity_PIS+Govmnt_spending)/GDP_1</eqn>
-				<units>1</units>
-			</aux>
 			<aux name="Consumption share of GDP">
-				<eqn>Consumption_demand/GDP</eqn>
+				<eqn>(Consumption_demand*(1-corrupt_consumption_fraction))/GDP</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Permanent worker\ncash inflow">
@@ -1114,7 +1111,7 @@
 		211216 changed back from 0.9 to 0.8 to give reasonable growth in GDP 1980 to 2020 after intro of inequity
 		211126 changed from 0.8 to get total savings rate above 0.3
 		was 0.66 so 0.9, 0.75, so 0.72, so 0.64</doc>
-				<eqn>0.645821741354832</eqn>
+				<eqn>0.739230506775182</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="sGDPeoOSR">
@@ -1124,7 +1121,7 @@
 		211205 changed from 0.055 to -0.6 to match DC data correctly
 		211126 changed from -0.17 to fit DC f(GDPpp)
 		was -0.07, so -0.15, so -0.14, so -0.05</doc>
-				<eqn>0.0676208191174784</eqn>
+				<eqn>0.043948390729909</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Savings share of GDP">
@@ -1145,7 +1142,7 @@
 			</aux>
 			<aux name="OCI in 1980">
 				<doc>	was 307</doc>
-				<eqn>7637.77406104299</eqn>
+				<eqn>8782.85941539192</eqn>
 				<units>G$/year</units>
 			</aux>
 			<aux name="WFI in 1980">
@@ -1171,7 +1168,7 @@
 			<aux name="GCI in 1980">
 				<doc>	was 276
 		211126 changed from 2576</doc>
-				<eqn>4460</eqn>
+				<eqn>4507.25214933593</eqn>
 				<units>G$/year</units>
 			</aux>
 			<aux name="Permanent owner\ncash inflow">
@@ -1275,7 +1272,7 @@
 			<aux name="Sales tax rate">
 				<doc>	In US 1980-2020 3%. Much higher in countries with VAT around 20 %
 		In PUS=0.22 was 0.08</doc>
-				<eqn>0.01</eqn>
+				<eqn>0.0259720005610711</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Worker consumption demand">
@@ -1289,12 +1286,12 @@
 		
 		211126 changed from 0.95 to get total savings above 0.3
 		was 0.95, so 0.8</doc>
-				<eqn>0.876344194479936</eqn>
+				<eqn>1.00261043213997</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Government consumption\nfraction">
 				<doc>	was 0.85</doc>
-				<eqn>0.653377573810531</eqn>
+				<eqn>0.931779933278487</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Worker savings">
@@ -1379,6 +1376,34 @@
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>1</units>
 			</aux>
+			<aux name="corrupt consumption\nfraction">
+				<eqn>0.0527819462894161</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="government investment\ncorruption fraction">
+				<eqn>0.075</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="corrupt consumption">
+				<eqn>Consumption_demand*corrupt_consumption_fraction</eqn>
+				<units>G$/Years</units>
+			</aux>
+			<aux name="corrupt investment">
+				<eqn>Full_govmnt_investment_in_public_capacity*government_investment_corruption_fraction</eqn>
+				<units>G$/Years</units>
+			</aux>
+			<aux name="Full govmnt investment\nin public capacity">
+				<eqn>(Permanent_govmnt_cash_inflow-Govmnt_purchases)</eqn>
+				<units>G$/Years</units>
+			</aux>
+			<aux name="total corruption">
+				<eqn>corrupt_investment+corrupt_consumption</eqn>
+				<units>G$/Years</units>
+			</aux>
+			<aux name="corruption share\nof GDP">
+				<eqn>total_corruption/GDP</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -1426,7 +1451,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="323" isee:scroll_y="1260" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_y="1136" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1731,15 +1756,11 @@
 					<from>Owner_consumption</from>
 					<to>Owner_savings</to>
 				</connector>
-				<connector uid="50" angle="340.172">
-					<from>Govmnt_purchases</from>
-					<to>Govmnt_investment_in_public_capacity</to>
-				</connector>
 				<connector uid="51" angle="251.277">
 					<from>Worker_consumption_demand</from>
 					<to>Consumption_demand</to>
 				</connector>
-				<connector uid="52" angle="193.405">
+				<connector uid="52" angle="193.755">
 					<from>Owner_consumption</from>
 					<to>Consumption_demand</to>
 				</connector>
@@ -1818,10 +1839,6 @@
 					<from>Permanent_worker_cash_inflow</from>
 					<to>Worker_savings</to>
 				</connector>
-				<connector uid="70" angle="314.158">
-					<from>Permanent_govmnt_cash_inflow</from>
-					<to>Govmnt_investment_in_public_capacity</to>
-				</connector>
 				<connector uid="71" angle="336.989">
 					<from>Permanent_owner_cash_inflow</from>
 					<to>Owner_savings</to>
@@ -1830,11 +1847,11 @@
 					<from>&quot;Worker_income_G$/y&quot;</from>
 					<to>Max_workers_debt</to>
 				</connector>
-				<connector uid="73" angle="308.785">
+				<connector uid="73" angle="309.41">
 					<from>Sales_tax_workers</from>
 					<to>Consumption_demand</to>
 				</connector>
-				<connector uid="74" angle="257.116">
+				<connector uid="74" angle="258.518">
 					<from>Sales_tax_owners</from>
 					<to>Consumption_demand</to>
 				</connector>
@@ -1850,7 +1867,7 @@
 				</connector>
 				<aux x="1202" y="996" name="Govmnt finance as\nshare of NI"/>
 				<aux x="268" y="1638" name="Consumption share of GDP"/>
-				<connector uid="77" angle="179.503">
+				<connector uid="77" angle="180.735">
 					<from>Consumption_demand</from>
 					<to>Consumption_share_of_GDP</to>
 				</connector>
@@ -1867,7 +1884,6 @@
 					<from>Total_savings</from>
 					<to>Savings_share_of_GDP</to>
 				</connector>
-				<aux label_side="bottom" x="300" y="1718" name="Control: (C+I+G) = GDP"/>
 				<connector uid="82" angle="6.00898">
 					<from>Govmnt_cash_inflow</from>
 					<to>Total_purchasing_power</to>
@@ -1972,7 +1988,7 @@
 					<to>Owner_consumption</to>
 				</connector>
 				<aux x="823" y="1718" name="Consumption per person"/>
-				<connector uid="106" angle="348.838">
+				<connector uid="106" angle="348.387">
 					<from>Consumption_demand</from>
 					<to>Consumption_per_person</to>
 				</connector>
@@ -2286,25 +2302,72 @@
 					<from>Workforce</from>
 					<to>Worker_disposable_income</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="336" y="1822" name="Investment in new\ncapacity PIS"/>
-				<connector uid="180" angle="104.036">
-					<from>Investment_in_new_capacity_PIS</from>
-					<to>&quot;Control:_(C+I+G)_=_GDP&quot;</to>
+				<aux font_style="italic" font_weight="bold" x="320" y="1910" name="Investment in new\ncapacity PIS"/>
+				<aux font_style="italic" font_weight="bold" x="584" y="1896" name="GDP 1"/>
+				<aux font_style="italic" font_weight="bold" x="153" y="1864" name="Investment share of GDP"/>
+				<aux x="132" y="1651" name="corrupt consumption\nfraction"/>
+				<aux x="1094" y="1418" name="government investment\ncorruption fraction"/>
+				<connector uid="185" angle="234.409">
+					<from>government_investment_corruption_fraction</from>
+					<to>Govmnt_investment_in_public_capacity</to>
 				</connector>
-				<connector uid="181" angle="225.83">
+				<connector uid="184" angle="5.46021">
+					<from>corrupt_consumption_fraction</from>
+					<to>Consumption_share_of_GDP</to>
+				</connector>
+				<aux x="265" y="1718" name="corrupt consumption"/>
+				<connector uid="198" angle="207.281">
 					<from>Consumption_demand</from>
-					<to>&quot;Control:_(C+I+G)_=_GDP&quot;</to>
+					<to>corrupt_consumption</to>
 				</connector>
-				<connector uid="182" angle="203.962">
-					<from>Govmnt_spending</from>
-					<to>&quot;Control:_(C+I+G)_=_GDP&quot;</to>
+				<connector uid="199" angle="333.263">
+					<from>corrupt_consumption_fraction</from>
+					<to>corrupt_consumption</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="171" y="1744" name="GDP 1"/>
-				<connector uid="183" angle="14.4208">
-					<from>GDP_1</from>
-					<to>&quot;Control:_(C+I+G)_=_GDP&quot;</to>
+				<aux x="1017" y="1748" name="corrupt investment"/>
+				<aux x="938" y="1445" name="Full govmnt investment\nin public capacity"/>
+				<connector uid="200" angle="339.356">
+					<from>Permanent_govmnt_cash_inflow</from>
+					<to>Full_govmnt_investment_in_public_capacity</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="930" y="1739" name="Investment share of GDP"/>
+				<connector uid="201" angle="32.9696">
+					<from>Govmnt_purchases</from>
+					<to>Full_govmnt_investment_in_public_capacity</to>
+				</connector>
+				<connector uid="202" angle="317.899">
+					<from>Full_govmnt_investment_in_public_capacity</from>
+					<to>Govmnt_investment_in_public_capacity</to>
+				</connector>
+				<connector uid="203" angle="276.911">
+					<from>Full_govmnt_investment_in_public_capacity</from>
+					<to>corrupt_investment</to>
+				</connector>
+				<connector uid="204" angle="266.82">
+					<from>government_investment_corruption_fraction</from>
+					<to>corrupt_investment</to>
+				</connector>
+				<aux x="325" y="1763" name="total corruption"/>
+				<connector uid="205" angle="323.13">
+					<from>corrupt_consumption</from>
+					<to>total_corruption</to>
+				</connector>
+				<connector uid="206" angle="212.05">
+					<from>
+						<alias uid="207"/>
+					</from>
+					<to>total_corruption</to>
+				</connector>
+				<aux x="422" y="1802" name="corruption share\nof GDP"/>
+				<connector uid="208" angle="338.097">
+					<from>total_corruption</from>
+					<to>corruption_share_of_GDP</to>
+				</connector>
+				<connector uid="209" angle="303.232">
+					<from>
+						<alias uid="89"/>
+					</from>
+					<to>corruption_share_of_GDP</to>
+				</connector>
 				<alias uid="62" x="971" y="542" width="18" height="18">
 					<of>Sales_tax_owners</of>
 				</alias>
@@ -2319,6 +2382,10 @@
 				</alias>
 				<alias background="#AAFFFF" font_style="italic" uid="175" x="174" y="1100" width="18" height="18">
 					<of>&quot;UNIT_G/(M*k)&quot;</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="207" x="431" y="1682" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>corrupt_investment</of>
 				</alias>
 			</view>
 		</views>
@@ -2336,7 +2403,7 @@
 			</aux>
 			<aux name="Normal LPR in 1980">
 				<doc>	was 0.7</doc>
-				<eqn>0.770620039822469</eqn>
+				<eqn>0.769558777257207</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="sWSOeoLPR&gt;0">
@@ -2345,7 +2412,7 @@
 				<units>1</units>
 			</aux>
 			<aux name="WSO in 1980" access="output">
-				<eqn>0.538153318490577</eqn>
+				<eqn>0.534868839840704</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Extra normal LPR from 2022">
@@ -2582,7 +2649,7 @@
 				<units>1</units>
 			</aux>
 			<aux name="Unemployment rate in 1980">
-				<eqn>0.0440282236302399</eqn>
+				<eqn>0.0445219963959701</eqn>
 				<units>1</units>
 			</aux>
 		</variables>
@@ -2632,7 +2699,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="625" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="625" isee:scroll_y="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3298,7 +3365,7 @@
 				<units>year</units>
 			</aux>
 			<aux name="Investment share of GDP" access="output" isee:autocreated="true">
-				<eqn>(Investment_in_new_capacity_PIS)/GDP</eqn>
+				<eqn>(Investment_in_new_capacity_PIS+&quot;Govmnt_investment_in_public_capacity_G$/y&quot;)/GDP</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Investment in new\ncapacity PIS" access="output" isee:autocreated="true">
@@ -3378,7 +3445,7 @@
 			</aux>
 			<aux name="sGDPppeoFRACA&lt;0">
 				<doc>	was -0.1, so -0.15</doc>
-				<eqn>-0.2</eqn>
+				<eqn>-0.175</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="sWSOeoFRA&lt;0">
@@ -3720,7 +3787,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="50" isee:scroll_y="360" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="125" isee:scroll_y="655" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4311,6 +4378,10 @@
 					<from>Corporate_borrowing_cost</from>
 					<to>Corporate_borrowing_cost_in_1980</to>
 				</connector>
+				<connector uid="112" angle="315.881">
+					<from>&quot;Govmnt_investment_in_public_capacity_G$/y&quot;</from>
+					<to>Investment_share_of_GDP</to>
+				</connector>
 				<alias uid="86" x="593.333" y="534" width="18" height="18">
 					<of>Observed_warming_deg_C</of>
 				</alias>
@@ -4344,7 +4415,7 @@
 				<units>1/year</units>
 			</aux>
 			<aux name="Basic rate of technological advance">
-				<eqn>0.0234060856999044</eqn>
+				<eqn>0.0266019113379807</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="Reduction in ROTA\nfrom inequality">
@@ -4866,7 +4937,7 @@
 			</aux>
 			<aux name="ROC in tCO2 per toe">
 				<doc>	CO2 emissions per toe fell from 2.8 in 1980 to 2.4 in 2019 - minus 0.3 %/y - probably because of fuel shift</doc>
-				<eqn>-0.00519311749720334</eqn>
+				<eqn>-0.00549068560263761</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="Efficiency of fossil power\nplant">
