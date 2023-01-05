@@ -22,7 +22,7 @@
 		<isee:sensi_specs name="Sensitivity" method="sobol_sequence" runs="0"/>
 	</isee:sensi_specs_list>
 	<isee:optimizer_specs_list active_index="0">
-		<isee:optimizer_specs name="Optimization" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
+		<isee:optimizer_specs name="General Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
 			<isee:parameter name="Demand.Basic_income_tax_rate_workers" min="0.02" max="0.4" scaling="100"/>
 			<isee:parameter name="Demand.Basic_income_tax_rate_owners" min="0" max="0.5" scaling="100"/>
 			<isee:parameter name="Demand.Worker_consumption_fraction" min="0.5" max="0.95" scaling="100"/>
@@ -39,11 +39,30 @@
 			<isee:parameter name='Output."sEDeoFRA&gt;0"' min="0" max="10" scaling="100"/>
 			<isee:parameter name='Output."sWSOeoFRA&lt;0"' min="-10" max="0" scaling="100"/>
 			<isee:parameter name="Output.base_FRA" min="0.5" max="2" scaling="100"/>
-			<isee:payoff name="Payoff" action="min"/>
+			<isee:payoff name="General Payoff" action="min"/>
+		</isee:optimizer_specs>
+		<isee:optimizer_specs name="Population Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
+			<isee:parameter name="Population.Passing_20_in_1980" min="80" max="120" scaling="0.1"/>
+			<isee:parameter name="Population.Passing_40_in_1980" min="50" max="70" scaling="0.1"/>
+			<isee:parameter name="Population.Passing_60_in_1980" min="30" max="50" scaling="0.1"/>
+			<isee:parameter name="Population.Dying_in_1980" min="20" max="40" scaling="0.1"/>
+			<isee:parameter name='Population."Aged_0-20_in_1980"' min="1900" max="2100" scaling="0.01"/>
+			<isee:parameter name='Population."Aged_20-40_in_1980"' min="1200" max="1400" scaling="0.01"/>
+			<isee:parameter name='Population."Aged_40-60_in_1980"' min="600" max="800" scaling="0.01"/>
+			<isee:parameter name='Population."Aged_60+_in_1980"' min="350" max="550" scaling="0.01"/>
+			<isee:parameter name="Population.DNC_in_1980" min="2.5" max="4" scaling="10"/>
+			<isee:parameter name="Population.DNCalfa" min="0.0001" max="0.5" scaling="100"/>
+			<isee:parameter name="Population.DNCgamma" min="0.0001" max="0.5" scaling="100"/>
+			<isee:parameter name="Population.DNCmin" min="1.5" max="2" scaling="10"/>
+			<isee:parameter name="Population.Time_to_adapt_to_higher_income" min="5" max="25"/>
+			<isee:parameter name='Population."sOWoEDR&gt;0"' min="1e-7" max="5" scaling="1000"/>
+			<isee:parameter name='Population."sCUPPeoLE&gt;0"' min="0.000001" max="5" scaling="1000"/>
+			<isee:payoff name="Population Payoff" action="min"/>
+			<isee:payoff name="General Payoff" action="min" inactive="true"/>
 		</isee:optimizer_specs>
 	</isee:optimizer_specs_list>
 	<isee:payoff_specs_list>
-		<isee:payoff_specs name="Payoff" calibration="true" recompute_weights="true">
+		<isee:payoff_specs name="General Payoff" calibration="true" recompute_weights="true">
 			<isee:payoff_element name="Population.Population" weight="1" compare_name="Population.Population" compare_run="UN Projection" tolerance="0" type="ls"/>
 			<isee:payoff_element name='Population."Aged_0-20_years"' weight="1" compare_name='Population."Aged_0-20_years"' compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name='Population."Aged_20-40_years"' weight="1" compare_name='Population."Aged_20-40_years"' compare_run="Calibration Data" tolerance="0" type="ls"/>
@@ -60,6 +79,13 @@
 			<isee:payoff_element name="Labour_market.Worker_share_of_output" weight="1" compare_name="Labour_market.Worker_share_of_output" compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Climate.CO2_emissions" weight="1" compare_name="Climate.CO2_emissions" compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Labour_market.Workforce" weight="1" compare_name="Labour_market.Workforce" compare_run="Calibration Data" tolerance="0" type="ls"/>
+		</isee:payoff_specs>
+		<isee:payoff_specs name="Population Payoff" calibration="true" recompute_weights="true">
+			<isee:payoff_element name="Population.Population" weight="1" compare_name="Population.Population" compare_run="UN Projection" tolerance="0" type="ls"/>
+			<isee:payoff_element name='Population."Aged_0-20_years"' weight="1" compare_name='Population."Aged_0-20_years"' compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name='Population."Aged_20-40_years"' weight="1" compare_name='Population."Aged_20-40_years"' compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name='Population."Aged_40-60_years"' weight="1" compare_name='Population."Aged_40-60_years"' compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name='Population."Aged_60_+_years"' weight="1" compare_name='Population."Aged_60_+_years"' compare_run="Calibration Data" tolerance="0" type="ls"/>
 		</isee:payoff_specs>
 	</isee:payoff_specs_list>
 	<model_units>
@@ -385,7 +411,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="412" isee:scroll_y="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="280" isee:scroll_y="139" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -472,7 +498,7 @@
 					<from>Economy</from>
 					<to>Society</to>
 				</connector>
-				<stacked_container uid="58" x="385" y="623" width="663" height="442">
+				<stacked_container uid="58" x="376" y="568" width="663" height="442">
 					<graph width="663" height="442" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="false" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Calibrated_Variables"/>
@@ -949,12 +975,12 @@
 				<units>G$/year</units>
 			</aux>
 			<aux name="Basic income tax\nrate owners">
-				<eqn>0.281041786616787</eqn>
+				<eqn>0.252783629702099</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Basic income tax\nrate workers">
 				<doc>	211125 changed from 0.1 to mimic more typical countries than US</doc>
-				<eqn>0.02</eqn>
+				<eqn>0.0200052874002894</eqn>
 				<units>1</units>
 			</aux>
 			<flow name="Govmnt new debt">
@@ -1032,7 +1058,7 @@
 		211216 changed back from 0.9 to 0.8 to give reasonable growth in GDP 1980 to 2020 after intro of inequity
 		211126 changed from 0.8 to get total savings rate above 0.3
 		was 0.66 so 0.9, 0.75, so 0.72, so 0.64</doc>
-				<eqn>0.694547428239024</eqn>
+				<eqn>0.7186774032821</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="sGDPeoOSR">
@@ -1159,7 +1185,7 @@
 			<aux name="Sales tax rate">
 				<doc>	In US 1980-2020 3%. Much higher in countries with VAT around 20 %
 		In PUS=0.22 was 0.08</doc>
-				<eqn>0.0401782617499444</eqn>
+				<eqn>0.0533447496054217</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Worker consumption demand">
@@ -1173,12 +1199,12 @@
 		
 		211126 changed from 0.95 to get total savings above 0.3
 		was 0.95, so 0.8</doc>
-				<eqn>0.932973259599016</eqn>
+				<eqn>0.949431590809301</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Government consumption\nfraction">
 				<doc>	was 0.85</doc>
-				<eqn>0.966198274151085</eqn>
+				<eqn>1.03934869074065</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Worker savings">
@@ -1253,7 +1279,7 @@
 				<units>1</units>
 			</aux>
 			<aux name="corrupt consumption\nfraction">
-				<eqn>0.0100810328936968</eqn>
+				<eqn>0.00453539120249919</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="government investment\ncorruption fraction">
@@ -1334,7 +1360,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="929" isee:scroll_y="582" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="60" isee:scroll_y="960" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2241,7 +2267,7 @@
 			</aux>
 			<aux name="Normal LPR in 1980">
 				<doc>	was 0.7</doc>
-				<eqn>0.771451865716523</eqn>
+				<eqn>0.770309427064824</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="sWSOeoLPR&gt;0">
@@ -2250,7 +2276,7 @@
 				<units>1</units>
 			</aux>
 			<aux name="WSO in 1980" access="output">
-				<eqn>0.534171201029489</eqn>
+				<eqn>0.544659389714894</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Extra normal LPR from 2022">
@@ -2382,7 +2408,7 @@
 			</aux>
 			<aux name="Real wage erosion rate">
 				<doc>	was 0.015, so 0.01,</doc>
-				<eqn>0</eqn>
+				<eqn>0.0005</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="Working age population">
@@ -2526,7 +2552,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="780" isee:scroll_y="343" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="539" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2999,7 +3025,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<doc>	was 1, so 0.84
 		was 0.8, so 0.76, so 0.84 so back to 1, since this was case in GROWTH model
 		211126 changed from 1 to reduce GDP growth rate from 4 %/y to 3.5%</doc>
-				<eqn>0.99999999749704</eqn>
+				<eqn>1.00000073993951</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="FRACA mult from\nGDPpp - Line">
@@ -3026,7 +3052,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			</aux>
 			<aux name="sWSOeoFRA&lt;0">
 				<doc>	was -1, so -3, so -5, so -10, so -2.4, so -1, so -2</doc>
-				<eqn>-0.841570426073242</eqn>
+				<eqn>-0.832550506585734</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="GDP" access="output">
@@ -3163,7 +3189,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			<aux name="sEDeoFRA&gt;0">
 				<doc>	210827 changed from: 1
 		was 0.2, so 0.05</doc>
-				<eqn>4.55939106949833</eqn>
+				<eqn>4.5636052538806</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Time to observe excess demand">
@@ -3336,7 +3362,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="360" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="908" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3901,7 +3927,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<units>1/year</units>
 			</aux>
 			<aux name="Basic rate of technological advance">
-				<eqn>0.033314124336955</eqn>
+				<eqn>0.0336586011555992</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="Reduction in ROTA\nfrom inequality">
@@ -4058,7 +4084,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="380" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4316,7 +4342,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			</aux>
 			<aux name="ROC in tCO2 per toe">
 				<doc>	CO2 emissions per toe fell from 2.8 in 1980 to 2.4 in 2019 - minus 0.3 %/y - probably because of fuel shift</doc>
-				<eqn>-0.00595650588024709</eqn>
+				<eqn>-0.00503324485277567</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="Efficiency of fossil power\nplant">
@@ -4948,7 +4974,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="573" isee:scroll_y="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="53" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -6860,7 +6886,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="60" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="144" isee:scroll_y="60" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -8321,7 +8347,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="310" isee:scroll_y="545" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_y="545" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -9520,8 +9546,6 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<connect2 to='Population."Crop_use_per_person_t-crop/p/y"' from="Food_and_land_use.Crop_use_per_person"/>
 				<connect to="Population.GDP" from="Output.GDP"/>
 				<connect2 to="Population.GDP" from="Output.GDP"/>
-				<connect to="Population.Introduction_period_for_policy_y" from="Wellbeing.Introduction_period_for_policy"/>
-				<connect2 to="Population.Introduction_period_for_policy_y" from="Wellbeing.Introduction_period_for_policy"/>
 				<connect to="Population.Observed_warming_deg_C" from="Climate.Observed_warming"/>
 				<connect2 to="Population.Observed_warming_deg_C" from="Climate.Observed_warming"/>
 				<connect to="Population.Observed_warming_in_1980" from="Climate.Observed_warming_in_1980"/>
@@ -9538,8 +9562,6 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<connect2 to="Food_and_land_use.Introduction_period_for_policy_y" from="Wellbeing.Introduction_period_for_policy"/>
 				<connect to="Labour_market.Introduction_period_for_policy_y" from="Wellbeing.Introduction_period_for_policy"/>
 				<connect2 to="Labour_market.Introduction_period_for_policy_y" from="Wellbeing.Introduction_period_for_policy"/>
-				<connect to="Population.Introduction_period_for_policy_y" from="Wellbeing.Introduction_period_for_policy"/>
-				<connect2 to="Population.Introduction_period_for_policy_y" from="Wellbeing.Introduction_period_for_policy"/>
 				<connect to='Wellbeing."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
 				<connect2 to='Wellbeing."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
 				<connect to='Wellbeing."Inequality_(1)"' from="Demand.Inequality"/>
@@ -9645,24 +9667,16 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 					<from>Population</from>
 					<to>Wellbeing</to>
 				</connector>
-				<connector uid="2" isee:thickness="2" angle="49.844">
-					<from>Wellbeing</from>
-					<to>Population</to>
-				</connector>
 			</view>
 		</views>
 	</model>
 	<model name="Population">
 		<variables>
-			<aux name="Desired no of children">
-				<eqn>MIN(DNCmax,  ((DNCmin+(DNC_in_1980-DNCmin)*EXP(-DNCgamma*(Effective_GDP_per_person-GDP_per_person_in_1980)))*(1+DNCalfa*(Effective_GDP_per_person-GDP_per_person_in_1980)))*(1-Extra_fertility_reduction)*Fertility_multiplier)</eqn>
-				<units>1</units>
-			</aux>
 			<aux name="DNCmin">
 				<doc>	was 1.6, so 1.5
 		211202 changed from 1.5 to 1.6
 		211129 changed from 1.2 to compensate for change in age structure</doc>
-				<eqn>1.46</eqn>
+				<eqn>1.9029272199694</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="DNC in 1980">
@@ -9670,7 +9684,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 		211202 changed to 4.5 from 4.2
 		211126 changed from 4.5 to get pop to 6000 in 2000
 		DF in 1980 was 4.7 so 5.0 so 4.9 so 4.4, so 4.2, so 4.4</doc>
-				<eqn>4.03409168318691</eqn>
+				<eqn>2.83856084116</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="DNCgamma">
@@ -9678,7 +9692,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 		211129 changed from 0.13 to 0.12 to compensate for new PUS and CLR
 		211127 changed from 0.22 at the same time as changing initial values of age groups
 		was 0.12, so 0.17, so 0.33, so 0.4, so 0.25, so 0.2, so 0.16</doc>
-				<eqn>0.16</eqn>
+				<eqn>0.472675732316964</eqn>
 				<units>(p*year)/(k$)</units>
 			</aux>
 			<aux name="Effective GDP per person" access="output">
@@ -9688,30 +9702,18 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			</aux>
 			<aux name="GDP per person in 1980" access="output">
 				<doc>	was 6.1</doc>
-				<eqn>6.4</eqn>
+				<eqn>INIT(GDP_per_person)</eqn>
 				<units>k$/(p*year)</units>
 			</aux>
 			<aux name="DNCalfa">
 				<doc>	was 0.02
 		220113 Changed from 0 to 0.02 to avoid too rapid decline in pop towards 2100.
 		Rate of decline of Minimum DF was 0.015, AND THEN 0.05 so 0.001, so 0.007</doc>
-				<eqn>0.0214763598734662</eqn>
+				<eqn>0.0001</eqn>
 				<units>(p*year)/(k$)</units>
 			</aux>
-			<aux name="Fertility multiplier">
-				<eqn>( IF &quot;SSP2_family_action_from_2022?&quot; &gt; 0 THEN ( IF TIME &gt; 2022 THEN 1+RAMP((Max_fertility_multiplier-1)/Time_for_multiplier, 2022, 2100) ELSE 1 ) ELSE 1 )</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="Cost of extra fertility reduction (share of GDP)">
-				<eqn>&quot;Cost_of_Max_fertility_reduction_(share_of_GDP)&quot;*Extra_fertility_reduction</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="Cost of Max fertility reduction (share of GDP)">
-				<eqn>0.01</eqn>
-				<units>1</units>
-			</aux>
 			<aux name="Life expectancy">
-				<eqn>((LEmax-(LEmax-LE_in_1980)*EXP(-LEgamma*(Effective_GDP_per_person-GDP_per_person_in_1980)))*(1+LEalfa*(Effective_GDP_per_person-GDP_per_person_in_1980)))*Warming_effect_on_life_expectancy*Life_expectancy_multipler</eqn>
+				<eqn>((LEmax-(LEmax-LE_in_1980)*EXP(-LEgamma*(Effective_GDP_per_person-GDP_per_person_in_1980)))*(1+LEalfa*(Effective_GDP_per_person-GDP_per_person_in_1980)))*Warming_effect_on_life_expectancy</eqn>
 				<units>year</units>
 			</aux>
 			<aux name="LEmax">
@@ -9728,7 +9730,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			</aux>
 			<aux name="LEgamma">
 				<doc>	Rate of increase in LE</doc>
-				<eqn>0.09375</eqn>
+				<eqn>0.12</eqn>
 				<units>1/(k$*p*year)</units>
 			</aux>
 			<aux name="LEalfa">
@@ -9740,50 +9742,9 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<eqn>1+&quot;sOWeoLE&lt;0&quot;*(Observed_warming_deg_C/Observed_warming_in_1980-1)</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="Life expectancy multipler">
-				<eqn>( IF &quot;SSP2_family_action_from_2022?&quot; &gt; 0 THEN ( IF TIME &gt; 2022 THEN 1+RAMP((Max_life_expectancy_multiplier-1)/Time_for_multiplier, 2022, 2100) ELSE 1 ) ELSE 1 )</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="SSP2 family action\nfrom 2022?">
-				<doc>	1 means action as per SSP2. 0 means no action</doc>
-				<eqn>1</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="Max fertility multiplier">
-				<doc>	220224: changed from 1 to 1.6 to match SSP 2</doc>
-				<eqn>1.6</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="Max life expectancy\nmultiplier">
-				<doc>	to match SSP2 assumption of LE up 2 years per decade</doc>
-				<eqn>1.1</eqn>
-				<units>1</units>
-			</aux>
 			<aux name="GDP per person" access="output">
 				<eqn>(GDP/Population)/&quot;UNIT_G/(M*k)&quot;</eqn>
 				<units>k$/(p*year)</units>
-			</aux>
-			<aux name="Extra fertility reduction">
-				<eqn>RAMP(Goal_for_extra_fertility_reduction/Introduction_period_for_policy_y, 2022, 2022+Introduction_period_for_policy_y)</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="Goal for extra\nfertility reduction">
-				<doc>	0 in TLTL and 0.2 in GL</doc>
-				<eqn>0</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="Extra pension age">
-				<eqn>RAMP((Goal_for_extra_pension_age-Extra_pension_age_in_2022)/Introduction_period_for_policy_y, 2022, 22022+Introduction_period_for_policy_y)</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="Goal for extra pension age">
-				<doc>	Can be set to 5, if one want to lift the pension age from 82 to 89 in 2100.</doc>
-				<eqn>0</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="Extra pension age in 2022">
-				<eqn>0</eqn>
-				<units>year</units>
 			</aux>
 			<aux name="Population" access="output">
 				<eqn>&quot;Aged_0-20_years&quot;+&quot;Aged_20-40_years&quot;+&quot;Aged_40-60_years&quot;+&quot;Aged_60_+_years&quot;</eqn>
@@ -9820,21 +9781,17 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<doc>	220207 changed from &quot;As math: Observed fertility 1&quot;
 		220114 changed from Desired no of children 1 * &quot;Fraction achieving desired family size (1)&quot;
 		210821 changed from: IF THEN ELSE(Time&gt;&quot;Fertility = 2.5 introduction time y&quot;, 2.5 , Desired no of children 1)</doc>
-				<eqn>Desired_no_of_children*Fraction_achieving_desired_family_size</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="Fraction achieving\ndesired family size">
-				<eqn>0.8</eqn>
+				<eqn>MIN(DNCmax,  ((DNCmin+(DNC_in_1980-DNCmin)*EXP(-DNCgamma*(Effective_GDP_per_person-GDP_per_person_in_1980)))*(1+DNCalfa*(Effective_GDP_per_person-GDP_per_person_in_1980))))</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Passing 40 in 1980">
 				<doc>	was 13</doc>
-				<eqn>64</eqn>
+				<eqn>51.4142050155033</eqn>
 				<units>Mp/year</units>
 			</aux>
 			<aux name="Passing 60 in 1980">
 				<doc>	was 8</doc>
-				<eqn>38</eqn>
+				<eqn>30</eqn>
 				<units>Mp/year</units>
 			</aux>
 			<flow name="Passing 60">
@@ -9856,12 +9813,12 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			</aux>
 			<aux name="Dying in 1980">
 				<doc>	was 6.3</doc>
-				<eqn>30</eqn>
+				<eqn>20</eqn>
 				<units>Mp/year</units>
 			</aux>
 			<aux name="Aged 40-60 in 1980">
 				<doc>	was 174</doc>
-				<eqn>670.581566238008</eqn>
+				<eqn>718.749477407617</eqn>
 				<units>Mp</units>
 			</aux>
 			<stock name="Aged 60 + years">
@@ -9874,7 +9831,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			</stock>
 			<aux name="Aged 60+ in 1980">
 				<doc>	was 86</doc>
-				<eqn>411.223185995747</eqn>
+				<eqn>437.050825103775</eqn>
 				<units>Mp</units>
 			</aux>
 			<flow name="Passing 20">
@@ -9891,7 +9848,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			</stock>
 			<aux name="Passing 20 in 1980">
 				<doc>	was 21</doc>
-				<eqn>100</eqn>
+				<eqn>88.9257632029599</eqn>
 				<units>Mp/year</units>
 			</aux>
 			<flow name="Births">
@@ -9899,7 +9856,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<units>Mp/Year</units>
 			</flow>
 			<aux name="Pension age">
-				<eqn>( IF Life_expectancy &lt; LE_in_1980 THEN Pension_age_in_1980 ELSE Pension_age_in_1980+&quot;sLEeoPa&gt;0&quot;*(Life_expectancy+Extra_pension_age-LE_in_1980) )</eqn>
+				<eqn>( IF Life_expectancy &lt; LE_in_1980 THEN Pension_age_in_1980 ELSE Pension_age_in_1980+&quot;sLEeoPa&gt;0&quot;*(Life_expectancy-LE_in_1980) )</eqn>
 				<units>year</units>
 			</aux>
 			<aux name="Pension age in 1980">
@@ -9915,7 +9872,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			</aux>
 			<aux name="Time to adapt to\nhigher income">
 				<doc>	was 3</doc>
-				<eqn>10</eqn>
+				<eqn>12.4507789115205</eqn>
 				<units>year</units>
 			</aux>
 			<aux name="Population growth rate">
@@ -9935,7 +9892,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 		211202 changed to 2050 from 2170
 		211127 changed from 2050
 		was 2025</doc>
-				<eqn>1999.67512821747</eqn>
+				<eqn>2093.36052233874</eqn>
 				<units>Mp</units>
 			</aux>
 			<stock name="Aged 0-20 years">
@@ -9951,7 +9908,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 		211202 changed from 1100 back to 1220
 		211127 changed from 1220
 		was1283</doc>
-				<eqn>1280.22285295965</eqn>
+				<eqn>1272.82666647525</eqn>
 				<units>Mp</units>
 			</aux>
 			<aux name="Pensioners per worker">
@@ -9969,15 +9926,12 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			<aux name="GDP" access="input">
 				<units>G$/Years</units>
 			</aux>
-			<aux name="Introduction period for policy y" access="input">
-				<units>year</units>
-			</aux>
 			<aux name="Observed warming deg C" access="input">
 				<units>deg C</units>
 			</aux>
 			<aux name="effect of food on\nexcess death rate">
 				<eqn>(1 - MIN(1, 
-1+&quot;sCUPPeoLE&lt;0&quot;*(&quot;Crop_use_per_person_t-crop/p/y&quot;/crop_use_per_person_1980-1)
+1+&quot;sCUPPeoLE&gt;0&quot;*(&quot;Crop_use_per_person_t-crop/p/y&quot;/crop_use_per_person_1980-1)
 ))/time_for_climate_to_effect_excess_death_rate</eqn>
 				<units>1/year</units>
 			</aux>
@@ -9985,8 +9939,8 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<eqn>INIT(&quot;Crop_use_per_person_t-crop/p/y&quot;)</eqn>
 				<units>tcrop/(p*Year)</units>
 			</aux>
-			<aux name="sCUPPeoLE&lt;0">
-				<eqn>0.02</eqn>
+			<aux name="sCUPPeoLE&gt;0">
+				<eqn>0.00828372765726806</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Crop use per person t-crop/p/y" access="input">
@@ -10014,15 +9968,11 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<units>Mp/Year</units>
 			</flow>
 			<aux name="effect of warming on\nexcess death rate">
-				<eqn>&quot;sOWoEDR&lt;0&quot;*(Observed_warming_deg_C/Observed_warming_in_1980-1)/time_for_climate_to_effect_excess_death_rate</eqn>
+				<eqn>&quot;sOWoEDR&gt;0&quot;*(Observed_warming_deg_C/Observed_warming_in_1980-1)/time_for_climate_to_effect_excess_death_rate</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="time for climate to effect\nexcess death rate">
 				<eqn>1</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="Time for multiplier">
-				<eqn>78</eqn>
 				<units>year</units>
 			</aux>
 			<aux name="UNIT G/(M*k)" access="output" isee:autocreated="true">
@@ -10033,12 +9983,12 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>deg C</units>
 			</aux>
-			<aux name="sOWoEDR&lt;0">
-				<eqn>0.000400482689060408</eqn>
+			<aux name="sOWoEDR&gt;0">
+				<eqn>1e-7</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="DNCmax">
-				<eqn>SMTH1(Desired_no_of_children+DNCadd_per_generation, DNCmax_generation_time, DNC_in_1980+DNCadd_per_generation)</eqn>
+				<eqn>SMTH1(Observed_fertility+DNCadd_per_generation, DNCmax_generation_time, DNC_in_1980+DNCadd_per_generation)</eqn>
 				<isee:delay_aux/>
 				<units>1</units>
 			</aux>
@@ -10097,7 +10047,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="516" isee:scroll_y="134" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="556" isee:scroll_y="121" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -10210,7 +10160,6 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 					<from>Population</from>
 					<to>Birth_rate</to>
 				</connector>
-				<aux x="753" y="447" name="Desired no of children"/>
 				<connector uid="10" angle="304.509">
 					<from>Births</from>
 					<to>Birth_rate</to>
@@ -10225,27 +10174,10 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 					<from>Deaths</from>
 					<to>Death_rate</to>
 				</connector>
-				<aux x="585" y="345" name="Fraction achieving\ndesired family size"/>
 				<aux x="636" y="682" name="DNCmin"/>
 				<aux x="715" y="645" name="DNC in 1980"/>
 				<aux x="618" y="505" name="DNCgamma"/>
 				<aux x="687" y="531" name="DNCalfa"/>
-				<connector uid="13" angle="63.5326">
-					<from>DNCmin</from>
-					<to>Desired_no_of_children</to>
-				</connector>
-				<connector uid="14" angle="79.1359">
-					<from>DNC_in_1980</from>
-					<to>Desired_no_of_children</to>
-				</connector>
-				<connector uid="15" angle="23.2498">
-					<from>DNCgamma</from>
-					<to>Desired_no_of_children</to>
-				</connector>
-				<connector uid="16" angle="51.8428">
-					<from>DNCalfa</from>
-					<to>Desired_no_of_children</to>
-				</connector>
 				<aux x="1615" y="361" name="LE in 1980"/>
 				<aux x="1653" y="397" name="LEmax"/>
 				<aux x="1644" y="435" name="LEgamma"/>
@@ -10290,17 +10222,9 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				</connector>
 				<aux x="760" y="588" name="GDP per person in 1980"/>
 				<aux x="1050" y="620" name="Effective GDP per person"/>
-				<connector uid="26" angle="178.761">
-					<from>Effective_GDP_per_person</from>
-					<to>Desired_no_of_children</to>
-				</connector>
 				<connector uid="27" angle="9.15928">
 					<from>Effective_GDP_per_person</from>
 					<to>Life_expectancy</to>
-				</connector>
-				<connector uid="28" angle="92.8421">
-					<from>GDP_per_person_in_1980</from>
-					<to>Desired_no_of_children</to>
 				</connector>
 				<aux x="616" y="164" name="Aged 20-40 in 1980"/>
 				<aux x="551" y="206" name="Aged 0-20 in 1980"/>
@@ -10403,30 +10327,9 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 					<from>Passing_60</from>
 					<to>Deaths</to>
 				</connector>
-				<aux x="134" y="324" name="Cost of Max fertility reduction (share of GDP)"/>
-				<aux x="374" y="330" name="Cost of extra fertility reduction (share of GDP)"/>
-				<connector uid="51" angle="359.594">
-					<from>&quot;Cost_of_Max_fertility_reduction_(share_of_GDP)&quot;</from>
-					<to>&quot;Cost_of_extra_fertility_reduction_(share_of_GDP)&quot;</to>
-				</connector>
 				<connector uid="52" angle="354.14">
 					<from>GDP_per_person_in_1980</from>
 					<to>Effective_GDP_per_person</to>
-				</connector>
-				<aux x="1860" y="144" name="Extra pension age in 2022"/>
-				<aux x="1823" y="219" name="Extra pension age"/>
-				<aux x="2017" y="208" name="Goal for extra pension age"/>
-				<connector uid="53" angle="181.743">
-					<from>Goal_for_extra_pension_age</from>
-					<to>Extra_pension_age</to>
-				</connector>
-				<connector uid="54" angle="241.956">
-					<from>Extra_pension_age_in_2022</from>
-					<to>Extra_pension_age</to>
-				</connector>
-				<connector uid="55" angle="193.667">
-					<from>Extra_pension_age</from>
-					<to>Pension_age</to>
 				</connector>
 				<aux x="705" y="133" name="Aged 40-60 in 1980"/>
 				<aux x="802" y="107" name="Aged 60+ in 1980"/>
@@ -10450,30 +10353,6 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 					<from>Passing_20_in_1980</from>
 					<to>Passing_20</to>
 				</connector>
-				<connector uid="60" angle="99.353">
-					<from>Desired_no_of_children</from>
-					<to>Observed_fertility</to>
-				</connector>
-				<connector uid="61" angle="354.772">
-					<from>Fraction_achieving_desired_family_size</from>
-					<to>Observed_fertility</to>
-				</connector>
-				<aux x="2036" y="583" name="SSP2 family action\nfrom 2022?"/>
-				<aux x="1788" y="664" name="Fertility multiplier"/>
-				<connector uid="62" angle="197.362">
-					<from>&quot;SSP2_family_action_from_2022?&quot;</from>
-					<to>Fertility_multiplier</to>
-				</connector>
-				<aux x="1798" y="510" name="Life expectancy multipler"/>
-				<connector uid="63" angle="163.118">
-					<from>&quot;SSP2_family_action_from_2022?&quot;</from>
-					<to>Life_expectancy_multipler</to>
-				</connector>
-				<aux x="1960" y="514" name="Max life expectancy\nmultiplier"/>
-				<connector uid="64" angle="178.62">
-					<from>Max_life_expectancy_multiplier</from>
-					<to>Life_expectancy_multipler</to>
-				</connector>
 				<connector uid="65" angle="154.594">
 					<from>&quot;sOWeoLE&lt;0&quot;</from>
 					<to>Warming_effect_on_life_expectancy</to>
@@ -10486,33 +10365,6 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 					<from>Warming_effect_on_life_expectancy</from>
 					<to>Life_expectancy</to>
 				</connector>
-				<aux x="1978" y="663" name="Max fertility multiplier"/>
-				<connector uid="68" angle="179.776">
-					<from>Max_fertility_multiplier</from>
-					<to>Fertility_multiplier</to>
-				</connector>
-				<connector uid="69" angle="168.159">
-					<from>Fertility_multiplier</from>
-					<to>Desired_no_of_children</to>
-				</connector>
-				<connector uid="70" angle="160.775">
-					<from>Life_expectancy_multipler</from>
-					<to>Life_expectancy</to>
-				</connector>
-				<aux x="437" y="430" name="Extra fertility reduction"/>
-				<aux x="280" y="432" name="Goal for extra\nfertility reduction"/>
-				<connector uid="71" angle="0.757742">
-					<from>Goal_for_extra_fertility_reduction</from>
-					<to>Extra_fertility_reduction</to>
-				</connector>
-				<connector uid="72" angle="356.921">
-					<from>Extra_fertility_reduction</from>
-					<to>Desired_no_of_children</to>
-				</connector>
-				<connector uid="73" angle="121.869">
-					<from>Extra_fertility_reduction</from>
-					<to>&quot;Cost_of_extra_fertility_reduction_(share_of_GDP)&quot;</to>
-				</connector>
 				<aux font_style="italic" font_weight="bold" x="967" y="528" name="GDP"/>
 				<connector uid="74" angle="289.354">
 					<from>Population</from>
@@ -10522,26 +10374,15 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 					<from>GDP</from>
 					<to>GDP_per_person</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="left" label_angle="225" x="392" y="507" name="Introduction period for policy y"/>
-				<connector uid="76" angle="62.6217">
-					<from>Introduction_period_for_policy_y</from>
-					<to>Extra_fertility_reduction</to>
-				</connector>
-				<connector uid="77" angle="106">
-					<from>
-						<alias uid="78"/>
-					</from>
-					<to>Extra_pension_age</to>
-				</connector>
 				<aux background="#6EFF65" x="1510" y="695" name="effect of food on\nexcess death rate"/>
 				<aux background="#6EFF65" x="1460" y="828" name="crop use per person 1980"/>
 				<connector uid="79" angle="69.3968">
 					<from>crop_use_per_person_1980</from>
 					<to>effect_of_food_on_excess_death_rate</to>
 				</connector>
-				<aux background="#04FF17" x="1403" y="725" name="sCUPPeoLE&lt;0"/>
+				<aux background="#04FF17" x="1403" y="725" name="sCUPPeoLE&gt;0"/>
 				<connector uid="80" angle="15.6621">
-					<from>&quot;sCUPPeoLE&lt;0&quot;</from>
+					<from>&quot;sCUPPeoLE&gt;0&quot;</from>
 					<to>effect_of_food_on_excess_death_rate</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1678" y="753" name="Crop use per person t-crop/p/y"/>
@@ -10647,15 +10488,6 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 					<from>time_for_climate_to_effect_excess_death_rate</from>
 					<to>effect_of_food_on_excess_death_rate</to>
 				</connector>
-				<aux background="#AAFFFF" x="1840" y="582" name="Time for multiplier"/>
-				<connector uid="100" angle="122.574">
-					<from>Time_for_multiplier</from>
-					<to>Life_expectancy_multipler</to>
-				</connector>
-				<connector uid="101" angle="255.964">
-					<from>Time_for_multiplier</from>
-					<to>Fertility_multiplier</to>
-				</connector>
 				<aux background="#AAFFFF" x="1028.5" y="564" name="UNIT G/(M*k)"/>
 				<connector uid="102" angle="43.6028">
 					<from>&quot;UNIT_G/(M*k)&quot;</from>
@@ -10666,9 +10498,9 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 					<from>Observed_warming_in_1980</from>
 					<to>Warming_effect_on_life_expectancy</to>
 				</connector>
-				<aux background="#04FF17" x="1130.5" y="700" name="sOWoEDR&lt;0"/>
+				<aux background="#04FF17" x="1130.5" y="700" name="sOWoEDR&gt;0"/>
 				<connector uid="104" angle="166.746">
-					<from>&quot;sOWoEDR&lt;0&quot;</from>
+					<from>&quot;sOWoEDR&gt;0&quot;</from>
 					<to>effect_of_warming_on_excess_death_rate</to>
 				</connector>
 				<connector uid="107" angle="161.565">
@@ -10708,14 +10540,6 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 					<to>effect_of_warming_on_excess_death_rate</to>
 				</connector>
 				<aux x="701" y="714" name="DNCmax"/>
-				<connector uid="118" angle="145.561">
-					<from>Desired_no_of_children</from>
-					<to>DNCmax</to>
-				</connector>
-				<connector uid="119" angle="26.5651">
-					<from>DNCmax</from>
-					<to>Desired_no_of_children</to>
-				</connector>
 				<aux x="607" y="794" name="DNCmax\ngeneration time"/>
 				<connector uid="120" angle="40.3999">
 					<from>DNCmax_generation_time</from>
@@ -10730,11 +10554,44 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 					<from>DNCadd_per_generation</from>
 					<to>DNCmax</to>
 				</connector>
+				<connector uid="123" angle="108.839">
+					<from>DNCmax</from>
+					<to>Observed_fertility</to>
+				</connector>
+				<connector uid="124" angle="97.1579">
+					<from>DNCmin</from>
+					<to>Observed_fertility</to>
+				</connector>
+				<connector uid="125" angle="110.153">
+					<from>DNC_in_1980</from>
+					<to>Observed_fertility</to>
+				</connector>
+				<connector uid="126" angle="74.7636">
+					<from>DNCgamma</from>
+					<to>Observed_fertility</to>
+				</connector>
+				<connector uid="127" angle="165.322">
+					<from>Effective_GDP_per_person</from>
+					<to>Observed_fertility</to>
+				</connector>
+				<connector uid="128" angle="120.309">
+					<from>GDP_per_person_in_1980</from>
+					<to>Observed_fertility</to>
+				</connector>
+				<connector uid="129" angle="97.8973">
+					<from>DNCalfa</from>
+					<to>Observed_fertility</to>
+				</connector>
+				<connector uid="132" angle="216.027">
+					<from>Observed_fertility</from>
+					<to>DNCmax</to>
+				</connector>
+				<connector uid="133" angle="188.13">
+					<from>GDP_per_person</from>
+					<to>GDP_per_person_in_1980</to>
+				</connector>
 				<alias uid="36" x="1501" y="484" width="18" height="18">
 					<of>GDP_per_person_in_1980</of>
-				</alias>
-				<alias uid="78" x="1831" y="273" width="18" height="18">
-					<of>Introduction_period_for_policy_y</of>
 				</alias>
 				<alias background="#AAFFFF" font_style="italic" uid="113" x="1753" y="28" width="18" height="18">
 					<of>&quot;UNIT_G/(M*k)&quot;</of>
@@ -11043,7 +10900,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="346" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="251" isee:scroll_y="420" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
