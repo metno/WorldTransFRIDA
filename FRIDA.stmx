@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE">
 	<header>
-		<smile version="1.0" namespace="std, isee" uses_submodels=""/>
+		<smile version="1.0" namespace="std, isee" uses_arrays="1" uses_conveyor="" uses_submodels=""/>
 		<name>FRIDA</name>
 		<uuid>eed773d1-f4f7-4725-8d05-452b96d4f2dc</uuid>
 		<vendor>isee systems, inc.</vendor>
@@ -12,16 +12,23 @@
 		<stop>2100</stop>
 		<dt reciprocal="true">8</dt>
 	</sim_specs>
+	<dimensions>
+		<dim name="ShortPopCohort" size="19"/>
+		<dim name="StdPopCohort" size="20"/>
+	</dimensions>
 	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="false"/>
 	<isee:multiplayer_settings include_chat="true" allow_observers="false" advance_time_increment="1" max_advance_time_in_ms="0" model_stops_when_players_drop="false" observer_start_page="home_page" enabled="false"/>
 	<isee:time_formats default_format="Builtin">
 		<isee:time_format name="Builtin" type="adaptive"/>
 	</isee:time_formats>
 	<default_format/>
+	<data>
+		<import frequency="on_demand" isee:overwrite="true" orientation="horizontal" resource="r../Data/Population Initialization.csv"/>
+	</data>
 	<isee:sensi_specs_list active_index="0">
 		<isee:sensi_specs name="Sensitivity" method="sobol_sequence" runs="0"/>
 	</isee:sensi_specs_list>
-	<isee:optimizer_specs_list active_index="0">
+	<isee:optimizer_specs_list active_index="1">
 		<isee:optimizer_specs name="General Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
 			<isee:parameter name="Demand.Basic_income_tax_rate_workers" min="0.02" max="0.4" scaling="100"/>
 			<isee:parameter name="Demand.Basic_income_tax_rate_owners" min="0" max="0.5" scaling="100"/>
@@ -32,7 +39,7 @@
 			<isee:parameter name="Labour_market.WSO_in_1980" min="0.3" max="0.7" scaling="100"/>
 			<isee:parameter name="Labour_market.Normal_LPR_in_1980" min="0.3" max="0.9" scaling="100"/>
 			<isee:parameter name="Labour_market.Real_wage_erosion_rate" min="0" max="0.5" scaling="100"/>
-			<isee:parameter name="Public_sector.Basic_rate_of_technological_advance" min="0" max="0.5" scaling="100"/>
+			<isee:parameter name="Public_sector.normal_rate_of_change_in_TFP" min="0" max="0.5" scaling="100"/>
 			<isee:parameter name="Energy.ROC_in_tCO2_per_toe" min="-0.1" max="0" scaling="100"/>
 			<isee:parameter name="Demand.corrupt_consumption_fraction" min="0" max="0.3" scaling="100"/>
 			<isee:parameter name='Output."sEDeoFRA&gt;0"' min="0" max="10" scaling="100"/>
@@ -41,32 +48,27 @@
 			<isee:payoff name="General Payoff" action="min"/>
 		</isee:optimizer_specs>
 		<isee:optimizer_specs name="Population Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
-			<isee:parameter name="Population.Passing_20_in_1980" min="80" max="120" scaling="0.1"/>
-			<isee:parameter name="Population.Passing_40_in_1980" min="50" max="70" scaling="0.1"/>
-			<isee:parameter name="Population.Passing_60_in_1980" min="30" max="50" scaling="0.1"/>
-			<isee:parameter name="Population.Dying_in_1980" min="20" max="40" scaling="0.1"/>
-			<isee:parameter name='Population."Aged_0-20_in_1980"' min="1900" max="2100" scaling="0.01"/>
-			<isee:parameter name='Population."Aged_20-40_in_1980"' min="1200" max="1400" scaling="0.01"/>
-			<isee:parameter name='Population."Aged_40-60_in_1980"' min="600" max="800" scaling="0.01"/>
-			<isee:parameter name='Population."Aged_60+_in_1980"' min="350" max="550" scaling="0.01"/>
-			<isee:parameter name="Population.DNC_in_1980" min="2.5" max="4" scaling="10"/>
-			<isee:parameter name="Population.DNCalfa" min="0.0001" max="0.5" scaling="100"/>
-			<isee:parameter name="Population.DNCgamma" min="0.0001" max="0.5" scaling="100"/>
-			<isee:parameter name="Population.DNCmin" min="1.5" max="2" scaling="10"/>
-			<isee:parameter name="Population.Time_to_adapt_to_higher_income" min="5" max="25"/>
-			<isee:parameter name='Population."sOWoEDR&gt;0"' min="1e-7" max="5" scaling="1000"/>
-			<isee:parameter name='Population."sCUPPeoLE&gt;0"' min="0.000001" max="5" scaling="1000"/>
+			<isee:parameter name="Population.sOWoDR" min="0" max="1" scaling="100"/>
+			<isee:parameter name="Population.normal_observed_fertility" min="3.5" max="5"/>
+			<isee:parameter name="Population.observed_fertility_alpha" min="0" max="2" scaling="100"/>
+			<isee:parameter name="Population.observed_fertility_gamma" min="-2" max="0" scaling="100"/>
+			<isee:parameter name="Population.infant_mortality_alpha" min="0" max="2" scaling="100000"/>
+			<isee:parameter name="Population.infant_mortality_gamma" min="-2" max="0" scaling="100000"/>
+			<isee:parameter name='Population."1_to_20_mortality_alpha"' min="0" max="2"/>
+			<isee:parameter name='Population."1_to_20_mortality_gamma"' min="-2" max="0"/>
+			<isee:parameter name='Population."20_to_40_mortality_alpha"' min="0" max="2"/>
+			<isee:parameter name='Population."20_to_40_mortality_gamma"' min="-2" max="0"/>
+			<isee:parameter name='Population."40_to_60_mortality_alpha"' min="0" max="2"/>
+			<isee:parameter name='Population."40_to_60_mortality_gamma"' min="-2" max="0"/>
+			<isee:parameter name='Population."60_to_80_mortality_alpha"' min="0" max="2"/>
+			<isee:parameter name='Population."60_to_80_mortality_gamma"' min="-2" max="0"/>
+			<isee:parameter name="Population.Over_80_mortality_alpha" min="0" max="2"/>
+			<isee:parameter name="Population.Over_80_mortality_gamma" min="-2" max="0"/>
 			<isee:payoff name="Population Payoff" action="min"/>
-			<isee:payoff name="General Payoff" action="min" inactive="true"/>
 		</isee:optimizer_specs>
 	</isee:optimizer_specs_list>
 	<isee:payoff_specs_list>
 		<isee:payoff_specs name="General Payoff" calibration="true" recompute_weights="true">
-			<isee:payoff_element name="Population.Population" weight="1" compare_name="Population.Population" compare_run="UN med. pop. proj." tolerance="0" type="ls"/>
-			<isee:payoff_element name='Population."Aged_0-20_years"' weight="1" compare_name='Population."Aged_0-20_years"' compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name='Population."Aged_20-40_years"' weight="1" compare_name='Population."Aged_20-40_years"' compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name='Population."Aged_40-60_years"' weight="1" compare_name='Population."Aged_40-60_years"' compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name='Population."Aged_60_+_years"' weight="1" compare_name='Population."Aged_60_+_years"' compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Output.GDP" weight="1" compare_name="Output.GDP" compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Population.GDP_per_person" weight="1" compare_name="Population.GDP_per_person" compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Demand.Govmnt_spending" weight="1" compare_name="Demand.Govmnt_spending" compare_run="Calibration Data" tolerance="0" type="ls"/>
@@ -78,13 +80,32 @@
 			<isee:payoff_element name="Labour_market.Worker_share_of_output" weight="1" compare_name="Labour_market.Worker_share_of_output" compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Climate.CO2_emissions" weight="1" compare_name="Climate.CO2_emissions" compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Labour_market.Workforce" weight="1" compare_name="Labour_market.Workforce" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Population" weight="1" compare_name="Population.Population" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_0_years" weight="1" compare_name="Population.Aged_0_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_1_to_20_years" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_20_to_40_years" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_40_to_60_years" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_60_to_80_years" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_Over_80_years" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Observed_fertility" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Population Payoff" calibration="true" recompute_weights="true">
-			<isee:payoff_element name="Population.Population" weight="1" compare_name="Population.Population" compare_run="UN med. pop. proj." tolerance="0" type="ls"/>
-			<isee:payoff_element name='Population."Aged_0-20_years"' weight="1" compare_name='Population."Aged_0-20_years"' compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name='Population."Aged_20-40_years"' weight="1" compare_name='Population."Aged_20-40_years"' compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name='Population."Aged_40-60_years"' weight="1" compare_name='Population."Aged_40-60_years"' compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name='Population."Aged_60_+_years"' weight="1" compare_name='Population."Aged_60_+_years"' compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Population" weight="1" compare_name="Population.Population" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_0_years" weight="1" compare_name="Population.Aged_0_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_1_to_20_years" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_20_to_40_years" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_40_to_60_years" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_60_to_80_years" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_Over_80_years" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Observed_fertility" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_0_years" weight="1" compare_name="Population.deaths_0_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_1_to_20_years" weight="1" compare_name="Population.deaths_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_20_to_40_years" weight="1" compare_name="Population.deaths_20_to_40_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_40_to_60_years" weight="1" compare_name="Population.deaths_40_to_60_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_60_to_80_years" weight="1" compare_name="Population.deaths_60_to_80_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_Over_80_years" weight="1" compare_name="Population.deaths_Over_80_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Births" weight="1" compare_name="Population.Births" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Total_Deaths" weight="1" compare_name="Population.Total_Deaths" compare_run="Calibration Data" tolerance="0" type="ls"/>
 		</isee:payoff_specs>
 	</isee:payoff_specs_list>
 	<model_units>
@@ -181,17 +202,17 @@
 		<unit name="GW">
 			<eqn>TWh/(kilo*h)</eqn>
 		</unit>
-		<unit name="Dimensionless">
-			<eqn>1</eqn>
-			<alias>dmnl</alias>
-			<alias>unitless</alias>
-		</unit>
 		<unit name="kilowatt hours per day">
 			<eqn>kWh/day</eqn>
 		</unit>
 		<unit name="kilowatts">
 			<eqn>kW</eqn>
 			<alias>kilowatt</alias>
+		</unit>
+		<unit name="Dimensionless">
+			<eqn>1</eqn>
+			<alias>dmnl</alias>
+			<alias>unitless</alias>
 		</unit>
 	</model_units>
 	<model>
@@ -237,8 +258,8 @@
 				<connect2 to='Demand."UNIT_G/(M*k)"' from='Population."UNIT_G/(M*k)"'/>
 				<connect to='Wellbeing."Labour_participation_rate_(1)"' from="Labour_market.Labour_participation_rate"/>
 				<connect2 to='Wellbeing."Labour_participation_rate_(1)"' from="Labour_market.Labour_participation_rate"/>
-				<connect to='Labour_market."Aged_20-pension_age_Mp"' from='Population."Aged_20-pension_age"'/>
-				<connect2 to='Labour_market."Aged_20-pension_age_Mp"' from='Population."Aged_20-pension_age"'/>
+				<connect to='Labour_market."Aged_20-pension_age_Mp"' from="Population.working_age_population"/>
+				<connect2 to='Labour_market."Aged_20-pension_age_Mp"' from="Population.working_age_population"/>
 				<connect to='Labour_market."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
 				<connect2 to='Labour_market."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
 				<connect to="Climate.GDP" from="Output.GDP"/>
@@ -279,8 +300,8 @@
 				<connect2 to="Energy.Observed_warming_deg_C" from="Climate.Observed_warming"/>
 				<connect to="Output.Observed_warming_deg_C" from="Climate.Observed_warming"/>
 				<connect2 to="Output.Observed_warming_deg_C" from="Climate.Observed_warming"/>
-				<connect to="Population.Observed_warming_deg_C" from="Climate.Observed_warming"/>
-				<connect2 to="Population.Observed_warming_deg_C" from="Climate.Observed_warming"/>
+				<connect to="Population.Observed_warming" from="Climate.Observed_warming"/>
+				<connect2 to="Population.Observed_warming" from="Climate.Observed_warming"/>
 				<connect to="Public_sector.Observed_warming_deg_C" from="Climate.Observed_warming"/>
 				<connect2 to="Public_sector.Observed_warming_deg_C" from="Climate.Observed_warming"/>
 				<connect to="Population.Observed_warming_in_1980" from="Climate.Observed_warming_in_1980"/>
@@ -313,8 +334,6 @@
 				<connect2 to="Food_and_land_use.Population_Mp" from="Population.Population"/>
 			</module>
 			<module name="Society" isee:label="">
-				<connect to='Labour_market."Aged_20-pension_age_Mp"' from='Population."Aged_20-pension_age"'/>
-				<connect2 to='Labour_market."Aged_20-pension_age_Mp"' from='Population."Aged_20-pension_age"'/>
 				<connect to='Demand."Effective_GDP_per_person_k$/p/y"' from="Population.Effective_GDP_per_person"/>
 				<connect2 to='Demand."Effective_GDP_per_person_k$/p/y"' from="Population.Effective_GDP_per_person"/>
 				<connect to='Energy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
@@ -341,12 +360,14 @@
 				<connect2 to='Output."UNIT_G/(M*k)_1"' from='Population."UNIT_G/(M*k)"'/>
 				<connect to='Public_sector."UNIT_G/(M*k)"' from='Population."UNIT_G/(M*k)"'/>
 				<connect2 to='Public_sector."UNIT_G/(M*k)"' from='Population."UNIT_G/(M*k)"'/>
+				<connect to='Labour_market."Aged_20-pension_age_Mp"' from="Population.working_age_population"/>
+				<connect2 to='Labour_market."Aged_20-pension_age_Mp"' from="Population.working_age_population"/>
 				<connect to='Population."Crop_use_per_person_t-crop/p/y"' from="Food_and_land_use.Crop_use_per_person"/>
 				<connect2 to='Population."Crop_use_per_person_t-crop/p/y"' from="Food_and_land_use.Crop_use_per_person"/>
 				<connect to="Population.GDP" from="Output.GDP"/>
 				<connect2 to="Population.GDP" from="Output.GDP"/>
-				<connect to="Population.Observed_warming_deg_C" from="Climate.Observed_warming"/>
-				<connect2 to="Population.Observed_warming_deg_C" from="Climate.Observed_warming"/>
+				<connect to="Population.Observed_warming" from="Climate.Observed_warming"/>
+				<connect2 to="Population.Observed_warming" from="Climate.Observed_warming"/>
 				<connect to="Population.Observed_warming_in_1980" from="Climate.Observed_warming_in_1980"/>
 				<connect2 to="Population.Observed_warming_in_1980" from="Climate.Observed_warming_in_1980"/>
 				<connect to="Climate.Introduction_period_for_policy_y" from="Wellbeing.Introduction_period_for_policy"/>
@@ -369,7 +390,7 @@
 				<connect2 to='Wellbeing."Worker_disposable_income_k$/p/y"' from="Demand.Worker_disposable_income"/>
 			</module>
 			<isee:placeholder name="Calibrated Variables">
-				<eqn>Output.GDP + Population.GDP_per_person + Population.Population + Climate.CO2_emissions + Demand.Govmnt_spending + Demand.Consumption_share_of_GDP + Demand.Total_savings + Output.Investment_in_new_capacity_PIS + Population.&quot;Aged_0-20_years&quot; + Population.&quot;Aged_20-40_years&quot; + Population.&quot;Aged_40-60_years&quot; + Population.&quot;Aged_60_+_years&quot; + Demand.Savings_share_of_GDP + Output.Investment_share_of_GDP + Labour_market.Worker_share_of_output + Labour_market.Unemployment_rate + Labour_market.Workforce</eqn>
+				<eqn>Output.GDP + Population.GDP_per_person + Population.Population + Climate.CO2_emissions + Demand.Govmnt_spending + Demand.Consumption_share_of_GDP + Demand.Total_savings + Output.Investment_in_new_capacity_PIS + Demand.Savings_share_of_GDP + Output.Investment_share_of_GDP + Labour_market.Worker_share_of_output + Labour_market.Unemployment_rate + Labour_market.Workforce + Population.Aged_1_to_20_years + Population.Aged_20_to_40_years + Population.Aged_40_to_60_years + Population.Aged_60_to_80_years + Population.Total_Deaths + Population.Births + Population.Observed_fertility</eqn>
 			</isee:placeholder>
 		</variables>
 		<views>
@@ -418,7 +439,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="280" isee:scroll_y="139" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="386" isee:scroll_y="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -538,8 +559,8 @@
 				<connect2 to="Demand.WSO_in_1980" from="Labour_market.WSO_in_1980"/>
 				<connect to='Output."WSO_in_1980_(1)"' from="Labour_market.WSO_in_1980"/>
 				<connect2 to='Output."WSO_in_1980_(1)"' from="Labour_market.WSO_in_1980"/>
-				<connect to='Labour_market."Aged_20-pension_age_Mp"' from='Population."Aged_20-pension_age"'/>
-				<connect2 to='Labour_market."Aged_20-pension_age_Mp"' from='Population."Aged_20-pension_age"'/>
+				<connect to='Labour_market."Aged_20-pension_age_Mp"' from="Population.working_age_population"/>
+				<connect2 to='Labour_market."Aged_20-pension_age_Mp"' from="Population.working_age_population"/>
 				<connect to="Labour_market.Capacity_Gcu" from="Output.Total_Capacity"/>
 				<connect2 to="Labour_market.Capacity_Gcu" from="Output.Total_Capacity"/>
 				<connect to='Labour_market."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
@@ -720,20 +741,20 @@
 			</style>
 			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<stock color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
 					</stock>
-					<flow color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<flow color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</flow>
-					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="12pt" label_side="bottom"/>
-					<module color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="14.13pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="67" height="55"/>
 					</module>
-					<aux color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<aux color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</aux>
-					<group color="red" background="white" font_color="red" font_size="12pt"/>
+					<group color="red" background="white" font_color="red" font_size="14.13pt"/>
 					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
 					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
 					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
@@ -1367,20 +1388,20 @@
 			</style>
 			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="60" isee:scroll_y="960" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<stock color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
 					</stock>
-					<flow color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<flow color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</flow>
-					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="12pt" label_side="bottom"/>
-					<module color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="14.13pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="67" height="55"/>
 					</module>
-					<aux color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<aux color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</aux>
-					<group color="red" background="white" font_color="red" font_size="12pt"/>
+					<group color="red" background="white" font_color="red" font_size="14.13pt"/>
 					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
 					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
 					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
@@ -2272,12 +2293,12 @@
 			</aux>
 			<aux name="Normal LPR in 1980">
 				<doc>	was 0.7</doc>
-				<eqn>0.757605512601808</eqn>
+				<eqn>0.866099736215427</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="sWSOeoLPR&gt;0">
 				<doc>	was 1, so 0, so 0.5</doc>
-				<eqn>1.50408465519994</eqn>
+				<eqn>0.5</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="WSO in 1980" access="output">
@@ -2531,22 +2552,22 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="539" isee:scroll_y="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="958" isee:scroll_y="63" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<stock color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
 					</stock>
-					<flow color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<flow color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</flow>
-					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="12pt" label_side="bottom"/>
-					<module color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="14.13pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="67" height="55"/>
 					</module>
-					<aux color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<aux color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</aux>
-					<group color="red" background="white" font_color="red" font_size="12pt"/>
+					<group color="red" background="white" font_color="red" font_size="14.13pt"/>
 					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
 					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
 					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
@@ -3017,7 +3038,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<doc>	was 4000
 		220113 changed from 3000 to 4000 to match China
 		was 70400, so 64520, so 59250, so 56000</doc>
-				<eqn>59250</eqn>
+				<eqn>64794.8236136508</eqn>
 				<units>G$</units>
 			</aux>
 			<aux name="CAP PUS in 1980">
@@ -3303,22 +3324,22 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="908" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="501" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<stock color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
 					</stock>
-					<flow color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<flow color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</flow>
-					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="12pt" label_side="bottom"/>
-					<module color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="14.13pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="67" height="55"/>
 					</module>
-					<aux color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<aux color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</aux>
-					<group color="red" background="white" font_color="red" font_size="12pt"/>
+					<group color="red" background="white" font_color="red" font_size="14.13pt"/>
 					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
 					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
 					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
@@ -3863,12 +3884,12 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<eqn>-0.1</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="Rate of technological\nadvance">
-				<eqn>(Basic_rate_of_technological_advance)*Reduction_in_ROTA_from_inequality*OWeoROTA</eqn>
+			<aux name="rate of change\nin TFP">
+				<eqn>(normal_rate_of_change_in_TFP)*Reduction_in_ROTA_from_inequality*OWeoROTA</eqn>
 				<units>1/year</units>
 			</aux>
-			<aux name="Basic rate of technological advance">
-				<eqn>0.0347748039243094</eqn>
+			<aux name="normal\nrate of change\nin TFP">
+				<eqn>0.0312132943094661</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="Reduction in ROTA\nfrom inequality">
@@ -3897,7 +3918,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<units>1</units>
 			</aux>
 			<flow name="Change in TFP">
-				<eqn>Rate_of_technological_advance*Indicated_TFP</eqn>
+				<eqn>rate_of_change_in_TFP*Indicated_TFP</eqn>
 				<units>Per Year</units>
 			</flow>
 			<aux name="sIPReoVPSS&gt;0">
@@ -4025,22 +4046,22 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="247" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="301" isee:scroll_y="17" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<stock color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
 					</stock>
-					<flow color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<flow color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</flow>
-					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="12pt" label_side="bottom"/>
-					<module color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="14.13pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="67" height="55"/>
 					</module>
-					<aux color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<aux color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</aux>
-					<group color="red" background="white" font_color="red" font_size="12pt"/>
+					<group color="red" background="white" font_color="red" font_size="14.13pt"/>
 					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
 					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
 					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
@@ -4116,14 +4137,14 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 					<from>&quot;sIPReoVPSS&gt;0&quot;</from>
 					<to>Productivity_of_public_purchases</to>
 				</connector>
-				<aux x="953" y="525" name="Rate of technological\nadvance"/>
-				<aux x="912" y="433" name="Basic rate of technological advance"/>
+				<aux x="953" y="525" name="rate of change\nin TFP"/>
+				<aux x="912" y="433" name="normal\nrate of change\nin TFP"/>
 				<connector uid="11" angle="294.02">
-					<from>Basic_rate_of_technological_advance</from>
-					<to>Rate_of_technological_advance</to>
+					<from>normal_rate_of_change_in_TFP</from>
+					<to>rate_of_change_in_TFP</to>
 				</connector>
 				<connector uid="12" angle="295.284">
-					<from>Rate_of_technological_advance</from>
+					<from>rate_of_change_in_TFP</from>
 					<to>Change_in_TFP</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="115" y="144" name="Govmnt spending G$/y"/>
@@ -4145,7 +4166,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				</connector>
 				<connector uid="19" angle="2.47484">
 					<from>Reduction_in_ROTA_from_inequality</from>
-					<to>Rate_of_technological_advance</to>
+					<to>rate_of_change_in_TFP</to>
 				</connector>
 				<aux x="279" y="77" name="Govmnt spending as share of GDP"/>
 				<connector uid="20" angle="22.2218">
@@ -4206,7 +4227,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				</connector>
 				<connector uid="42" angle="36.0274">
 					<from>OWeoROTA</from>
-					<to>Rate_of_technological_advance</to>
+					<to>rate_of_change_in_TFP</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1197" y="249" name="GDP 1"/>
 				<aux font_style="italic" font_weight="bold" x="374" y="41" name="GDP"/>
@@ -4283,7 +4304,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			</aux>
 			<aux name="ROC in tCO2 per toe">
 				<doc>	CO2 emissions per toe fell from 2.8 in 1980 to 2.4 in 2019 - minus 0.3 %/y - probably because of fuel shift</doc>
-				<eqn>-0.00533639642052569</eqn>
+				<eqn>-0.00759106436058858</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="Efficiency of fossil power\nplant">
@@ -4865,7 +4886,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<units>GtCO2/year</units>
 			</aux>
 			<aux name="tCO2 per toe in 1980">
-				<eqn>2.48521881431496</eqn>
+				<eqn>2.73974593462418</eqn>
 				<units>tCO2/toe</units>
 			</aux>
 		</variables>
@@ -4915,22 +4936,22 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="53" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_y="478" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<stock color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
 					</stock>
-					<flow color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<flow color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</flow>
-					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="12pt" label_side="bottom"/>
-					<module color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="14.13pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="67" height="55"/>
 					</module>
-					<aux color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<aux color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</aux>
-					<group color="red" background="white" font_color="red" font_size="12pt"/>
+					<group color="red" background="white" font_color="red" font_size="14.13pt"/>
 					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
 					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
 					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
@@ -6055,8 +6076,8 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<connect2 to="Food_and_land_use.Observed_warming_deg_C" from="Climate.Observed_warming"/>
 				<connect to="Output.Observed_warming_deg_C" from="Climate.Observed_warming"/>
 				<connect2 to="Output.Observed_warming_deg_C" from="Climate.Observed_warming"/>
-				<connect to="Population.Observed_warming_deg_C" from="Climate.Observed_warming"/>
-				<connect2 to="Population.Observed_warming_deg_C" from="Climate.Observed_warming"/>
+				<connect to="Population.Observed_warming" from="Climate.Observed_warming"/>
+				<connect2 to="Population.Observed_warming" from="Climate.Observed_warming"/>
 				<connect to="Public_sector.Observed_warming_deg_C" from="Climate.Observed_warming"/>
 				<connect2 to="Public_sector.Observed_warming_deg_C" from="Climate.Observed_warming"/>
 				<connect to="Population.Observed_warming_in_1980" from="Climate.Observed_warming_in_1980"/>
@@ -6155,20 +6176,20 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			</style>
 			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<stock color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
 					</stock>
-					<flow color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<flow color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</flow>
-					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="12pt" label_side="bottom"/>
-					<module color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="14.13pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="67" height="55"/>
 					</module>
-					<aux color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<aux color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</aux>
-					<group color="red" background="white" font_color="red" font_size="12pt"/>
+					<group color="red" background="white" font_color="red" font_size="14.13pt"/>
 					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
 					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
 					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
@@ -6827,22 +6848,22 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="144" isee:scroll_y="60" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="103" isee:scroll_y="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<stock color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
 					</stock>
-					<flow color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<flow color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</flow>
-					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="12pt" label_side="bottom"/>
-					<module color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="14.13pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="67" height="55"/>
 					</module>
-					<aux color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<aux color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</aux>
-					<group color="red" background="white" font_color="red" font_size="12pt"/>
+					<group color="red" background="white" font_color="red" font_size="14.13pt"/>
 					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
 					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
 					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
@@ -8290,20 +8311,20 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			</style>
 			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_y="545" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<stock color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
 					</stock>
-					<flow color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<flow color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</flow>
-					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="12pt" label_side="bottom"/>
-					<module color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="14.13pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="67" height="55"/>
 					</module>
-					<aux color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<aux color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</aux>
-					<group color="red" background="white" font_color="red" font_size="12pt"/>
+					<group color="red" background="white" font_color="red" font_size="14.13pt"/>
 					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
 					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
 					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
@@ -9453,8 +9474,6 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 	<model name="Society">
 		<variables>
 			<module name="Population" isee:label="">
-				<connect to='Labour_market."Aged_20-pension_age_Mp"' from='Population."Aged_20-pension_age"'/>
-				<connect2 to='Labour_market."Aged_20-pension_age_Mp"' from='Population."Aged_20-pension_age"'/>
 				<connect to='Demand."Effective_GDP_per_person_k$/p/y"' from="Population.Effective_GDP_per_person"/>
 				<connect2 to='Demand."Effective_GDP_per_person_k$/p/y"' from="Population.Effective_GDP_per_person"/>
 				<connect to='Energy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
@@ -9483,12 +9502,14 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<connect2 to='Output."UNIT_G/(M*k)_1"' from='Population."UNIT_G/(M*k)"'/>
 				<connect to='Public_sector."UNIT_G/(M*k)"' from='Population."UNIT_G/(M*k)"'/>
 				<connect2 to='Public_sector."UNIT_G/(M*k)"' from='Population."UNIT_G/(M*k)"'/>
+				<connect to='Labour_market."Aged_20-pension_age_Mp"' from="Population.working_age_population"/>
+				<connect2 to='Labour_market."Aged_20-pension_age_Mp"' from="Population.working_age_population"/>
 				<connect to='Population."Crop_use_per_person_t-crop/p/y"' from="Food_and_land_use.Crop_use_per_person"/>
 				<connect2 to='Population."Crop_use_per_person_t-crop/p/y"' from="Food_and_land_use.Crop_use_per_person"/>
 				<connect to="Population.GDP" from="Output.GDP"/>
 				<connect2 to="Population.GDP" from="Output.GDP"/>
-				<connect to="Population.Observed_warming_deg_C" from="Climate.Observed_warming"/>
-				<connect2 to="Population.Observed_warming_deg_C" from="Climate.Observed_warming"/>
+				<connect to="Population.Observed_warming" from="Climate.Observed_warming"/>
+				<connect2 to="Population.Observed_warming" from="Climate.Observed_warming"/>
 				<connect to="Population.Observed_warming_in_1980" from="Climate.Observed_warming_in_1980"/>
 				<connect2 to="Population.Observed_warming_in_1980" from="Climate.Observed_warming_in_1980"/>
 			</module>
@@ -9563,20 +9584,20 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			</style>
 			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<stock color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
 					</stock>
-					<flow color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<flow color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</flow>
-					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="12pt" label_side="bottom"/>
-					<module color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="14.13pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="67" height="55"/>
 					</module>
-					<aux color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<aux color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</aux>
-					<group color="red" background="white" font_color="red" font_size="12pt"/>
+					<group color="red" background="white" font_color="red" font_size="14.13pt"/>
 					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
 					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
 					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
@@ -9600,9 +9621,9 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<module label_side="center" x="121" y="59" name="Population"/>
+				<module label_side="center" x="121" y="58" name="Population"/>
 				<module label_side="center" x="121" y="180" name="Wellbeing"/>
-				<connector uid="1" isee:thickness="2" angle="231.953">
+				<connector uid="1" isee:thickness="2" angle="270">
 					<from>Population</from>
 					<to>Wellbeing</to>
 				</connector>
@@ -9611,45 +9632,242 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 	</model>
 	<model name="Population">
 		<variables>
-			<aux name="DNCmin">
-				<doc>	was 1.6, so 1.5
-		211202 changed from 1.5 to 1.6
-		211129 changed from 1.2 to compensate for change in age structure</doc>
-				<eqn>1.9029272199694</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="DNC in 1980">
-				<doc>	was 4.5, so 4.2
-		211202 changed to 4.5 from 4.2
-		211126 changed from 4.5 to get pop to 6000 in 2000
-		DF in 1980 was 4.7 so 5.0 so 4.9 so 4.4, so 4.2, so 4.4</doc>
-				<eqn>2.83856084116</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="DNCgamma">
-				<doc>	was 0.12, so 0.17
-		211129 changed from 0.13 to 0.12 to compensate for new PUS and CLR
-		211127 changed from 0.22 at the same time as changing initial values of age groups
-		was 0.12, so 0.17, so 0.33, so 0.4, so 0.25, so 0.2, so 0.16</doc>
-				<eqn>0.472675732316964</eqn>
-				<units>(p*year)/(k$)</units>
-			</aux>
-			<aux name="Effective GDP per person" access="output">
-				<eqn>SMTH1(GDP_per_person, Time_to_adapt_to_higher_income, GDP_per_person_in_1980)</eqn>
-				<isee:delay_aux/>
-				<units>k$/(p*year)</units>
-			</aux>
 			<aux name="GDP per person in 1980" access="output">
 				<doc>	was 6.1</doc>
 				<eqn>INIT(GDP_per_person)</eqn>
 				<units>k$/(p*year)</units>
 			</aux>
-			<aux name="DNCalfa">
-				<doc>	was 0.02
-		220113 Changed from 0 to 0.02 to avoid too rapid decline in pop towards 2100.
-		Rate of decline of Minimum DF was 0.015, AND THEN 0.05 so 0.001, so 0.007</doc>
-				<eqn>0.0001</eqn>
-				<units>(p*year)/(k$)</units>
+			<aux name="GDP per person" access="output">
+				<eqn>(GDP/Population)/&quot;UNIT_G/(M*k)&quot;</eqn>
+				<units>k$/(p*year)</units>
+			</aux>
+			<stock name="Aged 20 to 40 years">
+				<doc>	was 1283</doc>
+				<eqn>Aged_20_to_40_in_1980[*]</eqn>
+				<inflow>Passing_20</inflow>
+				<outflow>Passing_40</outflow>
+				<outflow>deaths_20_to_40_years</outflow>
+				<conveyor exponential_leak="true">
+					<len>cohort_length</len>
+				</conveyor>
+				<units>Mp</units>
+			</stock>
+			<aux name="Fraction women">
+				<eqn>0.5</eqn>
+				<units>1</units>
+			</aux>
+			<aux name="fertile period">
+				<eqn>20</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="working age population" access="output">
+				<eqn>Aged_20_to_40_years+Aged_40_to_60_years+Aged_60_to_80_years*fraction_of_60_to_80_that_are_working_age</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="Observed fertility">
+				<doc>	220207 changed from &quot;As math: Observed fertility 1&quot;
+		220114 changed from Desired no of children 1 * &quot;Fraction achieving desired family size (1)&quot;
+		210821 changed from: IF THEN ELSE(Time&gt;&quot;Fertility = 2.5 introduction time y&quot;, 2.5 , Desired no of children 1)</doc>
+				<eqn>MIN(normal_observed_fertility*effect_of_GDP_pp_on_Observed_fertility, last_generation_fertility*max_growth_in_fertility_compared_to_last_generation)</eqn>
+				<units>1</units>
+			</aux>
+			<flow name="Passing 60">
+				<eqn>0</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="Passing 40">
+				<eqn>0</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="Passing 80">
+				<doc>	211111: Changed from IF THEN ELSE(LE at 60 y &gt; 0, SMOOTH3(&quot;Aged 60 + Mp&quot; / LE at 60 y, 20), 0)</doc>
+				<eqn>0</eqn>
+				<non_negative/>
+				<units>Mp/Year</units>
+			</flow>
+			<stock name="Aged 60 to 80 years">
+				<doc>	was 382</doc>
+				<eqn>Aged_60_to_80_in_1980[*]</eqn>
+				<inflow>Passing_60</inflow>
+				<outflow>Passing_80</outflow>
+				<outflow>deaths_60_to_80_years</outflow>
+				<conveyor exponential_leak="true">
+					<len>cohort_length</len>
+				</conveyor>
+				<units>Mp</units>
+			</stock>
+			<flow name="Passing 20">
+				<eqn>0</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<stock name="Aged 40 to 60 years">
+				<doc>	was 768</doc>
+				<eqn>Aged_40_to_60_in_1980[*]</eqn>
+				<inflow>Passing_40</inflow>
+				<outflow>Passing_60</outflow>
+				<outflow>deaths_40_to_60_years</outflow>
+				<conveyor exponential_leak="true">
+					<len>cohort_length</len>
+				</conveyor>
+				<units>Mp</units>
+			</stock>
+			<flow name="Births">
+				<eqn>(Aged_20_to_40_years*number_of_fertile_women_correction_factor*Fraction_women*Observed_fertility)/fertile_period</eqn>
+				<non_negative/>
+				<units>Mp/Year</units>
+			</flow>
+			<aux name="Pension age">
+				<eqn>( IF Life_expectancy &lt; LE_in_1980 THEN Pension_age_in_1980 ELSE Pension_age_in_1980+&quot;sLEeoPa&gt;0&quot;*(Life_expectancy-LE_in_1980) )</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="Pension age in 1980">
+				<doc>	220113 Changed back from 67 to 62, assuming that people under 20 also participate in the workforce.
+		220109 changed from 62 to 67 to get sufficient labour force (ie over 500 Mp)</doc>
+				<eqn>62</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="sLEeoPa&gt;0">
+				<doc>	was 0.65, so 0.75, so 0.3</doc>
+				<eqn>0.75</eqn>
+				<units>1</units>
+			</aux>
+			<aux name="Time to adapt to\nhigher income">
+				<doc>	was 3</doc>
+				<eqn>10.0676689167948</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="Population growth rate">
+				<eqn>Birth_rate-Death_rate</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="Birth rate">
+				<eqn>Births/Population</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="Death rate">
+				<eqn>Total_Deaths/Population</eqn>
+				<units>1/year</units>
+			</aux>
+			<stock name="Aged 1 to 20 years">
+				<doc>	was 2025</doc>
+				<eqn>Aged_1_to_20_in_1980[*]</eqn>
+				<inflow>Passing_0</inflow>
+				<outflow>Passing_20</outflow>
+				<outflow>deaths_1_to_20_years</outflow>
+				<conveyor exponential_leak="true">
+					<len>short_cohort_length</len>
+				</conveyor>
+				<units>Mp</units>
+			</stock>
+			<aux name="On pension">
+				<eqn>(Aged_60_to_80_years+Aged_Over_80_years)*(MAX(0, Life_expectancy-Pension_age)/(Life_expectancy-60))</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="Dependency ratio">
+				<eqn>(Aged_0_years+Aged_1_to_20_years+Aged_60_to_80_years)/(Aged_20_to_40_years+Aged_40_to_60_years)</eqn>
+				<units>1</units>
+			</aux>
+			<aux name="GDP" access="input">
+				<units>G$/Years</units>
+			</aux>
+			<aux name="effect of food on death rate">
+				<eqn>MAX(1, 1+sCUPPeoDR*(&quot;Crop_use_per_person_t-crop/p/y&quot;/crop_use_per_person_1980 - 1))</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="crop use per person 1980">
+				<eqn>INIT(&quot;Crop_use_per_person_t-crop/p/y&quot;)</eqn>
+				<units>tcrop/(p*Year)</units>
+			</aux>
+			<aux name="sCUPPeoDR">
+				<eqn>-0.0003</eqn>
+				<units>1</units>
+			</aux>
+			<aux name="Crop use per person t-crop/p/y" access="input">
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>tcrop/(p*Year)</units>
+			</aux>
+			<flow name="deaths\n1 to 20 years">
+				<eqn>&quot;1_to_20_death_rate&quot;</eqn>
+				<non_negative/>
+				<leak/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="deaths\n60 to 80 years">
+				<eqn>&quot;60_to_80_death_rate&quot;</eqn>
+				<non_negative/>
+				<leak/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="deaths\n40 to 60 years">
+				<eqn>&quot;40_to_60_death_rate&quot;</eqn>
+				<non_negative/>
+				<leak/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="deaths\n20 to 40 years">
+				<eqn>&quot;20_to_40_death_rate&quot;</eqn>
+				<non_negative/>
+				<leak/>
+				<units>Mp/year</units>
+			</flow>
+			<aux name="effect of warming on death rate">
+				<eqn>1+sOWoDR*(Observed_warming/Observed_warming_in_1980-1)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="UNIT G/(M*k)" access="output" isee:autocreated="true">
+				<eqn>1</eqn>
+				<units>G/(M*k)</units>
+			</aux>
+			<aux name="sOWoDR">
+				<eqn>0.0910593981590959</eqn>
+				<units>1</units>
+			</aux>
+			<aux name="cohort length">
+				<eqn>20</eqn>
+				<units>years</units>
+			</aux>
+			<aux name="1 to 20 death\nrate">
+				<eqn>&quot;1_to_20_normal_death_rate&quot;*effect_of_warming_on_death_rate*effect_of_food_on_death_rate*effect_of_GDPpp_on_1_to_20_mortality</eqn>
+				<units>Per Year</units>
+			</aux>
+			<aux name="20 to 40 death\nrate">
+				<eqn>&quot;20_to_40_normal_death_rate&quot;*effect_of_warming_on_death_rate*effect_of_food_on_death_rate*effect_of_GDPpp_on_20_to_40_mortality</eqn>
+				<units>Per Year</units>
+			</aux>
+			<aux name="40 to 60 death\nrate">
+				<eqn>&quot;40_to_60_normal_death_rate&quot;*effect_of_warming_on_death_rate*effect_of_food_on_death_rate*effect_of_GDPpp_on_40_to_60_mortality</eqn>
+				<units>Per Year</units>
+			</aux>
+			<aux name="60 to 80 death\nrate">
+				<eqn>&quot;60_to_80_normal_death_rate&quot;*effect_of_warming_on_death_rate*effect_of_food_on_death_rate*effect_of_GDPpp_on_60_to_80_mortality</eqn>
+				<units>Per Year</units>
+			</aux>
+			<aux name="1 to 20 normal death\nrate">
+				<eqn>0.004016211</eqn>
+				<units>Per Year</units>
+			</aux>
+			<aux name="20 to 40 normal death\nrate">
+				<eqn>0.00332321359633546</eqn>
+				<units>Per Year</units>
+			</aux>
+			<aux name="40 to 60 normal death\nrate">
+				<eqn>0.0103608701534485</eqn>
+				<units>Per Year</units>
+			</aux>
+			<aux name="60 to 80 normal death\nrate">
+				<eqn>0.0328766922504122</eqn>
+				<units>Per Year</units>
+			</aux>
+			<aux name="Observed warming" access="input">
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>deg C</units>
+			</aux>
+			<aux name="Observed warming in 1980" access="input">
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>deg C</units>
 			</aux>
 			<aux name="Life expectancy">
 				<eqn>((LEmax-(LEmax-LE_in_1980)*EXP(-LEgamma*(Effective_GDP_per_person-GDP_per_person_in_1980)))*(1+LEalfa*(Effective_GDP_per_person-GDP_per_person_in_1980)))*Warming_effect_on_life_expectancy</eqn>
@@ -9678,32 +9896,8 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<units>(p*year)/(k$)</units>
 			</aux>
 			<aux name="Warming effect on\nlife expectancy">
-				<eqn>1+&quot;sOWeoLE&lt;0&quot;*(Observed_warming_deg_C/Observed_warming_in_1980-1)</eqn>
+				<eqn>1+&quot;sOWeoLE&lt;0&quot;*(Observed_warming/Observed_warming_in_1980-1)</eqn>
 				<units>1</units>
-			</aux>
-			<aux name="GDP per person" access="output">
-				<eqn>(GDP/Population)/&quot;UNIT_G/(M*k)&quot;</eqn>
-				<units>k$/(p*year)</units>
-			</aux>
-			<aux name="Population" access="output">
-				<eqn>&quot;Aged_0-20_years&quot;+&quot;Aged_20-40_years&quot;+&quot;Aged_40-60_years&quot;+&quot;Aged_60_+_years&quot;</eqn>
-				<units>Mp</units>
-			</aux>
-			<stock name="Aged 20-40 years">
-				<doc>	was 1283</doc>
-				<eqn>&quot;Aged_20-40_in_1980&quot;</eqn>
-				<inflow>Passing_20</inflow>
-				<outflow>Passing_40</outflow>
-				<outflow>&quot;excess_deaths_20-40_years&quot;</outflow>
-				<units>Mp</units>
-			</stock>
-			<aux name="Fraction women">
-				<eqn>0.5</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="Fertile period">
-				<eqn>20</eqn>
-				<units>year</units>
 			</aux>
 			<aux name="sOWeoLE&lt;0">
 				<doc>	Set to -0.02 means a reduction in LE by 2.5 years in 2100 at +2.5 deg C, ie 1 years per deg C
@@ -9712,232 +9906,536 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<eqn>-0.01</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="Aged 20-pension age" access="output">
-				<eqn>&quot;Aged_20-40_years&quot;+&quot;Aged_40-60_years&quot;+&quot;Aged_60_+_years&quot;</eqn>
+			<aux name="Aged 40 to 60 in 1980">
+				<doc>Imported from UN Data</doc>
+				<dimensions>
+					<dim name="StdPopCohort"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>46.445988</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>45.9034455</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>45.5761655</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>44.747708</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>43.5519155</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>42.1086785</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>41.093022</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>40.360467</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>39.4144335</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>39.1434965</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>38.6323085</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>37.6996575</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>36.5943025</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>35.325288</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>34.139389</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>32.9102675</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>31.8703265</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>30.506772</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>28.9467435</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>28.023792</eqn>
+				</element>
 				<units>Mp</units>
 			</aux>
-			<aux name="Observed fertility">
-				<doc>	220207 changed from &quot;As math: Observed fertility 1&quot;
-		220114 changed from Desired no of children 1 * &quot;Fraction achieving desired family size (1)&quot;
-		210821 changed from: IF THEN ELSE(Time&gt;&quot;Fertility = 2.5 introduction time y&quot;, 2.5 , Desired no of children 1)</doc>
-				<eqn>MIN(DNCmax,  ((DNCmin+(DNC_in_1980-DNCmin)*EXP(-DNCgamma*(Effective_GDP_per_person-GDP_per_person_in_1980)))*(1+DNCalfa*(Effective_GDP_per_person-GDP_per_person_in_1980))))</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="Passing 40 in 1980">
-				<doc>	was 13</doc>
-				<eqn>51.4142050155033</eqn>
-				<units>Mp/year</units>
-			</aux>
-			<aux name="Passing 60 in 1980">
-				<doc>	was 8</doc>
-				<eqn>30</eqn>
-				<units>Mp/year</units>
-			</aux>
-			<flow name="Passing 60">
-				<eqn>DELAYN(Passing_40,20,10,Passing_60_in_1980)-&quot;excess_deaths_40-60_years&quot;</eqn>
-				<units>Mp/Year</units>
-			</flow>
-			<flow name="Passing 40">
-				<eqn>DELAYN(Passing_20,20,10,Passing_40_in_1980)-&quot;excess_deaths_20-40_years&quot;</eqn>
-				<units>Mp/Year</units>
-			</flow>
-			<flow name="Deaths">
-				<doc>	211111: Changed from IF THEN ELSE(LE at 60 y &gt; 0, SMOOTH3(&quot;Aged 60 + Mp&quot; / LE at 60 y, 20), 0)</doc>
-				<eqn>DELAYN(Passing_60,LE_at_60,10,Dying_in_1980)-&quot;excess_deaths_60_+&quot;</eqn>
-				<units>Mp/Year</units>
-			</flow>
-			<aux name="LE at 60">
-				<eqn>Life_expectancy-60</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="Dying in 1980">
-				<doc>	was 6.3</doc>
-				<eqn>20</eqn>
-				<units>Mp/year</units>
-			</aux>
-			<aux name="Aged 40-60 in 1980">
-				<doc>	was 174</doc>
-				<eqn>718.749477407617</eqn>
+			<aux name="Aged 60 to 80 in 1980">
+				<doc>Imported from UN Data</doc>
+				<dimensions>
+					<dim name="StdPopCohort"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>26.382715</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>24.221979</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>22.540622</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>21.829407</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>21.675434</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>21.804564</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>21.434793</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>20.467393</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>19.382521</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>18.3269465</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>17.266246</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>16.179953</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>14.976861</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>13.769757</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>12.687729</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>11.5748315</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>10.4639205</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>9.479028</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>8.503579</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>7.472741</eqn>
+				</element>
 				<units>Mp</units>
 			</aux>
-			<stock name="Aged 60 + years">
-				<doc>	was 382</doc>
-				<eqn>&quot;Aged_60+_in_1980&quot;</eqn>
-				<inflow>Passing_60</inflow>
-				<outflow>Deaths</outflow>
-				<outflow>&quot;excess_deaths_60_+&quot;</outflow>
+			<aux name="Aged 1 to 20 in 1980">
+				<doc>Imported from UN Data</doc>
+				<dimensions>
+					<dim name="ShortPopCohort"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>111.3313705</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>107.55041</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>106.11796</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>105.467116</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>105.4177695</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>105.895009</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>105.717037</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>105.082209</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>104.876549</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>103.6289265</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>102.0995525</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>99.180077</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>96.453949</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>96.35528</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>95.9585795</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>96.2999485</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>93.571362</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>84.857447</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>79.7668815</eqn>
+				</element>
+				<units>Mp</units>
+			</aux>
+			<aux name="Aged 20 to 40 in 1980">
+				<doc>Imported from UN Data</doc>
+				<dimensions>
+					<dim name="StdPopCohort"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>78.7756795</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>78.8911</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>80.2104365</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>78.937053</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>77.0560415</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>75.921558</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>73.4986635</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>71.644385</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>69.2777485</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>66.7814685</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>64.1063535</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>61.0444585</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>58.561048</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>55.8114875</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>51.91958</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>48.947163</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>47.803998</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>47.010298</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>46.8986165</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>47.05481</eqn>
+				</element>
+				<units>Mp</units>
+			</aux>
+			<stock name="Aged Over 80 years">
+				<eqn>Aged_Over_80_in_1980[*]</eqn>
+				<inflow>Passing_80</inflow>
+				<outflow>Passing_100</outflow>
+				<outflow>deaths_Over_80_years</outflow>
+				<conveyor exponential_leak="true">
+					<len>cohort_length</len>
+				</conveyor>
 				<units>Mp</units>
 			</stock>
-			<aux name="Aged 60+ in 1980">
-				<doc>	was 86</doc>
-				<eqn>437.050825103775</eqn>
-				<units>Mp</units>
-			</aux>
-			<flow name="Passing 20">
-				<eqn>DELAYN(Births,20,10,Passing_20_in_1980)-&quot;excess_deaths_0-20_years&quot;</eqn>
+			<flow name="Passing 100">
+				<eqn>0</eqn>
+				<non_negative/>
 				<units>Mp/Year</units>
 			</flow>
-			<stock name="Aged 40-60 years">
-				<doc>	was 768</doc>
-				<eqn>&quot;Aged_40-60_in_1980&quot;</eqn>
-				<inflow>Passing_40</inflow>
-				<outflow>Passing_60</outflow>
-				<outflow>&quot;excess_deaths_40-60_years&quot;</outflow>
-				<units>Mp</units>
-			</stock>
-			<aux name="Passing 20 in 1980">
-				<doc>	was 21</doc>
-				<eqn>88.9257632029599</eqn>
-				<units>Mp/year</units>
-			</aux>
-			<flow name="Births">
-				<eqn>&quot;Aged_20-40_years&quot;*Fraction_women*(Observed_fertility/Fertile_period)</eqn>
+			<flow name="deaths Over 80 years">
+				<eqn>Over_80_death_rate</eqn>
+				<non_negative/>
+				<leak/>
 				<units>Mp/Year</units>
 			</flow>
-			<aux name="Pension age">
-				<eqn>( IF Life_expectancy &lt; LE_in_1980 THEN Pension_age_in_1980 ELSE Pension_age_in_1980+&quot;sLEeoPa&gt;0&quot;*(Life_expectancy-LE_in_1980) )</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="Pension age in 1980">
-				<doc>	220113 Changed back from 67 to 62, assuming that people under 20 also participate in the workforce.
-		220109 changed from 62 to 67 to get sufficient labour force (ie over 500 Mp)</doc>
-				<eqn>62</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="sLEeoPa&gt;0">
-				<doc>	was 0.65, so 0.75, so 0.3</doc>
-				<eqn>0.75</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="Time to adapt to\nhigher income">
-				<doc>	was 3</doc>
-				<eqn>12.4507789115205</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="Population growth rate">
-				<eqn>Birth_rate-Death_rate</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="Birth rate">
-				<eqn>Births/Population</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="Death rate">
-				<eqn>(Deaths+&quot;excess_deaths_0-20_years&quot;+&quot;excess_deaths_20-40_years&quot;+&quot;excess_deaths_40-60_years&quot;+&quot;excess_deaths_60_+&quot;)/Population</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="Aged 0-20 in 1980">
-				<doc>	was 2050, so 2170, so 491
-		211202 changed to 2050 from 2170
-		211127 changed from 2050
-		was 2025</doc>
-				<eqn>2093.36052233874</eqn>
+			<aux name="Aged Over 80 in 1980">
+				<doc>Imported from UN Data</doc>
+				<dimensions>
+					<dim name="StdPopCohort"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>6.437149</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>5.509974</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>4.744068</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>4.0165275</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>3.3622385</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>2.762218</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>2.226141</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>1.7769955</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>1.4167695</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>1.120517</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>0.878555</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>0.6776135</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>0.5033785</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>0.360507</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>0.2554145</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>0.179056</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>0.121874</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>0.0814075</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>0.053321</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>0.0343855</eqn>
+				</element>
 				<units>Mp</units>
 			</aux>
-			<stock name="Aged 0-20 years">
-				<doc>	was 2025</doc>
-				<eqn>&quot;Aged_0-20_in_1980&quot;</eqn>
+			<aux name="Effective GDP per person" access="output">
+				<eqn>SMTH1(GDP_per_person, Time_to_adapt_to_higher_income, GDP_per_person_in_1980)</eqn>
+				<isee:delay_aux/>
+				<units>k$/(p*year)</units>
+			</aux>
+			<stock name="Aged 0 years">
+				<eqn>Aged_0_in_1980</eqn>
 				<inflow>Births</inflow>
-				<outflow>Passing_20</outflow>
-				<outflow>&quot;excess_deaths_0-20_years&quot;</outflow>
+				<outflow>Passing_0</outflow>
+				<outflow>deaths_0_years</outflow>
+				<conveyor exponential_leak="true">
+					<len>1</len>
+				</conveyor>
 				<units>Mp</units>
 			</stock>
-			<aux name="Aged 20-40 in 1980">
-				<doc>	was 1220, so 1100, so 249
-		211202 changed from 1100 back to 1220
-		211127 changed from 1220
-		was1283</doc>
-				<eqn>1272.82666647525</eqn>
+			<flow name="Passing 0">
+				<eqn>0</eqn>
+				<non_negative/>
+				<units>Mp/Year</units>
+			</flow>
+			<aux name="Aged 0 in 1980">
+				<doc>Imported from UN Data</doc>
+				<eqn>118.225618</eqn>
 				<units>Mp</units>
 			</aux>
-			<aux name="Pensioners per worker">
-				<eqn>On_pension/&quot;Aged_20-pension_age&quot;</eqn>
-				<units>1</units>
+			<aux name="short cohort length">
+				<eqn>19</eqn>
+				<units>years</units>
 			</aux>
-			<aux name="On pension">
-				<eqn>&quot;Aged_60_+_years&quot;*(Life_expectancy-Pension_age)/(Life_expectancy-60)</eqn>
+			<flow name="deaths\n0 years">
+				<eqn>&quot;0_death_rate&quot;</eqn>
+				<non_negative/>
+				<leak/>
+				<units>Mp/Year</units>
+			</flow>
+			<aux name="Population" access="output">
+				<eqn>Aged_0_years + Aged_1_to_20_years + Aged_20_to_40_years + Aged_40_to_60_years + Aged_60_to_80_years + Aged_Over_80_years</eqn>
+				<isee:summing/>
 				<units>Mp</units>
 			</aux>
-			<aux name="Dependency ratio">
-				<eqn>(&quot;Aged_0-20_years&quot;+&quot;Aged_60_+_years&quot;)/(&quot;Aged_20-40_years&quot;+&quot;Aged_40-60_years&quot;)</eqn>
+			<aux name="0 death\nrate">
+				<eqn>&quot;0_normal_death_rate&quot;*effect_of_warming_on_death_rate*effect_of_food_on_death_rate*effect_of_GDPpp_on_infant_mortality</eqn>
+				<units>Per Year</units>
+			</aux>
+			<aux name="0 normal death\nrate">
+				<eqn>0.12229745547228</eqn>
+				<units>Per Year</units>
+			</aux>
+			<aux name="Total Deaths">
+				<eqn>deaths_0_years + deaths_1_to_20_years + deaths_20_to_40_years + deaths_40_to_60_years + deaths_60_to_80_years + deaths_Over_80_years</eqn>
+				<isee:summing/>
+				<units>Million*p/Years</units>
+			</aux>
+			<aux name="normal observed\nfertility">
+				<eqn>3.99505398344294</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="GDP" access="input">
-				<units>G$/Years</units>
-			</aux>
-			<aux name="Observed warming deg C" access="input">
-				<units>deg C</units>
-			</aux>
-			<aux name="effect of food on\nexcess death rate">
-				<eqn>(1 - MIN(1, 
-1+&quot;sCUPPeoLE&gt;0&quot;*(&quot;Crop_use_per_person_t-crop/p/y&quot;/crop_use_per_person_1980-1)
-))/time_for_climate_to_effect_excess_death_rate</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="crop use per person 1980">
-				<eqn>INIT(&quot;Crop_use_per_person_t-crop/p/y&quot;)</eqn>
-				<units>tcrop/(p*Year)</units>
-			</aux>
-			<aux name="sCUPPeoLE&gt;0">
-				<eqn>0.00828372765726806</eqn>
+			<aux name="relative GDPpp">
+				<eqn>GDP_per_person/GDP_per_person_in_1980</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="Crop use per person t-crop/p/y" access="input">
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>tcrop/(p*Year)</units>
+			<aux name="effect of GDP pp\non Observed fertility">
+				<eqn>observed_fertility_alpha*relative_GDPpp^observed_fertility_gamma</eqn>
+				<units>dmnl</units>
 			</aux>
-			<flow name="excess deaths\n0-20 years">
-				<eqn>&quot;Aged_0-20_years&quot;*effect_of_warming_on_excess_death_rate + &quot;Aged_0-20_years&quot;*effect_of_food_on_excess_death_rate</eqn>
-				<non_negative/>
-				<units>Mp/Year</units>
-			</flow>
-			<flow name="excess deaths\n60 +">
-				<eqn>&quot;Aged_60_+_years&quot;*effect_of_warming_on_excess_death_rate + &quot;Aged_60_+_years&quot;*effect_of_food_on_excess_death_rate</eqn>
-				<non_negative/>
-				<units>Mp/Year</units>
-			</flow>
-			<flow name="excess deaths\n40-60 years">
-				<eqn>&quot;Aged_40-60_years&quot;*effect_of_warming_on_excess_death_rate + &quot;Aged_40-60_years&quot;*effect_of_food_on_excess_death_rate</eqn>
-				<non_negative/>
-				<units>Mp/Year</units>
-			</flow>
-			<flow name="excess deaths\n20-40 years">
-				<eqn>&quot;Aged_20-40_years&quot;*effect_of_warming_on_excess_death_rate + &quot;Aged_20-40_years&quot;*effect_of_food_on_excess_death_rate</eqn>
-				<non_negative/>
-				<units>Mp/Year</units>
-			</flow>
-			<aux name="effect of warming on\nexcess death rate">
-				<eqn>&quot;sOWoEDR&gt;0&quot;*(Observed_warming_deg_C/Observed_warming_in_1980-1)/time_for_climate_to_effect_excess_death_rate</eqn>
-				<units>1/year</units>
+			<aux name="observed fertility\nalpha">
+				<eqn>0.941970905547024</eqn>
+				<units>dmnl</units>
 			</aux>
-			<aux name="time for climate to effect\nexcess death rate">
-				<eqn>1</eqn>
-				<units>year</units>
+			<aux name="observed fertility\ngamma">
+				<eqn>-0.520897294488785</eqn>
+				<units>dmnl</units>
 			</aux>
-			<aux name="UNIT G/(M*k)" access="output" isee:autocreated="true">
-				<eqn>1</eqn>
-				<units>G/(M*k)</units>
+			<aux name="infant mortality\nalpha">
+				<eqn>0.671893177033987</eqn>
+				<units>dmnl</units>
 			</aux>
-			<aux name="Observed warming in 1980" access="input">
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>deg C</units>
+			<aux name="infant mortality\ngamma">
+				<eqn>-1.25668768552979</eqn>
+				<units>dmnl</units>
 			</aux>
-			<aux name="sOWoEDR&gt;0">
-				<eqn>1e-7</eqn>
-				<units>1</units>
+			<aux name="effect of GDPpp\non infant mortality">
+				<eqn>infant_mortality_alpha*relative_GDPpp^infant_mortality_gamma</eqn>
+				<units>dmnl</units>
 			</aux>
-			<aux name="DNCmax">
-				<eqn>SMTH1(Observed_fertility+DNCadd_per_generation, DNCmax_generation_time, DNC_in_1980+DNCadd_per_generation)</eqn>
+			<aux name="1 to 20 mortality\nalpha">
+				<eqn>1.04297561755525</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="1 to 20 mortality\ngamma">
+				<eqn>-1.47278239910641</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of GDPpp\non 1 to 20 mortality">
+				<eqn>&quot;1_to_20_mortality_alpha&quot;*relative_GDPpp^&quot;1_to_20_mortality_gamma&quot;</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="20 to 40 mortality\nalpha">
+				<eqn>0.962722522938298</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="20 to 40 mortality\ngamma">
+				<eqn>-0.770106670888684</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of GDPpp\non 20 to 40 mortality">
+				<eqn>&quot;20_to_40_mortality_alpha&quot;*relative_GDPpp^&quot;20_to_40_mortality_gamma&quot;</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="40 to 60 mortality\nalpha">
+				<eqn>0.69368198917136</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="40 to 60 mortality\ngamma">
+				<eqn>-0.431923930261232</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of GDPpp\non 40 to 60 mortality">
+				<eqn>&quot;40_to_60_mortality_alpha&quot;*relative_GDPpp^&quot;40_to_60_mortality_gamma&quot;</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="60 to 80 mortality\nalpha">
+				<eqn>1.04681301138057</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="60 to 80 mortality\ngamma">
+				<eqn>-0.577209974713304</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of GDPpp\non 60 to 80 mortality">
+				<eqn>&quot;60_to_80_mortality_alpha&quot;*relative_GDPpp^&quot;60_to_80_mortality_gamma&quot;</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="Over 80 mortality\nalpha">
+				<eqn>0.75499896967067</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="Over 80 mortality\ngamma">
+				<eqn>0</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of GDPpp\non Over 80 mortality">
+				<eqn>Over_80_mortality_alpha*relative_GDPpp^Over_80_mortality_gamma</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="Over 80 death\nrate">
+				<eqn>Over_80_normal_death_rate*effect_of_warming_on_death_rate*effect_of_food_on_death_rate*effect_of_GDPpp_on_Over_80_mortality</eqn>
+				<units>Per Year</units>
+			</aux>
+			<aux name="Over 80 normal death\nrate">
+				<eqn>0.0841427014722398</eqn>
+				<units>Per Year</units>
+			</aux>
+			<aux name="number of fertile women\ncorrection factor">
+				<eqn>1.04133165763704</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="last generation\nfertility">
+				<eqn>SMTH1(Observed_fertility, generation_time, observed_fertility_in_1980)</eqn>
 				<isee:delay_aux/>
 				<units>1</units>
 			</aux>
-			<aux name="DNCmax\ngeneration time">
+			<aux name="generation time">
 				<eqn>25</eqn>
 				<units>years</units>
 			</aux>
-			<aux name="DNCadd\nper generation">
-				<eqn>0.0625</eqn>
-				<units>1</units>
+			<aux name="max growth\nin fertility\ncompared to last generation">
+				<eqn>1.15</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="observed fertility in 1980">
+				<eqn>3.75</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="fraction of 60 to 80 that\nare working age">
+				<eqn>0.5</eqn>
+				<units>dmnl</units>
 			</aux>
 		</variables>
 		<views>
@@ -9986,22 +10484,22 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="556" isee:scroll_y="121" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="381" isee:scroll_y="949" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<stock color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
 					</stock>
-					<flow color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<flow color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</flow>
-					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="12pt" label_side="bottom"/>
-					<module color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="14.13pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="67" height="55"/>
 					</module>
-					<aux color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<aux color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</aux>
-					<group color="red" background="white" font_color="red" font_size="12pt"/>
+					<group color="red" background="white" font_color="red" font_size="14.13pt"/>
 					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
 					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
 					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
@@ -10025,520 +10523,638 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<stock x="856" y="244" name="Aged 0-20 years"/>
-				<stock x="1054" y="247" name="Aged 20-40 years"/>
-				<stock x="1207" y="252" name="Aged 40-60 years"/>
-				<stock x="1393" y="249" name="Aged 60 + years"/>
-				<flow x="770.75" y="245" name="Births">
+				<stock x="738.5" y="1043.17" name="Aged 1 to 20 years"/>
+				<stock x="1076.5" y="1036.17" name="Aged 20 to 40 years"/>
+				<stock x="1417" y="1038.67" name="Aged 40 to 60 years"/>
+				<stock x="1670.5" y="1033.17" name="Aged 60 to 80 years"/>
+				<flow x="421.25" y="1038.5" name="Births">
 					<pts>
-						<pt x="696" y="245"/>
-						<pt x="833.5" y="245"/>
+						<pt x="358" y="1038.5"/>
+						<pt x="484.5" y="1038.5"/>
 					</pts>
 				</flow>
-				<flow x="955" y="245" name="Passing 20">
+				<flow x="901.5" y="1037.17" name="Passing 20">
 					<pts>
-						<pt x="878.5" y="245"/>
-						<pt x="1031.5" y="245"/>
+						<pt x="761" y="1037.17"/>
+						<pt x="1054" y="1037.17"/>
 					</pts>
 				</flow>
-				<flow x="1130.5" y="247" name="Passing 40">
+				<flow x="1240.75" y="1038.67" name="Passing 40">
 					<pts>
-						<pt x="1076.5" y="247"/>
-						<pt x="1184.5" y="247"/>
+						<pt x="1099" y="1038.67"/>
+						<pt x="1394.5" y="1038.67"/>
 					</pts>
 				</flow>
-				<flow x="1300" y="248" name="Passing 60">
+				<flow x="1537.75" y="1039.67" name="Passing 60">
 					<pts>
-						<pt x="1229.5" y="248"/>
-						<pt x="1370.5" y="248"/>
+						<pt x="1439.5" y="1039.67"/>
+						<pt x="1648" y="1039.67"/>
 					</pts>
 				</flow>
-				<flow x="1453.75" y="250" name="Deaths">
+				<flow x="1830.25" y="1040" name="Passing 80">
 					<pts>
-						<pt x="1415.5" y="250"/>
-						<pt x="1504" y="250"/>
+						<pt x="1693" y="1040"/>
+						<pt x="1979.5" y="1040"/>
 					</pts>
 				</flow>
-				<aux x="1089" y="468" name="Population"/>
-				<connector uid="1" angle="315.823">
-					<from>&quot;Aged_0-20_years&quot;</from>
-					<to>Population</to>
-				</connector>
-				<connector uid="2" angle="278.253">
-					<from>&quot;Aged_20-40_years&quot;</from>
-					<to>Population</to>
-				</connector>
-				<connector uid="3" angle="240.982">
-					<from>&quot;Aged_40-60_years&quot;</from>
-					<to>Population</to>
-				</connector>
-				<connector uid="4" angle="215.579">
-					<from>&quot;Aged_60_+_years&quot;</from>
-					<to>Population</to>
-				</connector>
-				<aux x="955" y="134" name="Dependency ratio"/>
-				<connector uid="5" angle="48.7038">
-					<from>&quot;Aged_0-20_years&quot;</from>
+				<aux x="1016.5" y="862.167" name="Dependency ratio"/>
+				<connector uid="5" angle="33.0677">
+					<from>Aged_1_to_20_years</from>
 					<to>Dependency_ratio</to>
 				</connector>
-				<connector uid="6" angle="164.994">
-					<from>&quot;Aged_60_+_years&quot;</from>
+				<connector uid="6" angle="165.347">
+					<from>Aged_60_to_80_years</from>
 					<to>Dependency_ratio</to>
 				</connector>
-				<connector uid="7" angle="131.293">
-					<from>&quot;Aged_20-40_years&quot;</from>
+				<connector uid="7" angle="109.025">
+					<from>Aged_20_to_40_years</from>
 					<to>Dependency_ratio</to>
 				</connector>
-				<connector uid="8" angle="155.051">
-					<from>&quot;Aged_40-60_years&quot;</from>
+				<connector uid="8" angle="156.217">
+					<from>Aged_40_to_60_years</from>
 					<to>Dependency_ratio</to>
 				</connector>
-				<aux x="596" y="282" name="Fertile period"/>
-				<aux x="933" y="481" name="Birth rate"/>
-				<connector uid="9" angle="175.054">
-					<from>Population</from>
-					<to>Birth_rate</to>
-				</connector>
-				<connector uid="10" angle="304.509">
+				<aux x="213" y="1083.17" name="fertile period"/>
+				<aux x="1048" y="1272.67" name="Birth rate"/>
+				<connector uid="10" angle="339.513">
 					<from>Births</from>
 					<to>Birth_rate</to>
 				</connector>
-				<aux x="589" y="250" name="Fraction women"/>
-				<aux x="1252" y="483" name="Death rate"/>
-				<connector uid="11" angle="5.49316">
-					<from>Population</from>
-					<to>Death_rate</to>
-				</connector>
-				<connector uid="12" angle="229.111">
-					<from>Deaths</from>
-					<to>Death_rate</to>
-				</connector>
-				<aux x="636" y="682" name="DNCmin"/>
-				<aux x="715" y="645" name="DNC in 1980"/>
-				<aux x="618" y="505" name="DNCgamma"/>
-				<aux x="687" y="531" name="DNCalfa"/>
-				<aux x="1615" y="361" name="LE in 1980"/>
-				<aux x="1653" y="397" name="LEmax"/>
-				<aux x="1644" y="435" name="LEgamma"/>
-				<aux x="1604" y="456" name="LEalfa"/>
-				<aux x="1505" y="409" name="Life expectancy"/>
-				<connector uid="17" angle="182.582">
-					<from>LEmax</from>
-					<to>Life_expectancy</to>
-				</connector>
-				<connector uid="18" angle="202.898">
-					<from>LE_in_1980</from>
-					<to>Life_expectancy</to>
-				</connector>
-				<connector uid="19" angle="168.94">
-					<from>LEgamma</from>
-					<to>Life_expectancy</to>
-				</connector>
-				<connector uid="20" angle="155.401">
-					<from>LEalfa</from>
-					<to>Life_expectancy</to>
-				</connector>
-				<aux x="1501" y="340" name="LE at 60"/>
-				<connector uid="21" angle="94.6107">
-					<from>Life_expectancy</from>
-					<to>LE_at_60</to>
-				</connector>
-				<connector uid="22" angle="117.699">
-					<from>LE_at_60</from>
-					<to>Deaths</to>
-				</connector>
-				<connector uid="23" angle="293.504">
-					<from>Births</from>
-					<to>Passing_20</to>
-				</connector>
-				<connector uid="24" angle="306.36">
-					<from>Passing_20</from>
-					<to>Passing_40</to>
-				</connector>
-				<connector uid="25" angle="309.758">
-					<from>Passing_40</from>
-					<to>Passing_60</to>
-				</connector>
-				<aux x="760" y="588" name="GDP per person in 1980"/>
-				<aux x="1050" y="620" name="Effective GDP per person"/>
-				<connector uid="27" angle="9.15928">
-					<from>Effective_GDP_per_person</from>
-					<to>Life_expectancy</to>
-				</connector>
-				<aux x="616" y="164" name="Aged 20-40 in 1980"/>
-				<aux x="551" y="206" name="Aged 0-20 in 1980"/>
-				<aux x="1558" y="203" name="On pension"/>
-				<connector uid="29" angle="16.9946">
-					<from>&quot;Aged_60_+_years&quot;</from>
+				<aux x="213" y="996.5" name="Fraction women"/>
+				<aux x="1367" y="1274.67" name="Death rate"/>
+				<aux x="1402" y="1654.67" name="GDP per person in 1980"/>
+				<aux x="2219.83" y="977.334" name="On pension"/>
+				<connector uid="29" angle="5.80383">
+					<from>Aged_60_to_80_years</from>
 					<to>On_pension</to>
 				</connector>
-				<aux x="1618" y="274" name="Pension age"/>
+				<aux x="2219.83" y="1056.67" name="Pension age"/>
 				<connector uid="30" angle="72.8513">
 					<from>Pension_age</from>
 					<to>On_pension</to>
 				</connector>
-				<aux x="1523" y="130" name="Pensioners per worker"/>
-				<connector uid="31" angle="30.0693">
-					<from>&quot;Aged_20-40_years&quot;</from>
-					<to>&quot;Aged_20-pension_age&quot;</to>
+				<connector uid="31" angle="39.6804">
+					<from>Aged_20_to_40_years</from>
+					<to>working_age_population</to>
 				</connector>
-				<connector uid="32" angle="25.5856">
-					<from>&quot;Aged_40-60_years&quot;</from>
-					<to>&quot;Aged_20-pension_age&quot;</to>
+				<connector uid="32" angle="90.6084">
+					<from>Aged_40_to_60_years</from>
+					<to>working_age_population</to>
 				</connector>
-				<aux x="1291" y="128" name="Aged 20-pension age"/>
-				<connector uid="33" angle="0.445274">
-					<from>&quot;Aged_20-pension_age&quot;</from>
-					<to>Pensioners_per_worker</to>
-				</connector>
-				<connector uid="34" angle="115.765">
-					<from>On_pension</from>
-					<to>Pensioners_per_worker</to>
-				</connector>
-				<connector uid="35" angle="95.093">
-					<from>
-						<alias uid="36"/>
-					</from>
-					<to>Life_expectancy</to>
-				</connector>
-				<aux x="739" y="362" name="Observed fertility"/>
-				<connector uid="37" angle="1.57583">
+				<aux x="1414" y="756.167" name="working age population"/>
+				<aux label_side="bottom" x="243" y="1406.67" name="Observed fertility"/>
+				<connector uid="37" angle="348.598">
 					<from>Fraction_women</from>
 					<to>Births</to>
 				</connector>
-				<connector uid="38" angle="11.9547">
-					<from>Fertile_period</from>
+				<connector uid="38" angle="12.1066">
+					<from>fertile_period</from>
 					<to>Births</to>
 				</connector>
-				<connector uid="39" angle="117.441">
+				<connector uid="39" angle="90">
 					<from>Observed_fertility</from>
 					<to>Births</to>
 				</connector>
 				<connector uid="40" angle="257.045">
-					<from>&quot;Aged_20-40_years&quot;</from>
+					<from>Aged_20_to_40_years</from>
 					<to>Births</to>
 				</connector>
-				<aux x="1117" y="531" name="GDP per person"/>
-				<connector uid="41" angle="306.523">
-					<from>GDP_per_person</from>
-					<to>Effective_GDP_per_person</to>
-				</connector>
-				<aux x="1210" y="622" name="Time to adapt to\nhigher income"/>
-				<connector uid="42" angle="179.158">
-					<from>Time_to_adapt_to_higher_income</from>
-					<to>Effective_GDP_per_person</to>
-				</connector>
-				<connector uid="43" angle="32.0628">
-					<from>Life_expectancy</from>
-					<to>Pension_age</to>
-				</connector>
-				<aux x="1668" y="332" name="sLEeoPa&gt;0"/>
-				<connector uid="44" angle="131.487">
+				<aux x="1235" y="1558.67" name="GDP per person"/>
+				<aux x="1281" y="1690.67" name="Time to adapt to\nhigher income"/>
+				<aux x="2327.83" y="1047.67" name="sLEeoPa&gt;0"/>
+				<connector uid="44" angle="184.764">
 					<from>&quot;sLEeoPa&gt;0&quot;</from>
 					<to>Pension_age</to>
 				</connector>
-				<aux x="1696" y="219" name="Pension age in 1980"/>
+				<aux x="2297.83" y="1001.67" name="Pension age in 1980"/>
 				<connector uid="45" angle="214.207">
 					<from>Pension_age_in_1980</from>
 					<to>Pension_age</to>
 				</connector>
-				<connector uid="46" angle="91.4587">
-					<from>LE_in_1980</from>
-					<to>Pension_age</to>
-				</connector>
-				<connector uid="47" angle="37.834">
-					<from>Life_expectancy</from>
-					<to>On_pension</to>
-				</connector>
-				<aux x="1460" y="554" name="Population growth rate"/>
-				<connector uid="48" angle="341.168">
+				<aux x="1230.5" y="1274.67" name="Population growth rate"/>
+				<connector uid="48" angle="180">
 					<from>Death_rate</from>
 					<to>Population_growth_rate</to>
 				</connector>
-				<connector uid="49" angle="352.442">
+				<connector uid="49" angle="359.372">
 					<from>Birth_rate</from>
 					<to>Population_growth_rate</to>
 				</connector>
-				<aux x="1959" y="419" name="sOWeoLE&lt;0"/>
-				<aux font_style="italic" font_weight="bold" x="2052" y="386" name="Observed warming deg C"/>
-				<aux x="1824" y="356" name="Warming effect on\nlife expectancy"/>
-				<connector uid="50" angle="308.016">
-					<from>Passing_60</from>
-					<to>Deaths</to>
-				</connector>
-				<connector uid="52" angle="354.14">
-					<from>GDP_per_person_in_1980</from>
-					<to>Effective_GDP_per_person</to>
-				</connector>
-				<aux x="705" y="133" name="Aged 40-60 in 1980"/>
-				<aux x="802" y="107" name="Aged 60+ in 1980"/>
-				<aux x="291" y="207" name="Passing 20 in 1980"/>
-				<aux x="332" y="160" name="Passing 40 in 1980"/>
-				<aux x="417" y="118" name="Passing 60 in 1980"/>
-				<aux x="532" y="100" name="Dying in 1980"/>
-				<connector uid="56" angle="350.757">
-					<from>Dying_in_1980</from>
-					<to>Deaths</to>
-				</connector>
-				<connector uid="57" angle="351.625">
-					<from>Passing_60_in_1980</from>
-					<to>Passing_60</to>
-				</connector>
-				<connector uid="58" angle="353.782">
-					<from>Passing_40_in_1980</from>
-					<to>Passing_40</to>
-				</connector>
-				<connector uid="59" angle="356.725">
-					<from>Passing_20_in_1980</from>
-					<to>Passing_20</to>
-				</connector>
-				<connector uid="65" angle="154.594">
-					<from>&quot;sOWeoLE&lt;0&quot;</from>
-					<to>Warming_effect_on_life_expectancy</to>
-				</connector>
-				<connector uid="66" angle="171.66">
-					<from>Observed_warming_deg_C</from>
-					<to>Warming_effect_on_life_expectancy</to>
-				</connector>
-				<connector uid="67" angle="188.21">
-					<from>Warming_effect_on_life_expectancy</from>
-					<to>Life_expectancy</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="967" y="528" name="GDP"/>
-				<connector uid="74" angle="289.354">
-					<from>Population</from>
-					<to>GDP_per_person</to>
-				</connector>
-				<connector uid="75" angle="0.784825">
+				<aux font_style="italic" font_weight="bold" x="1342" y="1494.67" name="GDP"/>
+				<connector uid="75" angle="210.885">
 					<from>GDP</from>
 					<to>GDP_per_person</to>
 				</connector>
-				<aux background="#6EFF65" x="1510" y="695" name="effect of food on\nexcess death rate"/>
-				<aux background="#6EFF65" x="1460" y="828" name="crop use per person 1980"/>
+				<aux background="#6EFF65" x="1628" y="1722.67" name="effect of food on death rate"/>
+				<aux background="#6EFF65" x="1578" y="1855.67" name="crop use per person 1980"/>
 				<connector uid="79" angle="69.3968">
 					<from>crop_use_per_person_1980</from>
-					<to>effect_of_food_on_excess_death_rate</to>
+					<to>effect_of_food_on_death_rate</to>
 				</connector>
-				<aux background="#04FF17" x="1403" y="725" name="sCUPPeoLE&gt;0"/>
-				<connector uid="80" angle="15.6621">
-					<from>&quot;sCUPPeoLE&gt;0&quot;</from>
-					<to>effect_of_food_on_excess_death_rate</to>
+				<aux background="#04FF17" x="1519.75" y="1753.67" name="sCUPPeoDR"/>
+				<connector uid="80" angle="15.9803">
+					<from>sCUPPeoDR</from>
+					<to>effect_of_food_on_death_rate</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1678" y="753" name="Crop use per person t-crop/p/y"/>
+				<aux font_style="italic" font_weight="bold" x="1796" y="1780.67" name="Crop use per person t-crop/p/y"/>
 				<connector uid="81" angle="198.985">
 					<from>&quot;Crop_use_per_person_t-crop/p/y&quot;</from>
 					<to>crop_use_per_person_1980</to>
 				</connector>
 				<connector uid="82" angle="158.199">
 					<from>&quot;Crop_use_per_person_t-crop/p/y&quot;</from>
-					<to>effect_of_food_on_excess_death_rate</to>
+					<to>effect_of_food_on_death_rate</to>
 				</connector>
-				<flow background="#00FF2C" x="856" y="309.735" name="excess deaths\n0-20 years">
+				<flow background="#00FF2C" x="739.167" y="1108.91" name="deaths\n1 to 20 years">
 					<pts>
-						<pt x="856" y="261.5"/>
-						<pt x="856" y="378.969"/>
+						<pt x="739.167" y="1060.67"/>
+						<pt x="739.167" y="1178.14"/>
 					</pts>
 				</flow>
-				<flow background="#00FF2C" x="1396" y="309.063" name="excess deaths\n60 +">
+				<flow background="#00FF2C" x="1673.5" y="1093.23" name="deaths\n60 to 80 years">
 					<pts>
-						<pt x="1396" y="266.5"/>
-						<pt x="1396" y="372.625"/>
+						<pt x="1673.5" y="1050.67"/>
+						<pt x="1673.5" y="1156.79"/>
 					</pts>
 				</flow>
-				<flow background="#00FF2C" x="1210" y="307.047" name="excess deaths\n40-60 years">
+				<flow background="#00FF2C" x="1420" y="1093.72" name="deaths\n40 to 60 years">
 					<pts>
-						<pt x="1210" y="269.5"/>
-						<pt x="1210" y="365.594"/>
+						<pt x="1420" y="1056.17"/>
+						<pt x="1420" y="1152.26"/>
 					</pts>
 				</flow>
-				<flow background="#00FF2C" x="1054" y="305.711" name="excess deaths\n20-40 years">
+				<flow background="#00FF2C" x="1076.5" y="1094.88" name="deaths\n20 to 40 years">
 					<pts>
-						<pt x="1054" y="264.5"/>
-						<pt x="1054" y="367.922"/>
+						<pt x="1076.5" y="1053.67"/>
+						<pt x="1076.5" y="1157.09"/>
 					</pts>
 				</flow>
-				<aux background="#00FF21" label_side="bottom" x="897" y="645" name="effect of warming on\nexcess death rate"/>
-				<connector uid="83" angle="295">
-					<from>&quot;Aged_0-20_years&quot;</from>
-					<to>&quot;excess_deaths_0-20_years&quot;</to>
-				</connector>
-				<connector uid="84" angle="122.14">
-					<from>effect_of_warming_on_excess_death_rate</from>
-					<to>&quot;excess_deaths_0-20_years&quot;</to>
-				</connector>
-				<connector uid="85" angle="174.498">
-					<from>effect_of_food_on_excess_death_rate</from>
-					<to>&quot;excess_deaths_0-20_years&quot;</to>
-				</connector>
-				<connector uid="86" angle="295">
-					<from>&quot;Aged_20-40_years&quot;</from>
-					<to>&quot;excess_deaths_20-40_years&quot;</to>
-				</connector>
-				<connector uid="87" angle="90.3077">
-					<from>effect_of_warming_on_excess_death_rate</from>
-					<to>&quot;excess_deaths_20-40_years&quot;</to>
-				</connector>
-				<connector uid="88" angle="164.512">
-					<from>effect_of_food_on_excess_death_rate</from>
-					<to>&quot;excess_deaths_20-40_years&quot;</to>
-				</connector>
-				<connector uid="89" angle="298.119">
-					<from>&quot;Aged_40-60_years&quot;</from>
-					<to>&quot;excess_deaths_40-60_years&quot;</to>
-				</connector>
-				<connector uid="90" angle="72.2866">
-					<from>effect_of_warming_on_excess_death_rate</from>
-					<to>&quot;excess_deaths_40-60_years&quot;</to>
-				</connector>
-				<connector uid="91" angle="152.714">
-					<from>effect_of_food_on_excess_death_rate</from>
-					<to>&quot;excess_deaths_40-60_years&quot;</to>
-				</connector>
-				<connector uid="92" angle="297.859">
-					<from>&quot;Aged_60_+_years&quot;</from>
-					<to>&quot;excess_deaths_60_+&quot;</to>
-				</connector>
-				<connector uid="93" angle="59.0026">
-					<from>effect_of_warming_on_excess_death_rate</from>
-					<to>&quot;excess_deaths_60_+&quot;</to>
-				</connector>
-				<connector uid="94" angle="58.18">
-					<from>&quot;excess_deaths_0-20_years&quot;</from>
-					<to>Passing_20</to>
-				</connector>
-				<connector uid="95" angle="131.456">
-					<from>effect_of_food_on_excess_death_rate</from>
-					<to>&quot;excess_deaths_60_+&quot;</to>
-				</connector>
-				<connector uid="96" angle="62.5049">
-					<from>&quot;excess_deaths_20-40_years&quot;</from>
-					<to>Passing_40</to>
-				</connector>
-				<connector uid="97" angle="58.268">
-					<from>&quot;excess_deaths_40-60_years&quot;</from>
-					<to>Passing_60</to>
-				</connector>
-				<connector uid="98" angle="70.6437">
-					<from>&quot;excess_deaths_60_+&quot;</from>
-					<to>Deaths</to>
-				</connector>
-				<aux background="lime" label_side="bottom" x="1221" y="783" name="time for climate to effect\nexcess death rate"/>
-				<connector uid="99" angle="16.9354">
-					<from>time_for_climate_to_effect_excess_death_rate</from>
-					<to>effect_of_food_on_excess_death_rate</to>
-				</connector>
-				<aux background="#AAFFFF" x="1028.5" y="564" name="UNIT G/(M*k)"/>
-				<connector uid="102" angle="43.6028">
+				<aux background="#00FF21" label_side="bottom" x="1015" y="1672.67" name="effect of warming on death rate"/>
+				<aux background="#AAFFFF" x="1212.5" y="1472.67" name="UNIT G/(M*k)"/>
+				<connector uid="102" angle="284.662">
 					<from>&quot;UNIT_G/(M*k)&quot;</from>
 					<to>GDP_per_person</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="2054" y="322" name="Observed warming in 1980"/>
-				<connector uid="103" angle="188.13">
+				<aux background="#04FF17" x="877.5" y="1718.67" name="sOWoDR"/>
+				<connector uid="104" angle="18.4974">
+					<from>sOWoDR</from>
+					<to>effect_of_warming_on_death_rate</to>
+				</connector>
+				<connector uid="112" angle="132.799">
+					<from>Aged_60_to_80_years</from>
+					<to>working_age_population</to>
+				</connector>
+				<aux x="1214" y="876.167" name="cohort length"/>
+				<aux x="762.5" y="1191.17" name="1 to 20 death\nrate"/>
+				<aux x="1107" y="1181.17" name="20 to 40 death\nrate"/>
+				<aux x="1448.5" y="1181.17" name="40 to 60 death\nrate"/>
+				<aux x="1671.25" y="1176.17" name="60 to 80 death\nrate"/>
+				<aux x="662.5" y="1191.17" name="1 to 20 normal death\nrate"/>
+				<aux x="1048" y="1181.17" name="20 to 40 normal death\nrate"/>
+				<aux x="1363.75" y="1183.17" name="40 to 60 normal death\nrate"/>
+				<aux x="1579" y="1176.17" name="60 to 80 normal death\nrate"/>
+				<connector uid="123" angle="0">
+					<from>&quot;1_to_20_normal_death_rate&quot;</from>
+					<to>&quot;1_to_20_death_rate&quot;</to>
+				</connector>
+				<connector uid="124" angle="0">
+					<from>&quot;20_to_40_normal_death_rate&quot;</from>
+					<to>&quot;20_to_40_death_rate&quot;</to>
+				</connector>
+				<connector uid="125" angle="1.35186">
+					<from>&quot;40_to_60_normal_death_rate&quot;</from>
+					<to>&quot;40_to_60_death_rate&quot;</to>
+				</connector>
+				<connector uid="126" angle="0">
+					<from>&quot;60_to_80_normal_death_rate&quot;</from>
+					<to>&quot;60_to_80_death_rate&quot;</to>
+				</connector>
+				<connector uid="127" angle="117.673">
+					<from>effect_of_warming_on_death_rate</from>
+					<to>&quot;1_to_20_death_rate&quot;</to>
+				</connector>
+				<connector uid="128" angle="157.815">
+					<from>effect_of_food_on_death_rate</from>
+					<to>&quot;1_to_20_death_rate&quot;</to>
+				</connector>
+				<connector uid="129" angle="79.3979">
+					<from>effect_of_warming_on_death_rate</from>
+					<to>&quot;20_to_40_death_rate&quot;</to>
+				</connector>
+				<connector uid="130" angle="140.993">
+					<from>effect_of_food_on_death_rate</from>
+					<to>&quot;20_to_40_death_rate&quot;</to>
+				</connector>
+				<connector uid="131" angle="48.5879">
+					<from>effect_of_warming_on_death_rate</from>
+					<to>&quot;40_to_60_death_rate&quot;</to>
+				</connector>
+				<connector uid="132" angle="111.362">
+					<from>effect_of_food_on_death_rate</from>
+					<to>&quot;40_to_60_death_rate&quot;</to>
+				</connector>
+				<connector uid="133" angle="37.1101">
+					<from>effect_of_warming_on_death_rate</from>
+					<to>&quot;60_to_80_death_rate&quot;</to>
+				</connector>
+				<connector uid="134" angle="76.5069">
+					<from>effect_of_food_on_death_rate</from>
+					<to>&quot;60_to_80_death_rate&quot;</to>
+				</connector>
+				<connector uid="135" angle="81.6341">
+					<from>&quot;1_to_20_death_rate&quot;</from>
+					<to>deaths_1_to_20_years</to>
+				</connector>
+				<connector uid="136" angle="76.8094">
+					<from>&quot;20_to_40_death_rate&quot;</from>
+					<to>deaths_20_to_40_years</to>
+				</connector>
+				<connector uid="137" angle="71.5651">
+					<from>&quot;40_to_60_death_rate&quot;</from>
+					<to>deaths_40_to_60_years</to>
+				</connector>
+				<connector uid="138" angle="51.0915">
+					<from>&quot;60_to_80_death_rate&quot;</from>
+					<to>deaths_60_to_80_years</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="988" y="1766.67" name="Observed warming"/>
+				<connector uid="141" angle="82.0928">
+					<from>Observed_warming</from>
+					<to>effect_of_warming_on_death_rate</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1113" y="1841.67" name="Observed warming in 1980"/>
+				<connector uid="142" angle="127.405">
 					<from>Observed_warming_in_1980</from>
+					<to>effect_of_warming_on_death_rate</to>
+				</connector>
+				<aux x="2269.83" y="1159.67" name="LE in 1980"/>
+				<aux x="2258.83" y="1320.17" name="LEmax"/>
+				<aux x="2387.16" y="1256.67" name="LEgamma"/>
+				<aux x="2319.83" y="1299.17" name="LEalfa"/>
+				<aux x="2168.5" y="1213.67" name="Life expectancy"/>
+				<connector uid="143" angle="130.304">
+					<from>LEmax</from>
+					<to>Life_expectancy</to>
+				</connector>
+				<connector uid="144" angle="208.054">
+					<from>LE_in_1980</from>
+					<to>Life_expectancy</to>
+				</connector>
+				<connector uid="145" angle="168.875">
+					<from>LEgamma</from>
+					<to>Life_expectancy</to>
+				</connector>
+				<connector uid="146" angle="150.534">
+					<from>LEalfa</from>
+					<to>Life_expectancy</to>
+				</connector>
+				<connector uid="147" angle="95.061">
+					<from>
+						<alias uid="148"/>
+					</from>
+					<to>Life_expectancy</to>
+				</connector>
+				<aux x="2478.83" y="1154.67" name="Warming effect on\nlife expectancy"/>
+				<connector uid="149" angle="190.765">
+					<from>Warming_effect_on_life_expectancy</from>
+					<to>Life_expectancy</to>
+				</connector>
+				<connector uid="150" angle="93.3296">
+					<from>Life_expectancy</from>
+					<to>Pension_age</to>
+				</connector>
+				<connector uid="151" angle="117.659">
+					<from>LE_in_1980</from>
+					<to>Pension_age</to>
+				</connector>
+				<aux x="2511.83" y="1256.67" name="sOWeoLE&lt;0"/>
+				<connector uid="153" angle="217.648">
+					<from>
+						<alias uid="154"/>
+					</from>
 					<to>Warming_effect_on_life_expectancy</to>
 				</connector>
-				<aux background="#04FF17" x="1130.5" y="700" name="sOWoEDR&gt;0"/>
-				<connector uid="104" angle="166.746">
-					<from>&quot;sOWoEDR&gt;0&quot;</from>
-					<to>effect_of_warming_on_excess_death_rate</to>
+				<connector uid="156" angle="107.928">
+					<from>&quot;sOWeoLE&lt;0&quot;</from>
+					<to>Warming_effect_on_life_expectancy</to>
 				</connector>
-				<connector uid="107" angle="161.565">
-					<from>time_for_climate_to_effect_excess_death_rate</from>
-					<to>effect_of_warming_on_excess_death_rate</to>
+				<connector uid="161" angle="115">
+					<from>Life_expectancy</from>
+					<to>On_pension</to>
 				</connector>
-				<connector uid="108" angle="351.024">
-					<from>&quot;excess_deaths_0-20_years&quot;</from>
-					<to>Death_rate</to>
+				<aux label_side="bottom" x="1076.5" y="953" name="Aged 20 to 40 in 1980"/>
+				<aux x="734.333" y="946.167" name="Aged 1 to 20 in 1980"/>
+				<aux x="1414" y="957" name="Aged 40 to 60 in 1980"/>
+				<aux x="1670.5" y="953" name="Aged 60 to 80 in 1980"/>
+				<stock x="2002" y="1040" name="Aged Over 80 years"/>
+				<flow x="2065.09" y="1038.67" name="Passing 100">
+					<pts>
+						<pt x="2024.5" y="1038.67"/>
+						<pt x="2129.67" y="1038.67"/>
+					</pts>
+				</flow>
+				<flow x="2004.67" y="1107.84" name="deaths Over 80 years">
+					<pts>
+						<pt x="2004.67" y="1057.5"/>
+						<pt x="2004.67" y="1179.17"/>
+					</pts>
+				</flow>
+				<connector uid="181" angle="4.14462">
+					<from>Aged_Over_80_years</from>
+					<to>On_pension</to>
 				</connector>
-				<connector uid="109" angle="325.59">
-					<from>&quot;excess_deaths_20-40_years&quot;</from>
-					<to>Death_rate</to>
-				</connector>
-				<connector uid="110" angle="204.208">
-					<from>&quot;excess_deaths_60_+&quot;</from>
-					<to>Death_rate</to>
-				</connector>
-				<connector uid="111" angle="310.639">
-					<from>&quot;excess_deaths_40-60_years&quot;</from>
-					<to>Death_rate</to>
-				</connector>
-				<connector uid="112" angle="131.379">
-					<from>&quot;Aged_60_+_years&quot;</from>
-					<to>&quot;Aged_20-pension_age&quot;</to>
-				</connector>
-				<connector uid="114" angle="54.4623">
-					<from>
-						<alias uid="115"/>
-					</from>
-					<to>effect_of_warming_on_excess_death_rate</to>
-				</connector>
-				<connector uid="116" angle="127.147">
-					<from>
-						<alias uid="117"/>
-					</from>
-					<to>effect_of_warming_on_excess_death_rate</to>
-				</connector>
-				<aux x="701" y="714" name="DNCmax"/>
-				<aux x="607" y="794" name="DNCmax\ngeneration time"/>
-				<connector uid="120" angle="40.3999">
-					<from>DNCmax_generation_time</from>
-					<to>DNCmax</to>
-				</connector>
-				<connector uid="121" angle="263.418">
-					<from>DNC_in_1980</from>
-					<to>DNCmax</to>
-				</connector>
-				<aux x="715" y="798" name="DNCadd\nper generation"/>
-				<connector uid="122" angle="96.9112">
-					<from>DNCadd_per_generation</from>
-					<to>DNCmax</to>
-				</connector>
-				<connector uid="123" angle="108.839">
-					<from>DNCmax</from>
-					<to>Observed_fertility</to>
-				</connector>
-				<connector uid="124" angle="97.1579">
-					<from>DNCmin</from>
-					<to>Observed_fertility</to>
-				</connector>
-				<connector uid="125" angle="110.153">
-					<from>DNC_in_1980</from>
-					<to>Observed_fertility</to>
-				</connector>
-				<connector uid="126" angle="74.7636">
-					<from>DNCgamma</from>
-					<to>Observed_fertility</to>
-				</connector>
-				<connector uid="127" angle="165.322">
-					<from>Effective_GDP_per_person</from>
-					<to>Observed_fertility</to>
-				</connector>
-				<connector uid="128" angle="120.309">
-					<from>GDP_per_person_in_1980</from>
-					<to>Observed_fertility</to>
-				</connector>
-				<connector uid="129" angle="97.8973">
-					<from>DNCalfa</from>
-					<to>Observed_fertility</to>
-				</connector>
-				<connector uid="132" angle="216.027">
-					<from>Observed_fertility</from>
-					<to>DNCmax</to>
-				</connector>
-				<connector uid="133" angle="188.13">
+				<aux x="2002" y="963" name="Aged Over 80 in 1980"/>
+				<connector uid="196" angle="330.108">
 					<from>GDP_per_person</from>
 					<to>GDP_per_person_in_1980</to>
 				</connector>
-				<alias uid="36" x="1501" y="484" width="18" height="18">
-					<of>GDP_per_person_in_1980</of>
-				</alias>
-				<alias background="#AAFFFF" font_style="italic" uid="113" x="1753" y="28" width="18" height="18">
+				<aux x="1260" y="1623.67" name="Effective GDP per person"/>
+				<connector uid="158" angle="4.76364">
+					<from>Effective_GDP_per_person</from>
+					<to>Life_expectancy</to>
+				</connector>
+				<connector uid="42" angle="107.403">
+					<from>Time_to_adapt_to_higher_income</from>
+					<to>Effective_GDP_per_person</to>
+				</connector>
+				<connector uid="41" angle="253.806">
+					<from>GDP_per_person</from>
+					<to>Effective_GDP_per_person</to>
+				</connector>
+				<connector uid="52" angle="167.685">
+					<from>GDP_per_person_in_1980</from>
+					<to>Effective_GDP_per_person</to>
+				</connector>
+				<connector uid="235" angle="175.236">
+					<from>
+						<alias uid="236"/>
+					</from>
+					<to>Warming_effect_on_life_expectancy</to>
+				</connector>
+				<stock x="507" y="1041.17" name="Aged 0 years"/>
+				<flow x="616.75" y="1043.17" name="Passing 0">
+					<pts>
+						<pt x="529.5" y="1043.17"/>
+						<pt x="716" y="1043.17"/>
+					</pts>
+				</flow>
+				<aux x="507" y="916" name="Aged 0 in 1980"/>
+				<aux x="728" y="883.667" name="short cohort length"/>
+				<connector uid="238" angle="19.3579">
+					<from>Aged_0_years</from>
+					<to>Dependency_ratio</to>
+				</connector>
+				<flow x="507" y="1108.09" name="deaths\n0 years">
+					<pts>
+						<pt x="507" y="1058.67"/>
+						<pt x="507" y="1178.5"/>
+					</pts>
+				</flow>
+				<aux x="1263" y="1351.67" name="Population"/>
+				<connector uid="74" angle="262.297">
+					<from>Population</from>
+					<to>GDP_per_person</to>
+				</connector>
+				<connector uid="11" angle="40.9253">
+					<from>Population</from>
+					<to>Death_rate</to>
+				</connector>
+				<connector uid="9" angle="159.847">
+					<from>Population</from>
+					<to>Birth_rate</to>
+				</connector>
+				<aux x="516.5" y="1212.17" name="0 death\nrate"/>
+				<aux x="416.5" y="1212.17" name="0 normal death\nrate"/>
+				<connector uid="241" angle="0">
+					<from>&quot;0_normal_death_rate&quot;</from>
+					<to>&quot;0_death_rate&quot;</to>
+				</connector>
+				<connector uid="242" angle="68.4836">
+					<from>&quot;0_death_rate&quot;</from>
+					<to>deaths_0_years</to>
+				</connector>
+				<connector uid="243" angle="142.512">
+					<from>effect_of_warming_on_death_rate</from>
+					<to>&quot;0_death_rate&quot;</to>
+				</connector>
+				<connector uid="244" angle="156.011">
+					<from>effect_of_food_on_death_rate</from>
+					<to>&quot;0_death_rate&quot;</to>
+				</connector>
+				<aux x="1370" y="1348" name="Total Deaths"/>
+				<connector uid="245" angle="90">
+					<from>Total_Deaths</from>
+					<to>Death_rate</to>
+				</connector>
+				<connector uid="247" angle="104.818">
+					<from>effect_of_GDPpp_on_infant_mortality</from>
+					<to>&quot;0_death_rate&quot;</to>
+				</connector>
+				<aux x="126" y="1413" name="normal observed\nfertility"/>
+				<aux x="757.167" y="1751.67" name="relative GDPpp"/>
+				<connector uid="276" angle="212.945">
+					<from>GDP_per_person</from>
+					<to>relative_GDPpp</to>
+				</connector>
+				<connector uid="277" angle="188.555">
+					<from>GDP_per_person_in_1980</from>
+					<to>relative_GDPpp</to>
+				</connector>
+				<aux x="300" y="1569" name="effect of GDP pp\non Observed fertility"/>
+				<connector uid="278" angle="170.798">
+					<from>relative_GDPpp</from>
+					<to>effect_of_GDP_pp_on_Observed_fertility</to>
+				</connector>
+				<connector uid="279" angle="126.607">
+					<from>effect_of_GDP_pp_on_Observed_fertility</from>
+					<to>Observed_fertility</to>
+				</connector>
+				<connector uid="280" angle="3.09683">
+					<from>normal_observed_fertility</from>
+					<to>Observed_fertility</to>
+				</connector>
+				<aux x="403.25" y="1540" name="observed fertility\nalpha"/>
+				<connector uid="281" angle="209.57">
+					<from>observed_fertility_alpha</from>
+					<to>effect_of_GDP_pp_on_Observed_fertility</to>
+				</connector>
+				<aux x="467" y="1616" name="observed fertility\ngamma"/>
+				<connector uid="282" angle="161.075">
+					<from>observed_fertility_gamma</from>
+					<to>effect_of_GDP_pp_on_Observed_fertility</to>
+				</connector>
+				<aux x="366.917" y="1373.67" name="infant mortality\nalpha"/>
+				<aux x="340.75" y="1312.67" name="infant mortality\ngamma"/>
+				<aux x="504.5" y="1312.67" name="effect of GDPpp\non infant mortality"/>
+				<connector uid="285" angle="23.911">
+					<from>infant_mortality_alpha</from>
+					<to>effect_of_GDPpp_on_infant_mortality</to>
+				</connector>
+				<connector uid="286" angle="119.923">
+					<from>relative_GDPpp</from>
+					<to>effect_of_GDPpp_on_infant_mortality</to>
+				</connector>
+				<connector uid="287" angle="0">
+					<from>infant_mortality_gamma</from>
+					<to>effect_of_GDPpp_on_infant_mortality</to>
+				</connector>
+				<aux x="631.917" y="1425.67" name="1 to 20 mortality\nalpha"/>
+				<aux x="605.75" y="1365.67" name="1 to 20 mortality\ngamma"/>
+				<aux x="769.5" y="1365.67" name="effect of GDPpp\non 1 to 20 mortality"/>
+				<connector uid="296" angle="23.562">
+					<from>&quot;1_to_20_mortality_alpha&quot;</from>
+					<to>effect_of_GDPpp_on_1_to_20_mortality</to>
+				</connector>
+				<connector uid="297" angle="0">
+					<from>&quot;1_to_20_mortality_gamma&quot;</from>
+					<to>effect_of_GDPpp_on_1_to_20_mortality</to>
+				</connector>
+				<connector uid="300" angle="101.598">
+					<from>effect_of_GDPpp_on_1_to_20_mortality</from>
+					<to>&quot;1_to_20_death_rate&quot;</to>
+				</connector>
+				<connector uid="301" angle="85.0765">
+					<from>relative_GDPpp</from>
+					<to>effect_of_GDPpp_on_1_to_20_mortality</to>
+				</connector>
+				<aux x="964.917" y="1396.67" name="20 to 40 mortality\nalpha"/>
+				<aux x="938.75" y="1336.67" name="20 to 40 mortality\ngamma"/>
+				<aux x="1102.5" y="1336.67" name="effect of GDPpp\non 20 to 40 mortality"/>
+				<connector uid="302" angle="23.562">
+					<from>&quot;20_to_40_mortality_alpha&quot;</from>
+					<to>effect_of_GDPpp_on_20_to_40_mortality</to>
+				</connector>
+				<connector uid="303" angle="0">
+					<from>&quot;20_to_40_mortality_gamma&quot;</from>
+					<to>effect_of_GDPpp_on_20_to_40_mortality</to>
+				</connector>
+				<connector uid="304" angle="44.8694">
+					<from>relative_GDPpp</from>
+					<to>effect_of_GDPpp_on_20_to_40_mortality</to>
+				</connector>
+				<connector uid="305" angle="84.0654">
+					<from>effect_of_GDPpp_on_20_to_40_mortality</from>
+					<to>&quot;20_to_40_death_rate&quot;</to>
+				</connector>
+				<aux x="1597.19" y="1350.67" name="40 to 60 mortality\nalpha"/>
+				<aux x="1623.36" y="1290.67" name="40 to 60 mortality\ngamma"/>
+				<aux x="1459.61" y="1290.67" name="effect of GDPpp\non 40 to 60 mortality"/>
+				<connector uid="306" angle="156.438">
+					<from>&quot;40_to_60_mortality_alpha&quot;</from>
+					<to>effect_of_GDPpp_on_40_to_60_mortality</to>
+				</connector>
+				<connector uid="307" angle="180">
+					<from>&quot;40_to_60_mortality_gamma&quot;</from>
+					<to>effect_of_GDPpp_on_40_to_60_mortality</to>
+				</connector>
+				<connector uid="308" angle="92.7399">
+					<from>effect_of_GDPpp_on_40_to_60_mortality</from>
+					<to>&quot;40_to_60_death_rate&quot;</to>
+				</connector>
+				<connector uid="309" angle="58.2761">
+					<from>relative_GDPpp</from>
+					<to>effect_of_GDPpp_on_40_to_60_mortality</to>
+				</connector>
+				<aux x="1896.19" y="1318.67" name="60 to 80 mortality\nalpha"/>
+				<aux x="1922.36" y="1258.67" name="60 to 80 mortality\ngamma"/>
+				<aux x="1758.61" y="1258.67" name="effect of GDPpp\non 60 to 80 mortality"/>
+				<connector uid="310" angle="156.438">
+					<from>&quot;60_to_80_mortality_alpha&quot;</from>
+					<to>effect_of_GDPpp_on_60_to_80_mortality</to>
+				</connector>
+				<connector uid="311" angle="180">
+					<from>&quot;60_to_80_mortality_gamma&quot;</from>
+					<to>effect_of_GDPpp_on_60_to_80_mortality</to>
+				</connector>
+				<connector uid="312" angle="125.679">
+					<from>effect_of_GDPpp_on_60_to_80_mortality</from>
+					<to>&quot;60_to_80_death_rate&quot;</to>
+				</connector>
+				<connector uid="313" angle="51.2105">
+					<from>relative_GDPpp</from>
+					<to>effect_of_GDPpp_on_60_to_80_mortality</to>
+				</connector>
+				<aux x="1977.19" y="1411.67" name="Over 80 mortality\nalpha"/>
+				<aux x="2101.09" y="1415.67" name="Over 80 mortality\ngamma"/>
+				<aux x="2045.61" y="1243.67" width="18" height="18" name="effect of GDPpp\non Over 80 mortality"/>
+				<connector uid="314" angle="64.0377">
+					<from>Over_80_mortality_alpha</from>
+					<to>effect_of_GDPpp_on_Over_80_mortality</to>
+				</connector>
+				<connector uid="315" angle="105.914">
+					<from>Over_80_mortality_gamma</from>
+					<to>effect_of_GDPpp_on_Over_80_mortality</to>
+				</connector>
+				<aux x="2035.25" y="1174.17" name="Over 80 death\nrate"/>
+				<aux x="1943" y="1174.17" name="Over 80 normal death\nrate"/>
+				<connector uid="316" angle="0">
+					<from>Over_80_normal_death_rate</from>
+					<to>Over_80_death_rate</to>
+				</connector>
+				<connector uid="317" angle="110.532">
+					<from>effect_of_GDPpp_on_Over_80_mortality</from>
+					<to>Over_80_death_rate</to>
+				</connector>
+				<connector uid="318" angle="128.128">
+					<from>Over_80_death_rate</from>
+					<to>deaths_Over_80_years</to>
+				</connector>
+				<connector uid="319" angle="51.0404">
+					<from>effect_of_warming_on_death_rate</from>
+					<to>Over_80_death_rate</to>
+				</connector>
+				<connector uid="320" angle="78.4069">
+					<from>effect_of_food_on_death_rate</from>
+					<to>Over_80_death_rate</to>
+				</connector>
+				<connector uid="321" angle="46.0369">
+					<from>relative_GDPpp</from>
+					<to>effect_of_GDPpp_on_Over_80_mortality</to>
+				</connector>
+				<aux x="225" y="1152" name="number of fertile women\ncorrection factor"/>
+				<connector uid="322" angle="33.6901">
+					<from>number_of_fertile_women_correction_factor</from>
+					<to>Births</to>
+				</connector>
+				<aux label_side="bottom" x="103" y="1598" name="last generation\nfertility"/>
+				<connector uid="323" angle="211.135">
+					<from>Observed_fertility</from>
+					<to>last_generation_fertility</to>
+				</connector>
+				<aux x="65" y="1690.67" name="generation time"/>
+				<connector uid="324" angle="67.7036">
+					<from>generation_time</from>
+					<to>last_generation_fertility</to>
+				</connector>
+				<connector uid="325" angle="29.0546">
+					<from>last_generation_fertility</from>
+					<to>Observed_fertility</to>
+				</connector>
+				<aux x="97.75" y="1318.67" name="max growth\nin fertility\ncompared to last generation"/>
+				<connector uid="326" angle="328.79">
+					<from>max_growth_in_fertility_compared_to_last_generation</from>
+					<to>Observed_fertility</to>
+				</connector>
+				<aux x="195" y="1700.67" name="observed fertility in 1980"/>
+				<connector uid="327" angle="131.863">
+					<from>observed_fertility_in_1980</from>
+					<to>last_generation_fertility</to>
+				</connector>
+				<aux label_side="top" x="1472" y="653" name="fraction of 60 to 80 that\nare working age"/>
+				<connector uid="328" angle="247.011">
+					<from>fraction_of_60_to_80_that_are_working_age</from>
+					<to>working_age_population</to>
+				</connector>
+				<alias background="#AAFFFF" font_style="italic" uid="113" x="2266.5" y="813.167" width="18" height="18">
 					<of>&quot;UNIT_G/(M*k)&quot;</of>
 				</alias>
-				<alias font_style="italic" font_weight="bold" uid="115" x="814" y="733" width="18" height="18">
-					<of>Observed_warming_deg_C</of>
+				<alias uid="148" x="2171.5" y="1340.17" width="18" height="18">
+					<of>GDP_per_person_in_1980</of>
 				</alias>
-				<alias font_style="italic" font_weight="bold" uid="117" x="962" y="754" width="18" height="18">
+				<alias font_style="italic" font_weight="bold" uid="154" x="2539.83" y="1071.23" width="18" height="18">
+					<of>Observed_warming</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="236" x="2582.5" y="1172.17" width="18" height="18">
 					<of>Observed_warming_in_1980</of>
 				</alias>
 			</view>
@@ -10841,20 +11457,20 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 			</style>
 			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="251" isee:scroll_y="420" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-					<stock color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<stock color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
 					</stock>
-					<flow color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<flow color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</flow>
-					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="12pt" label_side="bottom"/>
-					<module color="blue" background="white" font_color="blue" font_size="12pt" label_side="top">
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="14.13pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="top">
 						<shape type="rectangle" width="67" height="55"/>
 					</module>
-					<aux color="blue" background="white" font_color="blue" font_size="12pt" label_side="bottom">
+					<aux color="blue" background="white" font_color="blue" font_size="14.13pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</aux>
-					<group color="red" background="white" font_color="red" font_size="12pt"/>
+					<group color="red" background="white" font_color="red" font_size="14.13pt"/>
 					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
 					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
 					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
