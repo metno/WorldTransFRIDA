@@ -37,7 +37,7 @@ The model is being developed using <a href="https://www.iseesystems.com/store/pr
 <a href="https://pris.iaea.org/PRIS/WorldStatistics/WorldTrendNuclearPowerCapacity.aspx">Power Reactor Information System</a> 
   </li>
 </ul>
-<a href="[https://pris.iaea.org/PRIS/WorldStatistics/WorldTrendNuclearPowerCapacity.aspx](https:// https:// https://www.iea.org/data-and-statistics/charts/installed-power-generation-capacity-by-source-in-the-stated-policies-scenario-2000-2040)">IEA – International Energy Agency</a> 
+<a href="https:// https:// https://www.iea.org/data-and-statistics/charts/installed-power-generation-capacity-by-source-in-the-stated-policies-scenario-2000-2040">IEA – International Energy Agency</a> 
   </li>
 </ul>
 
