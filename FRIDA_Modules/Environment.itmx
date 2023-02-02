@@ -132,6 +132,8 @@
 				<connect2 to="Food_and_land_use.CO2_concentration_in_atm_ppm" from="Climate.CO2_concentration_in_atm"/>
 				<connect to="Energy.CO2_emissions" from="Climate.CO2_emissions"/>
 				<connect2 to="Energy.CO2_emissions" from="Climate.CO2_emissions"/>
+				<connect to="Food_and_land_use.CO2_emissions" from="Climate.CO2_emissions"/>
+				<connect2 to="Food_and_land_use.CO2_emissions" from="Climate.CO2_emissions"/>
 				<connect to="Energy.Observed_warming_deg_C" from="Climate.Observed_warming"/>
 				<connect2 to="Energy.Observed_warming_deg_C" from="Climate.Observed_warming"/>
 				<connect to="Food_and_land_use.Observed_warming_deg_C" from="Climate.Observed_warming"/>
@@ -156,8 +158,6 @@
 				<connect2 to='Climate."Crop_supply_(after_20_%_waste)_Mt-crop/y"' from="Food_and_land_use.Crop_supply"/>
 				<connect to='Climate."Fertilizer_use_Mt/y"' from="Food_and_land_use.Fertilizer_use"/>
 				<connect2 to='Climate."Fertilizer_use_Mt/y"' from="Food_and_land_use.Fertilizer_use"/>
-				<connect to="Climate.GDP" from="Output.GDP"/>
-				<connect2 to="Climate.GDP" from="Output.GDP"/>
 			</module>
 			<module name="Food and\nland use" isee:label="">
 				<connect to='Climate."CO2_emissions_from_LULUC_GtCO2/y"' from="Food_and_land_use.CO2_emissions_from_LULUC"/>
@@ -170,6 +170,8 @@
 				<connect2 to='Climate."Fertilizer_use_Mt/y"' from="Food_and_land_use.Fertilizer_use"/>
 				<connect to="Food_and_land_use.CO2_concentration_in_atm_ppm" from="Climate.CO2_concentration_in_atm"/>
 				<connect2 to="Food_and_land_use.CO2_concentration_in_atm_ppm" from="Climate.CO2_concentration_in_atm"/>
+				<connect to="Food_and_land_use.CO2_emissions" from="Climate.CO2_emissions"/>
+				<connect2 to="Food_and_land_use.CO2_emissions" from="Climate.CO2_emissions"/>
 				<connect to='Food_and_land_use."Cost_of_energy_G$/y"' from="Energy.Cost_of_energy"/>
 				<connect2 to='Food_and_land_use."Cost_of_energy_G$/y"' from="Energy.Cost_of_energy"/>
 				<connect to="Food_and_land_use.GDP" from="Output.GDP"/>
@@ -466,14 +468,10 @@
 				<eqn>0.0118441374065681</eqn>
 				<units>1/year</units>
 			</aux>
-			<aux name="CO2 per GDP">
-				<eqn>(CO2_emissions/GDP)*&quot;UNIT_kgCO2/tCO2&quot;</eqn>
-				<units>kgCO2/$</units>
-			</aux>
-			<flow name="CO2 emissions" access="output" isee:autocreated="true">
+			<aux name="CO2 emissions" access="output" isee:autocreated="true">
 				<eqn>&quot;CO2_from_energy_and_industry_GtCO2/y&quot;+&quot;CO2_emissions_from_LULUC_GtCO2/y&quot;</eqn>
 				<units>GtCO2/year</units>
-			</flow>
+			</aux>
 			<aux name="Observed warming" access="output">
 				<eqn>Warming_in_1980+(Extra_heat_in_surface-Extra_heat_in_1980)*Warming_from_extra_heat</eqn>
 				<units>deg C</units>
@@ -558,10 +556,10 @@
 				<eqn>2.75</eqn>
 				<units>tCO2/tCH4</units>
 			</aux>
-			<flow name="CO2 from CH4">
+			<aux name="CO2 from CH4">
 				<eqn>CH4_breakdown*tCO2_per_tCH4</eqn>
 				<units>GtCO2/year</units>
-			</flow>
+			</aux>
 			<flow name="CH4 breakdown">
 				<eqn>CH4_in_atmosphere/Life_of_CH4_in_atm</eqn>
 				<units>GtCH4/Year</units>
@@ -594,10 +592,10 @@
 				<eqn>2679.92210419101</eqn>
 				<units>GtCO2</units>
 			</aux>
-			<flow name="CO2 absorption">
+			<aux name="CO2 absorption">
 				<eqn>(CO2_in_atmosphere-CO2_in_atm_in_1850)/Life_of_extra_CO2_in_atm</eqn>
 				<units>GtCO2/year</units>
-			</flow>
+			</aux>
 			<aux name="Life of CH4 in atm">
 				<doc>	was 11, so 7, so 8</doc>
 				<eqn>2.67632571373715</eqn>
@@ -619,7 +617,7 @@
 			</aux>
 			<stock name="CO2 in atmosphere">
 				<eqn>CO2_in_atm_in_1980</eqn>
-				<inflow>CO2_in_atmosphere_GtCO2_net_flow</inflow>
+				<inflow>change_in_CO2_in_atmosphere</inflow>
 				<units>GtCO2</units>
 			</stock>
 			<aux name="GtCO2 per ppm">
@@ -687,7 +685,7 @@
 				<eqn>0.0015</eqn>
 				<units>1/year</units>
 			</aux>
-			<flow name="CO2 in atmosphere GtCO2 net flow">
+			<flow name="change in CO2 in\natmosphere">
 				<eqn>CO2_emissions+CO2_from_CH4-CO2_absorption+CO2_from_CH4</eqn>
 				<units>GtCO2/year</units>
 			</flow>
@@ -711,10 +709,6 @@
 				<doc>	was 0</doc>
 				<eqn>0.106163034985648</eqn>
 				<units>1</units>
-			</aux>
-			<aux name="UNIT kgCO2/tCO2">
-				<eqn>1000</eqn>
-				<units>kgCO2/tCO2</units>
 			</aux>
 			<aux name="UNIT MtCH4/GtCH4">
 				<eqn>1000</eqn>
@@ -755,10 +749,6 @@
 				<eqn>(Total_forcing_ZJ*Global_surface)/1000</eqn>
 				<units>ZJ/Years</units>
 			</flow>
-			<aux name="GDP" access="input">
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>G$/Years</units>
-			</aux>
 			<aux name="Observed warming in 1980" access="output" isee:autocreated="true">
 				<eqn>INIT(Observed_warming)</eqn>
 				<units>deg C</units>
@@ -858,7 +848,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="23" isee:scroll_y="600" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="540" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -898,29 +888,19 @@
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
 				<stock background="white" x="423" y="928" name="CO2 in atmosphere"/>
-				<flow background="white" x="228.5" y="979" name="CO2 emissions">
-					<pts>
-						<pt x="141" y="979"/>
-						<pt x="316" y="979"/>
-					</pts>
-				</flow>
-				<flow background="white" x="467.5" y="981" name="CO2 absorption">
-					<pts>
-						<pt x="380" y="981"/>
-						<pt x="555" y="981"/>
-					</pts>
-				</flow>
-				<aux background="white" x="603" y="1047" name="Life of extra CO2 in atm"/>
-				<connector uid="1" angle="277.059">
+				<aux background="white" x="228.5" y="979" name="CO2 emissions"/>
+				<aux background="white" x="467.5" y="981" name="CO2 absorption"/>
+				<aux background="white" x="458.5" y="1219" name="Life of extra CO2 in atm"/>
+				<connector uid="1" angle="328.736">
 					<from>CO2_in_atmosphere</from>
 					<to>CO2_absorption</to>
 				</connector>
-				<connector uid="2" angle="83.6423">
+				<connector uid="2" angle="87.8344">
 					<from>Life_of_extra_CO2_in_atm</from>
 					<to>CO2_absorption</to>
 				</connector>
-				<aux background="white" x="481" y="1109" name="CO2 in atm in 1850"/>
-				<connector uid="3" angle="96.0207">
+				<aux background="white" x="567" y="999" name="CO2 in atm in 1850"/>
+				<connector uid="3" angle="169.746">
 					<from>CO2_in_atm_in_1850</from>
 					<to>CO2_absorption</to>
 				</connector>
@@ -945,13 +925,8 @@
 						<pt x="610" y="1127"/>
 					</pts>
 				</flow>
-				<flow background="white" x="409.5" y="1043" name="CO2 from CH4">
-					<pts>
-						<pt x="322" y="1043"/>
-						<pt x="497" y="1043"/>
-					</pts>
-				</flow>
-				<connector uid="5" angle="148.257">
+				<aux background="white" x="366" y="1046" name="CO2 from CH4"/>
+				<connector uid="5" angle="174.144">
 					<from>CH4_breakdown</from>
 					<to>CO2_from_CH4</to>
 				</connector>
@@ -1042,8 +1017,8 @@
 					<from>Observed_warming</from>
 					<to>Melting_rate_surface</to>
 				</connector>
-				<aux background="white" font_style="italic" font_weight="bold" x="270" y="1178" name="CO2 from energy and industry GtCO2/y"/>
-				<connector uid="23" angle="101.78">
+				<aux background="white" font_style="italic" font_weight="bold" x="196" y="1084" name="CO2 from energy and industry GtCO2/y"/>
+				<connector uid="23" angle="72.8015">
 					<from>&quot;CO2_from_energy_and_industry_GtCO2/y&quot;</from>
 					<to>CO2_emissions</to>
 				</connector>
@@ -1135,7 +1110,7 @@
 					<to>&quot;Man-made_CH4_emissions&quot;</to>
 				</connector>
 				<aux background="white" x="391.5" y="1114" name="tCO2 per tCH4"/>
-				<connector uid="39" angle="75.774">
+				<connector uid="39" angle="110.556">
 					<from>tCO2_per_tCH4</from>
 					<to>CO2_from_CH4</to>
 				</connector>
@@ -1271,13 +1246,13 @@
 					<from>&quot;tCO2e/tN2O&quot;</from>
 					<to>GHG_EMISSIONS</to>
 				</connector>
-				<aux background="white" x="463" y="1216" name="Life of extra CO2\nin atm in 1980"/>
-				<connector uid="67" angle="50.3616">
+				<aux background="white" x="526" y="1314" name="Life of extra CO2\nin atm in 1980"/>
+				<connector uid="67" angle="125.395">
 					<from>Life_of_extra_CO2_in_atm_in_1980</from>
 					<to>Life_of_extra_CO2_in_atm</to>
 				</connector>
-				<aux background="white" font_style="italic" font_weight="bold" x="131" y="1173" name="CO2 emissions from\nLULUC GtCO2/y"/>
-				<connector uid="68" angle="63.3169">
+				<aux background="white" font_style="italic" font_weight="bold" x="116" y="961" name="CO2 emissions from\nLULUC GtCO2/y"/>
+				<connector uid="68" angle="350.91">
 					<from>&quot;CO2_emissions_from_LULUC_GtCO2/y&quot;</from>
 					<to>CO2_emissions</to>
 				</connector>
@@ -1383,12 +1358,7 @@
 					<from>Warming_from_extra_heat</from>
 					<to>Observed_warming</to>
 				</connector>
-				<aux background="white" x="113" y="998" name="CO2 per GDP"/>
-				<connector uid="101" angle="189.342">
-					<from>CO2_emissions</from>
-					<to>CO2_per_GDP</to>
-				</connector>
-				<flow background="white" label_side="bottom" x="348" y="928" name="CO2 in atmosphere GtCO2 net flow">
+				<flow background="white" label_side="bottom" x="348" y="928" name="change in CO2 in\natmosphere">
 					<pts>
 						<pt x="283.5" y="928"/>
 						<pt x="400.5" y="928"/>
@@ -1396,36 +1366,31 @@
 				</flow>
 				<connector uid="104" angle="23.1117">
 					<from>CO2_emissions</from>
-					<to>CO2_in_atmosphere_GtCO2_net_flow</to>
+					<to>change_in_CO2_in_atmosphere</to>
 				</connector>
-				<connector uid="105" angle="118.137">
+				<connector uid="105" angle="98.6732">
 					<from>CO2_from_CH4</from>
-					<to>CO2_in_atmosphere_GtCO2_net_flow</to>
+					<to>change_in_CO2_in_atmosphere</to>
 				</connector>
-				<connector uid="106" angle="156.082">
+				<connector uid="106" angle="194.931">
 					<from>CO2_absorption</from>
-					<to>CO2_in_atmosphere_GtCO2_net_flow</to>
+					<to>change_in_CO2_in_atmosphere</to>
 				</connector>
-				<aux background="#00FF1E" x="301" y="1325" name="sOWeoLoCO2&gt;0"/>
-				<aux background="#00FF1E" x="114" y="1359" name="OWeoLoCO2"/>
-				<connector uid="107" angle="111.442">
+				<aux background="#00FF1E" x="196" y="1346" name="sOWeoLoCO2&gt;0"/>
+				<aux background="#00FF1E" x="383" y="1380" name="OWeoLoCO2"/>
+				<connector uid="107" angle="68.558">
 					<from>
 						<alias uid="108"/>
 					</from>
 					<to>OWeoLoCO2</to>
 				</connector>
-				<connector uid="109" angle="190.305">
+				<connector uid="109" angle="349.695">
 					<from>&quot;sOWeoLoCO2&gt;0&quot;</from>
 					<to>OWeoLoCO2</to>
 				</connector>
-				<connector uid="112" angle="18.4349">
+				<connector uid="112" angle="72.8973">
 					<from>OWeoLoCO2</from>
 					<to>Life_of_extra_CO2_in_atm</to>
-				</connector>
-				<aux background="white" x="39" y="1041" name="UNIT kgCO2/tCO2"/>
-				<connector uid="113" angle="40.3141">
-					<from>&quot;UNIT_kgCO2/tCO2&quot;</from>
-					<to>CO2_per_GDP</to>
 				</connector>
 				<aux background="#AAFFFF" x="1192" y="1262" name="UNIT MtCH4/GtCH4"/>
 				<connector uid="114" angle="172.648">
@@ -1481,13 +1446,8 @@
 					<from>Global_surface</from>
 					<to>Extra_warming_from_forcing</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="108" y="1078" name="GDP"/>
-				<connector uid="126" angle="93.2705">
-					<from>GDP</from>
-					<to>CO2_per_GDP</to>
-				</connector>
 				<aux x="486" y="203" name="Observed warming in 1980"/>
-				<connector uid="129" angle="151.26">
+				<connector uid="129" angle="28.74">
 					<from>
 						<alias uid="130"/>
 					</from>
@@ -1570,10 +1530,10 @@
 				<alias uid="47" x="1122" y="515" width="18" height="18">
 					<of>Observed_warming</of>
 				</alias>
-				<alias uid="108" x="149" y="1460" width="18" height="18">
+				<alias uid="108" x="330" y="1481" width="18" height="18">
 					<of>Observed_warming</of>
 				</alias>
-				<alias font_style="italic" uid="130" x="228" y="1413" width="18" height="18">
+				<alias font_style="italic" uid="130" x="251" y="1434" width="18" height="18">
 					<of>Observed_warming_in_1980</of>
 				</alias>
 				<alias font_style="italic" uid="135" x="990" y="35" width="18" height="18">
@@ -2211,6 +2171,10 @@
 				<eqn>73</eqn>
 				<units>tCO2/ha</units>
 			</aux>
+			<aux name="CO2 emissions" access="input">
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>GtCO2/year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -2258,7 +2222,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="1028.33" isee:scroll_y="180.833" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="1028.33" isee:scroll_y="280.833" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3273,6 +3237,7 @@
 					<from>CO2_release_per_ha_of_new_forest_cut</from>
 					<to>CO2_release_from_forest_cut</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" x="1658.33" y="245" name="CO2 emissions"/>
 				<alias uid="25" x="1811" y="1285" width="18" height="18">
 					<of>Population_Mp</of>
 				</alias>
