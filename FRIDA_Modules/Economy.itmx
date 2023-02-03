@@ -546,7 +546,7 @@
 				<units>G$/year</units>
 			</aux>
 			<flow name="Cancellation of debt">
-				<eqn>( IF TIME &gt;= (2022) AND TIME &lt; ((2022) + MAX(DT,1)) THEN 1 ELSE 0 )*Govmnt_debt*Fraction_of_govmnt_debt_cancelled_in_2022</eqn>
+				<eqn>Govmnt_interest_cost-Govmnt_interest_paid</eqn>
 				<units>G$/Year</units>
 			</flow>
 			<stock name="Govmnt debt">
@@ -556,11 +556,6 @@
 				<outflow>Govmnt_payback</outflow>
 				<units>G$</units>
 			</stock>
-			<aux name="Fraction of govmnt debt\ncancelled in 2022">
-				<doc>	0 in TLTL and 0.1 in GL</doc>
-				<eqn>0</eqn>
-				<units>1/year</units>
-			</aux>
 			<aux name="Govmnt investment in\npublic capacity" access="output">
 				<eqn>Full_govmnt_investment_in_public_capacity*(1-government_investment_corruption_fraction)</eqn>
 				<units>G$/year</units>
@@ -579,7 +574,7 @@
 				<units>G$/Year</units>
 			</flow>
 			<flow name="Govmnt payback">
-				<eqn>Govmnt_debt/Govmnt_payback_period</eqn>
+				<eqn>MIN(Govmnt_debt/Govmnt_payback_period,Govmnt_net_income*govmnt_max_interest_threshold)</eqn>
 				<units>G$/Year</units>
 			</flow>
 			<aux name="Govmnt debt in 1980">
@@ -770,7 +765,7 @@
 				<units>G$/year</units>
 			</aux>
 			<aux name="Cash flow from\ngovmnt to banks">
-				<eqn>Govmnt_interest_cost+Govmnt_payback-Govmnt_new_debt</eqn>
+				<eqn>Govmnt_interest_paid+Govmnt_payback-Govmnt_new_debt</eqn>
 				<units>G$/year</units>
 			</aux>
 			<aux name="Sales tax rate">
@@ -904,6 +899,14 @@
 				<eqn>15000</eqn>
 				<units>G$/year</units>
 			</aux>
+			<aux name="Govmnt interest paid">
+				<eqn>MIN(Govmnt_net_income*govmnt_max_interest_threshold, Govmnt_interest_cost)</eqn>
+				<units>G$/Years</units>
+			</aux>
+			<aux name="govmnt max\ninterest threshold">
+				<eqn>.5</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -951,7 +954,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="60" isee:scroll_y="960" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="219" isee:scroll_y="752" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1129,10 +1132,6 @@
 				<connector uid="24" angle="267.534">
 					<from>Govmnt_debt</from>
 					<to>Govmnt_interest_cost</to>
-				</connector>
-				<connector uid="25" angle="287.343">
-					<from>Govmnt_interest_cost</from>
-					<to>Cash_flow_from_govmnt_to_banks</to>
 				</connector>
 				<aux x="843" y="925" name="Govmnt debt in 1980"/>
 				<aux x="372" y="906" name="Max workers debt"/>
@@ -1532,15 +1531,6 @@
 						<pt x="1086" y="1010.5"/>
 					</pts>
 				</flow>
-				<connector uid="124" angle="50.9844">
-					<from>Govmnt_debt</from>
-					<to>Cancellation_of_debt</to>
-				</connector>
-				<aux x="1433" y="907" name="Fraction of govmnt debt\ncancelled in 2022"/>
-				<connector uid="125" angle="192.477">
-					<from>Fraction_of_govmnt_debt_cancelled_in_2022</from>
-					<to>Cancellation_of_debt</to>
-				</connector>
 				<connector uid="126" angle="346.691">
 					<from>Extra_general_tax_rate_from_2022</from>
 					<to>Extra_general_tax_from_2022</to>
@@ -1822,6 +1812,40 @@
 				<connector uid="102" angle="248.519">
 					<from>WFI_in_1980</from>
 					<to>Permanent_worker_cash_inflow</to>
+				</connector>
+				<aux x="994" y="1106" name="Govmnt interest paid"/>
+				<connector uid="215" angle="355.236">
+					<from>Govmnt_interest_cost</from>
+					<to>Govmnt_interest_paid</to>
+				</connector>
+				<connector uid="216" angle="311.103">
+					<from>Govmnt_net_income</from>
+					<to>Govmnt_interest_paid</to>
+				</connector>
+				<connector uid="217" angle="225">
+					<from>Govmnt_interest_paid</from>
+					<to>Cash_flow_from_govmnt_to_banks</to>
+				</connector>
+				<aux x="1005" y="1159" name="govmnt max\ninterest threshold"/>
+				<connector uid="218" angle="103.241">
+					<from>govmnt_max_interest_threshold</from>
+					<to>Govmnt_interest_paid</to>
+				</connector>
+				<connector uid="219" angle="49.3987">
+					<from>Govmnt_interest_cost</from>
+					<to>Cancellation_of_debt</to>
+				</connector>
+				<connector uid="220" angle="117.824">
+					<from>Govmnt_interest_paid</from>
+					<to>Cancellation_of_debt</to>
+				</connector>
+				<connector uid="221" angle="146.689">
+					<from>govmnt_max_interest_threshold</from>
+					<to>Govmnt_payback</to>
+				</connector>
+				<connector uid="222" angle="298.272">
+					<from>Govmnt_net_income</from>
+					<to>Govmnt_payback</to>
 				</connector>
 				<alias uid="62" x="971" y="542" width="18" height="18">
 					<of>Sales_tax_owners</of>
@@ -3550,7 +3574,7 @@ MIN(1, base_FRA*&quot;FRACA_mult_from_GDPpp_-_Line&quot;*(WSO_effect_on_flow_to_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="21" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
