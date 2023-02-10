@@ -43,7 +43,7 @@ The model is being developed using <a href="https://www.iseesystems.com/store/pr
     <a href="https://www.iea.org/data-and-statistics/charts/installed-power-generation-capacity-by-source-in-the-stated-policies-scenario-2000-2040">IEA–International Energy Agency</a> 
   </li>
   <li>
-    <a href="https://zenodo.org/record/5705391#.Y9wBpS-l2Rs">WG1 IPCC AR6</a>
+    <a href="https://zenodo.org/record/5705391#.Y9wBpS-l2Rs">IPCC Working Group 1 (WG1) Sixth Assessment Report (AR6)</a>
   </li>
   <li>
   <a href="https://www.rcmip.org/">RCMIP</a>
