@@ -49,7 +49,7 @@ The model is being developed using <a href="https://www.iseesystems.com/store/pr
   <a href="https://www.rcmip.org/">RCMIP</a>
   </li>
   <li>
-    <a href="https://github.com/chrisroadmap/ar6">ARG WG1 Chapter 7</a>
+    <a href="https://github.com/chrisroadmap/ar6">IPCC AR6 WG1 Chapter 7</a>
 </ul>
 
 ### Initialization Data
