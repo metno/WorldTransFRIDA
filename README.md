@@ -34,7 +34,7 @@ The model is being developed using <a href="https://www.iseesystems.com/store/pr
       <a href="https://ourworldindata.org/grapher/labor-share-of-gdp?country=~OWID_WRL![image](https://user-images.githubusercontent.com/836714/212985048-65c83940-3824-4550-b22b-499d385889d0.png)">Our World in Data</a>
   </li>
   <li>
-    <a href="https://pris.iaea.org/PRIS/WorldStatistics/WorldTrendNuclearPowerCapacity.aspx">Power Reactor Information System</a> 
+    <a href="https://pris.iaea.org/PRIS/WorldStatistics/WorldTrendNuclearPowerCapacity.aspx">Power Reactor Information System (PRIS)</a> 
   </li>
   <li>
     <a href="https://www.fao.org/home/en/">The Food and Agriculture Organization (FAO) </a> 
