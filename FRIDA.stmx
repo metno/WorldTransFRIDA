@@ -28,7 +28,7 @@
 	<isee:sensi_specs_list active_index="0">
 		<isee:sensi_specs name="Sensitivity" method="sobol_sequence" runs="0"/>
 	</isee:sensi_specs_list>
-	<isee:optimizer_specs_list active_index="2">
+	<isee:optimizer_specs_list active_index="1">
 		<isee:optimizer_specs name="Economic Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
 			<isee:parameter name="Demand.Basic_income_tax_rate_workers" min="0.02" max="0.4" scaling="100"/>
 			<isee:parameter name="Demand.Basic_income_tax_rate_owners" min="0" max="0.5" scaling="100"/>
@@ -63,6 +63,7 @@
 			<isee:parameter name='Population."60_to_80_mortality_gamma"' min="-2" max="0"/>
 			<isee:parameter name="Population.Over_80_mortality_alpha" min="0" max="2"/>
 			<isee:parameter name="Population.Over_80_mortality_gamma" min="-2" max="0"/>
+			<isee:parameter name="Population.number_of_fertile_women_correction_factor" min="1" max="2" scaling="100"/>
 			<isee:payoff name="Population Payoff" action="min"/>
 		</isee:optimizer_specs>
 		<isee:optimizer_specs name="Energy Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
@@ -104,6 +105,9 @@
 			<isee:parameter name="Climate.sCH4eoLoCH4" min="-1" max="1" scaling="100"/>
 			<isee:parameter name="Climate.CH4_absorption_breakdown_time_1980" min="8" max="15" scaling="10"/>
 			<isee:parameter name="Climate.CO2_forcing_alpha" min="5" max="6" scaling="100"/>
+			<isee:parameter name="Climate.environmental_forcing_in_1980" min="0" max="5" scaling="100"/>
+			<isee:parameter name="Climate.extra_d2" min="-1" max="1" scaling="100000"/>
+			<isee:parameter name="Climate.extra_d3" min="-1" max="1" scaling="100000"/>
 			<isee:payoff name="Climate Payoff" action="min"/>
 			<isee:payoff name="Energy Payoff" action="min" inactive="true"/>
 		</isee:optimizer_specs>
@@ -122,7 +126,7 @@
 		</isee:optimizer_specs>
 	</isee:optimizer_specs_list>
 	<isee:payoff_specs_list>
-		<isee:payoff_specs name="Economic Payoff" calibration="true" recompute_weights="true">
+		<isee:payoff_specs name="Economic Payoff" calibration="true" recompute_weights="true" compare_run="Calibration Data">
 			<isee:payoff_element name="Supply.GDP" weight="1" compare_name="Supply.GDP" compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Population.GDP_per_person" weight="1" compare_name="Population.GDP_per_person" compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Demand.Govmnt_spending" weight="1" compare_name="Demand.Govmnt_spending" compare_run="Calibration Data" tolerance="0" type="ls"/>
@@ -142,14 +146,10 @@
 			<isee:payoff_element name="Population.Aged_60_to_80_years" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Population.Aged_Over_80_years" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Population.Observed_fertility" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Energy.Energy_use_per_person" weight="1">
-				<isee:time_range type="terminal_value"/>
-			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Electricity_production" weight="1">
-				<isee:time_range type="terminal_value"/>
-			</isee:payoff_element>
+			<isee:payoff_element name="Energy.Energy_use_per_person" weight="1" compare_name="Energy.Energy_use_per_person" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Energy.Electricity_production" weight="1" compare_name="Energy.Electricity_production" compare_run="Calibration Data" tolerance="0" type="ls"/>
 		</isee:payoff_specs>
-		<isee:payoff_specs name="Population Payoff" calibration="true" recompute_weights="true">
+		<isee:payoff_specs name="Population Payoff" calibration="true" recompute_weights="true" compare_run="Calibration Data">
 			<isee:payoff_element name="Population.Population" weight="1" compare_name="Population.Population" compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Population.Aged_0_years" weight="1" compare_name="Population.Aged_0_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Population.Aged_1_to_20_years" weight="1" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
@@ -167,7 +167,7 @@
 			<isee:payoff_element name="Population.Births" weight="1" compare_name="Population.Births" compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Population.Total_Deaths" weight="1" compare_name="Population.Total_Deaths" compare_run="Calibration Data" tolerance="0" type="ls"/>
 		</isee:payoff_specs>
-		<isee:payoff_specs name="Energy Payoff" calibration="true" recompute_weights="true">
+		<isee:payoff_specs name="Energy Payoff" calibration="true" recompute_weights="true" compare_run="Calibration Data">
 			<isee:payoff_element name="Energy.Fossil_electricity_capacity" weight="1">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
@@ -199,7 +199,7 @@
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
-		<isee:payoff_specs name="Climate Payoff" calibration="true" recompute_weights="true">
+		<isee:payoff_specs name="Climate Payoff" calibration="true" recompute_weights="true" compare_run="Calibration Data">
 			<isee:payoff_element name="Climate.CO2_concentration_in_atm_ppm" weight="1">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
@@ -231,7 +231,7 @@
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
-		<isee:payoff_specs name="Food and Land Use Payoff" calibration="true" recompute_weights="true">
+		<isee:payoff_specs name="Food and Land Use Payoff" calibration="true" recompute_weights="true" compare_run="Calibration Data">
 			<isee:payoff_element name="Food_and_land_use.forest_land" weight="1">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
@@ -524,7 +524,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="240" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
