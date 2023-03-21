@@ -5,7 +5,7 @@
 		<name>Society</name>
 		<uuid>8c2a4408-5aff-4a1f-977e-bf9b42db2396</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.2.1" isee:build_number="2906" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.3" isee:build_number="2953" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -163,8 +163,8 @@
 	<model name="Society">
 		<variables>
 			<module name="Population" isee:label="">
-				<connect to='Demand."Effective_GDP_per_person_k$/p/y"' from="Population.Effective_GDP_per_person"/>
-				<connect2 to='Demand."Effective_GDP_per_person_k$/p/y"' from="Population.Effective_GDP_per_person"/>
+				<connect to='Demand."Effective_GDP_per_person_k$/p/y"' from="Population.effective_GDP_per_person"/>
+				<connect2 to='Demand."Effective_GDP_per_person_k$/p/y"' from="Population.effective_GDP_per_person"/>
 				<connect to='Energy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
 				<connect2 to='Energy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
 				<connect to='Food_and_land_use."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
@@ -191,10 +191,10 @@
 				<connect2 to='Labor."Aged_20-pension_age_Mp"' from="Population.working_age_population"/>
 				<connect to="Population.GDP" from="Supply.GDP"/>
 				<connect2 to="Population.GDP" from="Supply.GDP"/>
-				<connect to="Population.Observed_warming" from="Climate.Observed_warming"/>
-				<connect2 to="Population.Observed_warming" from="Climate.Observed_warming"/>
-				<connect to="Population.Observed_warming_in_1980" from="Climate.Observed_warming_in_1980"/>
-				<connect2 to="Population.Observed_warming_in_1980" from="Climate.Observed_warming_in_1980"/>
+				<connect to="Population.Observed_warming" from="Climate.Surface_Temperature_Anomaly"/>
+				<connect2 to="Population.Observed_warming" from="Climate.Surface_Temperature_Anomaly"/>
+				<connect to="Population.Observed_warming_in_1980" from="Climate.Surface_Temperature_Anomaly_1980"/>
+				<connect2 to="Population.Observed_warming_in_1980" from="Climate.Surface_Temperature_Anomaly_1980"/>
 			</module>
 		</variables>
 		<views>
@@ -306,7 +306,7 @@
 				</conveyor>
 				<units>Mp</units>
 			</stock>
-			<aux name="Fraction women">
+			<aux name="fraction women">
 				<eqn>0.5</eqn>
 				<units>1</units>
 			</aux>
@@ -318,8 +318,8 @@
 				<eqn>Aged_20_to_40_years+Aged_40_to_60_years+Aged_60_to_80_years*fraction_of_60_to_80_that_are_working_age</eqn>
 				<units>Mp</units>
 			</aux>
-			<aux name="Observed fertility">
-				<eqn>MIN(normal_observed_fertility*effect_of_GDP_pp_on_Observed_fertility, last_generation_fertility*max_growth_in_fertility_compared_to_last_generation)</eqn>
+			<aux name="fertility">
+				<eqn>MIN(normal_fertility*effect_of_GDP_per_person_on_fertility, last_generation_fertility*max_growth_in_fertility_compared_to_last_generation)</eqn>
 				<units>1</units>
 			</aux>
 			<flow name="Passing 60">
@@ -363,24 +363,24 @@
 				<units>Mp</units>
 			</stock>
 			<flow name="Births">
-				<eqn>(Aged_20_to_40_years*number_of_fertile_women_correction_factor*Fraction_women*Observed_fertility)/fertile_period</eqn>
+				<eqn>(Aged_20_to_40_years*number_of_fertile_women_correction_factor*fraction_women*fertility)/fertile_period</eqn>
 				<non_negative/>
 				<units>Mp/Year</units>
 			</flow>
-			<aux name="Time to adapt to\nhigher income">
+			<aux name="time to adapt to\nhigher income">
 				<eqn>10.0676689167948</eqn>
 				<units>year</units>
 			</aux>
-			<aux name="Population growth rate">
-				<eqn>Birth_rate-Death_rate</eqn>
+			<aux name="population growth rate">
+				<eqn>birth_rate-death_rate</eqn>
 				<units>1/year</units>
 			</aux>
-			<aux name="Birth rate">
+			<aux name="birth rate">
 				<eqn>Births/Population</eqn>
 				<units>1/year</units>
 			</aux>
-			<aux name="Death rate">
-				<eqn>Total_Deaths/Population</eqn>
+			<aux name="death rate">
+				<eqn>total_deaths/Population</eqn>
 				<units>1/year</units>
 			</aux>
 			<stock name="Aged 1 to 20 years">
@@ -424,15 +424,15 @@
 				<leak/>
 				<units>Mp/year</units>
 			</flow>
-			<aux name="effect of warming on death rate">
-				<eqn>1+sOWoDR*(Observed_warming/Observed_warming_in_1980-1)</eqn>
+			<aux name="effect of surface temperature\nanomaly on mortality">
+				<eqn>1+sensitivity_of_mortality_to_surface_temperature_anomaly*(Observed_warming/Observed_warming_in_1980-1)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="UNIT G/(M*k)" access="output" isee:autocreated="true">
 				<eqn>1</eqn>
 				<units>G/(M*Kilo)</units>
 			</aux>
-			<aux name="sOWoDR">
+			<aux name="sensitivity of mortality\nto surface temperature anomaly">
 				<eqn>0.12068748237464</eqn>
 				<units>1</units>
 			</aux>
@@ -441,19 +441,19 @@
 				<units>years</units>
 			</aux>
 			<aux name="1 to 20 death\nrate">
-				<eqn>&quot;1_to_20_normal_death_rate&quot;*effect_of_warming_on_death_rate*effect_of_GDPpp_on_1_to_20_mortality</eqn>
+				<eqn>&quot;1_to_20_normal_death_rate&quot;*effect_of_surface_temperature_anomaly_on_mortality*effect_of_GDP_per_person_on_1_to_20_mortality</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="20 to 40 death\nrate">
-				<eqn>&quot;20_to_40_normal_death_rate&quot;*effect_of_warming_on_death_rate*effect_of_GDPpp_on_20_to_40_mortality</eqn>
+				<eqn>&quot;20_to_40_normal_death_rate&quot;*effect_of_surface_temperature_anomaly_on_mortality*effect_of_GDP_per_person_on_20_to_40_mortality</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="40 to 60 death\nrate">
-				<eqn>&quot;40_to_60_normal_death_rate&quot;*effect_of_warming_on_death_rate*effect_of_GDPpp_on_40_to_60_mortality</eqn>
+				<eqn>&quot;40_to_60_normal_death_rate&quot;*effect_of_surface_temperature_anomaly_on_mortality*effect_of_GDP_per_person_on_40_to_60_mortality</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="60 to 80 death\nrate">
-				<eqn>&quot;60_to_80_normal_death_rate&quot;*effect_of_warming_on_death_rate*effect_of_GDPpp_on_60_to_80_mortality</eqn>
+				<eqn>&quot;60_to_80_normal_death_rate&quot;*effect_of_surface_temperature_anomaly_on_mortality*effect_of_GDP_per_person_on_60_to_80_mortality</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="1 to 20 normal death\nrate">
@@ -828,8 +828,8 @@
 				</element>
 				<units>Mp</units>
 			</aux>
-			<aux name="Effective GDP per person" access="output">
-				<eqn>SMTH1(GDP_per_person, Time_to_adapt_to_higher_income, GDP_per_person_in_1980)</eqn>
+			<aux name="effective GDP per person" access="output">
+				<eqn>SMTH1(GDP_per_person, time_to_adapt_to_higher_income, GDP_per_person_in_1980)</eqn>
 				<isee:delay_aux/>
 				<units>k$/p/year</units>
 			</aux>
@@ -868,35 +868,35 @@
 				<units>Mp</units>
 			</aux>
 			<aux name="0 death\nrate">
-				<eqn>&quot;0_normal_death_rate&quot;*effect_of_warming_on_death_rate*effect_of_GDPpp_on_infant_mortality</eqn>
+				<eqn>&quot;0_normal_death_rate&quot;*effect_of_surface_temperature_anomaly_on_mortality*effect_of_GDP_per_person_on_infant_mortality</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="0 normal death\nrate">
 				<eqn>0.12229745547228</eqn>
 				<units>Per Year</units>
 			</aux>
-			<aux name="Total Deaths">
+			<aux name="total deaths">
 				<eqn>deaths_0_years + deaths_1_to_20_years + deaths_20_to_40_years + deaths_40_to_60_years + deaths_60_to_80_years + deaths_Over_80_years</eqn>
 				<isee:summing/>
 				<units>Million*p/Years</units>
 			</aux>
-			<aux name="normal observed\nfertility">
+			<aux name="normal\nfertility">
 				<eqn>3.96903586987925</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="relative GDPpp">
+			<aux name="relative GDP per person">
 				<eqn>GDP_per_person/GDP_per_person_in_1980</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="effect of GDP pp\non Observed fertility">
-				<eqn>observed_fertility_alpha*relative_GDPpp^observed_fertility_gamma</eqn>
+			<aux name="effect of GDP per\nperson on\nfertility">
+				<eqn>sensitivity_of_fertility_to_GDP_per_person_alpha*relative_GDP_per_person^sensitivity_of_fertility_to_GDP_per_person_gamma</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="observed fertility\nalpha">
+			<aux name="sensitivity of fertility\nto GDP per person\nalpha">
 				<eqn>0.929296220603735</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="observed fertility\ngamma">
+			<aux name="sensitivity of fertility\nto GDP per person\ngamma">
 				<eqn>-0.476972145966809</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -908,8 +908,8 @@
 				<eqn>-1.25667467118173</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="effect of GDPpp\non infant mortality">
-				<eqn>infant_mortality_alpha*relative_GDPpp^infant_mortality_gamma</eqn>
+			<aux name="effect of GDP per person\non infant mortality">
+				<eqn>infant_mortality_alpha*relative_GDP_per_person^infant_mortality_gamma</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="1 to 20 mortality\nalpha">
@@ -920,8 +920,8 @@
 				<eqn>-1.39751131978991</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="effect of GDPpp\non 1 to 20 mortality">
-				<eqn>&quot;1_to_20_mortality_alpha&quot;*relative_GDPpp^&quot;1_to_20_mortality_gamma&quot;</eqn>
+			<aux name="effect of GDP per person\non 1 to 20 mortality">
+				<eqn>&quot;1_to_20_mortality_alpha&quot;*relative_GDP_per_person^&quot;1_to_20_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="20 to 40 mortality\nalpha">
@@ -932,8 +932,8 @@
 				<eqn>-0.757623315967872</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="effect of GDPpp\non 20 to 40 mortality">
-				<eqn>&quot;20_to_40_mortality_alpha&quot;*relative_GDPpp^&quot;20_to_40_mortality_gamma&quot;</eqn>
+			<aux name="effect of GDP per person\non 20 to 40 mortality">
+				<eqn>&quot;20_to_40_mortality_alpha&quot;*relative_GDP_per_person^&quot;20_to_40_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="40 to 60 mortality\nalpha">
@@ -944,8 +944,8 @@
 				<eqn>-0.453882912919791</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="effect of GDPpp\non 40 to 60 mortality">
-				<eqn>&quot;40_to_60_mortality_alpha&quot;*relative_GDPpp^&quot;40_to_60_mortality_gamma&quot;</eqn>
+			<aux name="effect of GDP per person\non 40 to 60 mortality">
+				<eqn>&quot;40_to_60_mortality_alpha&quot;*relative_GDP_per_person^&quot;40_to_60_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="60 to 80 mortality\nalpha">
@@ -956,8 +956,8 @@
 				<eqn>-0.797288837105778</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="effect of GDPpp\non 60 to 80 mortality">
-				<eqn>&quot;60_to_80_mortality_alpha&quot;*relative_GDPpp^&quot;60_to_80_mortality_gamma&quot;</eqn>
+			<aux name="effect of GDP per person\non 60 to 80 mortality">
+				<eqn>&quot;60_to_80_mortality_alpha&quot;*relative_GDP_per_person^&quot;60_to_80_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Over 80 mortality\nalpha">
@@ -968,12 +968,12 @@
 				<eqn>-0.0060144880232515</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="effect of GDPpp\non Over 80 mortality">
-				<eqn>Over_80_mortality_alpha*relative_GDPpp^Over_80_mortality_gamma</eqn>
+			<aux name="effect of GDP per person\non Over 80 mortality">
+				<eqn>Over_80_mortality_alpha*relative_GDP_per_person^Over_80_mortality_gamma</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Over 80 death\nrate">
-				<eqn>Over_80_normal_death_rate*effect_of_warming_on_death_rate*effect_of_GDPpp_on_Over_80_mortality</eqn>
+				<eqn>Over_80_normal_death_rate*effect_of_surface_temperature_anomaly_on_mortality*effect_of_GDP_per_person_on_Over_80_mortality</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="Over 80 normal death\nrate">
@@ -985,7 +985,7 @@
 				<units>dmnl</units>
 			</aux>
 			<aux name="last generation\nfertility">
-				<eqn>SMTH1(Observed_fertility, generation_time, observed_fertility_in_1980)</eqn>
+				<eqn>SMTH1(fertility, generation_time, fertility_1980)</eqn>
 				<isee:delay_aux/>
 				<units>1</units>
 			</aux>
@@ -997,7 +997,7 @@
 				<eqn>1.15</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="observed fertility in 1980">
+			<aux name="fertility 1980">
 				<eqn>3.75</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -1052,7 +1052,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_y="1077.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_y="877.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1143,13 +1143,13 @@
 					<to>Dependency_ratio</to>
 				</connector>
 				<aux x="213" y="1083.17" name="fertile period"/>
-				<aux x="1048" y="1272.67" name="Birth rate"/>
+				<aux x="1048" y="1272.67" name="birth rate"/>
 				<connector uid="10" angle="339.513">
 					<from>Births</from>
-					<to>Birth_rate</to>
+					<to>birth_rate</to>
 				</connector>
-				<aux x="213" y="996.5" name="Fraction women"/>
-				<aux x="1367" y="1274.67" name="Death rate"/>
+				<aux x="213" y="996.5" name="fraction women"/>
+				<aux x="1367" y="1274.67" name="death rate"/>
 				<aux x="1402" y="1654.67" name="GDP per person in 1980"/>
 				<connector uid="31" angle="39.6804">
 					<from>Aged_20_to_40_years</from>
@@ -1160,9 +1160,9 @@
 					<to>working_age_population</to>
 				</connector>
 				<aux x="1414" y="756.167" name="working age population"/>
-				<aux label_side="bottom" x="243" y="1406.67" name="Observed fertility"/>
+				<aux label_side="bottom" x="243" y="1406.67" name="fertility"/>
 				<connector uid="37" angle="348.598">
-					<from>Fraction_women</from>
+					<from>fraction_women</from>
 					<to>Births</to>
 				</connector>
 				<connector uid="38" angle="12.1066">
@@ -1170,7 +1170,7 @@
 					<to>Births</to>
 				</connector>
 				<connector uid="39" angle="90">
-					<from>Observed_fertility</from>
+					<from>fertility</from>
 					<to>Births</to>
 				</connector>
 				<connector uid="40" angle="257.045">
@@ -1178,15 +1178,15 @@
 					<to>Births</to>
 				</connector>
 				<aux x="1235" y="1558.67" name="GDP per person"/>
-				<aux x="1281" y="1690.67" name="Time to adapt to\nhigher income"/>
-				<aux x="1230.5" y="1274.67" name="Population growth rate"/>
+				<aux x="1281" y="1690.67" name="time to adapt to\nhigher income"/>
+				<aux x="1230.5" y="1274.67" name="population growth rate"/>
 				<connector uid="48" angle="180">
-					<from>Death_rate</from>
-					<to>Population_growth_rate</to>
+					<from>death_rate</from>
+					<to>population_growth_rate</to>
 				</connector>
 				<connector uid="49" angle="359.372">
-					<from>Birth_rate</from>
-					<to>Population_growth_rate</to>
+					<from>birth_rate</from>
+					<to>population_growth_rate</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1342" y="1494.67" name="GDP"/>
 				<connector uid="75" angle="210.885">
@@ -1217,16 +1217,16 @@
 						<pt x="1076.5" y="1157.09"/>
 					</pts>
 				</flow>
-				<aux background="white" label_side="bottom" x="1015" y="1672.67" name="effect of warming on death rate"/>
+				<aux background="white" label_side="bottom" x="1015" y="1672.67" name="effect of surface temperature\nanomaly on mortality"/>
 				<aux background="white" x="1212.5" y="1472.67" name="UNIT G/(M*k)"/>
 				<connector uid="102" angle="284.662">
 					<from>&quot;UNIT_G/(M*k)&quot;</from>
 					<to>GDP_per_person</to>
 				</connector>
-				<aux background="white" x="877.5" y="1718.67" name="sOWoDR"/>
-				<connector uid="104" angle="18.4974">
-					<from>sOWoDR</from>
-					<to>effect_of_warming_on_death_rate</to>
+				<aux background="white" x="1355" y="1889.5" name="sensitivity of mortality\nto surface temperature anomaly"/>
+				<connector uid="104" angle="147.473">
+					<from>sensitivity_of_mortality_to_surface_temperature_anomaly</from>
+					<to>effect_of_surface_temperature_anomaly_on_mortality</to>
 				</connector>
 				<connector uid="112" angle="132.799">
 					<from>Aged_60_to_80_years</from>
@@ -1238,7 +1238,7 @@
 				<aux x="1448.5" y="1181.17" name="40 to 60 death\nrate"/>
 				<aux x="1671.25" y="1176.17" name="60 to 80 death\nrate"/>
 				<aux x="662.5" y="1191.17" name="1 to 20 normal death\nrate"/>
-				<aux x="1048" y="1181.17" name="20 to 40 normal death\nrate"/>
+				<aux x="969.667" y="1181.17" name="20 to 40 normal death\nrate"/>
 				<aux x="1363.75" y="1183.17" name="40 to 60 normal death\nrate"/>
 				<aux x="1579" y="1176.17" name="60 to 80 normal death\nrate"/>
 				<connector uid="123" angle="0">
@@ -1258,19 +1258,19 @@
 					<to>&quot;60_to_80_death_rate&quot;</to>
 				</connector>
 				<connector uid="127" angle="117.673">
-					<from>effect_of_warming_on_death_rate</from>
+					<from>effect_of_surface_temperature_anomaly_on_mortality</from>
 					<to>&quot;1_to_20_death_rate&quot;</to>
 				</connector>
 				<connector uid="129" angle="79.3979">
-					<from>effect_of_warming_on_death_rate</from>
+					<from>effect_of_surface_temperature_anomaly_on_mortality</from>
 					<to>&quot;20_to_40_death_rate&quot;</to>
 				</connector>
 				<connector uid="131" angle="48.5879">
-					<from>effect_of_warming_on_death_rate</from>
+					<from>effect_of_surface_temperature_anomaly_on_mortality</from>
 					<to>&quot;40_to_60_death_rate&quot;</to>
 				</connector>
 				<connector uid="133" angle="37.1101">
-					<from>effect_of_warming_on_death_rate</from>
+					<from>effect_of_surface_temperature_anomaly_on_mortality</from>
 					<to>&quot;60_to_80_death_rate&quot;</to>
 				</connector>
 				<connector uid="135" angle="81.6341">
@@ -1289,15 +1289,15 @@
 					<from>&quot;60_to_80_death_rate&quot;</from>
 					<to>deaths_60_to_80_years</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="988" y="1766.67" name="Observed warming"/>
-				<connector uid="141" angle="82.0928">
+				<aux font_style="italic" font_weight="bold" x="924.667" y="1841.67" name="Observed warming"/>
+				<connector uid="141" angle="61.8747">
 					<from>Observed_warming</from>
-					<to>effect_of_warming_on_death_rate</to>
+					<to>effect_of_surface_temperature_anomaly_on_mortality</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1113" y="1841.67" name="Observed warming in 1980"/>
 				<connector uid="142" angle="127.405">
 					<from>Observed_warming_in_1980</from>
-					<to>effect_of_warming_on_death_rate</to>
+					<to>effect_of_surface_temperature_anomaly_on_mortality</to>
 				</connector>
 				<aux label_side="bottom" x="1076.5" y="953" name="Aged 20 to 40 in 1980"/>
 				<aux x="734.333" y="946.167" name="Aged 1 to 20 in 1980"/>
@@ -1321,18 +1321,18 @@
 					<from>GDP_per_person</from>
 					<to>GDP_per_person_in_1980</to>
 				</connector>
-				<aux x="1260" y="1623.67" name="Effective GDP per person"/>
+				<aux x="1260" y="1623.67" name="effective GDP per person"/>
 				<connector uid="42" angle="107.403">
-					<from>Time_to_adapt_to_higher_income</from>
-					<to>Effective_GDP_per_person</to>
+					<from>time_to_adapt_to_higher_income</from>
+					<to>effective_GDP_per_person</to>
 				</connector>
 				<connector uid="41" angle="253.806">
 					<from>GDP_per_person</from>
-					<to>Effective_GDP_per_person</to>
+					<to>effective_GDP_per_person</to>
 				</connector>
 				<connector uid="52" angle="167.685">
 					<from>GDP_per_person_in_1980</from>
-					<to>Effective_GDP_per_person</to>
+					<to>effective_GDP_per_person</to>
 				</connector>
 				<stock x="507" y="1041.17" name="Aged 0 years"/>
 				<flow x="616.75" y="1043.17" name="Passing 0">
@@ -1360,11 +1360,11 @@
 				</connector>
 				<connector uid="11" angle="40.9253">
 					<from>Population</from>
-					<to>Death_rate</to>
+					<to>death_rate</to>
 				</connector>
 				<connector uid="9" angle="159.847">
 					<from>Population</from>
-					<to>Birth_rate</to>
+					<to>birth_rate</to>
 				</connector>
 				<aux x="516.5" y="1212.17" name="0 death\nrate"/>
 				<aux x="416.5" y="1212.17" name="0 normal death\nrate"/>
@@ -1377,152 +1377,152 @@
 					<to>deaths_0_years</to>
 				</connector>
 				<connector uid="243" angle="142.512">
-					<from>effect_of_warming_on_death_rate</from>
+					<from>effect_of_surface_temperature_anomaly_on_mortality</from>
 					<to>&quot;0_death_rate&quot;</to>
 				</connector>
-				<aux x="1370" y="1348" name="Total Deaths"/>
+				<aux x="1370" y="1348" name="total deaths"/>
 				<connector uid="245" angle="90">
-					<from>Total_Deaths</from>
-					<to>Death_rate</to>
+					<from>total_deaths</from>
+					<to>death_rate</to>
 				</connector>
 				<connector uid="247" angle="104.818">
-					<from>effect_of_GDPpp_on_infant_mortality</from>
+					<from>effect_of_GDP_per_person_on_infant_mortality</from>
 					<to>&quot;0_death_rate&quot;</to>
 				</connector>
-				<aux x="126" y="1413" name="normal observed\nfertility"/>
-				<aux x="757.167" y="1751.67" name="relative GDPpp"/>
+				<aux x="126" y="1413" name="normal\nfertility"/>
+				<aux x="757.167" y="1751.67" name="relative GDP per person"/>
 				<connector uid="276" angle="212.945">
 					<from>GDP_per_person</from>
-					<to>relative_GDPpp</to>
+					<to>relative_GDP_per_person</to>
 				</connector>
 				<connector uid="277" angle="188.555">
 					<from>GDP_per_person_in_1980</from>
-					<to>relative_GDPpp</to>
+					<to>relative_GDP_per_person</to>
 				</connector>
-				<aux x="300" y="1569" name="effect of GDP pp\non Observed fertility"/>
+				<aux x="300" y="1569" name="effect of GDP per\nperson on\nfertility"/>
 				<connector uid="278" angle="170.798">
-					<from>relative_GDPpp</from>
-					<to>effect_of_GDP_pp_on_Observed_fertility</to>
+					<from>relative_GDP_per_person</from>
+					<to>effect_of_GDP_per_person_on_fertility</to>
 				</connector>
 				<connector uid="279" angle="126.607">
-					<from>effect_of_GDP_pp_on_Observed_fertility</from>
-					<to>Observed_fertility</to>
+					<from>effect_of_GDP_per_person_on_fertility</from>
+					<to>fertility</to>
 				</connector>
 				<connector uid="280" angle="3.09683">
-					<from>normal_observed_fertility</from>
-					<to>Observed_fertility</to>
+					<from>normal_fertility</from>
+					<to>fertility</to>
 				</connector>
-				<aux x="416.5" y="1527.5" name="observed fertility\nalpha"/>
+				<aux x="416.5" y="1527.5" name="sensitivity of fertility\nto GDP per person\nalpha"/>
 				<connector uid="281" angle="209.57">
-					<from>observed_fertility_alpha</from>
-					<to>effect_of_GDP_pp_on_Observed_fertility</to>
+					<from>sensitivity_of_fertility_to_GDP_per_person_alpha</from>
+					<to>effect_of_GDP_per_person_on_fertility</to>
 				</connector>
-				<aux x="467" y="1616" name="observed fertility\ngamma"/>
+				<aux x="467" y="1616" name="sensitivity of fertility\nto GDP per person\ngamma"/>
 				<connector uid="282" angle="161.075">
-					<from>observed_fertility_gamma</from>
-					<to>effect_of_GDP_pp_on_Observed_fertility</to>
+					<from>sensitivity_of_fertility_to_GDP_per_person_gamma</from>
+					<to>effect_of_GDP_per_person_on_fertility</to>
 				</connector>
 				<aux x="366.917" y="1373.67" name="infant mortality\nalpha"/>
 				<aux x="340.75" y="1312.67" name="infant mortality\ngamma"/>
-				<aux x="504.5" y="1312.67" name="effect of GDPpp\non infant mortality"/>
+				<aux x="504.5" y="1312.67" name="effect of GDP per person\non infant mortality"/>
 				<connector uid="285" angle="23.911">
 					<from>infant_mortality_alpha</from>
-					<to>effect_of_GDPpp_on_infant_mortality</to>
+					<to>effect_of_GDP_per_person_on_infant_mortality</to>
 				</connector>
 				<connector uid="286" angle="119.923">
-					<from>relative_GDPpp</from>
-					<to>effect_of_GDPpp_on_infant_mortality</to>
+					<from>relative_GDP_per_person</from>
+					<to>effect_of_GDP_per_person_on_infant_mortality</to>
 				</connector>
 				<connector uid="287" angle="0">
 					<from>infant_mortality_gamma</from>
-					<to>effect_of_GDPpp_on_infant_mortality</to>
+					<to>effect_of_GDP_per_person_on_infant_mortality</to>
 				</connector>
 				<aux x="631.917" y="1425.67" name="1 to 20 mortality\nalpha"/>
 				<aux x="605.75" y="1365.67" name="1 to 20 mortality\ngamma"/>
-				<aux x="769.5" y="1365.67" name="effect of GDPpp\non 1 to 20 mortality"/>
+				<aux x="769.5" y="1365.67" name="effect of GDP per person\non 1 to 20 mortality"/>
 				<connector uid="296" angle="23.562">
 					<from>&quot;1_to_20_mortality_alpha&quot;</from>
-					<to>effect_of_GDPpp_on_1_to_20_mortality</to>
+					<to>effect_of_GDP_per_person_on_1_to_20_mortality</to>
 				</connector>
 				<connector uid="297" angle="0">
 					<from>&quot;1_to_20_mortality_gamma&quot;</from>
-					<to>effect_of_GDPpp_on_1_to_20_mortality</to>
+					<to>effect_of_GDP_per_person_on_1_to_20_mortality</to>
 				</connector>
 				<connector uid="300" angle="101.598">
-					<from>effect_of_GDPpp_on_1_to_20_mortality</from>
+					<from>effect_of_GDP_per_person_on_1_to_20_mortality</from>
 					<to>&quot;1_to_20_death_rate&quot;</to>
 				</connector>
 				<connector uid="301" angle="85.0765">
-					<from>relative_GDPpp</from>
-					<to>effect_of_GDPpp_on_1_to_20_mortality</to>
+					<from>relative_GDP_per_person</from>
+					<to>effect_of_GDP_per_person_on_1_to_20_mortality</to>
 				</connector>
 				<aux x="964.917" y="1396.67" name="20 to 40 mortality\nalpha"/>
 				<aux x="938.75" y="1336.67" name="20 to 40 mortality\ngamma"/>
-				<aux x="1102.5" y="1336.67" name="effect of GDPpp\non 20 to 40 mortality"/>
+				<aux x="1102.5" y="1336.67" name="effect of GDP per person\non 20 to 40 mortality"/>
 				<connector uid="302" angle="23.562">
 					<from>&quot;20_to_40_mortality_alpha&quot;</from>
-					<to>effect_of_GDPpp_on_20_to_40_mortality</to>
+					<to>effect_of_GDP_per_person_on_20_to_40_mortality</to>
 				</connector>
 				<connector uid="303" angle="0">
 					<from>&quot;20_to_40_mortality_gamma&quot;</from>
-					<to>effect_of_GDPpp_on_20_to_40_mortality</to>
+					<to>effect_of_GDP_per_person_on_20_to_40_mortality</to>
 				</connector>
 				<connector uid="304" angle="44.8694">
-					<from>relative_GDPpp</from>
-					<to>effect_of_GDPpp_on_20_to_40_mortality</to>
+					<from>relative_GDP_per_person</from>
+					<to>effect_of_GDP_per_person_on_20_to_40_mortality</to>
 				</connector>
 				<connector uid="305" angle="84.0654">
-					<from>effect_of_GDPpp_on_20_to_40_mortality</from>
+					<from>effect_of_GDP_per_person_on_20_to_40_mortality</from>
 					<to>&quot;20_to_40_death_rate&quot;</to>
 				</connector>
 				<aux x="1597.19" y="1350.67" name="40 to 60 mortality\nalpha"/>
 				<aux x="1623.36" y="1290.67" name="40 to 60 mortality\ngamma"/>
-				<aux x="1459.61" y="1290.67" name="effect of GDPpp\non 40 to 60 mortality"/>
+				<aux x="1459.61" y="1290.67" name="effect of GDP per person\non 40 to 60 mortality"/>
 				<connector uid="306" angle="156.438">
 					<from>&quot;40_to_60_mortality_alpha&quot;</from>
-					<to>effect_of_GDPpp_on_40_to_60_mortality</to>
+					<to>effect_of_GDP_per_person_on_40_to_60_mortality</to>
 				</connector>
 				<connector uid="307" angle="180">
 					<from>&quot;40_to_60_mortality_gamma&quot;</from>
-					<to>effect_of_GDPpp_on_40_to_60_mortality</to>
+					<to>effect_of_GDP_per_person_on_40_to_60_mortality</to>
 				</connector>
 				<connector uid="308" angle="92.7399">
-					<from>effect_of_GDPpp_on_40_to_60_mortality</from>
+					<from>effect_of_GDP_per_person_on_40_to_60_mortality</from>
 					<to>&quot;40_to_60_death_rate&quot;</to>
 				</connector>
 				<connector uid="309" angle="58.2761">
-					<from>relative_GDPpp</from>
-					<to>effect_of_GDPpp_on_40_to_60_mortality</to>
+					<from>relative_GDP_per_person</from>
+					<to>effect_of_GDP_per_person_on_40_to_60_mortality</to>
 				</connector>
 				<aux x="1896.19" y="1318.67" name="60 to 80 mortality\nalpha"/>
 				<aux x="1922.36" y="1258.67" name="60 to 80 mortality\ngamma"/>
-				<aux x="1758.61" y="1258.67" name="effect of GDPpp\non 60 to 80 mortality"/>
+				<aux x="1758.61" y="1258.67" name="effect of GDP per person\non 60 to 80 mortality"/>
 				<connector uid="310" angle="156.438">
 					<from>&quot;60_to_80_mortality_alpha&quot;</from>
-					<to>effect_of_GDPpp_on_60_to_80_mortality</to>
+					<to>effect_of_GDP_per_person_on_60_to_80_mortality</to>
 				</connector>
 				<connector uid="311" angle="180">
 					<from>&quot;60_to_80_mortality_gamma&quot;</from>
-					<to>effect_of_GDPpp_on_60_to_80_mortality</to>
+					<to>effect_of_GDP_per_person_on_60_to_80_mortality</to>
 				</connector>
 				<connector uid="312" angle="125.679">
-					<from>effect_of_GDPpp_on_60_to_80_mortality</from>
+					<from>effect_of_GDP_per_person_on_60_to_80_mortality</from>
 					<to>&quot;60_to_80_death_rate&quot;</to>
 				</connector>
 				<connector uid="313" angle="51.2105">
-					<from>relative_GDPpp</from>
-					<to>effect_of_GDPpp_on_60_to_80_mortality</to>
+					<from>relative_GDP_per_person</from>
+					<to>effect_of_GDP_per_person_on_60_to_80_mortality</to>
 				</connector>
 				<aux x="1977.19" y="1411.67" name="Over 80 mortality\nalpha"/>
 				<aux x="2101.09" y="1415.67" name="Over 80 mortality\ngamma"/>
-				<aux x="2045.61" y="1243.67" width="18" height="18" name="effect of GDPpp\non Over 80 mortality"/>
+				<aux x="2045.61" y="1243.67" width="18" height="18" name="effect of GDP per person\non Over 80 mortality"/>
 				<connector uid="314" angle="64.0377">
 					<from>Over_80_mortality_alpha</from>
-					<to>effect_of_GDPpp_on_Over_80_mortality</to>
+					<to>effect_of_GDP_per_person_on_Over_80_mortality</to>
 				</connector>
 				<connector uid="315" angle="105.914">
 					<from>Over_80_mortality_gamma</from>
-					<to>effect_of_GDPpp_on_Over_80_mortality</to>
+					<to>effect_of_GDP_per_person_on_Over_80_mortality</to>
 				</connector>
 				<aux x="2035.25" y="1174.17" name="Over 80 death\nrate"/>
 				<aux x="1943" y="1174.17" name="Over 80 normal death\nrate"/>
@@ -1531,7 +1531,7 @@
 					<to>Over_80_death_rate</to>
 				</connector>
 				<connector uid="317" angle="110.532">
-					<from>effect_of_GDPpp_on_Over_80_mortality</from>
+					<from>effect_of_GDP_per_person_on_Over_80_mortality</from>
 					<to>Over_80_death_rate</to>
 				</connector>
 				<connector uid="318" angle="128.128">
@@ -1539,12 +1539,12 @@
 					<to>deaths_Over_80_years</to>
 				</connector>
 				<connector uid="319" angle="51.0404">
-					<from>effect_of_warming_on_death_rate</from>
+					<from>effect_of_surface_temperature_anomaly_on_mortality</from>
 					<to>Over_80_death_rate</to>
 				</connector>
 				<connector uid="321" angle="46.0369">
-					<from>relative_GDPpp</from>
-					<to>effect_of_GDPpp_on_Over_80_mortality</to>
+					<from>relative_GDP_per_person</from>
+					<to>effect_of_GDP_per_person_on_Over_80_mortality</to>
 				</connector>
 				<aux x="225" y="1152" name="number of fertile women\ncorrection factor"/>
 				<connector uid="322" angle="33.6901">
@@ -1553,7 +1553,7 @@
 				</connector>
 				<aux label_side="bottom" x="103" y="1598" name="last generation\nfertility"/>
 				<connector uid="323" angle="211.135">
-					<from>Observed_fertility</from>
+					<from>fertility</from>
 					<to>last_generation_fertility</to>
 				</connector>
 				<aux x="65" y="1690.67" name="generation time"/>
@@ -1563,16 +1563,16 @@
 				</connector>
 				<connector uid="325" angle="29.0546">
 					<from>last_generation_fertility</from>
-					<to>Observed_fertility</to>
+					<to>fertility</to>
 				</connector>
 				<aux x="97.75" y="1318.67" name="max growth\nin fertility\ncompared to last generation"/>
 				<connector uid="326" angle="328.79">
 					<from>max_growth_in_fertility_compared_to_last_generation</from>
-					<to>Observed_fertility</to>
+					<to>fertility</to>
 				</connector>
-				<aux x="195" y="1700.67" name="observed fertility in 1980"/>
+				<aux x="195" y="1700.67" name="fertility 1980"/>
 				<connector uid="327" angle="131.863">
-					<from>observed_fertility_in_1980</from>
+					<from>fertility_1980</from>
 					<to>last_generation_fertility</to>
 				</connector>
 				<aux label_side="top" x="1472" y="653" name="fraction of 60 to 80 that\nare working age"/>
