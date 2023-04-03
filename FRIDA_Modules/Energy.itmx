@@ -5,7 +5,7 @@
 		<name>Energy</name>
 		<uuid>c9b089d4-9c57-4d65-bfc3-1557d6b42cdb</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.3" isee:build_number="2953" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.2.1" isee:build_number="2906" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -193,11 +193,13 @@
 				<eqn>&quot;TWh-heat_per_EJ_-_calorific_equivalent&quot;*efficiency_of_fossil_power_plant</eqn>
 				<units>TWh/EJ</units>
 			</aux>
-			<aux name="Mtoe per EJ - calorific equivalent">
+			<aux name="Mtoe per EJ -\ncalorific equivalent">
 				<eqn>24</eqn>
 				<units>Mtoe/EJ</units>
 			</aux>
 			<aux name="renewable electricity\nproduction">
+				<doc>Calibration data from:
+BP Statistical Review of World Energy; Ember (2022)</doc>
 				<eqn>Renewable_Electricity_Capacity*renewables_khours_per_year</eqn>
 				<units>TWh/year</units>
 			</aux>
@@ -222,6 +224,12 @@
 				<units>MWh/(p*year)</units>
 			</aux>
 			<aux name="CO2 from energy and\nindustry" access="output">
+				<doc>the industry portion of CO2 emissions is based on per capita CO2 emissions which is generated from a calibrated increasing logistic function of GDP per person (from the Population module) which captures the CO2 intensity of industrial development (Tucker, 1995).
+
+Tucker M., 1995. Carbon dioxide emissions and global GDP. Ecological Economics 15(3): 215-223. https://doi.org/10.1016/0921-8009(95)00045-3
+
+Calibration data from:
+Friedlingstein et al. 2022 Global Carbon Budget , Earth System Science Data 14: 4811-4900. https://doi.org/10.5194/essd-14-4811-2022, 2022</doc>
 				<eqn>CO2_from_energy_production+CO2_from_non_fossil_industrial_processes</eqn>
 				<units>GtCO2/year</units>
 			</aux>
@@ -258,6 +266,11 @@
 				<units>tCO2/toe</units>
 			</aux>
 			<aux name="energy use per person">
+				<doc>Calibration data from:
+Maddison Project Database (Bolt and Van Zanden, 2020)
+
+Bolt J, Van Zanden JL. 2020. Maddison style estimates of the evolution of the world economy. A new 2020 update. Maddison-Project Working Paper WP-15, University of Groningen, Groningen, The Netherlands. Available at: https://www.rug.nl/ggdc/historicaldevelopment/maddison/releases/maddison-project-database-2020
+</doc>
 				<eqn>energy_use/Population_Mp</eqn>
 				<units>toe/(p*year)</units>
 			</aux>
@@ -286,6 +299,8 @@
 				<units>G$/year</units>
 			</aux>
 			<aux name="nuclear electricity\nproduction">
+				<doc>Calibration data from:
+BP Statistical Review of World Energy; Ember (2022)</doc>
 				<eqn>Nuclear_Capacity*nuclear_capacity_uptime</eqn>
 				<units>TWh/Years</units>
 			</aux>
@@ -302,6 +317,8 @@
 				<units>$/kWh</units>
 			</aux>
 			<aux name="fossil electricity\nproduction">
+				<doc>Calibration data from:
+BP Statistical Review of World Energy; Ember (2022)</doc>
 				<eqn>Fossil_Electricity_Capacity*fossil_khours_per_year</eqn>
 				<units>TWh/year</units>
 			</aux>
@@ -334,6 +351,10 @@
 				<units>GW/Year</units>
 			</flow>
 			<aux name="per unit capital expenditure\nrenewable electricity">
+				<doc>the capex costs of renewables are modeled to decline relative to the number of doublings in installed renewable capacity (Hayward et al. 2022). 
+
+Hayward JA, Graham PW, Campbell PK. 2022. Projections of the future costs of electricity generation technologies. An application of CSIRO’s Global and Local Learning Model (GALLM). National Research FLAGSHIPS.
+</doc>
 				<eqn>capital_expenditure_renewable_electricity_1980*cost_index_for_sun_and_wind_capacity</eqn>
 				<units>$/W</units>
 			</aux>
@@ -383,16 +404,22 @@
 				<units>GW</units>
 			</aux>
 			<stock name="Renewable Electricity\nCapacity">
+				<doc>Calibration data from:
+International Renewable Energy Agency (IRENA) (2022)</doc>
 				<eqn>Renewable_Electricity_Capacity_1980</eqn>
 				<inflow>addition_of_renewable_electricity_capacity</inflow>
 				<outflow>discard_of_renewable_electricity_capacity</outflow>
 				<units>GW</units>
 			</stock>
-			<aux name="desired fossil electricity capacity">
+			<aux name="desired fossil\nelectricity capacity">
 				<eqn>demand_for_fossil_electricity/fossil_khours_per_year</eqn>
 				<units>GW</units>
 			</aux>
 			<stock name="Fossil Electricity Capacity">
+				<doc>Calibration data from:
+International Energy Agency (IEA) (2022)
+https://www.iea.org/data-and-statistics/charts/installed-power-generation-capacity-by-source-in-the-stated-policies-scenario-2000-2040
+</doc>
 				<eqn>Fossil_Electricity_Capacity_1980</eqn>
 				<inflow>addition_of_fossil_electricity_capacity</inflow>
 				<outflow>discard_of_fossil_electricity_capacity</outflow>
@@ -415,6 +442,13 @@
 				<units>GW/Year</units>
 			</flow>
 			<aux name="demand for fossil\nelectricity">
+				<doc>the model captures the decision making context around how much Fossil Electricity Capacity to build using a TREND (Sterman, 1987) of projected [fossil] electricity demand which was necessary to properly calibrate fossil electricity production. 
+
+Sterman, JD, 1987. Systems simulation. Expectation formation in behavioral simulation models. Behavioral science, 32(3), pp.190-211. https://doi.org/10.1002/bs.3830320304.
+
+Calibration data from:
+BP Statistical Review of World Energy; Ember (2022)
+</doc>
 				<eqn>MAX(0, forecasted_demand_for_electricity-non_fossil_electricity_production)</eqn>
 				<units>TWh/year</units>
 			</aux>
@@ -466,6 +500,10 @@
 				<units>Mp</units>
 			</aux>
 			<aux name="effect of surface temperature\nanomaly on traditional per\nperson use of electricity">
+				<doc>a calibrated linear relationship between STA and Per person demand for electricity representing the increased electricity demand as a result of climate change (from IPCC AR6 WGI, Chapter 12 (Ranasinghe et al., 2021)). 
+
+Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saiful Islam AKM, Rahimi M, Carrascal DR, Sillmann J. 2021. Climate Change Information for Regional Impact and for Risk Assessment. In Climate Change 2021: The Physical Science Basis. Contribution of Working Group I to the Sixth Assessment Report of the Intergovernmental Panel on Climate Change. Cambridge University Press, Cambridge, United Kingdom and New York, NY, USA, pp. 1767–1926, doi: 10.1017/9781009157896.014.
+</doc>
 				<eqn> 1+sensitivity_of_traditional_per_person_use_of_electricity_to_surface_temperature_anomaly*(Observed_warming_deg_C/Observed_warming_in_1980-1)</eqn>
 				<units>1</units>
 			</aux>
@@ -562,6 +600,12 @@
 				<units>dmnl</units>
 			</aux>
 			<aux name="desired renewable\nelectricity share">
+				<doc>the desired share of renewables is based on Sterman’s (1987) TREND function, used to create a future perception of warming. As people’s perception of future warming increases, they demand an increasing amount of their electricity from renewable sources (West et al. 2010). 
+
+Sterman, JD, 1987. Systems simulation. Expectation formation in behavioral simulation models. Behavioral science, 32(3), pp.190-211. https://doi.org/10.1002/bs.3830320304.
+
+West J, Bailey I, Winter M. 2010. Renewable energy policy and public perceptions of renewable energy: A cultural theory approach. Energy policy 38(10): 5739-5748. https://doi.org/10.1016/j.enpol.2010.05.024
+</doc>
 				<eqn>desired_supply_of_renewable_electricity_at_threshold*effect_of_forecasted_perceived_warming_on_desired_renewable_share</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -633,11 +677,11 @@
 			</aux>
 		</variables>
 		<views>
-			<style color="black" font_family="Arial" border_style="none" padding="2" background="white" text_align="center" border_width="thin" font_color="black" border_color="black" font_size="10pt" font_style="normal" vertical_text_align="center" text_decoration="none" font_weight="normal">
+			<style color="black" border_style="none" font_family="Arial" padding="2" background="white" text_align="center" border_width="thin" font_color="black" border_color="black" font_size="10pt" vertical_text_align="center" font_style="normal" text_decoration="none" font_weight="normal">
 				<text_box color="black" text_align="left" background="white" vertical_text_align="top" font_size="12pt"/>
 				<isee:loop_indicator color="black" text_align="left" background="white" vertical_text_align="top" font_size="12pt"/>
 				<numeric_display color="white" border_style="solid" background="white" border_width="thin" font_size="12pt" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
-				<graph axis_title_text_padding="2" axis_label_text_border_width="thin" axis_label_font_size="9pt" color="black" axis_title_text_decoration="none" axis_title_font_weight="normal" axis_title_text_border_color="black" axis_label_font_style="normal" axis_color="#666666" isee:hide_border="false" legend_position="bottom" axis_title_text_align="center" axis_title_text_border_style="none" axis_label_text_padding="2" axis_label_font_weight="normal" isee:transparent="false" background="white" axis_title_font_size="12pt" font_size="12pt" axis_title_font_family="Arial" grid_color="#C8C8C8" isee:graph_area_color="white" axis_title_font_color="black" axis_title_vertical_text_align="center" axis_title_text_border_width="thin" axis_label_vertical_text_align="center" axis_label_text_border_color="black" axis_title_font_style="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_text_border_style="none">
+				<graph axis_title_text_padding="2" axis_label_text_border_width="thin" axis_title_text_border_color="black" axis_label_font_size="9pt" axis_color="#666666" color="black" legend_position="bottom" axis_title_text_border_style="none" axis_title_text_decoration="none" axis_label_text_padding="2" isee:transparent="false" axis_title_font_weight="normal" axis_title_text_border_width="thin" axis_title_vertical_text_align="center" axis_label_font_style="normal" isee:hide_border="false" axis_title_text_align="center" axis_label_font_weight="normal" background="white" axis_title_font_family="Arial" axis_title_font_size="12pt" font_size="12pt" grid_color="#C8C8C8" axis_title_font_color="black" isee:graph_area_color="white" axis_label_text_border_color="black" axis_label_vertical_text_align="center" axis_title_font_style="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_text_border_style="none">
 					<isee:series_styles>
 						<isee:series_style color="blue" thickness="1"/>
 						<isee:series_style thickness="1" color="red" pen_style="dot_dashed"/>
@@ -654,10 +698,10 @@
 						<isee:series_style color="#C8C8C8" thickness="1"/>
 					</isee:series_styles>
 				</graph>
-				<table header_text_decoration="none" header_font_weight="normal" color="black" text_align="right" report_balances="beginning" background="#E0E0E0" wrap_text="false" isee:auto_fit="true" header_vertical_text_align="center" interval="1" header_font_size="12pt" font_size="12pt" isee:use_alternate_row_colors="false" orientation="vertical" column_width="160" header_font_style="normal" header_text_border_width="thin" header_text_border_color="black" isee:unlimited_table_length="false" header_font_color="black" report_flows="instantaneous" blank_column_width="80" header_text_align="center" header_font_family="Arial" header_text_padding="2" header_text_border_style="none"/>
-				<button color="black" border_style="solid" isee:highlight_color="#959595" background="#E0E0E0" border_width="thin" isee:highlight_on_hover="false" transparent="false" font_size="12pt" icon_side="top" corner_radius="0" isee:flat="false"/>
-				<isee:annotation color="black" border_style="solid" isee:highlight_color="#959595" background="#E0E0E0" border_width="thin" isee:highlight_on_hover="false" transparent="false" popup_corner_radius="0" popup_background_color="#FFFECF" font_size="12pt" icon_side="top" corner_radius="0" isee:flat="false"/>
-				<slider color="#66CC66" background="#E0E0E0" input_width="100" font_size="12pt" num_ticks="3" label_side="top" vertical="false" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" isee:fancy_appearance="false"/>
+				<table header_text_decoration="none" header_font_weight="normal" color="black" report_balances="beginning" wrap_text="false" text_align="right" isee:auto_fit="true" background="#E0E0E0" header_vertical_text_align="center" interval="1" header_text_border_width="thin" header_font_size="12pt" font_size="12pt" isee:use_alternate_row_colors="false" orientation="vertical" header_font_style="normal" column_width="160" header_text_border_color="black" isee:unlimited_table_length="false" header_font_color="black" report_flows="instantaneous" blank_column_width="80" header_text_align="center" header_font_family="Arial" header_text_padding="2" header_text_border_style="none"/>
+				<button color="black" border_style="solid" isee:highlight_color="#959595" background="#E0E0E0" border_width="thin" transparent="false" isee:highlight_on_hover="false" font_size="12pt" icon_side="top" corner_radius="0" isee:flat="false"/>
+				<isee:annotation color="black" border_style="solid" isee:highlight_color="#959595" background="#E0E0E0" border_width="thin" transparent="false" popup_corner_radius="0" popup_background_color="#FFFECF" isee:highlight_on_hover="false" font_size="12pt" icon_side="top" corner_radius="0" isee:flat="false"/>
+				<slider color="#66CC66" background="#E0E0E0" input_width="100" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true"/>
 				<isee:dual_slider color="#66CC66" background="silver" input_width="100" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true"/>
 				<isee:sim_speed_slider color="black" background="white"/>
 				<isee:time_slider color="#E95F74" background="silver"/>
@@ -669,16 +713,16 @@
 				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
 				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
 				<lamp color="black" background="white" font_size="9pt"/>
-				<gauge color="black" show_numeric_value="true" bar_progress_color="black" background="white" font_size="9pt" bar_color="#EEEEEE" appearance="radial" needle_color="#F09F72" num_major_ticks="11" num_minor_ticks="11"/>
+				<gauge color="black" bar_progress_color="black" show_numeric_value="true" background="white" font_size="9pt" bar_color="#EEEEEE" appearance="radial" needle_color="#F09F72" num_major_ticks="11" num_minor_ticks="11"/>
 				<isee:spatial_map color="black" background="white" font_size="12pt"/>
 				<isee:animation_object color="black" background="white" font_size="12pt"/>
-				<isee:navigation_widget color="black" border_style="solid" padding="6 8" text_align="left" background="white" border_width="thin" border_color="#999999" font_size="12pt" item_spacing="6" selected_item_color="black" appearance="tabs" vertical_text_align="top" corner_radius="4" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
-				<isee:shape color="black" transparent_background="true" border_style="solid" corner_radius="1" background="white" text_align="left" border_width="thin" vertical_text_align="top" font_size="12pt" opacity="1"/>
+				<isee:navigation_widget color="black" border_style="solid" padding="6 8" text_align="left" background="white" border_width="thin" border_color="#999999" selected_item_color="black" font_size="12pt" vertical_text_align="top" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:shape color="black" border_style="solid" transparent_background="true" corner_radius="1" background="white" text_align="left" border_width="thin" vertical_text_align="top" font_size="12pt" opacity="1"/>
 				<isee:selector color="black" text_align="left" background="white" vertical_text_align="top" font_size="12pt"/>
 				<isee:iframe color="black" border_style="solid" text_align="left" border_width="thin" background="white" vertical_text_align="top" font_size="12pt"/>
-				<isee:financial_table color="black" header_font_weight="bold" header_text_decoration="none" hide_border="false" background="#E0E0E0" text_align="right" header_text_border_style="none" auto_fit="true" font_size="12pt" first_column_width="250" header_text_border_width="thin" header_text_border_color="black" other_column_width="100" header_font_style="normal" header_text_align="center" header_vertical_text_align="center" header_font_size="14pt" header_font_color="black" header_font_family="Arial" header_text_padding="2"/>
+				<isee:financial_table color="black" header_font_weight="bold" header_text_decoration="none" hide_border="false" font_size="12pt" first_column_width="250" background="#E0E0E0" text_align="right" header_text_border_style="none" auto_fit="true" header_font_size="14pt" header_text_border_width="thin" header_text_border_color="black" other_column_width="100" header_font_style="normal" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_text_padding="2"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1024" page_height="784" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="546.429" isee:scroll_y="494.286" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -717,478 +761,452 @@
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<stock x="1034" y="1049" name="Fossil Electricity Capacity"/>
-				<stock label_side="left" x="1668" y="1039.5" width="60" height="45" name="Renewable Electricity\nCapacity"/>
-				<flow label_side="left" x="1037" y="966.75" name="addition of fossil\nelectricity capacity">
+				<stock label_side="center" x="1483.25" y="1307" width="192.5" height="45" name="Fossil Electricity Capacity"/>
+				<stock label_side="center" x="2151" y="1300.5" width="219.583" height="47.5" name="Renewable Electricity\nCapacity"/>
+				<flow label_side="right" label_angle="45" x="1570" y="1249.25" name="addition of fossil\nelectricity capacity">
 					<pts>
-						<pt x="1037" y="893"/>
-						<pt x="1037" y="1031.5"/>
+						<pt x="1570" y="1182.5"/>
+						<pt x="1570" y="1307"/>
 					</pts>
 				</flow>
-				<flow x="951.25" y="1056" name="discard of fossil\nelectricity capacity">
+				<flow label_side="bottom" x="1374.5" y="1340" name="discard of fossil\nelectricity capacity">
 					<pts>
-						<pt x="1011.5" y="1056"/>
-						<pt x="879" y="1056"/>
+						<pt x="1483.25" y="1340"/>
+						<pt x="1253.75" y="1340"/>
 					</pts>
 				</flow>
-				<flow label_side="left" label_angle="225" x="1702" y="983.75" name="addition of renewable\nelectricity capacity">
+				<flow label_side="right" label_angle="315" x="2260.71" y="1213.32" name="addition of renewable\nelectricity capacity">
 					<pts>
-						<pt x="1702" y="919"/>
-						<pt x="1702" y="1039.5"/>
+						<pt x="2260.71" y="1117.14"/>
+						<pt x="2260.71" y="1300.5"/>
 					</pts>
 				</flow>
-				<flow x="1788.5" y="1062" name="discard of renewable\nelectricity capacity">
+				<flow label_side="bottom" x="2075.88" y="1321.25" name="discard of renewable\nelectricity capacity">
 					<pts>
-						<pt x="1728" y="1062"/>
-						<pt x="1861" y="1062"/>
+						<pt x="2151" y="1321.25"/>
+						<pt x="1988.75" y="1321.25"/>
 					</pts>
 				</flow>
-				<connector uid="2469" angle="134.064">
+				<connector uid="2469" angle="194.908">
 					<from>Fossil_Electricity_Capacity</from>
 					<to>discard_of_fossil_electricity_capacity</to>
 				</connector>
-				<aux background="white" x="990" y="1175" name="life of fossil electricity capacity"/>
-				<connector uid="2471" angle="52.8363">
+				<aux background="white" label_side="top" x="1368.25" y="1256.25" name="life of fossil electricity capacity"/>
+				<connector uid="2471" angle="274.268">
 					<from>life_of_fossil_electricity_capacity</from>
 					<to>discard_of_fossil_electricity_capacity</to>
 				</connector>
-				<connector uid="2472" angle="58.18">
+				<connector uid="2472" angle="154.072">
 					<from>Renewable_Electricity_Capacity</from>
 					<to>discard_of_renewable_electricity_capacity</to>
 				</connector>
-				<aux x="1852" y="1201" name="life of\nrenewable electricity\ncapacity"/>
-				<aux background="white" font_style="italic" font_weight="bold" x="772" y="537" name="Population Mp"/>
-				<aux background="white" font_style="italic" font_weight="bold" x="483.667" y="35" name="GDP per person k$/p/y"/>
-				<aux background="white" x="772" y="294" name="Traditional per person use of\nelectricity"/>
-				<aux background="white" x="801" y="1460" name="4 TWh-el per Mtoe"/>
-				<aux background="white" x="1270" y="1131" name="electricity production"/>
-				<aux background="white" x="1581" y="1204" name="renewable electricity\nproduction"/>
-				<connector uid="2504" angle="203.447">
+				<aux label_side="top" x="1955.89" y="1267.25" name="life of\nrenewable electricity\ncapacity"/>
+				<aux background="white" font_style="italic" font_weight="bold" label_side="top" x="1236.75" y="760.583" name="Population Mp"/>
+				<aux background="white" font_style="italic" font_weight="bold" label_side="top" x="892.417" y="225" name="GDP per person k$/p/y"/>
+				<aux background="white" label_side="left" label_angle="225" x="1253.75" y="571.25" name="Traditional per person use of\nelectricity"/>
+				<aux background="white" label_side="left" x="1068.75" y="1633" name="4 TWh-el per Mtoe"/>
+				<aux background="white" label_side="right" x="1758.5" y="1769.28" name="electricity production"/>
+				<aux background="white" label_side="right" label_angle="315" x="2055" y="1597.25" name="renewable electricity\nproduction"/>
+				<connector uid="2504" angle="232.99">
 					<from>Renewable_Electricity_Capacity</from>
 					<to>renewable_electricity_production</to>
 				</connector>
-				<aux background="white" x="1149" y="1202" name="fossil electricity\nproduction"/>
-				<aux background="white" x="1405" y="1090" name="nuclear electricity\nproduction"/>
-				<connector uid="2508" angle="2.40259">
+				<aux background="white" label_side="right" label_angle="315" x="1879.25" y="2009.1" name="fossil electricity\nproduction"/>
+				<aux background="white" label_side="right" x="1740.5" y="1522.86" name="nuclear electricity\nproduction"/>
+				<connector uid="2508" angle="116.726">
 					<from>fossil_electricity_production</from>
 					<to>electricity_production</to>
 				</connector>
-				<aux background="white" x="1462" y="1192" name="nuclear capacity uptime"/>
-				<aux background="white" x="1370" y="1228" name="Nuclear Capacity"/>
-				<connector uid="2511" angle="118.942">
+				<aux background="white" label_side="top" x="1626.89" y="1464.5" name="nuclear capacity uptime"/>
+				<aux background="white" label_side="left" x="1598.29" y="1516.01" name="Nuclear Capacity"/>
+				<connector uid="2511" angle="332.812">
 					<from>nuclear_capacity_uptime</from>
 					<to>nuclear_electricity_production</to>
 				</connector>
-				<connector uid="2512" angle="53.8537">
+				<connector uid="2512" angle="357.243">
 					<from>Nuclear_Capacity</from>
 					<to>nuclear_electricity_production</to>
 				</connector>
-				<connector uid="2513" angle="270.013">
-					<from>Fossil_Electricity_Capacity</from>
-					<to>fossil_electricity_production</to>
-				</connector>
-				<connector uid="2514" angle="276.174">
+				<connector uid="2514" angle="274.178">
 					<from>nuclear_electricity_production</from>
 					<to>electricity_production</to>
 				</connector>
-				<connector uid="2515" angle="246.616">
+				<connector uid="2515" angle="210.122">
 					<from>renewable_electricity_production</from>
 					<to>electricity_production</to>
 				</connector>
-				<aux x="1406" y="667" name="desired supply of\nrenewable electricity"/>
-				<aux background="white" x="2081" y="859" name="capital expenditure renewable electricity"/>
-				<aux x="2043" y="1055" name="operational expenditure renewable electricity"/>
-				<aux label_side="bottom" x="2013" y="1191" name="per unit operational\nexpenditure renewable\nelectricity"/>
-				<connector uid="2523" angle="18.2193">
+				<aux label_side="right" x="1887.75" y="944.25" name="desired supply of\nrenewable electricity"/>
+				<aux background="white" label_side="right" x="2788.64" y="1123" name="capital expenditure renewable electricity"/>
+				<aux label_side="right" label_angle="45" x="2582.5" y="1423" name="operational expenditure renewable electricity"/>
+				<aux label_side="top" x="2458.75" y="1393.5" name="per unit operational\nexpenditure renewable\nelectricity"/>
+				<connector uid="2523" angle="9.70854">
 					<from>addition_of_renewable_electricity_capacity</from>
 					<to>capital_expenditure_renewable_electricity</to>
 				</connector>
-				<connector uid="2524" angle="5.28879">
-					<from>addition_of_fossil_electricity_capacity</from>
-					<to>capital_expenditure_fossil_electricity</to>
-				</connector>
-				<aux background="white" x="953" y="555" name="demand for electricity"/>
-				<connector uid="2533" angle="120.096">
+				<aux background="white" label_side="left" label_angle="225" x="1393" y="760.583" name="demand for electricity"/>
+				<connector uid="2533" angle="250.498">
 					<from>&quot;4_TWh-el_per_Mtoe&quot;</from>
 					<to>fossil_fuels_for_electricity</to>
 				</connector>
-				<aux background="white" x="1122" y="1062" name="Fossil Electricity\nCapacity 1980"/>
-				<aux background="white" x="703" y="1288" name="fossil fuels for\nelectricity"/>
-				<connector uid="2537" angle="139.055">
+				<aux background="white" x="1566.85" y="1371.75" name="Fossil Electricity\nCapacity 1980"/>
+				<aux background="white" label_side="bottom" x="1003.08" y="1818.42" name="fossil fuels for\nelectricity"/>
+				<connector uid="2537" angle="121.273">
 					<from>fossil_fuels_for_electricity</from>
 					<to>use_of_fossil_fuels</to>
 				</connector>
-				<aux background="white" x="507" y="1064" name="tCO2 per toe"/>
-				<aux x="2251" y="771" name="per unit capital expenditure\nfossil electricity"/>
-				<aux x="2083" y="767" name="per unit capital expenditure\nrenewable electricity"/>
-				<connector uid="2541" angle="270.819">
+				<aux background="white" label_side="left" x="668.453" y="1200.68" name="tCO2 per toe"/>
+				<aux label_side="left" label_angle="225" x="2463.32" y="1624.04" name="per unit capital expenditure\nfossil electricity"/>
+				<aux label_side="right" x="2867.8" y="807.154" name="per unit capital expenditure\nrenewable electricity"/>
+				<connector uid="2541" angle="2.97811">
 					<from>per_unit_capital_expenditure_fossil_electricity</from>
 					<to>capital_expenditure_fossil_electricity</to>
 				</connector>
-				<connector uid="2542" angle="268.424">
+				<connector uid="2542" angle="255.931">
 					<from>per_unit_capital_expenditure_renewable_electricity</from>
 					<to>capital_expenditure_renewable_electricity</to>
 				</connector>
-				<connector uid="2543" angle="17.8751">
+				<connector uid="2543" angle="18.28">
 					<from>renewable_electricity_production</from>
 					<to>operational_expenditure_renewable_electricity</to>
 				</connector>
-				<connector uid="2544" angle="128.773">
+				<connector uid="2544" angle="346.592">
 					<from>per_unit_operational_expenditure_renewable_electricity</from>
 					<to>operational_expenditure_renewable_electricity</to>
 				</connector>
-				<aux background="white" x="969" y="690" name="demand for fossil\nelectricity"/>
-				<connector uid="2547" angle="107.235">
+				<aux background="white" label_side="right" x="1530.32" y="988.42" name="demand for fossil\nelectricity"/>
+				<connector uid="2547" angle="124.15">
 					<from>renewable_electricity_production</from>
 					<to>non_fossil_electricity_production</to>
 				</connector>
-				<connector uid="2550" angle="231.702">
+				<connector uid="2550" angle="167.722">
 					<from>fossil_electricity_production</from>
 					<to>fossil_fuels_for_electricity</to>
 				</connector>
-				<aux x="2002" y="686" name="capital expenditure renewable electricity 1980"/>
-				<connector uid="2552" angle="313.563">
+				<aux label_side="right" x="2892.37" y="675.643" name="capital expenditure renewable electricity 1980"/>
+				<connector uid="2552" angle="259.417">
 					<from>capital_expenditure_renewable_electricity_1980</from>
 					<to>per_unit_capital_expenditure_renewable_electricity</to>
 				</connector>
-				<aux x="1862" y="819" name="Renewable Electricity\nCapacity 1980"/>
+				<aux x="2303.75" y="1393.5" name="Renewable Electricity\nCapacity 1980"/>
 				<connector uid="2558" angle="17.3874">
 					<from>demand_for_electricity</from>
 					<to>desired_supply_of_renewable_electricity</to>
 				</connector>
-				<connector uid="2559" angle="135.719">
+				<connector uid="2559" angle="165.197">
 					<from>Fossil_Electricity_Capacity</from>
 					<to>desired_fossil_electricity_capacity_change</to>
 				</connector>
-				<aux background="white" x="1404" y="943" name="non fossil\nelectricity production"/>
-				<connector uid="2561" angle="100.36">
+				<aux background="white" label_side="right" label_angle="45" x="1679.21" y="1043.25" name="non fossil\nelectricity production"/>
+				<connector uid="2561" angle="159.784">
 					<from>non_fossil_electricity_production</from>
 					<to>demand_for_fossil_electricity</to>
 				</connector>
-				<connector uid="2562" angle="72.5354">
+				<connector uid="2562" angle="97.282">
 					<from>nuclear_electricity_production</from>
 					<to>non_fossil_electricity_production</to>
 				</connector>
-				<aux x="2158" y="1190" name="per unit operational\nexpenditure fossil\nelectricity"/>
-				<connector uid="2566" angle="5.46778">
+				<aux label_side="bottom" x="2464.82" y="1931.75" name="per unit operational\nexpenditure fossil\nelectricity"/>
+				<connector uid="2566" angle="17.4662">
 					<from>fossil_electricity_production</from>
 					<to>operational_expenditure_fossil_renewable_electricity</to>
 				</connector>
-				<aux x="2245" y="940" name="cost of fossil\nelectricity"/>
-				<aux background="white" label_side="top" x="2329" y="1262" name="cost of electricity"/>
-				<aux x="2135" y="1108" name="operational expenditure\nfossil renewable electricity"/>
-				<aux background="white" x="349" y="1240" name="CO2 from energy and\nindustry"/>
-				<aux background="white" x="610" y="1106" name="use of fossil fuels"/>
-				<connector uid="2578" angle="249.848">
+				<aux label_side="right" label_angle="45" x="2625.5" y="1676.75" name="cost of fossil\nelectricity"/>
+				<aux background="white" label_side="right" x="2921.25" y="1765.75" name="cost of electricity"/>
+				<aux label_side="right" label_angle="315" x="2464.82" y="1824.85" name="operational expenditure\nfossil renewable electricity"/>
+				<aux background="white" label_side="right" x="399.286" y="1193.68" name="CO2 from energy and\nindustry"/>
+				<aux background="white" label_side="left" label_angle="225" x="735.31" y="1377.54" name="use of fossil fuels"/>
+				<connector uid="2578" angle="235.881">
 					<from>tCO2_per_toe</from>
 					<to>CO2_from_energy_production</to>
 				</connector>
-				<aux x="1265" y="1327" name="fraction fossil plus\nnuclear electricity"/>
-				<connector uid="2580" angle="268.539">
+				<aux label_side="left" label_angle="225" x="1588" y="1882.08" name="fraction fossil plus\nnuclear electricity"/>
+				<connector uid="2580" angle="213.489">
 					<from>electricity_production</from>
 					<to>fraction_fossil_plus_nuclear_electricity</to>
 				</connector>
-				<aux background="white" x="1140" y="874" name="desired fossil electricity\ncapacity change"/>
-				<connector uid="2582" angle="305.623">
+				<aux background="white" label_side="right" x="1461.75" y="1150" name="desired fossil electricity\ncapacity change"/>
+				<connector uid="2582" angle="317.484">
 					<from>desired_fossil_electricity_capacity_change</from>
 					<to>addition_of_fossil_electricity_capacity</to>
 				</connector>
-				<aux background="white" x="1186" y="794" name="fossil electricity capacity\nconstruction time"/>
-				<connector uid="2584" angle="239.111">
-					<from>fossil_electricity_capacity_construction_time</from>
-					<to>desired_fossil_electricity_capacity_change</to>
-				</connector>
-				<aux color="blue" background="white" x="900" y="872" name="fossil\nkhours per year"/>
-				<aux x="1762.33" y="681.167" name="time to meet\ndesired renewable\nsupply 1980"/>
-				<aux color="blue" background="white" x="1049" y="775" name="desired fossil electricity capacity"/>
-				<connector uid="2600" angle="310.701">
+				<aux background="white" label_side="top" x="1518.14" y="814.583" name="fossil electricity capacity\nconstruction time"/>
+				<aux color="blue" background="white" label_side="right" x="1923.53" y="2190.17" name="fossil\nkhours per year"/>
+				<aux label_side="top" x="2117.5" y="901.583" name="time to meet\ndesired renewable\nsupply 1980"/>
+				<aux color="blue" background="white" label_side="right" x="1461.75" y="1087.07" name="desired fossil\nelectricity capacity"/>
+				<connector uid="2600" angle="235.197">
 					<from>demand_for_fossil_electricity</from>
 					<to>desired_fossil_electricity_capacity</to>
 				</connector>
-				<connector uid="2601" angle="310.859">
+				<connector uid="2601" angle="270">
 					<from>desired_fossil_electricity_capacity</from>
 					<to>desired_fossil_electricity_capacity_change</to>
 				</connector>
-				<aux x="1621" y="859" name="desired renewable electricity\ncapacity change"/>
+				<aux label_side="left" x="2156.25" y="1171" name="desired renewable electricity\ncapacity change"/>
 				<connector uid="2603" angle="313.146">
 					<from>desired_supply_of_renewable_electricity</from>
 					<to>desired_renewable_electricity_capacity</to>
 				</connector>
-				<connector uid="2604" angle="133.226">
+				<connector uid="2604" angle="124.3">
 					<from>Renewable_Electricity_Capacity</from>
 					<to>desired_renewable_electricity_capacity_change</to>
 				</connector>
-				<connector uid="2605" angle="12.0879">
+				<connector uid="2605" angle="337.946">
 					<from>desired_renewable_electricity_capacity_change</from>
 					<to>addition_of_renewable_electricity_capacity</to>
 				</connector>
-				<aux x="1499" y="758" name="desired renewable\nelectricity capacity"/>
-				<connector uid="2607" angle="318.732">
+				<aux label_side="right" label_angle="45" x="1980.75" y="1035.25" name="desired renewable\nelectricity capacity"/>
+				<connector uid="2607" angle="322.278">
 					<from>desired_renewable_electricity_capacity</from>
 					<to>desired_renewable_electricity_capacity_change</to>
 				</connector>
-				<connector uid="2609" angle="210.313">
+				<connector uid="2609" angle="162.217">
 					<from>use_of_fossil_fuels</from>
 					<to>CO2_from_energy_production</to>
 				</connector>
-				<connector uid="2610" angle="312.861">
+				<connector uid="2610" angle="156.438">
 					<from>fossil_electricity_production</from>
 					<to>fraction_fossil_plus_nuclear_electricity</to>
 				</connector>
-				<aux x="2225" y="678" name="cost index for sun\nand wind capacity"/>
-				<aux x="2422.67" y="678" name="cost reduction per doubling\nof sun and wind capacity"/>
-				<aux x="2299" y="602" name="number of doublings in\nsun and wind capacity"/>
-				<stock x="2124" y="428" width="67" height="43" name="Accumulated Sun and Wind\nCapacity from 1980"/>
-				<aux x="2161" y="534" name="Accumulated Sun and Wind\nCapacity 1980"/>
-				<connector uid="2625" angle="265.569">
+				<aux label_side="right" label_angle="45" x="2717.54" y="693.643" name="cost index for sun\nand wind capacity"/>
+				<aux label_side="top" x="2659.87" y="606.125" name="cost reduction per doubling\nof sun and wind capacity"/>
+				<aux label_side="left" label_angle="225" x="2589.58" y="736.25" name="number of doublings in\nsun and wind capacity"/>
+				<stock label_side="center" x="2413.75" y="846.25" width="202" height="49.25" name="Accumulated Sun and Wind\nCapacity from 1980"/>
+				<aux label_side="right" x="2641.87" y="829.583" name="Accumulated Sun and Wind\nCapacity 1980"/>
+				<connector uid="2625" angle="18.4174">
 					<from>number_of_doublings_in_sun_and_wind_capacity</from>
 					<to>cost_index_for_sun_and_wind_capacity</to>
 				</connector>
-				<connector uid="2626" angle="332.525">
+				<connector uid="2626" angle="119.259">
 					<from>Accumulated_Sun_and_Wind_Capacity_1980</from>
 					<to>number_of_doublings_in_sun_and_wind_capacity</to>
 				</connector>
-				<connector uid="2628" angle="40.7277">
+				<connector uid="2628" angle="60.9318">
 					<from>Accumulated_Sun_and_Wind_Capacity_from_1980</from>
 					<to>number_of_doublings_in_sun_and_wind_capacity</to>
 				</connector>
-				<flow x="2046" y="459" name="addition of sun and\nwind capacity">
+				<flow label_side="top" x="2338.25" y="883.583" name="addition of sun and\nwind capacity">
 					<pts>
-						<pt x="1956" y="459"/>
-						<pt x="2124" y="459"/>
+						<pt x="2250.75" y="883.583"/>
+						<pt x="2413.75" y="883.583"/>
 					</pts>
 				</flow>
-				<connector uid="2634" angle="180">
+				<connector uid="2634" angle="303.38">
 					<from>cost_reduction_per_doubling_of_sun_and_wind_capacity</from>
 					<to>cost_index_for_sun_and_wind_capacity</to>
 				</connector>
-				<connector uid="2635" angle="116.728">
+				<connector uid="2635" angle="76.7677">
 					<from>addition_of_renewable_electricity_capacity</from>
 					<to>addition_of_sun_and_wind_capacity</to>
 				</connector>
-				<connector uid="2638" angle="248.007">
+				<connector uid="2638" angle="322.932">
 					<from>cost_index_for_sun_and_wind_capacity</from>
 					<to>per_unit_capital_expenditure_renewable_electricity</to>
 				</connector>
-				<aux background="white" x="2085" y="1338" name="cost of fossil fuel\nfor non electricity use"/>
-				<connector uid="2644" angle="239.429">
+				<aux background="white" label_side="bottom" x="2907.75" y="1913.75" name="cost of fossil fuel\nfor non electricity use"/>
+				<connector uid="2644" angle="246.998">
 					<from>nuclear_electricity_production</from>
 					<to>fraction_fossil_plus_nuclear_electricity</to>
 				</connector>
-				<aux background="white" x="2255" y="854" name="capital expenditure fossil electricity"/>
-				<aux x="2075" y="942" name="cost of renewable\nelectricity"/>
-				<connector uid="2674" angle="106.152">
+				<aux background="white" label_side="right" label_angle="45" x="2550.67" y="1619.5" name="capital expenditure fossil electricity"/>
+				<aux label_side="right" label_angle="45" x="2801.75" y="1482.5" name="cost of renewable\nelectricity"/>
+				<connector uid="2674" angle="90">
 					<from>per_unit_operational_expenditure_fossil_electricity</from>
 					<to>operational_expenditure_fossil_renewable_electricity</to>
 				</connector>
-				<connector uid="2675" angle="107.052">
+				<connector uid="2675" angle="344.817">
 					<from>operational_expenditure_renewable_electricity</from>
 					<to>cost_of_renewable_electricity</to>
 				</connector>
-				<connector uid="2676" angle="264.326">
+				<connector uid="2676" angle="272.088">
 					<from>capital_expenditure_renewable_electricity</from>
 					<to>cost_of_renewable_electricity</to>
 				</connector>
-				<connector uid="2677" angle="88.19">
+				<connector uid="2677" angle="42.6663">
 					<from>operational_expenditure_fossil_renewable_electricity</from>
 					<to>cost_of_fossil_electricity</to>
 				</connector>
-				<connector uid="2678" angle="261.171">
+				<connector uid="2678" angle="322.582">
 					<from>capital_expenditure_fossil_electricity</from>
 					<to>cost_of_fossil_electricity</to>
 				</connector>
-				<connector uid="2679" angle="329.45">
+				<connector uid="2679" angle="292.874">
 					<from>cost_of_renewable_electricity</from>
 					<to>cost_of_electricity</to>
 				</connector>
-				<connector uid="2680" angle="301.152">
+				<connector uid="2680" angle="343.252">
 					<from>cost_of_fossil_electricity</from>
 					<to>cost_of_electricity</to>
 				</connector>
-				<aux x="2378" y="1080" name="cost of nuclear\nelectricity"/>
-				<connector uid="2685" angle="285.206">
+				<aux label_side="right" label_angle="315" x="3000.75" y="1658.75" name="cost of nuclear\nelectricity"/>
+				<connector uid="2685" angle="233.388">
 					<from>cost_of_nuclear_electricity</from>
 					<to>cost_of_electricity</to>
 				</connector>
-				<connector uid="2686" angle="0.592467">
-					<from>nuclear_electricity_production</from>
-					<to>cost_of_nuclear_electricity</to>
-				</connector>
-				<aux x="2348" y="998" name="per unit cost of nuclear electricity"/>
-				<connector uid="2688" angle="287.632">
+				<aux label_side="right" x="2941" y="1389.75" name="per unit cost of nuclear electricity"/>
+				<connector uid="2688" angle="282.523">
 					<from>per_unit_cost_of_nuclear_electricity</from>
 					<to>cost_of_nuclear_electricity</to>
 				</connector>
-				<aux background="white" x="2037.25" y="1435.5" name="traditional cost of fossil fuel\nfor non electricity use"/>
-				<connector uid="2698" angle="63.907">
+				<aux background="white" x="2700.92" y="1942.75" name="traditional cost of fossil fuel\nfor non electricity use"/>
+				<connector uid="2698" angle="7.98138">
 					<from>traditional_cost_of_fossil_fuel_for_non_electricity_use</from>
 					<to>cost_of_fossil_fuel_for_non_electricity_use</to>
 				</connector>
-				<aux background="white" x="2344.5" y="1463.5" name="cost of grid"/>
-				<aux background="white" x="2248.5" y="1500.5" name="transmission cost"/>
-				<connector uid="2707" angle="15.8831">
+				<aux background="white" label_side="left" x="3004.42" y="1984.75" name="cost of grid"/>
+				<aux background="white" x="2903.25" y="2285.25" name="transmission cost"/>
+				<connector uid="2707" angle="71.3936">
 					<from>transmission_cost</from>
 					<to>cost_of_grid</to>
 				</connector>
-				<connector uid="2710" angle="355.552">
+				<connector uid="2710" angle="46.6673">
 					<from>
 						<alias uid="2709"/>
 					</from>
 					<to>cost_of_grid</to>
 				</connector>
-				<aux background="white" x="1149" y="1312" name="energy use"/>
-				<connector uid="2732" angle="236.237">
-					<from>electricity_production</from>
-					<to>energy_use</to>
-				</connector>
-				<connector uid="2733" angle="23.0394">
+				<aux background="white" label_side="left" label_angle="135" x="1317" y="1637.5" name="energy use"/>
+				<connector uid="2733" angle="358.962">
 					<from>&quot;4_TWh-el_per_Mtoe&quot;</from>
 					<to>energy_use</to>
 				</connector>
-				<aux background="white" x="656" y="1511" name="Mtoe per EJ - calorific equivalent"/>
-				<aux background="white" x="881" y="1748" name="TWh-heat per EJ - calorific equivalent"/>
-				<aux background="white" x="892" y="1561" name="TWh-el per EJ - engineering equivalent"/>
-				<connector uid="2741" angle="86.6335">
+				<aux background="white" label_side="left" label_angle="135" x="1064.67" y="1321.25" name="Mtoe per EJ -\ncalorific equivalent"/>
+				<aux background="white" label_side="left" label_angle="135" x="907.833" y="1454.75" name="TWh-heat per EJ - calorific equivalent"/>
+				<aux background="white" label_side="left" x="1032.75" y="1581" name="TWh-el per EJ - engineering equivalent"/>
+				<connector uid="2741" angle="314.696">
 					<from>&quot;TWh-heat_per_EJ_-_calorific_equivalent&quot;</from>
 					<to>&quot;TWh-el_per_EJ_-_engineering_equivalent&quot;</to>
 				</connector>
-				<aux background="white" x="1049" y="1758" name="efficiency of fossil power\nplant"/>
-				<connector uid="2743" angle="128.553">
+				<aux background="white" label_side="top" x="940.833" y="1405" name="efficiency of fossil power\nplant"/>
+				<connector uid="2743" angle="297.576">
 					<from>efficiency_of_fossil_power_plant</from>
 					<to>&quot;TWh-el_per_EJ_-_engineering_equivalent&quot;</to>
 				</connector>
-				<connector uid="2747" angle="19.378">
+				<connector uid="2747" angle="270.75">
 					<from>&quot;Mtoe_per_EJ_-_calorific_equivalent&quot;</from>
 					<to>&quot;4_TWh-el_per_Mtoe&quot;</to>
 				</connector>
-				<connector uid="2748" angle="132.019">
+				<connector uid="2748" angle="304.695">
 					<from>&quot;TWh-el_per_EJ_-_engineering_equivalent&quot;</from>
 					<to>&quot;4_TWh-el_per_Mtoe&quot;</to>
 				</connector>
-				<aux background="white" x="573.333" y="971.333" name="rate of change\nin tCO2 per toe"/>
-				<connector uid="2755" angle="234.404">
+				<aux background="white" label_side="right" x="748.453" y="1167.85" name="rate of change\nin tCO2 per toe"/>
+				<connector uid="2755" angle="202.314">
 					<from>rate_of_change_in_tCO2_per_toe</from>
 					<to>tCO2_per_toe</to>
 				</connector>
-				<aux background="white" x="271" y="1363" name="CO2 from non fossil\nindustrial processes"/>
-				<aux background="white" x="248" y="1504" name="Non fossil CO2 per\nperson"/>
-				<connector uid="2760" angle="5.83736">
+				<aux background="white" label_side="right" x="531.286" y="1034.6" name="CO2 from non fossil\nindustrial processes"/>
+				<aux background="white" label_side="left" label_angle="225" x="443.953" y="932.849" name="Non fossil CO2 per\nperson"/>
+				<connector uid="2760" angle="268.406">
 					<from>
 						<alias uid="2759"/>
 					</from>
 					<to>CO2_from_non_fossil_industrial_processes</to>
 				</connector>
-				<connector uid="2761" angle="80.7355">
+				<connector uid="2761" angle="310.64">
 					<from>Non_fossil_CO2_per_person</from>
 					<to>CO2_from_non_fossil_industrial_processes</to>
 				</connector>
-				<connector uid="2762" angle="87.0318">
+				<connector uid="2762" angle="293.728">
 					<from>
 						<alias uid="2757"/>
 					</from>
 					<to>Non_fossil_CO2_per_person</to>
 				</connector>
-				<aux background="white" x="401" y="1632" name="max non fossil CO2\nper person"/>
-				<connector uid="2764" angle="140.084">
+				<aux background="white" label_side="left" label_angle="135" x="348.286" y="828.012" name="max non fossil CO2\nper person"/>
+				<connector uid="2764" angle="312.382">
 					<from>max_non_fossil_CO2_per_person</from>
 					<to>Non_fossil_CO2_per_person</to>
 				</connector>
-				<aux background="white" x="467" y="1173" name="CO2 from energy\nproduction"/>
-				<aux background="white" x="454" y="1315" name="CO2 emissions per person"/>
-				<connector uid="2768" angle="163.991">
+				<aux background="white" label_side="left" label_angle="225" x="581.953" y="1328.35" name="CO2 from energy\nproduction"/>
+				<aux background="white" label_side="left" label_angle="135" x="242.953" y="1148.68" width="18" height="18" name="CO2 emissions per person"/>
+				<connector uid="2768" angle="83.6695">
 					<from>
 						<alias uid="2767"/>
 					</from>
 					<to>CO2_emissions_per_person</to>
 				</connector>
-				<connector uid="2769" angle="324.253">
+				<connector uid="2769" angle="166.269">
 					<from>CO2_from_energy_and_industry</from>
 					<to>CO2_emissions_per_person</to>
 				</connector>
-				<connector uid="2770" angle="209.449">
+				<connector uid="2770" angle="143.601">
 					<from>CO2_from_energy_production</from>
 					<to>CO2_from_energy_and_industry</to>
 				</connector>
-				<connector uid="2771" angle="59.8564">
+				<connector uid="2771" angle="230.315">
 					<from>CO2_from_non_fossil_industrial_processes</from>
 					<to>CO2_from_energy_and_industry</to>
 				</connector>
-				<aux background="white" x="881" y="1364" name="energy use per person"/>
-				<connector uid="2786" angle="9.82968">
-					<from>
-						<alias uid="2767"/>
-					</from>
-					<to>energy_use_per_person</to>
-				</connector>
-				<connector uid="2787" angle="190.981">
+				<aux background="white" x="1487.75" y="1808.5" name="energy use per person"/>
+				<connector uid="2787" angle="314.958">
 					<from>energy_use</from>
 					<to>energy_use_per_person</to>
 				</connector>
-				<aux background="white" x="965.25" y="293.75" name="effect of surface temperature\nanomaly on traditional per\nperson use of electricity"/>
-				<aux background="white" x="1087.33" y="136.583" name="sensitivity of\ntraditional per person\nuse of electricity to surface\ntemperature anomaly"/>
-				<connector uid="2808" angle="232.161">
+				<aux background="white" label_side="right" label_angle="315" x="1338" y="484.25" name="effect of surface temperature\nanomaly on traditional per\nperson use of electricity"/>
+				<aux background="white" label_side="top" x="1350.32" y="333" name="sensitivity of\ntraditional per person\nuse of electricity to surface\ntemperature anomaly"/>
+				<connector uid="2808" angle="265.343">
 					<from>sensitivity_of_traditional_per_person_use_of_electricity_to_surface_temperature_anomaly</from>
 					<to>effect_of_surface_temperature_anomaly_on_traditional_per_person_use_of_electricity</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1112.5" y="366.917" name="Observed warming deg C"/>
-				<connector uid="2811" angle="153.578">
+				<aux font_style="italic" font_weight="bold" label_side="right" x="1451.86" y="389.393" name="Observed warming deg C"/>
+				<connector uid="2811" angle="219.798">
 					<from>Observed_warming_deg_C</from>
 					<to>effect_of_surface_temperature_anomaly_on_traditional_per_person_use_of_electricity</to>
 				</connector>
-				<aux background="white" x="98" y="1472" name="UNIT G/M"/>
-				<connector uid="2812" angle="42.0892">
+				<aux background="white" label_side="top" x="620.953" y="846.012" name="UNIT G/M"/>
+				<connector uid="2812" angle="244.57">
 					<from>&quot;UNIT_G/M&quot;</from>
 					<to>CO2_from_non_fossil_industrial_processes</to>
 				</connector>
-				<connector uid="2813" angle="93.6914">
+				<connector uid="2813" angle="122.42">
 					<from>
 						<alias uid="2814"/>
 					</from>
 					<to>CO2_emissions_per_person</to>
 				</connector>
-				<connector uid="2819" angle="21.9052">
+				<connector uid="2819" angle="352.29">
 					<from>
 						<alias uid="2820"/>
 					</from>
 					<to>cost_of_fossil_fuel_for_non_electricity_use</to>
 				</connector>
-				<aux background="white" label_side="bottom" x="532" y="430" name="Traditional per person use of\nfossil fuels for non electricity use"/>
-				<aux background="white" x="750.5" y="1599.67" name="UNIT TWh/(Million*MWh)"/>
-				<connector uid="2840" angle="70.1213">
+				<aux background="white" label_side="left" label_angle="225" x="1012.32" y="765.107" name="Traditional per person use of\nfossil fuels for non electricity use"/>
+				<aux background="white" label_side="top" x="1142.75" y="1458.75" name="UNIT TWh/(Million*MWh)"/>
+				<connector uid="2840" angle="246.99">
 					<from>&quot;UNIT_TWh/(Million*MWh)&quot;</from>
 					<to>&quot;4_TWh-el_per_Mtoe&quot;</to>
 				</connector>
-				<connector uid="2841" angle="134.228">
+				<connector uid="2841" angle="204.65">
 					<from>
 						<alias uid="2842"/>
 					</from>
 					<to>CO2_from_energy_production</to>
 				</connector>
-				<aux x="445.167" y="976.667" name="tCO2 per toe 1980"/>
-				<connector uid="2843" angle="305.299">
+				<aux label_side="top" x="692.453" y="1120.18" name="tCO2 per toe 1980"/>
+				<connector uid="2843" angle="253.399">
 					<from>tCO2_per_toe_1980</from>
 					<to>tCO2_per_toe</to>
 				</connector>
-				<connector uid="2500" angle="110.722">
+				<connector uid="2500" angle="152.176">
 					<from>discard_of_fossil_electricity_capacity</from>
 					<to>desired_fossil_electricity_capacity_change</to>
 				</connector>
-				<connector uid="2846" angle="53.1301">
+				<connector uid="2846" angle="61.8558">
 					<from>discard_of_renewable_electricity_capacity</from>
 					<to>desired_renewable_electricity_capacity_change</to>
 				</connector>
-				<aux x="497.667" y="126" width="18" height="18" name="relative GDP per person"/>
-				<connector uid="2851" angle="282.953">
+				<aux label_side="left" x="945.417" y="312" name="relative GDP per person"/>
+				<connector uid="2851" angle="301.35">
 					<from>&quot;GDP_per_person_k$/p/y&quot;</from>
 					<to>relative_GDP_per_person</to>
 				</connector>
-				<aux x="878" y="195" name="normal traditional\nper person use of electricity"/>
-				<connector uid="2853" angle="223.044">
+				<aux label_side="top" x="1236.75" y="472.25" name="normal traditional\nper person use of electricity"/>
+				<connector uid="2853" angle="279.744">
 					<from>normal_traditional_per_person_use_of_electricity</from>
 					<to>Traditional_per_person_use_of_electricity</to>
 				</connector>
-				<aux x="679" y="228" name="effect of GDP per person on\ntraditional per person use of electricity"/>
-				<connector uid="2854" angle="331.646">
+				<aux label_side="left" label_angle="225" x="1160.75" y="505.25" name="effect of GDP per person on\ntraditional per person use of electricity"/>
+				<connector uid="2854" angle="318.094">
 					<from>relative_GDP_per_person</from>
 					<to>effect_of_GDP_per_person_on_traditional_per_person_use_of_electricity</to>
 				</connector>
@@ -1196,316 +1214,389 @@
 					<from>effect_of_GDP_per_person_on_traditional_per_person_use_of_electricity</from>
 					<to>Traditional_per_person_use_of_electricity</to>
 				</connector>
-				<aux x="697" y="113" name="effect of GDP on\ntraditional per person\nuse of electricity alpha"/>
-				<connector uid="2856" angle="266.634">
+				<aux label_side="top" x="1051.04" y="351" name="effect of GDP on\ntraditional per person\nuse of electricity alpha"/>
+				<connector uid="2856" angle="305.423">
 					<from>effect_of_GDP_on_traditional_per_person_use_of_electricity_alpha</from>
 					<to>effect_of_GDP_per_person_on_traditional_per_person_use_of_electricity</to>
 				</connector>
-				<aux x="857" y="72" name="effect of GDP on\ntraditional per person\nuse of electricity beta"/>
-				<connector uid="2857" angle="234.293">
+				<aux label_side="top" x="1133.61" y="273.536" name="effect of GDP on\ntraditional per person\nuse of electricity beta"/>
+				<connector uid="2857" angle="276.681">
 					<from>effect_of_GDP_on_traditional_per_person_use_of_electricity_beta</from>
 					<to>effect_of_GDP_per_person_on_traditional_per_person_use_of_electricity</to>
 				</connector>
-				<aux x="217.5" y="391.334" name="normal traditional per person use of\nfossil fuels for non electricity use"/>
-				<connector uid="2858" angle="352.991">
+				<aux label_side="left" x="931.393" y="657.643" name="normal traditional per person use of\nfossil fuels for non electricity use"/>
+				<connector uid="2858" angle="306.982">
 					<from>normal_traditional_per_person_use_of_fossil_fuels_for_non_electricity_use</from>
 					<to>Traditional_per_person_use_of_fossil_fuels_for_non_electricity_use</to>
 				</connector>
-				<aux x="490.667" y="314" name="effect of GDP per person on\ntraditional per person use of\nfossil fuels for non electricity use"/>
-				<aux x="168.667" y="224" name="effect of GDP on\ntraditional per person\nuse of fossil fuels for non electricity\nuse alpha"/>
-				<connector uid="2859" angle="344.384">
+				<aux label_side="left" label_angle="225" x="972.417" y="591.25" name="effect of GDP per person on\ntraditional per person use of\nfossil fuels for non electricity use"/>
+				<aux label_side="left" label_angle="135" x="845.988" y="527.25" name="effect of GDP on\ntraditional per person\nuse of fossil fuels for non electricity\nuse alpha"/>
+				<connector uid="2859" angle="333.151">
 					<from>effect_of_GDP_on_traditional_per_person_use_of_fossil_fuels_for_non_electricity_use_alpha</from>
 					<to>effect_of_GDP_per_person_on_traditional_per_person_use_of_fossil_fuels_for_non_electricity_use</to>
 				</connector>
-				<aux x="312.667" y="158" name="effect of GDP on\ntraditional per person\nuse of fossil fuels for non electricity use beta"/>
-				<connector uid="2860" angle="305.707">
+				<aux label_side="top" x="795.703" y="434.393" name="effect of GDP on\ntraditional per person\nuse of fossil fuels for non electricity use beta"/>
+				<connector uid="2860" angle="318.407">
 					<from>effect_of_GDP_on_traditional_per_person_use_of_fossil_fuels_for_non_electricity_use_beta</from>
 					<to>effect_of_GDP_per_person_on_traditional_per_person_use_of_fossil_fuels_for_non_electricity_use</to>
 				</connector>
-				<connector uid="2861" angle="289.612">
+				<connector uid="2861" angle="282.927">
 					<from>effect_of_GDP_per_person_on_traditional_per_person_use_of_fossil_fuels_for_non_electricity_use</from>
 					<to>Traditional_per_person_use_of_fossil_fuels_for_non_electricity_use</to>
 				</connector>
-				<connector uid="2862" angle="258.69">
+				<connector uid="2862" angle="275.523">
 					<from>relative_GDP_per_person</from>
 					<to>effect_of_GDP_per_person_on_traditional_per_person_use_of_fossil_fuels_for_non_electricity_use</to>
 				</connector>
-				<aux background="white" x="737" y="768" name="demand for fossil fuel\nfor non electricity use"/>
-				<connector uid="2700" angle="347.021">
+				<aux background="white" label_side="left" x="1105" y="991.25" name="demand for fossil fuel\nfor non electricity use"/>
+				<connector uid="2700" angle="330.801">
 					<from>
 						<alias uid="2699"/>
 					</from>
 					<to>cost_of_fossil_fuel_for_non_electricity_use</to>
 				</connector>
-				<connector uid="2731" angle="307.139">
+				<connector uid="2731" angle="288.162">
 					<from>demand_for_fossil_fuel_for_non_electricity_use</from>
 					<to>energy_use</to>
 				</connector>
-				<connector uid="2576" angle="275.006">
+				<connector uid="2576" angle="226.258">
 					<from>demand_for_fossil_fuel_for_non_electricity_use</from>
 					<to>use_of_fossil_fuels</to>
 				</connector>
-				<connector uid="2863" angle="354.321">
+				<connector uid="2863" angle="0">
 					<from>Population_Mp</from>
 					<to>demand_for_electricity</to>
 				</connector>
-				<connector uid="2864" angle="329.741">
+				<connector uid="2864" angle="306.334">
 					<from>Traditional_per_person_use_of_electricity</from>
 					<to>demand_for_electricity</to>
 				</connector>
-				<connector uid="2866" angle="261.384">
+				<connector uid="2866" angle="240.266">
 					<from>Population_Mp</from>
 					<to>demand_for_fossil_fuel_for_non_electricity_use</to>
 				</connector>
-				<connector uid="2867" angle="326.237">
+				<connector uid="2867" angle="292.285">
 					<from>Traditional_per_person_use_of_fossil_fuels_for_non_electricity_use</from>
 					<to>demand_for_fossil_fuel_for_non_electricity_use</to>
 				</connector>
-				<connector uid="2592" angle="34.6128">
-					<from>fossil_khours_per_year</from>
-					<to>desired_fossil_electricity_capacity</to>
-				</connector>
-				<connector uid="2875" angle="304.509">
+				<connector uid="2875" angle="103.742">
 					<from>fossil_khours_per_year</from>
 					<to>fossil_electricity_production</to>
 				</connector>
-				<aux x="1512" y="880" name="renewables khours\nper year"/>
-				<aux background="white" x="2313" y="1366" name="cost of energy"/>
-				<connector uid="2708" angle="107.904">
+				<aux label_side="left" label_angle="135" x="1895.75" y="1006.42" name="renewables khours\nper year"/>
+				<aux background="white" label_side="right" x="3049.75" y="1867.25" name="cost of energy"/>
+				<connector uid="2708" angle="68.9026">
 					<from>cost_of_grid</from>
 					<to>cost_of_energy</to>
 				</connector>
-				<connector uid="2682" angle="353.746">
+				<connector uid="2682" angle="18.1318">
 					<from>cost_of_fossil_fuel_for_non_electricity_use</from>
 					<to>cost_of_energy</to>
 				</connector>
-				<connector uid="2681" angle="261.085">
+				<connector uid="2681" angle="321.695">
 					<from>cost_of_electricity</from>
 					<to>cost_of_energy</to>
 				</connector>
-				<aux x="1457" y="240.333" name="forecasted perceived\nwarming"/>
-				<aux x="1721.71" y="226.875" name="time to measure\ntrend in\nperceived\nwarming"/>
-				<aux x="1371.83" y="132.375" name="perceived warming\nforecast time"/>
-				<connector uid="2898" angle="308.269">
+				<aux label_side="left" x="1936.75" y="584.583" name="forecasted perceived\nwarming"/>
+				<aux label_side="top" x="2034.59" y="429.393" name="time to measure\ntrend in\nperceived\nwarming"/>
+				<aux label_side="left" x="1829.42" y="441.25" name="perceived warming\nforecast time"/>
+				<connector uid="2898" angle="306.827">
 					<from>perceived_warming_forecast_time</from>
 					<to>forecasted_perceived_warming</to>
 				</connector>
-				<aux x="1695.5" y="20" name="initial trend\nin warming"/>
-				<aux x="1602.17" y="429.833" name="desired\nsupply of renewable\nelectricity at threshold"/>
-				<aux x="1439" y="429.833" name="desired renewable\nelectricity share"/>
-				<aux x="1449" y="322.667" name="effect of forecasted\nperceived warming on\ndesired renewable share"/>
-				<connector uid="2903" angle="180">
+				<aux x="2404.75" y="304.25" name="initial trend\nin warming"/>
+				<aux label_side="right" x="1975.75" y="754.25" name="desired\nsupply of renewable\nelectricity at threshold"/>
+				<aux label_side="left" x="1908.75" y="796.583" name="desired renewable\nelectricity share"/>
+				<aux label_side="left" x="1912.75" y="713.917" name="effect of forecasted\nperceived warming on\ndesired renewable share"/>
+				<connector uid="2903" angle="212.286">
 					<from>desired_supply_of_renewable_electricity_at_threshold</from>
 					<to>desired_renewable_electricity_share</to>
 				</connector>
-				<aux x="1269.83" y="213" name="sensitivity of\neffect of forecasted\nperceived warming on\ndesired renewable share"/>
-				<connector uid="2904" angle="328.529">
+				<aux label_side="left" label_angle="135" x="1869.75" y="630.917" name="sensitivity of\neffect of forecasted\nperceived warming on\ndesired renewable share"/>
+				<connector uid="2904" angle="297.387">
 					<from>sensitivity_of_effect_of_forecasted_perceived_warming_on_desired_renewable_share</from>
 					<to>effect_of_forecasted_perceived_warming_on_desired_renewable_share</to>
 				</connector>
-				<connector uid="2929" angle="121.218">
+				<connector uid="2929" angle="335.77">
 					<from>life_of_renewable_electricity_capacity</from>
 					<to>discard_of_renewable_electricity_capacity</to>
 				</connector>
-				<connector uid="2930" angle="83.2902">
+				<connector uid="2930" angle="341.262">
 					<from>renewables_khours_per_year</from>
 					<to>desired_renewable_electricity_capacity</to>
 				</connector>
-				<connector uid="2931" angle="280.008">
-					<from>renewables_khours_per_year</from>
-					<to>renewable_electricity_production</to>
-				</connector>
-				<connector uid="2937" angle="262.079">
+				<connector uid="2937" angle="261.906">
 					<from>desired_renewable_electricity_share</from>
 					<to>desired_supply_of_renewable_electricity</to>
 				</connector>
-				<connector uid="2938" angle="264.45">
+				<connector uid="2938" angle="259.487">
 					<from>forecasted_perceived_warming</from>
 					<to>effect_of_forecasted_perceived_warming_on_desired_renewable_share</to>
 				</connector>
-				<connector uid="2940" angle="181.229">
+				<connector uid="2940" angle="225.92">
 					<from>effect_of_surface_temperature_anomaly_on_traditional_per_person_use_of_electricity</from>
 					<to>Traditional_per_person_use_of_electricity</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1124.17" y="280.417" name="Observed warming in 1980"/>
-				<connector uid="2942" angle="184.796">
+				<aux font_style="italic" font_weight="bold" label_side="top" x="1479.54" y="255.536" name="Observed warming in 1980"/>
+				<connector uid="2942" angle="238.249">
 					<from>Observed_warming_in_1980</from>
 					<to>effect_of_surface_temperature_anomaly_on_traditional_per_person_use_of_electricity</to>
 				</connector>
-				<aux background="white" x="2378" y="1523.75" name="UNIT TWh/(Giga*kWh)"/>
-				<connector uid="2837" angle="126.254">
-					<from>
-						<alias uid="2836"/>
-					</from>
-					<to>capital_expenditure_fossil_electricity</to>
-				</connector>
-				<connector uid="2835" angle="205.145">
+				<aux background="white" x="3031.75" y="2217" name="UNIT TWh/(Giga*kWh)"/>
+				<connector uid="2835" angle="241.028">
 					<from>
 						<alias uid="2836"/>
 					</from>
 					<to>cost_of_nuclear_electricity</to>
 				</connector>
-				<connector uid="2834" angle="322.417">
-					<from>
-						<alias uid="2827"/>
-					</from>
-					<to>operational_expenditure_fossil_renewable_electricity</to>
-				</connector>
-				<connector uid="2830" angle="28.6565">
-					<from>
-						<alias uid="2827"/>
-					</from>
-					<to>capital_expenditure_renewable_electricity</to>
-				</connector>
-				<connector uid="2826" angle="316.126">
+				<connector uid="2826" angle="286.457">
 					<from>
 						<alias uid="2827"/>
 					</from>
 					<to>operational_expenditure_renewable_electricity</to>
 				</connector>
-				<connector uid="2943" angle="119.075">
+				<connector uid="2943" angle="96.7122">
 					<from>&quot;UNIT_TWh/(Giga*kWh)&quot;</from>
 					<to>cost_of_grid</to>
 				</connector>
-				<aux x="1577.25" y="244.875" name="trend in\nperceived\nwarming"/>
-				<connector uid="2897" angle="177.837">
+				<aux label_side="right" label_angle="315" x="2021" y="505.25" name="trend in\nperceived\nwarming"/>
+				<connector uid="2897" angle="223.278">
 					<from>trend_in_perceived_warming</from>
 					<to>forecasted_perceived_warming</to>
 				</connector>
-				<stock x="1690.21" y="111.25" name="Average Perceived Warming"/>
-				<flow x="1614.23" y="114.375" name="change in\naverage perceived warming">
+				<stock label_side="center" x="2334.46" y="384.25" width="191.571" height="40.4286" name="Average Perceived Warming"/>
+				<flow label_side="top" x="2263.48" y="397.625" name="change in\naverage perceived warming">
 					<pts>
-						<pt x="1548.75" y="114.375"/>
-						<pt x="1667.71" y="114.375"/>
+						<pt x="2180.5" y="397.625"/>
+						<pt x="2334.46" y="397.625"/>
 					</pts>
 				</flow>
-				<connector uid="2946" angle="251.267">
+				<connector uid="2946" angle="182.104">
 					<from>Average_Perceived_Warming</from>
 					<to>trend_in_perceived_warming</to>
 				</connector>
-				<connector uid="2947" angle="148.627">
+				<connector uid="2947" angle="163.591">
 					<from>Average_Perceived_Warming</from>
 					<to>change_in_average_perceived_warming</to>
 				</connector>
-				<connector uid="2948" angle="187.103">
+				<connector uid="2948" angle="259.84">
 					<from>time_to_measure_trend_in_perceived_warming</from>
 					<to>trend_in_perceived_warming</to>
 				</connector>
-				<connector uid="2949" angle="133.693">
+				<connector uid="2949" angle="7.9018">
 					<from>time_to_measure_trend_in_perceived_warming</from>
 					<to>change_in_average_perceived_warming</to>
 				</connector>
-				<aux x="1584.17" y="327.667" name="threshold\nforecasted\nobserved warming"/>
-				<connector uid="2950" angle="177.882">
+				<aux label_side="right" x="1980.75" y="640.917" name="threshold\nforecasted\nobserved warming"/>
+				<connector uid="2950" angle="227.031">
 					<from>threshold_forecasted_observed_warming</from>
 					<to>effect_of_forecasted_perceived_warming_on_desired_renewable_share</to>
 				</connector>
-				<connector uid="2963" angle="273.087">
+				<connector uid="2963" angle="267.23">
 					<from>effect_of_forecasted_perceived_warming_on_desired_renewable_share</from>
 					<to>desired_renewable_electricity_share</to>
 				</connector>
-				<aux x="1431" y="77.5" name="perceived warming"/>
-				<connector uid="2964" angle="348.048">
+				<aux label_side="right" label_angle="45" x="1869.75" y="330" name="perceived warming"/>
+				<connector uid="2964" angle="333.703">
 					<from>
 						<alias uid="2893"/>
 					</from>
 					<to>perceived_warming</to>
 				</connector>
-				<aux x="1377.17" y="9" name="warming perception time"/>
-				<connector uid="2965" angle="308.163">
+				<aux label_side="top" x="1860.92" y="220.25" name="warming perception time"/>
+				<connector uid="2965" angle="274.6">
 					<from>warming_perception_time</from>
 					<to>perceived_warming</to>
 				</connector>
-				<connector uid="2966" angle="279.891">
+				<connector uid="2966" angle="284.745">
 					<from>perceived_warming</from>
 					<to>forecasted_perceived_warming</to>
 				</connector>
-				<connector uid="2967" angle="305.194">
+				<connector uid="2967" angle="310.796">
 					<from>perceived_warming</from>
 					<to>trend_in_perceived_warming</to>
 				</connector>
-				<connector uid="2968" angle="357.194">
+				<connector uid="2968" angle="1.2363">
 					<from>perceived_warming</from>
 					<to>change_in_average_perceived_warming</to>
 				</connector>
-				<aux x="1839.17" y="718.333" name="time to meet\ndesired renewable\nsupply reduction\nfrom experience"/>
-				<aux x="1737" y="771" name="time to meet\ndesired renewable\nsupply"/>
-				<connector uid="2969" angle="261.667">
+				<aux label_side="left" label_angle="135" x="2368.11" y="682.155" name="time to meet\ndesired renewable\nsupply reduction\nfrom experience"/>
+				<aux label_side="right" x="2128.25" y="958.25" name="time to meet\ndesired renewable\nsupply"/>
+				<connector uid="2969" angle="280.742">
 					<from>time_to_meet_desired_renewable_supply_1980</from>
 					<to>time_to_meet_desired_renewable_supply</to>
 				</connector>
-				<connector uid="2970" angle="206.565">
+				<connector uid="2970" angle="229.018">
 					<from>time_to_meet_desired_renewable_supply_reduction_from_experience</from>
 					<to>time_to_meet_desired_renewable_supply</to>
 				</connector>
-				<connector uid="2971" angle="207.77">
+				<connector uid="2971" angle="277.498">
 					<from>time_to_meet_desired_renewable_supply</from>
 					<to>desired_renewable_electricity_capacity_change</to>
 				</connector>
-				<connector uid="2972" angle="194.621">
+				<connector uid="2972" angle="166.274">
 					<from>number_of_doublings_in_sun_and_wind_capacity</from>
 					<to>time_to_meet_desired_renewable_supply_reduction_from_experience</to>
 				</connector>
-				<aux x="1851.67" y="602" name="reduction in\ntime to meet\ndesired renewable\nsupply per doubling"/>
-				<connector uid="2973" angle="256.483">
+				<aux label_side="right" label_angle="45" x="2426.75" y="563.012" name="reduction in\ntime to meet\ndesired renewable\nsupply per doubling"/>
+				<connector uid="2973" angle="243.793">
 					<from>reduction_in_time_to_meet_desired_renewable_supply_per_doubling</from>
 					<to>time_to_meet_desired_renewable_supply_reduction_from_experience</to>
 				</connector>
-				<aux x="1044.5" y="607.5" name="forecasted\ndemand for\nelectricity"/>
-				<connector uid="2974" angle="330.154">
+				<aux label_side="right" x="1530.32" y="883.583" name="forecasted\ndemand for\nelectricity"/>
+				<connector uid="2974" angle="318.149">
 					<from>demand_for_electricity</from>
 					<to>forecasted_demand_for_electricity</to>
 				</connector>
-				<aux x="1150.83" y="468.333" name="electricity demand\nforecast look back"/>
-				<connector uid="2975" angle="232.618">
+				<aux label_side="right" x="1580.29" y="814.583" name="electricity demand\nforecast look back"/>
+				<connector uid="2975" angle="218.506">
 					<from>electricity_demand_forecast_look_back</from>
 					<to>forecasted_demand_for_electricity</to>
 				</connector>
-				<connector uid="2976" angle="127.188">
+				<connector uid="2976" angle="280.01">
 					<from>fossil_electricity_capacity_construction_time</from>
 					<to>forecasted_demand_for_electricity</to>
 				</connector>
-				<connector uid="2977" angle="199.482">
+				<connector uid="2977" angle="270">
 					<from>forecasted_demand_for_electricity</from>
 					<to>demand_for_fossil_electricity</to>
 				</connector>
-				<aux x="414" y="1490" name="baseline GDP per person"/>
-				<connector uid="2978" angle="180">
+				<aux label_side="left" x="326.619" y="892.262" name="baseline GDP per person"/>
+				<connector uid="2978" angle="340.919">
 					<from>baseline_GDP_per_person</from>
 					<to>Non_fossil_CO2_per_person</to>
 				</connector>
-				<alias background="white" uid="2709" x="2178.5" y="1438.5" width="18" height="18">
+				<connector uid="2979" angle="317.738">
+					<from>
+						<alias uid="2980"/>
+					</from>
+					<to>desired_fossil_electricity_capacity_change</to>
+				</connector>
+				<connector uid="2981" angle="275.298">
+					<from>
+						<alias uid="2982"/>
+					</from>
+					<to>desired_fossil_electricity_capacity</to>
+				</connector>
+				<connector uid="2983" angle="51.1153">
+					<from>
+						<alias uid="2984"/>
+					</from>
+					<to>operational_expenditure_fossil_renewable_electricity</to>
+				</connector>
+				<connector uid="2985" angle="270">
+					<from>
+						<alias uid="2986"/>
+					</from>
+					<to>cost_of_nuclear_electricity</to>
+				</connector>
+				<connector uid="2987" angle="307.705">
+					<from>
+						<alias uid="2988"/>
+					</from>
+					<to>capital_expenditure_renewable_electricity</to>
+				</connector>
+				<connector uid="2989" angle="278.81">
+					<from>
+						<alias uid="2990"/>
+					</from>
+					<to>renewable_electricity_production</to>
+				</connector>
+				<connector uid="2991" angle="339.386">
+					<from>
+						<alias uid="2992"/>
+					</from>
+					<to>energy_use_per_person</to>
+				</connector>
+				<connector uid="2993" angle="311.406">
+					<from>
+						<alias uid="2994"/>
+					</from>
+					<to>capital_expenditure_fossil_electricity</to>
+				</connector>
+				<connector uid="2995" angle="64.3921">
+					<from>
+						<alias uid="2996"/>
+					</from>
+					<to>fossil_electricity_production</to>
+				</connector>
+				<connector uid="2997" angle="268.21">
+					<from>
+						<alias uid="2998"/>
+					</from>
+					<to>energy_use</to>
+				</connector>
+				<connector uid="3000" angle="42.337">
+					<from>
+						<alias uid="2999"/>
+					</from>
+					<to>capital_expenditure_fossil_electricity</to>
+				</connector>
+				<alias background="white" uid="2709" x="2814.75" y="2167.25" width="18" height="18">
 					<of>electricity_production</of>
 				</alias>
-				<alias background="white" uid="2757" x="232" y="1630" width="18" height="18">
+				<alias background="white" label_side="top" uid="2757" x="361.619" y="757.012" width="18" height="18">
 					<of>&quot;GDP_per_person_k$/p/y&quot;</of>
 				</alias>
-				<alias background="white" uid="2759" x="97" y="1370" width="18" height="18">
+				<alias background="white" label_side="top" uid="2759" x="527.286" y="845.929" width="18" height="18">
 					<of>Population_Mp</of>
 				</alias>
-				<alias background="white" uid="2767" x="709" y="1381" width="18" height="18">
+				<alias background="white" label_side="top" uid="2767" x="224.953" y="1310.93" width="18" height="18">
 					<of>Population_Mp</of>
 				</alias>
-				<alias background="white" font_style="italic" uid="2814" x="423" y="1362" width="18" height="18">
+				<alias background="white" font_style="italic" label_side="bottom" uid="2814" x="343.619" y="1307.18" width="18" height="18">
 					<of>&quot;UNIT_G/M&quot;</of>
 				</alias>
-				<alias background="white" font_style="italic" uid="2820" x="1907.67" y="1387" width="18" height="18">
+				<alias background="white" font_style="italic" uid="2820" x="2691.92" y="1876.75" width="18" height="18">
 					<of>&quot;UNIT_G/M&quot;</of>
 				</alias>
-				<alias background="white" font_style="italic" uid="2842" x="531.167" y="1239.17" width="18" height="18">
+				<alias background="white" font_style="italic" label_side="top" uid="2842" x="691.536" y="1264.93" width="18" height="18">
 					<of>&quot;UNIT_G/M&quot;</of>
 				</alias>
-				<alias background="white" uid="2699" x="1944.75" y="1298.75" width="18" height="18">
+				<alias background="white" label_side="top" uid="2699" x="2728.17" y="1809.42" width="18" height="18">
 					<of>demand_for_fossil_fuel_for_non_electricity_use</of>
 				</alias>
-				<alias font_style="italic" font_weight="bold" uid="2893" x="1220.04" y="25.75" width="18" height="18">
+				<alias font_style="italic" font_weight="bold" label_side="top" uid="2893" x="1735.79" y="259.25" width="18" height="18">
 					<of>Observed_warming_deg_C</of>
 				</alias>
-				<alias background="white" font_style="italic" uid="2836" x="2467" y="1025" width="18" height="18">
+				<alias background="white" font_style="italic" label_side="right" label_angle="45" uid="2836" x="3065.25" y="1517" width="18" height="18">
 					<of>&quot;UNIT_TWh/(Giga*kWh)&quot;</of>
 				</alias>
-				<alias background="white" font_style="italic" label_side="bottom" uid="2827" x="1941.17" y="956.75" width="18" height="18">
+				<alias background="white" font_style="italic" label_side="top" uid="2827" x="2541.67" y="1306.25" width="18" height="18">
 					<of>&quot;UNIT_TWh/(Giga*kWh)&quot;</of>
+				</alias>
+				<alias background="white" font_style="italic" label_side="left" label_angle="225" uid="2980" x="1383.5" y="1078.07" width="18" height="18">
+					<of>fossil_electricity_capacity_construction_time</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" label_side="left" uid="2982" x="1442.86" y="971.393" width="18" height="18">
+					<of>fossil_khours_per_year</of>
+				</alias>
+				<alias background="white" font_style="italic" label_side="left" label_angle="225" uid="2984" x="2387.68" y="1900.34" width="18" height="18">
+					<of>&quot;UNIT_TWh/(Giga*kWh)&quot;</of>
+				</alias>
+				<alias background="white" font_style="italic" label_side="right" uid="2986" x="2991.75" y="1449.75" width="18" height="18">
+					<of>nuclear_electricity_production</of>
+				</alias>
+				<alias background="white" font_style="italic" label_side="top" uid="2988" x="2675.61" y="979.42" width="18" height="18">
+					<of>&quot;UNIT_TWh/(Giga*kWh)&quot;</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="2990" x="2032.17" y="1499" width="18" height="18">
+					<of>renewables_khours_per_year</of>
+				</alias>
+				<alias background="white" font_style="italic" font_weight="bold" label_side="left" uid="2992" x="1317.25" y="1738.75" width="18" height="18">
+					<of>Population_Mp</of>
+				</alias>
+				<alias background="white" font_style="italic" label_side="right" label_angle="45" uid="2994" x="2472.32" y="1531.86" width="18" height="18">
+					<of>&quot;UNIT_TWh/(Giga*kWh)&quot;</of>
+				</alias>
+				<alias font_style="italic" label_side="center" uid="2996" x="1696.21" y="2167.67" width="192.5" height="45">
+					<of>Fossil_Electricity_Capacity</of>
+				</alias>
+				<alias background="white" font_style="italic" label_side="right" uid="2998" x="1306" y="1466" width="18" height="18">
+					<of>electricity_production</of>
+				</alias>
+				<alias font_style="italic" uid="2999" x="2479.57" y="1661" width="18" height="18">
+					<of>addition_of_fossil_electricity_capacity</of>
 				</alias>
 			</view>
 		</views>
