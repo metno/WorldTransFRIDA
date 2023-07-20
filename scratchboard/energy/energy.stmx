@@ -2,7 +2,7 @@
 <xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE">
 	<header>
 		<smile version="1.0" namespace="std, isee" uses_arrays="1" uses_conveyor=""/>
-		<name>MIND-energy</name>
+		<name>energy</name>
 		<uuid>8cf5fa9b-3c7c-40f8-84d4-409bc18ee672</uuid>
 		<vendor>isee systems, inc.</vendor>
 		<product version="3.3" isee:build_number="2953" isee:saved_by_v1="true" lang="en">Stella Architect</product>
@@ -34,6 +34,11 @@
 			<alias>dollar</alias>
 			<alias>dollars</alias>
 		</unit>
+		<unit name="Hours">
+			<eqn/>
+			<alias>hr</alias>
+			<alias>hour</alias>
+		</unit>
 		<unit name="Dollars Per Year">
 			<eqn>$/Years</eqn>
 			<alias>Dollar Per Year</alias>
@@ -44,73 +49,74 @@
 			<alias>yr</alias>
 			<alias>year</alias>
 		</unit>
-		<unit name="US Dollars">
-			<eqn/>
-			<alias>$US</alias>
-			<alias>USD</alias>
-			<alias>US$</alias>
-		</unit>
 	</model_units>
 	<model>
 		<variables>
-			<aux name="Fossil Energy Output">
+			<aux name="Secondary Fossil Energy Output">
 				<eqn>Total_Factor_Productivity_Fossil_Energy*(
 share_of_primary_energy_in_fossil_energy*
-(Primary_Fossil_Energy_Scaling_Parameter*&quot;Fossil_Energy_Resource_(FUEL)&quot;)^
+(Primary_Fossil_Energy_Scaling_Parameter*&quot;Primary_Fossil_Energy_(FUEL)&quot;)^
 (Elasticity_of_Substitution_in_Fossil_Energy_Output)
 +
 (1-share_of_primary_energy_in_fossil_energy) *
-Fossil_Energy_Capital^(Elasticity_of_Substitution_in_Fossil_Energy_Output)
+(Fossil_Energy_Capital_Scaling_Parameter*Fossil_Energy_Capital)^(Elasticity_of_Substitution_in_Fossil_Energy_Output)
 )^(1/Elasticity_of_Substitution_in_Fossil_Energy_Output)</eqn>
+				<units>zJ/Year</units>
 			</aux>
 			<stock name="Fossil Energy Capital">
 				<eqn>0.06</eqn>
 				<inflow>Investment_in_Fossil_Energy_Capital</inflow>
 				<outflow>Depreciation_of_Fossil_Energy_Capital</outflow>
 				<non_negative/>
+				<units>$</units>
 			</stock>
 			<flow name="Investment in Fossil\nEnergy Capital">
 				<eqn>Investments_in_Fossil_Energy_Capital_in_Money</eqn>
 				<non_negative/>
+				<units>Dollars Per Year</units>
 			</flow>
 			<aux name="depreciation rate of fossil energy capital">
 				<eqn>0.05</eqn>
+				<units>1/year</units>
 			</aux>
 			<aux name="Total Factor Productivity\nFossil Energy">
 				<eqn>3.85000</eqn>
+				<units>zJ/Year</units>
 			</aux>
 			<aux name="share of primary energy in fossil energy">
 				<eqn>0.5</eqn>
 				<units>Dimensionless</units>
 			</aux>
-			<stock name="Extracted Fossil Energy Resources">
-				<eqn>&quot;Initial_Extraction_of_Fossil_Energy_[MtC]&quot;</eqn>
+			<stock name="Extracted Fossil\nEnergy Resources">
+				<eqn>Initial_Extraction_of_Fossil_Energy</eqn>
 				<inflow>Fossil_Energy_Extraction</inflow>
 				<non_negative/>
-				<units>MtC</units>
+				<units>gtC</units>
 			</stock>
 			<flow name="Fossil Energy Extraction">
 				<eqn>Fossil_Fuel_Extraction_Capital*Fossil_Fuel_Extraction_Productivity</eqn>
 				<non_negative/>
-				<units>MtC/Year</units>
+				<units>gtC/Year</units>
 			</flow>
-			<aux name="Fossil Energy Resource (FUEL)">
+			<aux name="Primary Fossil Energy (FUEL)">
 				<eqn>Fossil_Energy_Extraction/Carbon_Intensity</eqn>
+				<units>gtC/Year</units>
 			</aux>
 			<aux name="Carbon Intensity">
-				<eqn>&quot;Initial_Extraction_of_Fossil_Energy_[MtC]&quot;/0.32</eqn>
+				<eqn>Initial_Extraction_of_Fossil_Energy/pef</eqn>
+				<units>gtC/gtC</units>
 			</aux>
 			<aux name="Primary Fossil Energy\nScaling Parameter">
 				<eqn>0.18750</eqn>
-				<units>Dimensionless</units>
+				<units>Year/gtC</units>
 			</aux>
 			<aux name="Elasticity of Substitution in Fossil Energy Output">
 				<eqn>-2.33333</eqn>
 				<units>Dimensionless</units>
 			</aux>
-			<aux name="Resource base [GtC]">
+			<aux name="Resource base">
 				<eqn>3500</eqn>
-				<units>GtC</units>
+				<units>gtC</units>
 			</aux>
 			<aux name="Fossil Fuel Extraction\nScarcity Effect">
 				<eqn>&quot;Initial_extraction_costs_[$_per_tC]&quot;/&quot;Marginal_Extraction_Costs_[$]&quot;</eqn>
@@ -124,53 +130,56 @@ Fossil_Energy_Capital^(Elasticity_of_Substitution_in_Fossil_Energy_Output)
 				<units>$</units>
 			</stock>
 			<aux name="Fossil Fuel Extraction Productivity">
-				<eqn>Fossil_Fuel_Extraction_Scarcity_Effect*Fossil_Extraction_Accumulated_Knowledge</eqn>
-				<units>Dimensionless</units>
+				<eqn>Fossil_Fuel_Extraction_Scarcity_Effect*Fossil_Extraction_Accumulated_Knowledge*knowledgePerProductivity</eqn>
+				<units>gtC/$/Year</units>
 			</aux>
 			<aux name="Initial extraction\ncosts [$ per tC]">
 				<eqn>113</eqn>
-				<units>USD/tC</units>
+				<units>$/gtC</units>
 			</aux>
 			<aux name="Marginal Extraction Costs [$]">
-				<eqn>&quot;Initial_extraction_costs_[$_per_tC]&quot;+&quot;Slope_of_cost_curve_[$_per_tC]&quot;*(Extracted_Fossil_Energy_Resources/&quot;Resource_base_[GtC]&quot;)^&quot;Exponent_of_cost_curve_[n]&quot;</eqn>
-				<units>USD</units>
+				<eqn>&quot;Initial_extraction_costs_[$_per_tC]&quot;+Slope_of_cost_curve*(Extracted_Fossil_Energy_Resources/Resource_base)^Exponent_of_cost_curve</eqn>
+				<units>$/gtC</units>
 			</aux>
-			<aux name="Slope of cost curve [$ per tC]">
+			<aux name="Slope of cost curve">
 				<eqn>700</eqn>
-				<units>USD/tC</units>
+				<units>$/gtC</units>
 			</aux>
 			<aux name="maximum increase of capital\ncoefficient in fossil\nresource sector [n]">
-				<eqn>2*&quot;Initial_Extraction_of_Fossil_Energy_[MtC]&quot;/initial_capital_stock_in_fossil_resource_sector</eqn>
-				<units>Dimensionless</units>
+				<eqn>someFactor*Initial_Extraction_of_Fossil_Energy/initial_capital_stock_in_fossil_resource_sector</eqn>
+				<units>extractionknowledge</units>
 			</aux>
 			<stock name="Fossil Extraction\nAccumulated Knowledge">
 				<eqn>1</eqn>
 				<inflow>Change_in_Fossil_Learning_by_Doing_Effect</inflow>
 				<non_negative/>
+				<units>extractionknowledge</units>
 			</stock>
 			<flow name="Change in Fossil Learning by Doing Effect">
 				<eqn>Fossil_Extraction_Accumulated_Knowledge/(&quot;learning_time_in_resource_sector_[n]&quot;*&quot;maximum_increase_of_capital_coefficient_in_fossil_resource_sector_[n]&quot;) *
 (&quot;maximum_increase_of_capital_coefficient_in_fossil_resource_sector_[n]&quot;-Fossil_Extraction_Accumulated_Knowledge)*
-((Fossil_Energy_Extraction/&quot;Initial_Extraction_of_Fossil_Energy_[MtC]&quot;)^&quot;learning_elasticity_of_the_resource_sector_[n]&quot; -1)</eqn>
+((Extracted_Fossil_Energy_Resources/Initial_Extraction_of_Fossil_Energy)^learning_elasticity_of_the_resource_sector -1)</eqn>
+				<units>extractionknowledge/Year</units>
 			</flow>
 			<aux name="learning time\nin resource sector [n]">
 				<eqn>1/0.01</eqn>
-				<units>Dimensionless</units>
+				<units>Year</units>
 			</aux>
-			<aux name="Initial Extraction\nof Fossil Energy [MtC]">
+			<aux name="Initial Extraction\nof Fossil Energy">
 				<doc>* Data based on Marland et al., CDIAC, 2006  (cement manufacture included)
 * Link: http://cdiac.ornl.gov/trends/emis/tre_glob.htm
 1995</doc>
 				<eqn>6.402</eqn>
-				<units>MtC</units>
+				<units>gtC</units>
 			</aux>
-			<aux name="learning elasticity of the resource sector [n]">
+			<aux name="learning elasticity of\nthe resource sector">
 				<eqn>0.4</eqn>
 				<units>Dimensionless</units>
 			</aux>
 			<flow name="Depreciation of\nFossil Energy Capital">
 				<eqn>Fossil_Energy_Capital*depreciation_rate_of_fossil_energy_capital</eqn>
 				<non_negative/>
+				<units>Dollars Per Year</units>
 			</flow>
 			<flow name="Depreciation of Fuel Extraction Capital">
 				<eqn>Depreciation_rate_of_Fuel_Extraction_Capital*Fossil_Fuel_Extraction_Capital</eqn>
@@ -179,8 +188,9 @@ Fossil_Energy_Capital^(Elasticity_of_Substitution_in_Fossil_Energy_Output)
 			</flow>
 			<aux name="Depreciation rate of Fuel Extraction Capital">
 				<eqn>0.05</eqn>
+				<units>1/year</units>
 			</aux>
-			<aux name="Exponent of cost curve [n]">
+			<aux name="Exponent of cost curve">
 				<eqn>2</eqn>
 				<units>Dimensionless</units>
 			</aux>
@@ -195,14 +205,17 @@ Fossil_Energy_Capital^(Elasticity_of_Substitution_in_Fossil_Energy_Output)
 			</flow>
 			<aux name="Renewable Energy Output">
 				<doc>0.0000000036 is gwh2zj</doc>
-				<eqn>0.0000000036 * Renewable_Energy_Full_Load_Hours * 
-Total_Renewable_Energy_Capacity</eqn>
+				<eqn>Renewable_Energy_Full_Load_Hours * 
+Total_Renewable_Energy_Capacity * gWh_to_zJ</eqn>
+				<units>zJ/Years</units>
 			</aux>
 			<aux name="Renewable Energy Full Load Hours">
 				<eqn>2190</eqn>
+				<units>hours/year</units>
 			</aux>
 			<aux name="Total Energy Output">
-				<eqn>Fossil_Energy_Output+Renewable_Energy_Output</eqn>
+				<eqn>Secondary_Fossil_Energy_Output+Renewable_Energy_Output</eqn>
+				<units>zJ/Year</units>
 			</aux>
 			<stock name="Renewable Energy Installed Capacity">
 				<dimensions>
@@ -216,7 +229,7 @@ Total_Renewable_Energy_Capacity</eqn>
 				<conveyor exponential_leak="true">
 					<len>Renewable_Energy_Capacity_Vintage_Duration</len>
 				</conveyor>
-				<units>KJ</units>
+				<units>gW</units>
 			</stock>
 			<flow name="Renewable Energy Capacity Construction">
 				<dimensions>
@@ -224,7 +237,7 @@ Total_Renewable_Energy_Capacity</eqn>
 				</dimensions>
 				<eqn>IF(Renewable_Age_Group=1)THEN Investments_in_Renewable_Energy_Capcity_in_Money*Productivity_of_Renewable_Energy_Investments ELSE 0</eqn>
 				<non_negative/>
-				<units>KJ/Years</units>
+				<units>gW/Year</units>
 			</flow>
 			<flow name="Renewable Energy Capacity Vintage Aging Out">
 				<dimensions>
@@ -232,7 +245,7 @@ Total_Renewable_Energy_Capacity</eqn>
 				</dimensions>
 				<eqn>0</eqn>
 				<non_negative/>
-				<units>KJ/Years</units>
+				<units>gW/Year</units>
 			</flow>
 			<flow name="Renewable Energy Capacity Vintage Aging In">
 				<dimensions>
@@ -240,11 +253,11 @@ Total_Renewable_Energy_Capacity</eqn>
 				</dimensions>
 				<eqn>Renewable_Energy_Capacity_Vintage_Aging_Out[Renewable_Age_Group-1]</eqn>
 				<non_negative/>
-				<units>KJ/Years</units>
+				<units>gW/Year</units>
 			</flow>
 			<aux name="Total Renewable Energy Capacity">
 				<eqn>SUM(Renewable_Energy_Installed_Capacity)</eqn>
-				<units>KJ</units>
+				<units>gW</units>
 			</aux>
 			<flow name="Renewable Energy\nCapacity Decay">
 				<dimensions>
@@ -253,7 +266,7 @@ Total_Renewable_Energy_Capacity</eqn>
 				<eqn>(Renewable_Energy_Capacity_Decay_Fractions)/Renewable_Energy_Capacity_Vintage_Duration</eqn>
 				<non_negative/>
 				<leak/>
-				<units>KJ/Years</units>
+				<units>gW/Year</units>
 			</flow>
 			<aux name="Renewable Energy Capacity Decay Fractions">
 				<dimensions>
@@ -292,13 +305,13 @@ Total_Renewable_Energy_Capacity</eqn>
 			</aux>
 			<aux name="Productivity of\nRenewable Energy\nInvestments">
 				<eqn>1/(Renewable_Energy_Floor_Costs+Renewable_Energy_Reducible_Installation_Costs)</eqn>
-				<units>KJ/$</units>
+				<units>gW/$</units>
 			</aux>
 			<aux name="Renewable Energy\nReducible Installation\nCosts">
 				<eqn>Initial_Renewable_Energy_Installation_Costs *
 (SUM(Initial_Installed_Renewable_Energy_Capacity)/Cumulative_Renewable_Energy_Capacity_Construction) ^ 
 (-LN(1-Renewable_Energy_Learning_Rate)/LN(2))</eqn>
-				<units>$/KJ</units>
+				<units>$/gW</units>
 			</aux>
 			<aux name="Renewable Energy\nLearning Rate">
 				<eqn>0.15</eqn>
@@ -306,22 +319,22 @@ Total_Renewable_Energy_Capacity</eqn>
 			</aux>
 			<aux name="Renewable Energy\nFloor Costs">
 				<eqn>500</eqn>
-				<units>$/KJ</units>
+				<units>$/gW</units>
 			</aux>
 			<aux name="Initial Renewable Energy Installation Costs">
 				<eqn>700</eqn>
-				<units>$/KJ</units>
+				<units>$/gW</units>
 			</aux>
 			<stock name="Cumulative Renewable Energy Capacity Construction">
 				<eqn>SUM(Initial_Installed_Renewable_Energy_Capacity)</eqn>
 				<inflow>accumulating_Renewable_Energy_Construction</inflow>
 				<non_negative/>
-				<units>KJ</units>
+				<units>gW</units>
 			</stock>
 			<flow name="accumulating Renewable Energy Construction">
 				<eqn>Renewable_Energy_Capacity_Construction[1]</eqn>
 				<non_negative/>
-				<units>KJ/Years</units>
+				<units>gW/Year</units>
 			</flow>
 			<aux name="Initial Installed Renewable Energy Capacity">
 				<dimensions>
@@ -348,7 +361,7 @@ Total_Renewable_Energy_Capacity</eqn>
 				<element subscript="7">
 					<eqn>2.5175186</eqn>
 				</element>
-				<units>KJ</units>
+				<units>gW</units>
 			</aux>
 			<aux name="Investments in Fossil\nEnergy Capital in Money">
 				<eqn>STEP(1e5, 5)</eqn>
@@ -357,6 +370,31 @@ Total_Renewable_Energy_Capacity</eqn>
 			<aux name="Investments in Fossil\nFuel Extraction Capital">
 				<eqn>STEP(1e5, 5)</eqn>
 				<units>Dollars Per Year</units>
+			</aux>
+			<aux name="Fossil Energy Capital Scaling Parameter">
+				<eqn>1</eqn>
+				<units>1/$</units>
+			</aux>
+			<aux name="test">
+				<eqn>(Primary_Fossil_Energy_Scaling_Parameter*&quot;Primary_Fossil_Energy_(FUEL)&quot;)^
+(Elasticity_of_Substitution_in_Fossil_Energy_Output)</eqn>
+				<units>gtC/gtC</units>
+			</aux>
+			<aux name="pef">
+				<eqn>0.32</eqn>
+				<units>gtC</units>
+			</aux>
+			<aux name="knowledgePerProductivity">
+				<eqn>1</eqn>
+				<units>gtC/$/Year/Extractionknowledge</units>
+			</aux>
+			<aux name="someFactor">
+				<eqn>2</eqn>
+				<units>$*extractionknowledge/gtC</units>
+			</aux>
+			<aux name="gWh to zJ">
+				<eqn>3.6E-9</eqn>
+				<units>zJ/(gW*hours)</units>
 			</aux>
 		</variables>
 		<views>
@@ -405,7 +443,7 @@ Total_Renewable_Energy_Capacity</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="47.5" isee:scroll_y="191.25" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:page_rows="2" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -444,7 +482,7 @@ Total_Renewable_Energy_Capacity</eqn>
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<aux x="399.286" y="425.572" name="Fossil Energy Output"/>
+				<aux x="399.286" y="425.572" name="Secondary Fossil Energy Output"/>
 				<stock x="591.54" y="482.659" width="61.4286" height="33.5714" name="Fossil Energy Capital"/>
 				<flow x="546.127" y="498.572" name="Investment in Fossil\nEnergy Capital">
 					<pts>
@@ -455,50 +493,50 @@ Total_Renewable_Energy_Capacity</eqn>
 				<aux x="733.571" y="443.572" name="depreciation rate of fossil energy capital"/>
 				<connector uid="16" angle="161.669">
 					<from>Fossil_Energy_Capital</from>
-					<to>Fossil_Energy_Output</to>
+					<to>Secondary_Fossil_Energy_Output</to>
 				</connector>
 				<aux x="288.143" y="407.572" name="Total Factor Productivity\nFossil Energy"/>
-				<aux x="288.143" y="475.928" name="share of primary energy in fossil energy"/>
-				<stock x="224.715" y="663.214" width="45" height="35" name="Extracted Fossil Energy Resources"/>
+				<aux x="296.715" y="494.817" name="share of primary energy in fossil energy"/>
+				<stock x="224.715" y="663.214" width="45" height="35" name="Extracted Fossil\nEnergy Resources"/>
 				<flow x="167.715" y="680.714" name="Fossil Energy Extraction">
 					<pts>
 						<pt x="110.715" y="680.714"/>
 						<pt x="224.715" y="680.714"/>
 					</pts>
 				</flow>
-				<aux x="288.143" y="574.143" name="Fossil Energy Resource (FUEL)"/>
+				<aux x="288.143" y="574.143" name="Primary Fossil Energy (FUEL)"/>
 				<aux x="399.286" y="574.143" name="Carbon Intensity"/>
 				<connector uid="17" angle="82.4063">
 					<from>Fossil_Energy_Extraction</from>
-					<to>&quot;Fossil_Energy_Resource_(FUEL)&quot;</to>
+					<to>&quot;Primary_Fossil_Energy_(FUEL)&quot;</to>
 				</connector>
 				<connector uid="18" angle="180">
 					<from>Carbon_Intensity</from>
-					<to>&quot;Fossil_Energy_Resource_(FUEL)&quot;</to>
+					<to>&quot;Primary_Fossil_Energy_(FUEL)&quot;</to>
 				</connector>
 				<connector uid="19" angle="53.2007">
-					<from>&quot;Fossil_Energy_Resource_(FUEL)&quot;</from>
-					<to>Fossil_Energy_Output</to>
+					<from>&quot;Primary_Fossil_Energy_(FUEL)&quot;</from>
+					<to>Secondary_Fossil_Energy_Output</to>
 				</connector>
-				<connector uid="20" angle="24.3742">
+				<connector uid="20" angle="34.023">
 					<from>share_of_primary_energy_in_fossil_energy</from>
-					<to>Fossil_Energy_Output</to>
+					<to>Secondary_Fossil_Energy_Output</to>
 				</connector>
 				<connector uid="21" angle="350.801">
 					<from>Total_Factor_Productivity_Fossil_Energy</from>
-					<to>Fossil_Energy_Output</to>
+					<to>Secondary_Fossil_Energy_Output</to>
 				</connector>
-				<aux x="288.143" y="526.286" name="Primary Fossil Energy\nScaling Parameter"/>
-				<connector uid="23" angle="42.1819">
+				<aux x="215.715" y="502.953" name="Primary Fossil Energy\nScaling Parameter"/>
+				<connector uid="23" angle="22.8569">
 					<from>Primary_Fossil_Energy_Scaling_Parameter</from>
-					<to>Fossil_Energy_Output</to>
+					<to>Secondary_Fossil_Energy_Output</to>
 				</connector>
 				<aux x="390.286" y="499.286" width="18" height="18" name="Elasticity of Substitution in Fossil Energy Output"/>
 				<connector uid="24" angle="90">
 					<from>Elasticity_of_Substitution_in_Fossil_Energy_Output</from>
-					<to>Fossil_Energy_Output</to>
+					<to>Secondary_Fossil_Energy_Output</to>
 				</connector>
-				<aux x="278.715" y="932.857" name="Resource base [GtC]"/>
+				<aux x="278.715" y="932.857" name="Resource base"/>
 				<aux x="115.143" y="798.571" name="Fossil Fuel Extraction\nScarcity Effect"/>
 				<stock label_side="top" x="603.254" y="681.587" name="Fossil Fuel Extraction Capital"/>
 				<connector uid="27" angle="151.249">
@@ -516,17 +554,17 @@ Total_Renewable_Energy_Capacity</eqn>
 				</connector>
 				<aux x="85.7147" y="897.857" name="Initial extraction\ncosts [$ per tC]"/>
 				<aux x="189.429" y="897.857" name="Marginal Extraction Costs [$]"/>
-				<aux x="283.572" y="845.159" name="Slope of cost curve [$ per tC]"/>
+				<aux x="283.572" y="845.159" name="Slope of cost curve"/>
 				<connector uid="31" angle="8.13045">
 					<from>&quot;Initial_extraction_costs_[$_per_tC]&quot;</from>
 					<to>&quot;Marginal_Extraction_Costs_[$]&quot;</to>
 				</connector>
 				<connector uid="32" angle="199.907">
-					<from>&quot;Slope_of_cost_curve_[$_per_tC]&quot;</from>
+					<from>Slope_of_cost_curve</from>
 					<to>&quot;Marginal_Extraction_Costs_[$]&quot;</to>
 				</connector>
 				<connector uid="33" angle="161.792">
-					<from>&quot;Resource_base_[GtC]&quot;</from>
+					<from>Resource_base</from>
 					<to>&quot;Marginal_Extraction_Costs_[$]&quot;</to>
 				</connector>
 				<connector uid="34" angle="254.145">
@@ -549,15 +587,11 @@ Total_Renewable_Energy_Capacity</eqn>
 						<pt x="416.429" y="805.556"/>
 					</pts>
 				</flow>
-				<connector uid="37" angle="25.384">
+				<connector uid="37" angle="74.6531">
 					<from>Fossil_Extraction_Accumulated_Knowledge</from>
 					<to>Change_in_Fossil_Learning_by_Doing_Effect</to>
 				</connector>
 				<aux x="409.802" y="841.283" name="learning time\nin resource sector [n]"/>
-				<connector uid="38" angle="338.045">
-					<from>Fossil_Energy_Extraction</from>
-					<to>Change_in_Fossil_Learning_by_Doing_Effect</to>
-				</connector>
 				<connector uid="39" angle="27.8529">
 					<from>&quot;learning_time_in_resource_sector_[n]&quot;</from>
 					<to>Change_in_Fossil_Learning_by_Doing_Effect</to>
@@ -566,14 +600,14 @@ Total_Renewable_Energy_Capacity</eqn>
 					<from>&quot;maximum_increase_of_capital_coefficient_in_fossil_resource_sector_[n]&quot;</from>
 					<to>Change_in_Fossil_Learning_by_Doing_Effect</to>
 				</connector>
-				<aux x="399.286" y="680.714" name="Initial Extraction\nof Fossil Energy [MtC]"/>
+				<aux x="399.286" y="680.714" name="Initial Extraction\nof Fossil Energy"/>
 				<connector uid="41" angle="302.039">
-					<from>&quot;Initial_Extraction_of_Fossil_Energy_[MtC]&quot;</from>
+					<from>Initial_Extraction_of_Fossil_Energy</from>
 					<to>Change_in_Fossil_Learning_by_Doing_Effect</to>
 				</connector>
-				<aux x="409.802" y="897.857" name="learning elasticity of the resource sector [n]"/>
+				<aux x="409.802" y="897.857" name="learning elasticity of\nthe resource sector"/>
 				<connector uid="42" angle="53.777">
-					<from>&quot;learning_elasticity_of_the_resource_sector_[n]&quot;</from>
+					<from>learning_elasticity_of_the_resource_sector</from>
 					<to>Change_in_Fossil_Learning_by_Doing_Effect</to>
 				</connector>
 				<flow x="691.786" y="498.73" name="Depreciation of\nFossil Energy Capital">
@@ -605,9 +639,9 @@ Total_Renewable_Energy_Capacity</eqn>
 					<from>Fossil_Fuel_Extraction_Capital</from>
 					<to>Depreciation_of_Fuel_Extraction_Capital</to>
 				</connector>
-				<aux x="278.715" y="885.873" name="Exponent of cost curve [n]"/>
+				<aux x="278.715" y="885.873" name="Exponent of cost curve"/>
 				<connector uid="49" angle="183.882">
-					<from>&quot;Exponent_of_cost_curve_[n]&quot;</from>
+					<from>Exponent_of_cost_curve</from>
 					<to>&quot;Marginal_Extraction_Costs_[$]&quot;</to>
 				</connector>
 				<connector uid="50" angle="159.333">
@@ -615,7 +649,7 @@ Total_Renewable_Energy_Capacity</eqn>
 					<to>Fossil_Fuel_Extraction_Productivity</to>
 				</connector>
 				<connector uid="51" angle="337.125">
-					<from>&quot;Initial_Extraction_of_Fossil_Energy_[MtC]&quot;</from>
+					<from>Initial_Extraction_of_Fossil_Energy</from>
 					<to>&quot;maximum_increase_of_capital_coefficient_in_fossil_resource_sector_[n]&quot;</to>
 				</connector>
 				<aux x="603.254" y="712.532" name="initial capital stock in fossil resource sector"/>
@@ -624,7 +658,7 @@ Total_Renewable_Energy_Capacity</eqn>
 					<to>&quot;maximum_increase_of_capital_coefficient_in_fossil_resource_sector_[n]&quot;</to>
 				</connector>
 				<connector uid="53" angle="84.2082">
-					<from>&quot;Initial_Extraction_of_Fossil_Energy_[MtC]&quot;</from>
+					<from>Initial_Extraction_of_Fossil_Energy</from>
 					<to>Carbon_Intensity</to>
 				</connector>
 				<flow x="536.131" y="681.587" name="Investment in Fossil\nFuel Extraction Capital">
@@ -641,7 +675,7 @@ Total_Renewable_Energy_Capacity</eqn>
 				</connector>
 				<aux background="#FFAA00" x="668.571" y="315.714" name="Total Energy Output"/>
 				<connector uid="74" angle="34.5633">
-					<from>Fossil_Energy_Output</from>
+					<from>Secondary_Fossil_Energy_Output</from>
 					<to>Total_Energy_Output</to>
 				</connector>
 				<connector uid="75" angle="138.917">
@@ -676,19 +710,19 @@ Total_Renewable_Energy_Capacity</eqn>
 					<from>Renewable_Energy_Installed_Capacity</from>
 					<to>Total_Renewable_Energy_Capacity</to>
 				</connector>
-				<flow x="1276.43" y="796.063" name="Renewable Energy\nCapacity Decay">
+				<flow x="1276.43" y="796.062" name="Renewable Energy\nCapacity Decay">
 					<pts>
-						<pt x="1276.43" y="732.411"/>
+						<pt x="1276.43" y="732.41"/>
 						<pt x="1276.43" y="880.714"/>
 					</pts>
 				</flow>
 				<aux x="1375.04" y="784.699" name="Renewable Energy Capacity Decay Fractions"/>
-				<connector uid="78" angle="186.574">
+				<connector uid="78" angle="186.573">
 					<from>Renewable_Energy_Capacity_Decay_Fractions</from>
 					<to>Renewable_Energy_Capacity_Decay</to>
 				</connector>
 				<aux x="1232.5" y="757.857" name="Renewable Energy Capacity\nVintage Duration"/>
-				<connector uid="79" angle="318.986">
+				<connector uid="79" angle="318.987">
 					<from>Renewable_Energy_Capacity_Vintage_Duration</from>
 					<to>Renewable_Energy_Capacity_Decay</to>
 				</connector>
@@ -755,6 +789,48 @@ Total_Renewable_Energy_Capacity</eqn>
 				<connector uid="91" angle="287.659">
 					<from>Investments_in_Fossil_Fuel_Extraction_Capital</from>
 					<to>Investment_in_Fossil_Fuel_Extraction_Capital</to>
+				</connector>
+				<aux x="505" y="420" name="Fossil Energy Capital Scaling Parameter"/>
+				<connector uid="99" angle="184.16">
+					<from>Fossil_Energy_Capital_Scaling_Parameter</from>
+					<to>Secondary_Fossil_Energy_Output</to>
+				</connector>
+				<aux x="306.143" y="325.556" name="test"/>
+				<connector uid="100" angle="109.876">
+					<from>Primary_Fossil_Energy_Scaling_Parameter</from>
+					<to>test</to>
+				</connector>
+				<connector uid="101" angle="110.858">
+					<from>&quot;Primary_Fossil_Energy_(FUEL)&quot;</from>
+					<to>test</to>
+				</connector>
+				<connector uid="102" angle="142.009">
+					<from>Elasticity_of_Substitution_in_Fossil_Energy_Output</from>
+					<to>test</to>
+				</connector>
+				<aux x="472.222" y="592.143" name="pef"/>
+				<connector uid="103" angle="164.956">
+					<from>pef</from>
+					<to>Carbon_Intensity</to>
+				</connector>
+				<aux x="247.215" y="787.556" name="knowledgePerProductivity"/>
+				<connector uid="104" angle="166.559">
+					<from>knowledgePerProductivity</from>
+					<to>Fossil_Fuel_Extraction_Productivity</to>
+				</connector>
+				<aux x="691.786" y="777" name="someFactor"/>
+				<connector uid="105" angle="193.032">
+					<from>someFactor</from>
+					<to>&quot;maximum_increase_of_capital_coefficient_in_fossil_resource_sector_[n]&quot;</to>
+				</connector>
+				<connector uid="120" angle="345.218">
+					<from>Extracted_Fossil_Energy_Resources</from>
+					<to>Change_in_Fossil_Learning_by_Doing_Effect</to>
+				</connector>
+				<aux x="992.222" y="397.222" name="gWh to zJ"/>
+				<connector uid="122" angle="208.025">
+					<from>gWh_to_zJ</from>
+					<to>Renewable_Energy_Output</to>
 				</connector>
 			</view>
 		</views>
