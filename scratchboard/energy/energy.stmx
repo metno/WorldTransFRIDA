@@ -23,8 +23,10 @@
 	</isee:time_formats>
 	<default_format precision="full" scale_by="1" delimit_000s="true"/>
 	<data>
-		<import isee:overwrite="false" isee:timevarying="true" isee:interpolate="b" resource="r../MINDinvestementsBAU.csv"/>
+		<import enabled="false" isee:overwrite="false" isee:timevarying="true" isee:interpolate="b" resource="r../MINDinvestementsBAU.csv"/>
 		<import isee:overwrite="false" isee:timevarying="true" resource="r../energyDemandInputsFromFRIDA.csv"/>
+		<import enabled="false" isee:overwrite="false" isee:timevarying="true" isee:interpolate="b" resource="r../MINDinvestements2-5deg.csv"/>
+		<import isee:overwrite="false" isee:timevarying="true" isee:interpolate="b" resource="r../MINDinvestements2deg.csv"/>
 	</data>
 	<model_units>
 		<unit name="Dimensionless">
@@ -32,11 +34,6 @@
 			<alias>dmnl</alias>
 			<alias>unitless</alias>
 			<alias>fraction</alias>
-		</unit>
-		<unit name="Dollars Per Year">
-			<eqn>$/Years</eqn>
-			<alias>Dollar Per Year</alias>
-			<alias>$ per year</alias>
 		</unit>
 		<unit name="G">
 			<eqn>Giga</eqn>
@@ -181,20 +178,20 @@
 				<doc>This is total fossil energy production (after burning/transofrmation of fossil fuel)
 
 Calibrate to energy provision from fossil sources</doc>
-				<eqn>Total_Factor_Productivity_Fossil_Energy*(
+				<eqn>zJ_to_TWh*(Total_Factor_Productivity_Fossil_Energy*(
 share_of_primary_energy_in_fossil_energy*
-(Primary_Fossil_Energy_Scaling_Parameter*&quot;Primary_Fossil_Energy_(FUEL)&quot;)^
+(Primary_Fossil_Energy_Scaling_Parameter*(1/zJ_to_TWh)*&quot;Primary_Fossil_Energy_(FUEL)&quot;)^
 (Elasticity_of_Substitution_in_Fossil_Energy_Output)
 +
 (1-share_of_primary_energy_in_fossil_energy) *
 (Fossil_Energy_Capital_Scaling_Parameter*Fossil_Energy_Capital)^(Elasticity_of_Substitution_in_Fossil_Energy_Output)
-)^(1/Elasticity_of_Substitution_in_Fossil_Energy_Output)</eqn>
-				<units>zJ/Year</units>
+)^(1/Elasticity_of_Substitution_in_Fossil_Energy_Output))</eqn>
+				<units>TWh/Year</units>
 			</aux>
 			<flow name="Investment in Fossil\nEnergy Capital">
-				<eqn>Investments_in_Fossil_Energy_Capital</eqn>
+				<eqn>scaled_Investments_in_Fossil_Energy_Capital</eqn>
 				<non_negative/>
-				<units>$/Year</units>
+				<units>T$/Year</units>
 			</flow>
 			<aux name="depreciation rate of fossil energy capital">
 				<eqn>0.05</eqn>
@@ -223,8 +220,8 @@ share_of_primary_energy_in_fossil_energy*
 				<doc>This is extracted usable fuels in the current period.
 Data for calibration would be total fossil energy production:
 https://ourworldindata.org/grapher/fossil-fuel-production</doc>
-				<eqn>Fossil_Energy_Extraction*Carbon_Intensity</eqn>
-				<units>zJ/Year</units>
+				<eqn>Fossil_Energy_Extraction*zJ_to_TWh*Carbon_Intensity</eqn>
+				<units>TWh/Year</units>
 			</aux>
 			<aux name="Carbon Intensity">
 				<doc>initial (1995) primary energy per unit of carbon projected into future [ZJ per GTC];
@@ -259,8 +256,8 @@ quresex0 = 6.402;</doc>
 				<units>Dimensionless</units>
 			</aux>
 			<aux name="Fossil Fuel Extraction Productivity">
-				<eqn>Fossil_Extraction_Accumulated_Knowledge*knowledgePerProductivity/Fossil_Fuel_Extraction_Scarcity_Effect</eqn>
-				<units>gtC/$/Year</units>
+				<eqn>Fossil_Energy_Capital_Productivity*Fossil_Extraction_Accumulated_Knowledge*knowledgePerProductivity/Fossil_Fuel_Extraction_Scarcity_Effect</eqn>
+				<units>gtC/T$/Year</units>
 			</aux>
 			<aux name="Initial extraction\ncosts">
 				<doc>Initial extraction costs [$ per tC]
@@ -331,14 +328,14 @@ maximum_increase_of_capital_coefficient_in_fossil_resource_sector
 			<flow name="Depreciation of\nFossil Energy Capital">
 				<eqn>Fossil_Energy_Capital*depreciation_rate_of_fossil_energy_capital</eqn>
 				<non_negative/>
-				<units>$/Year</units>
+				<units>T$/Year</units>
 			</flow>
 			<flow name="Depreciation of Fuel Extraction Capital">
 				<eqn>{(1-EXP(-Depreciation_rate_of_Fuel_Extraction_Capital*DT))
 *Fossil_Fuel_Extraction_Capital}
 Depreciation_rate_of_Fuel_Extraction_Capital*Fossil_Fuel_Extraction_Capital</eqn>
 				<non_negative/>
-				<units>$/Year</units>
+				<units>T$/Year</units>
 			</flow>
 			<aux name="Depreciation rate of Fuel Extraction Capital">
 				<eqn>0.05</eqn>
@@ -348,28 +345,28 @@ Depreciation_rate_of_Fuel_Extraction_Capital*Fossil_Fuel_Extraction_Capital</eqn
 				<eqn>2</eqn>
 				<units>Dimensionless</units>
 			</aux>
-			<aux name="initial fossil fuel extraction capital">
+			<aux name="initial fossil fuel\nextraction capital">
 				<doc>value 0.05 * 100t$ taken from gams code
 
 MIND 2005 Paper lists 5 trillion USD for 1995
 </doc>
-				<eqn>0.05</eqn>
-				<units>$</units>
+				<eqn>5</eqn>
+				<units>T$</units>
 			</aux>
 			<flow name="Investment in Fossil\nFuel Extraction Capital">
 				<eqn>{Investments_in_Fossil_Fuel_Extraction_Capital * ((1-EXP(-Depreciation_rate_of_Fuel_Extraction_Capital*DT)) / Depreciation_rate_of_Fuel_Extraction_Capital)
 }
-Investments_in_Fossil_Fuel_Extraction_Capital</eqn>
+scaled_Investments_in_Fossil_Fuel_Extraction_Capital</eqn>
 				<non_negative/>
-				<units>$/Year</units>
+				<units>T$/Year</units>
 			</flow>
 			<aux name="Renewable Energy Output">
 				<doc>0.0000000036 is gwh2zj
 
 Calibrate to energy provision from renewable sources</doc>
 				<eqn>Renewable_Energy_Full_Load_Hours * 
-Total_Renewable_Energy_Capacity * gWh_to_zJ</eqn>
-				<units>zJ/Years</units>
+Total_Renewable_Energy_Capacity * gWh_to_TWh</eqn>
+				<units>TWh/Years</units>
 			</aux>
 			<aux name="Renewable Energy Full Load Hours">
 				<eqn>2190</eqn>
@@ -378,7 +375,7 @@ Total_Renewable_Energy_Capacity * gWh_to_zJ</eqn>
 			<aux name="Total Energy Output">
 				<doc>This is total energy production of both fossil and renewable</doc>
 				<eqn>Secondary_Fossil_Energy_Output+Renewable_Energy_Output</eqn>
-				<units>zJ/Year</units>
+				<units>TWh/Year</units>
 			</aux>
 			<stock name="Renewable Energy Installed Capacity">
 				<dimensions>
@@ -399,11 +396,10 @@ Total_Renewable_Energy_Capacity * gWh_to_zJ</eqn>
 					<dim name="Renewable_Age_Group"/>
 				</dimensions>
 				<eqn>IF(Renewable_Age_Group=1)THEN 
-kilo_to_giga *
-Productivity_of_Renewable_Energy_Investments*
-tera_to_non *
-1/monetary_scale *
-Investments_in_Renewable_Energy_Capacity 
+kW_to_GW *
+Productivity_of_Renewable_Energy_Investments *
+&quot;T$_to_$&quot; *
+scaled_Investments_in_Renewable_Energy_Capacity 
 ELSE 0</eqn>
 				<non_negative/>
 				<units>gW/Year</units>
@@ -462,11 +458,11 @@ ELSE 0</eqn>
 			</aux>
 			<aux name="Investments in Renewable\nEnergy Capacity">
 				<eqn>0.000512112</eqn>
-				<units>Dollars Per Year</units>
+				<units>T$/Year</units>
 			</aux>
 			<aux name="Productivity of\nRenewable Energy\nInvestments">
 				<eqn>1/(Renewable_Energy_Floor_Costs+Renewable_Energy_Reducible_Installation_Costs)</eqn>
-				<units>gW/$</units>
+				<units>kW/$</units>
 			</aux>
 			<aux name="Renewable Energy\nLearning Rate">
 				<eqn>0.135524662135</eqn>
@@ -474,12 +470,12 @@ ELSE 0</eqn>
 			</aux>
 			<aux name="Renewable Energy\nFloor Costs">
 				<eqn>500</eqn>
-				<units>$/gW</units>
+				<units>$/kW</units>
 			</aux>
 			<aux name="Initial Renewable Energy Installation Costs">
 				<doc>Calibrate to the initial value of the time series on renewable reducible installation costs</doc>
 				<eqn>700</eqn>
-				<units>$/gW</units>
+				<units>$/kW</units>
 			</aux>
 			<stock name="Cumulative Renewable Energy\nCapacity Construction">
 				<eqn>SUM(Initial_Installed_Renewable_Energy_Capacity)</eqn>
@@ -525,36 +521,33 @@ With the time series of total renewable energy capcity we can calculate the entr
 			</aux>
 			<aux name="Investments in Fossil\nEnergy Capital">
 				<eqn>0.00197013</eqn>
-				<units>Dollars Per Year</units>
+				<units>T$/Year</units>
 			</aux>
 			<aux name="Investments in Fossil\nFuel Extraction Capital">
+				<doc>is actulally in 100T$/year</doc>
 				<eqn>0.00298302</eqn>
-				<units>Dollars Per Year</units>
+				<units>T$/Year</units>
 			</aux>
 			<aux name="Fossil Energy Capital Scaling Parameter">
-				<eqn>1</eqn>
-				<units>1/$</units>
+				<eqn>0.01</eqn>
+				<units>1/T$</units>
 			</aux>
 			<aux name="knowledgePerProductivity">
 				<eqn>1</eqn>
-				<units>gtC/$/Year/Extractionknowledge</units>
+				<units>gtC/T$/Year/Extractionknowledge</units>
 			</aux>
-			<aux name="someFactor">
-				<eqn>2</eqn>
-				<units>$*extractionknowledge/gtC</units>
-			</aux>
-			<aux name="gWh to zJ">
-				<eqn>3.6e-9</eqn>
-				<units>zJ/(gW*hours)</units>
+			<aux name="gWh to TWh">
+				<eqn>1e-3</eqn>
+				<units>TWh/(gW*hours)</units>
 			</aux>
 			<aux name="initial fossil energy capital">
 				<doc>MIND 2005 paper lists 6 trillion USD as the initial value for 1995</doc>
-				<eqn>0.06</eqn>
-				<units>$</units>
+				<eqn>6</eqn>
+				<units>T$</units>
 			</aux>
 			<aux name="initialFossilEnergyExtraction">
 				<doc>The model should be calibrated that this matches the most recent year of fossil energy extraction data</doc>
-				<eqn>initial_fossil_fuel_extraction_capital*(Initial_extraction_costs/initial_marginal_extraction_costs)*initial_fossil_extraction_knowledge*knowledgePerProductivity</eqn>
+				<eqn>initial_fossil_fuel_extraction_capital*Fossil_Energy_Capital_Productivity*(Initial_extraction_costs/initial_marginal_extraction_costs)*initial_fossil_extraction_knowledge*knowledgePerProductivity</eqn>
 				<units>gtC/Year</units>
 			</aux>
 			<aux name="initial fossil\nextraction knowledge">
@@ -567,23 +560,19 @@ Slope_of_cost_curve*
 (initial_extracted_fossil_resources/Resource_base)^Exponent_of_cost_curve</eqn>
 				<units>$/gtC</units>
 			</aux>
-			<aux name="monetary scale">
-				<eqn>0.01</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="kilo to giga">
+			<aux name="kW to GW">
 				<eqn>0.000001</eqn>
-				<units>dmnl</units>
+				<units>GW/kW</units>
 			</aux>
-			<aux name="tera to non">
+			<aux name="T$ to $">
 				<eqn>1000000000000</eqn>
-				<units>dmnl</units>
+				<units>$/T$</units>
 			</aux>
 			<aux name="learning rate parameter in renewable energy sector">
 				<eqn>-((LN(1-Renewable_Energy_Learning_Rate))/LN(2))</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="stepping on toes parameter in renewable energy sector">
+			<aux name="stepping on toes parameter\nin renewable energy sector">
 				<eqn>-0.00232366447</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -598,20 +587,20 @@ Slope_of_cost_curve*
 				<inflow>Investment_in_Fossil_Fuel_Extraction_Capital</inflow>
 				<outflow>Depreciation_of_Fuel_Extraction_Capital</outflow>
 				<non_negative/>
-				<units>$</units>
+				<units>T$</units>
 			</stock>
 			<stock name="Fossil Energy Capital">
 				<eqn>initial_fossil_energy_capital</eqn>
 				<inflow>Investment_in_Fossil_Energy_Capital</inflow>
 				<outflow>Depreciation_of_Fossil_Energy_Capital</outflow>
 				<non_negative/>
-				<units>$</units>
+				<units>T$</units>
 			</stock>
 			<aux name="Renewable Energy\nReducible Installation\nCosts">
 				<doc>Price per energy unit </doc>
 				<eqn>Initial_Renewable_Energy_Installation_Costs * (SUM(Initial_Installed_Renewable_Energy_Capacity)  /  Cumulative_Renewable_Energy_Capacity_Construction)^learning_rate_parameter_in_renewable_energy_sector
 * Stepping_on_Toes_Punishment</eqn>
-				<units>$/GW</units>
+				<units>$/kW</units>
 			</aux>
 			<aux name="Stepping on Toes Punishment">
 				<eqn>(1+Perceived_cumulative_ren_energy_capacity_construction/Cumulative_Renewable_Energy_Capacity_Construction)^stepping_on_toes_parameter_in_renewable_energy_sector</eqn>
@@ -714,7 +703,7 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 				<units>Mtoe/year</units>
 			</aux>
 			<aux name="Energy Balance">
-				<eqn>demand_for_electricity/(Total_Energy_Output*zJ_to_TWh)</eqn>
+				<eqn>demand_for_electricity/(Total_Energy_Output)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="zJ to TWh">
@@ -732,7 +721,28 @@ Calibration from FRIDA 0.1 or from MIND</doc>
 			<aux name="CO2 emissions\nfrom fossil fuels">
 				<doc>Calibration from FRIDA 0.1 , but in principle should be equal to extracted carbon</doc>
 				<eqn>Fossil_Energy_Extraction</eqn>
-				<units>GtC</units>
+				<units>GtC/Year</units>
+			</aux>
+			<aux name="MIND Monetary Conversion">
+				<eqn>100</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="scaled Investments in Fossil\nFuel Extraction Capital">
+				<eqn>Investments_in_Fossil_Fuel_Extraction_Capital*MIND_Monetary_Conversion</eqn>
+				<units>T$/Year</units>
+			</aux>
+			<aux name="Fossil Energy Capital Productivity">
+				<doc>Implied in the MIND code as all units were in 100T$ and this model is in T$</doc>
+				<eqn>0.01</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="scaled Investments in Fossil Energy Capital">
+				<eqn>Investments_in_Fossil_Energy_Capital*MIND_Monetary_Conversion</eqn>
+				<units>T$/Year</units>
+			</aux>
+			<aux name="scaled Investments in Renewable Energy Capacity">
+				<eqn>MIND_Monetary_Conversion*Investments_in_Renewable_Energy_Capacity</eqn>
+				<units>T$/Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -782,7 +792,7 @@ Calibration from FRIDA 0.1 or from MIND</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="742.143" isee:scroll_y="160" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="1315" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -860,24 +870,24 @@ Calibration from FRIDA 0.1 or from MIND</doc>
 					<from>Total_Factor_Productivity_Fossil_Energy</from>
 					<to>Secondary_Fossil_Energy_Output</to>
 				</connector>
-				<aux x="1329.43" y="657.48" name="Primary Fossil Energy\nScaling Parameter"/>
-				<connector uid="23" angle="50.7104">
+				<aux x="1291.57" y="584.322" name="Primary Fossil Energy\nScaling Parameter"/>
+				<connector uid="23" angle="0">
 					<from>Primary_Fossil_Energy_Scaling_Parameter</from>
 					<to>Secondary_Fossil_Energy_Output</to>
 				</connector>
-				<aux x="1407.29" y="477.893" name="Elasticity of Substitution\nin Fossil Energy Output"/>
-				<connector uid="24" angle="260.401">
+				<aux x="1395.13" y="495.893" name="Elasticity of Substitution\nin Fossil Energy Output"/>
+				<connector uid="24" angle="266.222">
 					<from>Elasticity_of_Substitution_in_Fossil_Energy_Output</from>
 					<to>Secondary_Fossil_Energy_Output</to>
 				</connector>
 				<aux x="1268.71" y="1091.61" name="Resource base"/>
-				<aux x="1105.14" y="957.321" name="Fossil Fuel Extraction\nScarcity Effect"/>
-				<aux x="1157.72" y="906.607" name="Fossil Fuel Extraction Productivity"/>
-				<connector uid="28" angle="58.5432">
+				<aux x="1123.74" y="985.321" name="Fossil Fuel Extraction\nScarcity Effect"/>
+				<aux x="1134.57" y="928.306" name="Fossil Fuel Extraction Productivity"/>
+				<connector uid="28" angle="79.2416">
 					<from>Fossil_Fuel_Extraction_Scarcity_Effect</from>
 					<to>Fossil_Fuel_Extraction_Productivity</to>
 				</connector>
-				<connector uid="30" angle="90">
+				<connector uid="30" angle="75.3949">
 					<from>Fossil_Fuel_Extraction_Productivity</from>
 					<to>Fossil_Energy_Extraction</to>
 				</connector>
@@ -900,7 +910,7 @@ Calibration from FRIDA 0.1 or from MIND</doc>
 					<from>Extracted_Fossil_Energy_Resources</from>
 					<to>Marginal_Extraction_Costs</to>
 				</connector>
-				<connector uid="35" angle="126.804">
+				<connector uid="35" angle="127.998">
 					<from>Marginal_Extraction_Costs</from>
 					<to>Fossil_Fuel_Extraction_Scarcity_Effect</to>
 				</connector>
@@ -909,7 +919,7 @@ Calibration from FRIDA 0.1 or from MIND</doc>
 					<to>Fossil_Fuel_Extraction_Scarcity_Effect</to>
 				</connector>
 				<aux x="1611.25" y="1006.75" name="maximum increase of capital\ncoefficient in fossil\nresource sector"/>
-				<flow x="1479.09" y="967.321" name="Change in Fossil Learning by Doing Effect">
+				<flow label_side="bottom" x="1479.09" y="967.321" name="Change in Fossil Learning by Doing Effect">
 					<pts>
 						<pt x="1540.4" y="967.321"/>
 						<pt x="1429.79" y="967.321"/>
@@ -956,16 +966,16 @@ Calibration from FRIDA 0.1 or from MIND</doc>
 					<from>Exponent_of_cost_curve</from>
 					<to>Marginal_Extraction_Costs</to>
 				</connector>
-				<aux background="#AAAAFF" x="1589.29" y="864" name="initial fossil fuel extraction capital"/>
+				<aux background="#AAAAFF" x="1589.29" y="864" name="initial fossil fuel\nextraction capital"/>
 				<flow x="1524.15" y="840.893" name="Investment in Fossil\nFuel Extraction Capital">
 					<pts>
 						<pt x="1481.51" y="840.893"/>
 						<pt x="1566.79" y="840.893"/>
 					</pts>
 				</flow>
-				<aux background="aqua" x="1917.71" y="584.322" name="Renewable Energy Output"/>
+				<aux background="aqua" x="1902.39" y="584.322" name="Renewable Energy Output"/>
 				<aux x="1823.57" y="602.322" name="Renewable Energy Full Load Hours"/>
-				<connector uid="62" angle="10.8242">
+				<connector uid="62" angle="12.8639">
 					<from>Renewable_Energy_Full_Load_Hours</from>
 					<to>Renewable_Energy_Output</to>
 				</connector>
@@ -1029,42 +1039,29 @@ Calibration from FRIDA 0.1 or from MIND</doc>
 					<to>accumulating_Renewable_Energy_Construction</to>
 				</connector>
 				<aux background="aqua" label_side="bottom" x="2266.42" y="905.449" name="Initial Installed\nRenewable Energy Capacity"/>
-				<connector uid="87" angle="269.616">
-					<from>Investments_in_Renewable_Energy_Capacity</from>
-					<to>Renewable_Energy_Capacity_Construction</to>
-				</connector>
 				<connector uid="88" angle="87.3958">
 					<from>Productivity_of_Renewable_Energy_Investments</from>
 					<to>Renewable_Energy_Capacity_Construction</to>
 				</connector>
-				<connector uid="89" angle="143.091">
+				<connector uid="89" angle="151.612">
 					<from>Total_Renewable_Energy_Capacity</from>
 					<to>Renewable_Energy_Output</to>
 				</connector>
 				<aux background="#AAFF00" x="1536.13" y="387.231" name="Investments in Fossil\nEnergy Capital"/>
-				<connector uid="90" angle="271.238">
-					<from>Investments_in_Fossil_Energy_Capital</from>
-					<to>Investment_in_Fossil_Energy_Capital</to>
-				</connector>
-				<aux background="#AAFF00" x="1421.79" y="387.231" name="Investments in Fossil\nFuel Extraction Capital"/>
-				<connector uid="91" angle="282.715">
-					<from>Investments_in_Fossil_Fuel_Extraction_Capital</from>
-					<to>Investment_in_Fossil_Fuel_Extraction_Capital</to>
-				</connector>
+				<aux background="#AAFF00" x="1358.04" y="355.583" name="Investments in Fossil\nFuel Extraction Capital"/>
 				<aux x="1467.41" y="602.322" name="Fossil Energy Capital Scaling Parameter"/>
 				<connector uid="99" angle="167.026">
 					<from>Fossil_Energy_Capital_Scaling_Parameter</from>
 					<to>Secondary_Fossil_Energy_Output</to>
 				</connector>
-				<aux x="1237.22" y="946.306" name="knowledgePerProductivity"/>
-				<connector uid="104" angle="166.559">
+				<aux x="1051.39" y="946.306" name="knowledgePerProductivity"/>
+				<connector uid="104" angle="32.2746">
 					<from>knowledgePerProductivity</from>
 					<to>Fossil_Fuel_Extraction_Productivity</to>
 				</connector>
-				<aux x="1664.13" y="964.306" name="someFactor"/>
-				<aux x="1982.22" y="555.972" name="gWh to zJ"/>
-				<connector uid="122" angle="208.025">
-					<from>gWh_to_zJ</from>
+				<aux x="1982.22" y="555.972" name="gWh to TWh"/>
+				<connector uid="122" angle="199.551">
+					<from>gWh_to_TWh</from>
 					<to>Renewable_Energy_Output</to>
 				</connector>
 				<aux background="#AAAAFF" x="1611.25" y="688.266" name="initial fossil energy capital"/>
@@ -1072,17 +1069,17 @@ Calibration from FRIDA 0.1 or from MIND</doc>
 					<from>Fossil_Energy_Extraction</from>
 					<to>Change_in_Fossil_Learning_by_Doing_Effect</to>
 				</connector>
-				<aux background="aqua" x="1048.57" y="873.893" name="initialFossilEnergyExtraction"/>
-				<aux x="1352.43" y="988.75" name="initial fossil\nextraction knowledge"/>
+				<aux background="aqua" label_side="left" x="981.5" y="874.583" name="initialFossilEnergyExtraction"/>
+				<aux label_angle="353.749" x="1352.43" y="988.75" name="initial fossil\nextraction knowledge"/>
 				<connector uid="124" angle="144.185">
 					<from>initial_fossil_extraction_knowledge</from>
 					<to>initialFossilEnergyExtraction</to>
 				</connector>
-				<connector uid="126" angle="159">
+				<connector uid="126" angle="134.258">
 					<from>knowledgePerProductivity</from>
 					<to>initialFossilEnergyExtraction</to>
 				</connector>
-				<connector uid="127" angle="181.048">
+				<connector uid="127" angle="180.998">
 					<from>initial_fossil_fuel_extraction_capital</from>
 					<to>initialFossilEnergyExtraction</to>
 				</connector>
@@ -1115,23 +1112,18 @@ Calibration from FRIDA 0.1 or from MIND</doc>
 					<from>initial_marginal_extraction_costs</from>
 					<to>initialFossilEnergyExtraction</to>
 				</connector>
-				<aux x="1968.22" y="814.464" name="monetary scale"/>
-				<aux x="2057.86" y="766.59" name="kilo to giga"/>
-				<aux x="2022.46" y="791.839" name="tera to non"/>
-				<connector uid="136" angle="316.596">
-					<from>kilo_to_giga</from>
+				<aux x="2009.47" y="744.923" name="kW to GW"/>
+				<aux x="2009.47" y="801.839" name="T$ to $"/>
+				<connector uid="136" angle="320.301">
+					<from>kW_to_GW</from>
 					<to>Renewable_Energy_Capacity_Construction</to>
 				</connector>
-				<connector uid="138" angle="337.259">
-					<from>tera_to_non</from>
+				<connector uid="138" angle="337.982">
+					<from>&quot;T$_to_$&quot;</from>
 					<to>Renewable_Energy_Capacity_Construction</to>
 				</connector>
-				<connector uid="139" angle="353.29">
-					<from>monetary_scale</from>
-					<to>Renewable_Energy_Capacity_Construction</to>
-				</connector>
-				<text_box uid="140" x="1576.32" y="49.643" width="260" height="199.667">TODO:
-Monetary units not scaled correctly
+				<text_box uid="140" x="1335.29" y="12.9763" width="260" height="139.69">TODO:
+Calibration to Updated Data WIP
 Energy Demand balance
 Energy balance should balance total energy demand not just electricity demand</text_box>
 				<connector uid="143" angle="113.267">
@@ -1145,8 +1137,8 @@ We might want to change back to decay later, as that would be more compatible wi
 					<from>Renewable_Energy_Learning_Rate</from>
 					<to>learning_rate_parameter_in_renewable_energy_sector</to>
 				</connector>
-				<aux x="2266.42" y="1168.28" name="stepping on toes parameter in renewable energy sector"/>
-				<connector uid="158" angle="239.534">
+				<aux x="2266.42" y="1168.28" name="stepping on toes parameter\nin renewable energy sector"/>
+				<connector uid="158" angle="247.345">
 					<from>initialFossilEnergyExtraction</from>
 					<to>Change_in_Fossil_Learning_by_Doing_Effect</to>
 				</connector>
@@ -1324,11 +1316,7 @@ We might want to change back to decay later, as that would be more compatible wi
 					<from>Cumulative_Renewable_Energy_Capacity_Construction</from>
 					<to>Perceived_cumulative_ren_energy_capacity_construction</to>
 				</connector>
-				<aux x="1723.57" y="409.167" name="zJ to TWh"/>
-				<connector uid="270" angle="148.803">
-					<from>zJ_to_TWh</from>
-					<to>Energy_Balance</to>
-				</connector>
+				<aux x="1389.29" y="706.266" name="zJ to TWh"/>
 				<text_box uid="271" x="1648.71" y="888.806" width="260" height="58">Related to exploration and extraction of fossil fuels.
 The stock is the currently employed capital.</text_box>
 				<text_box uid="272" x="1688.41" y="703.893" width="260" height="58">Related to transformation of fossil fuels into usable energy (electricity, heat, movement,...)</text_box>
@@ -1339,28 +1327,93 @@ The stock is the currently employed capital.</text_box>
 					<to>CO2_emissions_from_fossil_fuels</to>
 				</connector>
 				<text_box uid="277" x="1004.57" y="649.179" width="260" height="74.714">emissions connected to extraction comes from the assumption that everything extracted is burnt and ends up as emissions. Alternatively from a process persp. it should be linked to secondary fossil energy creation</text_box>
-				<text_box border_color="aqua" border_width="thick" border_style="solid" uid="278" x="1648.71" y="161.833" width="260" height="58">Entries for calibration are highlighted in cyan. Description of source for calibration data is given in the comments.</text_box>
+				<text_box border_color="aqua" border_width="thick" border_style="solid" uid="278" x="1679.54" y="9.333" width="260" height="248">Entries for calibration are highlighted in cyan. Description of source for calibration data is given in the comments.
+
+Renewable red. installation costs are an open issue. I have an idea to calculate a rough estimate of this from the calibration data.</text_box>
+				<aux x="1438.79" y="380.292" name="MIND Monetary Conversion"/>
+				<aux x="1413.13" y="427.167" name="scaled Investments in Fossil\nFuel Extraction Capital"/>
+				<connector uid="282" angle="319.794">
+					<from>Investments_in_Fossil_Fuel_Extraction_Capital</from>
+					<to>scaled_Investments_in_Fossil_Fuel_Extraction_Capital</to>
+				</connector>
+				<connector uid="283" angle="241.996">
+					<from>MIND_Monetary_Conversion</from>
+					<to>scaled_Investments_in_Fossil_Fuel_Extraction_Capital</to>
+				</connector>
+				<connector uid="284" angle="303.626">
+					<from>scaled_Investments_in_Fossil_Fuel_Extraction_Capital</from>
+					<to>Investment_in_Fossil_Fuel_Extraction_Capital</to>
+				</connector>
+				<aux x="1062.46" y="892.583" name="Fossil Energy Capital Productivity"/>
+				<connector uid="285" angle="167.465">
+					<from>Fossil_Energy_Capital_Productivity</from>
+					<to>initialFossilEnergyExtraction</to>
+				</connector>
+				<connector uid="286" angle="333.646">
+					<from>Fossil_Energy_Capital_Productivity</from>
+					<to>Fossil_Fuel_Extraction_Productivity</to>
+				</connector>
+				<aux x="1554.13" y="445.167" name="scaled Investments in Fossil Energy Capital"/>
+				<connector uid="287" angle="294.898">
+					<from>Investments_in_Fossil_Energy_Capital</from>
+					<to>scaled_Investments_in_Fossil_Energy_Capital</to>
+				</connector>
+				<connector uid="288" angle="342.342">
+					<from>MIND_Monetary_Conversion</from>
+					<to>scaled_Investments_in_Fossil_Energy_Capital</to>
+				</connector>
+				<connector uid="289" angle="260.588">
+					<from>scaled_Investments_in_Fossil_Energy_Capital</from>
+					<to>Investment_in_Fossil_Energy_Capital</to>
+				</connector>
+				<aux x="2099.4" y="456.464" name="scaled Investments in Renewable Energy Capacity"/>
+				<connector uid="291" angle="20.4013">
+					<from>MIND_Monetary_Conversion</from>
+					<to>scaled_Investments_in_Renewable_Energy_Capacity</to>
+				</connector>
+				<connector uid="292" angle="235.747">
+					<from>Investments_in_Renewable_Energy_Capacity</from>
+					<to>scaled_Investments_in_Renewable_Energy_Capacity</to>
+				</connector>
+				<connector uid="293" angle="283.77">
+					<from>scaled_Investments_in_Renewable_Energy_Capacity</from>
+					<to>Renewable_Energy_Capacity_Construction</to>
+				</connector>
+				<connector uid="294" angle="193.472">
+					<from>zJ_to_TWh</from>
+					<to>&quot;Primary_Fossil_Energy_(FUEL)&quot;</to>
+				</connector>
+				<connector uid="295" angle="90.2322">
+					<from>zJ_to_TWh</from>
+					<to>Secondary_Fossil_Energy_Output</to>
+				</connector>
+				<text_box uid="297" x="1969.4" y="131.333" width="260" height="104.667">Renewables are calibrated to data of solar, wind and hydro
+
+Fossil are calibrated to oil, gas, and coal
+
+Nuclear and bio are omitted as of now</text_box>
 			</view>
 		</views>
 	</model>
 	<isee:controls>
+		<isee:control priority="interactive" name="Total_Factor_Productivity_Fossil_Energy" value="0.6292631555"/>
 		<isee:control priority="imex" name="GDP_per_person" type="exog">
-			<exog type="interpolate" pairs="(1980,6.38715429491),(1980.125,6.38642226288),(1980.25,6.3867575505),(1980.375,6.38809284666),(1980.5,6.39036457575),(1980.625,6.39351310782),(1980.75,6.39748297275),(1980.875,6.40222198096),(1981,6.40768149723),(1981.125,6.41484057678),(1981.25,6.42263103308),(1981.375,6.43101372503),(1981.5,6.43995245415),(1981.625,6.4494137688),(1981.75,6.45936677411),(1981.875,6.46978304451),(1982,6.48063642983),(1982.125,6.49373198727),(1982.25,6.50720052071),(1982.375,6.52102229704),(1982.5,6.53517933214),(1982.625,6.5496547054),(1982.75,6.56443197267),(1982.875,6.57949651779),(1983,6.59483474006),(1983.125,6.61082914086),(1983.25,6.6270715648),(1983.375,6.6435509441),(1983.5,6.66025697317),(1983.625,6.67718015742),(1983.75,6.69431185269),(1983.875,6.71164392086),(1984,6.72916881897),(1984.125,6.74656702025),(1984.25,6.76415123834),(1984.375,6.78191524799),(1984.5,6.79985322392),(1984.625,6.81795987918),(1984.75,6.83623059455),(1984.875,6.85466093167),(1985,6.87324681858),(1985.125,6.89183282179),(1985.25,6.9105755651),(1985.375,6.92947177128),(1985.5,6.94851840752),(1985.625,6.96771263056),(1985.75,6.98705173457),(1985.875,7.00653322267),(1986,7.02615475115),(1986.125,7.04570579778),(1986.25,7.06540294127),(1986.375,7.08524410907),(1986.5,7.10522732984),(1986.625,7.12535068276),(1986.75,7.14561224669),(1986.875,7.16601020973),(1987,7.18654281289),(1987.125,7.20760873403),(1987.25,7.22880910197),(1987.375,7.25014233861),(1987.5,7.27160692515),(1987.625,7.29320138678),(1987.75,7.31492427755),(1987.875,7.33677419739),(1988,7.35874977764),(1988.125,7.38131989154),(1988.25,7.40401521095),(1988.375,7.42683444702),(1988.5,7.44977635174),(1988.625,7.47283983628),(1988.75,7.49602410439),(1988.875,7.51932831575),(1989,7.54275171602),(1989.125,7.56646805386),(1989.25,7.59030774393),(1989.375,7.61427018227),(1989.5,7.63835482893),(1989.625,7.66256187818),(1989.75,7.68689303483),(1989.875,7.71134971544),(1990,7.7359337341),(1990.125,7.76080907007),(1990.25,7.78582135994),(1990.375,7.8109735553),(1990.5,7.83626900192),(1990.625,7.86171148361),(1990.75,7.8873054479),(1990.875,7.9130553515),(1991,7.93896585493),(1991.125,7.96498741453),(1991.25,7.99118544438),(1991.375,8.01756485158),(1991.5,8.0441305538),(1991.625,8.07088568632),(1991.75,8.09782974785),(1991.875,8.12496335235),(1992,8.15228639362),(1992.125,8.17977123533),(1992.25,8.20744870052),(1992.375,8.23531700245),(1992.5,8.26337393976),(1992.625,8.29161722809),(1992.75,8.32004485224),(1992.875,8.34865434873),(1993,8.37744312434),(1993.125,8.40630906411),(1993.25,8.43535332212),(1993.375,8.46457290579),(1993.5,8.49396469499),(1993.625,8.52352578869),(1993.75,8.55325392852),(1993.875,8.5831465883),(1994,8.61320130424),(1994.125,8.64317245976),(1994.25,8.6733063846),(1994.375,8.70360067204),(1994.5,8.73405291223),(1994.625,8.76466084599),(1994.75,8.79542257098),(1994.875,8.82633611892),(1995,8.85739959044),(1995.125,8.8884824112),(1995.25,8.91971310268),(1995.375,8.9510899387),(1995.5,8.98261122181),(1995.625,9.01427549331),(1995.75,9.0460818307),(1995.875,9.07802928105),(1996,9.11011702674),(1996.125,9.14237044842),(1996.25,9.17476543822),(1996.375,9.20730152396),(1996.5,9.23997832995),(1996.625,9.27279535479),(1996.75,9.30575164921),(1996.875,9.33884637761),(1997,9.37207865793),(1997.125,9.40567182033),(1997.25,9.43940187587),(1997.375,9.47326784824),(1997.5,9.50726873908),(1997.625,9.54140340049),(1997.75,9.57567033995),(1997.875,9.61006805596),(1998,9.64459495347),(1998.125,9.68005472836),(1998.25,9.7156350893),(1998.375,9.75133426705),(1998.5,9.78715045742),(1998.625,9.82308196313),(1998.75,9.85912742684),(1998.875,9.89528543121),(1999,9.93155458446),(1999.125,9.96813506078),(1999.25,10.0048375357),(1999.375,10.041659376),(1999.5,10.0785981641),(1999.625,10.115651764),(1999.75,10.1528185026),(1999.875,10.1900969216),(2000,10.2274858032),(2000.125,10.2635818015),(2000.25,10.2998660154),(2000.375,10.3363365315),(2000.5,10.3729914418),(2000.625,10.4098289487),(2000.75,10.4468474691),(2000.875,10.4840454003),(2001,10.5214211782),(2001.125,10.5589461913),(2001.25,10.5966684893),(2001.375,10.6345866527),(2001.5,10.6726993233),(2001.625,10.7110052598),(2001.75,10.7495033565),(2001.875,10.7881924401),(2002,10.8270713044),(2002.125,10.8660371203),(2002.25,10.9052274164),(2002.375,10.9446407363),(2002.5,10.9842756312),(2002.625,11.0241305256),(2002.75,11.0642035722),(2002.875,11.1044931186),(2003,11.1449976272),(2003.125,11.1855443175),(2003.25,11.2263139707),(2003.375,11.267305293),(2003.5,11.3085170548),(2003.625,11.349948193),(2003.75,11.3915980077),(2003.875,11.433465876),(2004,11.4755512876),(2004.125,11.5176616637),(2004.25,11.5599857947),(2004.375,11.6025234744),(2004.5,11.6452745685),(2004.625,11.6882389645),(2004.75,11.7314164528),(2004.875,11.7748068235),(2005,11.8184098534),(2005.125,11.8617947411),(2005.25,11.9053869121),(2005.375,11.9491860776),(2005.5,11.9931919201),(2005.625,12.0374039883),(2005.75,12.0818214959),(2005.875,12.1264436258),(2006,12.1712694973),(2006.125,12.2157517703),(2006.25,12.2604271233),(2006.375,12.305294526),(2006.5,12.350352874),(2006.625,12.3956009225),(2006.75,12.4410371584),(2006.875,12.4866600179),(2007,12.5324678674),(2007.125,12.5780449458),(2007.25,12.6238087835),(2007.375,12.6697575105),(2007.5,12.7158891861),(2007.625,12.7622018468),(2007.75,12.8086936027),(2007.875,12.8553625551),(2008,12.90220681),(2008.125,12.948850721),(2008.25,12.9956726778),(2008.375,13.0426707486),(2008.5,13.0898429875),(2008.625,13.1371874184),(2008.75,13.1847020631),(2008.875,13.2323850632),(2009,13.2802346663),(2009.125,13.3278079839),(2009.25,13.3755436878),(2009.375,13.423440286),(2009.5,13.4714963372),(2009.625,13.5197105142),(2009.75,13.5680816663),(2009.875,13.6166085834),(2010,13.6652900187),(2010.125,13.7137586822),(2010.25,13.7623776046),(2010.375,13.8111453861),(2010.5,13.8600605522),(2010.625,13.9091215414),(2010.75,13.9583264458),(2010.875,14.0076728446),(2011,14.057157865),(2011.125,14.1064492309),(2011.25,14.1558666172),(2011.375,14.2054061489),(2011.5,14.2550636985),(2011.625,14.3048347637),(2011.75,14.3547144302),(2011.875,14.4046980645),(2012,14.4547812275),(2012.125,14.5045939848),(2012.25,14.5544951878),(2012.375,14.604480782),(2012.5,14.6545467768),(2012.625,14.7046894711),(2012.75,14.7549059184),(2012.875,14.8051932632),(2013,14.8555487843),(2013.125,14.9056828476),(2013.25,14.9558766022),(2013.375,15.0061276536),(2013.5,15.0564336875),(2013.625,15.1067924341),(2013.75,15.1572015777),(2013.875,15.207658826),(2014,15.2581619093),(2014.125,15.3083106129),(2014.25,15.3584934621),(2014.375,15.4087082695),(2014.5,15.4589528543),(2014.625,15.5092250793),(2014.75,15.5595229234),(2014.875,15.6098443993),(2015,15.6601875612),(2015.125,15.7102819895),(2015.25,15.760393464),(2015.375,15.8105201448),(2015.5,15.8606602205),(2015.625,15.9108119124),(2015.75,15.9609734385),(2015.875,16.0111429741),(2016,16.0613186597),(2016.125,16.111149023),(2016.25,16.1609810145),(2016.375,16.2108126849),(2016.5,16.2606420509),(2016.625,16.3104671028),(2016.75,16.3602858223),(2016.875,16.4100961918),(2017,16.4598961972),(2017.125,16.5094534339),(2017.25,16.5589999682),(2017.375,16.6085337997),(2017.5,16.6580529268),(2017.625,16.7075553519),(2017.75,16.7570391097),(2017.875,16.8065022878),(2018,16.855943025),(2018.125,16.9055456731),(2018.25,16.9551418099),(2018.375,17.0047296247),(2018.5,17.054307362),(2018.625,17.1038733157),(2018.75,17.1534258181),(2018.875,17.2029632386),(2019,17.2524839822),(2019.125,17.301995224),(2019.25,17.351494039),(2019.375,17.4009790774),(2019.5,17.4504490008),(2019.625,17.4999024641),(2019.75,17.5493380742),(2019.875,17.5987544476),(2020,17.648150211),(2020.125,17.6973618852),(2020.25,17.7465291199),(2020.375,17.7956520754),(2020.5,17.8447308998),(2020.625,17.8937657467),(2020.75,17.9427568084),(2020.875,17.9917042687),(2021,18.040608306),(2021.125,18.0887710283),(2021.25,18.1368774754),(2021.375,18.1849280229),(2021.5,18.2329230104),(2021.625,18.28086275),(2021.75,18.3287475213),(2021.875,18.3765775612),(2022,18.4243530668),(2022.125,18.4708401535),(2022.25,18.5172511987),(2022.375,18.563586679),(2022.5,18.6098469808),(2022.625,18.6560325995),(2022.75,18.7021444734),(2022.875,18.7481835988),(2023,18.794150924),(2023.125,18.8396104727),(2023.25,18.8849943197),(2023.375,18.9303033572),(2023.5,18.97553842),(2023.625,19.0207002563),(2023.75,19.0657894506),(2023.875,19.1108065235),(2024,19.1557519355),(2024.125,19.2005971173),(2024.25,19.2453738917),(2024.375,19.2900824829),(2024.5,19.3347230739),(2024.625,19.3792958235),(2024.75,19.4238008917),(2024.875,19.4682384047),(2025,19.512608458),(2025.125,19.5566164132),(2025.25,19.6005604723),(2025.375,19.6444404807),(2025.5,19.6882562484),(2025.625,19.7320075553),(2025.75,19.7756941612),(2025.875,19.8193158066),(2026,19.8628722149),(2026.125,19.9060266999),(2026.25,19.9491209962),(2026.375,19.992154552),(2026.5,20.0351267928),(2026.625,20.0780371294),(2026.75,20.120884975),(2026.875,20.1636697432),(2027,20.2063908504),(2027.125,20.2484239823),(2027.25,20.2903900356),(2027.375,20.3322883919),(2027.5,20.3741184138),(2027.625,20.4158794495),(2027.75,20.4575708334),(2027.875,20.4991918911),(2028,20.5407419439),(2028.125,20.5815845079),(2028.25,20.6223517127),(2028.375,20.6630428545),(2028.5,20.7036572096),(2028.625,20.7441940332),(2028.75,20.7846525538),(2028.875,20.825032005),(2029,20.8653316305),(2029.125,20.9050616791),(2029.25,20.9447116948),(2029.375,20.9842808525),(2029.5,21.0237683332),(2029.625,21.0631733178),(2029.75,21.1024949635),(2029.875,21.141732441),(2030,21.1808849359),(2030.125,21.219527638),(2030.25,21.2580851888),(2030.375,21.2965567137),(2030.5,21.3349413403),(2030.625,21.3732381921),(2030.75,21.4114463636),(2030.875,21.449564944),(2031,21.487593012),(2031.125,21.5252708881),(2031.25,21.5628599153),(2031.375,21.6003589731),(2031.5,21.6377669087),(2031.625,21.6750825345),(2031.75,21.7123046369),(2031.875,21.7494320033),(2032,21.7864634262),(2032.125,21.8231011977),(2032.25,21.8596430356),(2032.375,21.8960876563),(2032.5,21.9324337838),(2032.625,21.9686801757),(2032.75,22.0048256605),(2032.875,22.0408690685),(2033,22.0768092373),(2033.125,22.1124597451),(2033.25,22.1480073239),(2033.375,22.1834507382),(2033.5,22.2187887598),(2033.625,22.254020169),(2033.75,22.2891437558),(2033.875,22.3241583279),(2034,22.3590627119),(2034.125,22.393722095),(2034.25,22.4282739681),(2034.375,22.4627170524),(2034.5,22.4970500856),(2034.625,22.5312718529),(2034.75,22.5653812444),(2034.875,22.5993771707),(2035,22.6332585665),(2035.125,22.6669453363),(2035.25,22.7005171688),(2035.375,22.7339730087),(2035.5,22.7673118226),(2035.625,22.8005325907),(2035.75,22.8336342886),(2035.875,22.8666159158),(2036,22.8994764942),(2036.125,22.9319643981),(2036.25,22.9643311371),(2036.375,22.9965757142),(2036.5,23.0286971444),(2036.625,23.0606944625),(2036.75,23.0925667348),(2036.875,23.1243130449),(2037,23.1559324956),(2037.125,23.1871021166),(2037.25,23.2181424085),(2037.375,23.2490525247),(2037.5,23.2798316295),(2037.625,23.3104789064),(2037.75,23.3409935696),(2037.875,23.3713748524),(2038,23.4016220098),(2038.125,23.431291079),(2038.25,23.4608148371),(2038.375,23.4901928462),(2038.5,23.519424679),(2038.625,23.5485099189),(2038.75,23.5774481546),(2038.875,23.6062389956),(2039,23.634882074),(2039.125,23.6631643242),(2039.25,23.6912868697),(2039.375,23.7192501026),(2039.5,23.7470543248),(2039.625,23.77469977),(2039.75,23.8021866013),(2039.875,23.8295148857),(2040,23.8566846092),(2040.125,23.8843669201),(2040.25,23.9118546597),(2040.375,23.9391472901),(2040.5,23.9662443254),(2040.625,23.9931453236),(2040.75,24.0198499136),(2040.875,24.0463578062),(2041,24.0726687843),(2041.125,24.0982720497),(2041.25,24.1236801444),(2041.375,24.1488926139),(2041.5,24.1739090482),(2041.625,24.1987290841),(2041.75,24.2233524534),(2041.875,24.2477790193),(2042,24.2720087689),(2042.125,24.2951772787),(2042.25,24.3181536115),(2042.375,24.340937469),(2042.5,24.3635286337),(2042.625,24.3859269594),(2042.75,24.4081322898),(2042.875,24.43014444),(2043,24.4519632094),(2043.125,24.4733405312),(2043.25,24.4945277457),(2043.375,24.5155255188),(2043.5,24.5363344693),(2043.625,24.5569551783),(2043.75,24.5773881984),(2043.875,24.5976340386),(2044,24.6176931676),(2044.125,24.6376348874),(2044.25,24.6573918243),(2044.375,24.6769643893),(2044.5,24.6963529651),(2044.625,24.7155579142),(2044.75,24.7345796091),(2044.875,24.7534184342),(2045,24.7720747848),(2045.125,24.7906009549),(2045.25,24.8089494601),(2045.375,24.8271207632),(2045.5,24.8451153348),(2045.625,24.8629336558),(2045.75,24.8805762207),(2045.875,24.8980435345),(2046,24.9153361145),(2046.125,24.9325656861),(2046.25,24.94962658),(2046.375,24.9665194039),(2046.5,24.983244777),(2046.625,24.9998033268),(2046.75,25.0161956804),(2046.875,25.0324224725),(2047,25.048484346),(2047.125,25.0641959167),(2047.25,25.079748887),(2047.375,25.0951437826),(2047.5,25.1103811339),(2047.625,25.125461485),(2047.75,25.1403853993),(2047.875,25.1551534313),(2048,25.1697661306),(2048.125,25.184011049),(2048.25,25.1981065351),(2048.375,25.2120529815),(2048.5,25.2258507759),(2048.625,25.2395002941),(2048.75,25.2530018475),(2048.875,25.2663556813),(2049,25.2795619787),(2049.125,25.2925657588),(2049.25,25.3054268782),(2049.375,25.3181453197),(2049.5,25.3307210224),(2049.625,25.3431539044),(2049.75,25.3554439327),(2049.875,25.3675911111),(2050,25.3795954834),(2050.125,25.391418432),(2050.25,25.4031028262),(2050.375,25.4146488149),(2050.5,25.4260565956),(2050.625,25.4373264107),(2050.75,25.4484586676),(2050.875,25.4594540717),(2051,25.4703135947),(2051.125,25.4810983877),(2051.25,25.4917530314),(2051.375,25.5022791552),(2051.5,25.5126785428),(2051.625,25.5229531069),(2051.75,25.533104725),(2051.875,25.5431351206),(2052,25.5530458884),(2052.125,25.5628518834),(2052.25,25.5725442227),(2052.375,25.5821242222),(2052.5,25.5915931322),(2052.625,25.6009521428),(2052.75,25.6102023801),(2052.875,25.6193449314),(2053,25.6283808483),(2053.125,25.6373536761),(2053.25,25.6462240533),(2053.375,25.6549929741),(2053.5,25.6636614098),(2053.625,25.6722303077),(2053.75,25.6807006016),(2053.875,25.6890732309),(2054,25.6973491368),(2054.125,25.7056556431),(2054.25,25.7138696448),(2054.375,25.7219921579),(2054.5,25.7300241967),(2054.625,25.7379667755),(2054.75,25.7458209097),(2054.875,25.7535876059),(2055,25.7612678615),(2055.125,25.7688948336),(2055.25,25.7764384837),(2055.375,25.7838997928),(2055.5,25.7912797309),(2055.625,25.7985792499),(2055.75,25.8057992921),(2055.875,25.8129408314),(2056,25.8200048677),(2056.125,25.8269894944),(2056.25,25.8339011217),(2056.375,25.840740799),(2056.5,25.847509592),(2056.625,25.8542085969),(2056.75,25.8608389625),(2056.875,25.8674018373),(2057,25.8738983739),(2057.125,25.8802296707),(2057.25,25.8864992698),(2057.375,25.8927082453),(2057.5,25.8988576704),(2057.625,25.9049486005),(2057.75,25.9109820317),(2057.875,25.91695894),(2058,25.9228802788),(2058.125,25.9283298169),(2058.25,25.9337269553),(2058.375,25.9390723219),(2058.5,25.9443665197),(2058.625,25.9496101108),(2058.75,25.9548035887),(2058.875,25.9599474386),(2059,25.9650421337),(2059.125,25.9699310258),(2059.25,25.97476749),(2059.375,25.9795523913),(2059.5,25.984286497),(2059.625,25.9889705301),(2059.75,25.9936052361),(2059.875,25.998191256),(2060,26.0027291476),(2060.125,26.0077309054),(2060.25,26.0126513979),(2060.375,26.017491845),(2060.5,26.0222534312),(2060.625,26.0269372964),(2060.75,26.0315445475),(2060.875,26.0360762801),(2061,26.0405335717),(2061.125,26.0450845696),(2061.25,26.0495636578),(2061.375,26.0539719464),(2061.5,26.0583105125),(2061.625,26.0625803884),(2061.75,26.0667825744),(2061.875,26.0709181035),(2062,26.0749880314),(2062.125,26.079279044),(2062.25,26.0835077258),(2062.375,26.0876753985),(2062.5,26.091783378),(2062.625,26.0958329812),(2062.75,26.0998254913),(2062.875,26.1037620861),(2063,26.1076438541),(2063.125,26.1115610878),(2063.25,26.1154262738),(2063.375,26.1192403477),(2063.5,26.1230041767),(2063.625,26.1267185546),(2063.75,26.1303841951),(2063.875,26.1340017601),(2064,26.1375718606),(2064.125,26.1410839106),(2064.25,26.1445503403),(2064.375,26.1479716104),(2064.5,26.1513481415),(2064.625,26.1546803133),(2064.75,26.1579684771),(2064.875,26.1612129731),(2065,26.1644141281),(2065.125,26.1675851818),(2065.25,26.170715962),(2065.375,26.1738067447),(2065.5,26.1768577915),(2065.625,26.1798693484),(2065.75,26.182841643),(2065.875,26.1857748861),(2066,26.1886692718),(2066.125,26.1915281844),(2066.25,26.1943517854),(2066.375,26.1971401788),(2066.5,26.199893454),(2066.625,26.2026116838),(2066.75,26.2052949154),(2066.875,26.2079431736),(2067,26.2105564606),(2067.125,26.2132231251),(2067.25,26.2158571986),(2067.375,26.2184586612),(2067.5,26.2210274724),(2067.625,26.2235635753),(2067.75,26.2260668991),(2067.875,26.2285373437),(2068,26.2309747822),(2068.125,26.2334734284),(2068.25,26.2359409612),(2068.375,26.2383772365),(2068.5,26.2407820865),(2068.625,26.243155324),(2068.75,26.2454967232),(2068.875,26.24780599),(2069,26.2500827668),(2069.125,26.2523759252),(2069.25,26.2546382947),(2069.375,26.2568693654),(2069.5,26.2590685815),(2069.625,26.2612353559),(2069.75,26.2633691169),(2069.875,26.2654692985),(2070,26.2675353427),(2070.125,26.2696067857),(2070.25,26.2716452732),(2070.375,26.2736502905),(2070.5,26.2756213373),(2070.625,26.2775579154),(2070.75,26.2794595914),(2070.875,26.2813261092),(2071,26.2831573625),(2071.125,26.2849599597),(2071.25,26.2867294954),(2071.375,26.2884661739),(2071.5,26.2901702721),(2071.625,26.2918421264),(2071.75,26.2934820258),(2071.875,26.2950901208),(2072,26.2966664438),(2072.125,26.2982311913),(2072.25,26.2997657991),(2072.375,26.3012700264),(2072.5,26.3027435665),(2072.625,26.3041860617),(2072.75,26.3055971231),(2072.875,26.3069763248),(2073,26.3083232094),(2073.125,26.3096429548),(2073.25,26.3109308148),(2073.375,26.3121862506),(2073.5,26.3134087041),(2073.625,26.3145976021),(2073.75,26.3157523684),(2073.875,26.3168724241),(2074,26.3179571867),(2074.125,26.3189909351),(2074.25,26.3199900405),(2074.375,26.3209538751),(2074.5,26.3218818081),(2074.625,26.3227731958),(2074.75,26.3236273644),(2074.875,26.3244436392),(2075,26.3252213408),(2075.125,26.3259613449),(2075.25,26.3266621601),(2075.375,26.3273231862),(2075.5,26.3279444677),(2075.625,26.3285263603),(2075.75,26.3290691794),(2075.875,26.3295732122),(2076,26.3300387131),(2076.125,26.3304863978),(2076.25,26.3308973368),(2076.375,26.3312716667),(2076.5,26.3316094841),(2076.625,26.3319108435),(2076.75,26.3321757497),(2076.875,26.3324041616),(2077,26.3325959929),(2077.125,26.3327960626),(2077.25,26.332960183),(2077.375,26.3330881496),(2077.5,26.3331797175),(2077.625,26.3332346028),(2077.75,26.3332524777),(2077.875,26.3332329637),(2078,26.3331756343),(2078.125,26.3331982261),(2078.25,26.3331810406),(2078.375,26.3331236274),(2078.5,26.3330254938),(2078.625,26.3328860967),(2078.75,26.3327048324),(2078.875,26.3324810683),(2079,26.3322141407),(2079.125,26.3319517246),(2079.25,26.3316462064),(2079.375,26.3312967534),(2079.5,26.3309025308),(2079.625,26.3304627093),(2079.75,26.3299764862),(2079.875,26.3294430571),(2080,26.3288616181),(2080.125,26.3280805405),(2080.25,26.3272600026),(2080.375,26.3263989632),(2080.5,26.3254963773),(2080.625,26.3245511966),(2080.75,26.3235623618),(2080.875,26.3225288046),(2081,26.3214494479),(2081.125,26.3203232076),(2081.25,26.3191543025),(2081.375,26.3179415983),(2081.5,26.3166839581),(2081.625,26.3153802536),(2081.75,26.3140293755),(2081.875,26.3126302019),(2082,26.3111816035),(2082.125,26.3096824448),(2082.25,26.3081403472),(2082.375,26.3065540769),(2082.5,26.3049224035),(2082.625,26.30324409),(2082.75,26.3015178837),(2082.875,26.2997425545),(2083,26.297916889),(2083.125,26.2960396893),(2083.25,26.2941121741),(2083.375,26.2921331425),(2083.5,26.2901014078),(2083.625,26.2880158014),(2083.75,26.2858751845),(2083.875,26.2836784346),(2084,26.2814244468),(2084.125,26.2791121331),(2084.25,26.276739641),(2084.375,26.2743059231),(2084.5,26.2718099461),(2084.625,26.2692506939),(2084.75,26.2666271698),(2084.875,26.2639383842),(2085,26.2611833565),(2085.125,26.2583611149),(2085.25,26.2554698696),(2085.375,26.2525086684),(2085.5,26.2494765679),(2085.625,26.2463726404),(2085.75,26.2431959842),(2085.875,26.2399457023),(2086,26.2366209052),(2086.125,26.2332207111),(2086.25,26.2297427644),(2086.375,26.2261862083),(2086.5,26.2225501935),(2086.625,26.2188338714),(2086.75,26.2150363828),(2086.875,26.211156877),(2087,26.2071945092),(2087.125,26.203148441),(2087.25,26.1990193207),(2087.375,26.194806303),(2087.5,26.1905085513),(2087.625,26.1861252319),(2087.75,26.1816555077),(2087.875,26.1770985588),(2088,26.1724535804),(2088.125,26.1677197826),(2088.25,26.162898132),(2088.375,26.1579878434),(2088.5,26.1529881486),(2088.625,26.147898306),(2088.75,26.1427176236),(2088.875,26.1374454338),(2089,26.1320810973),(2089.125,26.1266240022),(2089.25,26.121073772),(2089.375,26.1154298375),(2089.5,26.1096916552),(2089.625,26.1038586911),(2089.75,26.0979303888),(2089.875,26.0919062113),(2090,26.0857856354),(2090.125,26.0795681515),(2090.25,26.0732533612),(2090.375,26.0668407722),(2090.5,26.0603299053),(2090.625,26.0537202901),(2090.75,26.0470114339),(2090.875,26.0402028172),(2091,26.0332938983),(2091.125,26.02628412),(2091.25,26.0191721529),(2091.375,26.0119574275),(2091.5,26.0046393748),(2091.625,25.9972174463),(2091.75,25.989691165),(2091.875,25.9820600995),(2092,25.9743238655),(2092.125,25.9664821224),(2092.25,25.9585342464),(2092.375,25.9504799722),(2092.5,25.9423190695),(2092.625,25.9340513438),(2092.75,25.9256766429),(2092.875,25.9171948503),(2093,25.9086058856),(2093.125,25.8999097039),(2093.25,25.8911057715),(2093.375,25.8821941132),(2093.5,25.8731747871),(2093.625,25.864047862),(2093.75,25.8548133783),(2093.875,25.8454714122),(2094,25.8360220674),(2094.125,25.8264654752),(2094.25,25.8168005019),(2094.375,25.8070273443),(2094.5,25.7971462275),(2094.625,25.7871574326),(2094.75,25.7770613423),(2094.875,25.7668583586),(2095,25.7565489143),(2095.125,25.7461334734),(2095.25,25.7356121613),(2095.375,25.724985508),(2095.5,25.7142540741),(2095.625,25.7034184366),(2095.75,25.6924791621),(2095.875,25.6814370266),(2096,25.6702935552),(2096.125,25.6590504436),(2096.25,25.6477092197),(2096.375,25.6362715016),(2096.5,25.6247388667),(2096.625,25.6131128618),(2096.75,25.6013950213),(2096.875,25.5895868353),(2097,25.5776897538),(2097.125,25.5657051878),(2097.25,25.5536352393),(2097.375,25.5414812342),(2097.5,25.5292444621),(2097.625,25.5169261679),(2097.75,25.5045275392),(2097.875,25.4920497395),(2098,25.4794939056),(2098.125,25.4668611479),(2098.25,25.4541560546),(2098.375,25.4413796492),(2098.5,25.4285329355),(2098.625,25.4156168982),(2098.75,25.4026325037),(2098.875,25.3895807011),(2099,25.376462423),(2099.125,25.3632785866),(2099.25,25.3500313821),(2099.375,25.3367217171),(2099.5,25.3233504839),(2099.625,25.3099185727),(2099.75,25.2964268916),(2099.875,25.2828763313),(2100,25.2692677713)"/>
+			<exog type="interpolate" pairs="(1980,6.38715429491),(1981,6.40768149723),(1982,6.48063642983),(1983,6.59483474006),(1984,6.72916881897),(1985,6.87324681858),(1986,7.02615475115),(1987,7.18654281289),(1988,7.35874977764),(1989,7.54275171602),(1990,7.7359337341),(1991,7.93896585493),(1992,8.15228639362),(1993,8.37744312434),(1994,8.61320130424),(1995,8.85739959044),(1996,9.11011702674),(1997,9.37207865793),(1998,9.64459495347),(1999,9.93155458446),(2000,10.2274858032),(2001,10.5214211782),(2002,10.8270713044),(2003,11.1449976272),(2004,11.4755512876),(2005,11.8184098534),(2006,12.1712694973),(2007,12.5324678674),(2008,12.90220681),(2009,13.2802346663),(2010,13.6652900187),(2011,14.057157865),(2012,14.4547812275),(2013,14.8555487843),(2014,15.2581619093),(2015,15.6601875612),(2016,16.0613186597),(2017,16.4598961972),(2018,16.855943025),(2019,17.2524839822),(2020,17.648150211),(2021,18.040608306),(2022,18.4243530668),(2023,18.794150924),(2024,19.1557519355),(2025,19.512608458),(2026,19.8628722149),(2027,20.2063908504),(2028,20.5407419439),(2029,20.8653316305),(2030,21.1808849359),(2031,21.487593012),(2032,21.7864634262),(2033,22.0768092373),(2034,22.3590627119),(2035,22.6332585665),(2036,22.8994764942),(2037,23.1559324956),(2038,23.4016220098),(2039,23.634882074),(2040,23.8566846092),(2041,24.0726687843),(2042,24.2720087689),(2043,24.4519632094),(2044,24.6176931676),(2045,24.7720747848),(2046,24.9153361145),(2047,25.048484346),(2048,25.1697661306),(2049,25.2795619787),(2050,25.3795954834),(2051,25.4703135947),(2052,25.5530458884),(2053,25.6283808483),(2054,25.6973491368),(2055,25.7612678615),(2056,25.8200048677),(2057,25.8738983739),(2058,25.9228802788),(2059,25.9650421337),(2060,26.0027291476),(2061,26.0405335717),(2062,26.0749880314),(2063,26.1076438541),(2064,26.1375718606),(2065,26.1644141281),(2066,26.1886692718),(2067,26.2105564606),(2068,26.2309747822),(2069,26.2500827668),(2070,26.2675353427),(2071,26.2831573625),(2072,26.2966664438),(2073,26.3083232094),(2074,26.3179571867),(2075,26.3252213408),(2076,26.3300387131),(2077,26.3325959929),(2078,26.3331756343),(2079,26.3322141407),(2080,26.3288616181),(2081,26.3214494479),(2082,26.3111816035),(2083,26.297916889),(2084,26.2814244468),(2085,26.2611833565),(2086,26.2366209052),(2087,26.2071945092),(2088,26.1724535804),(2089,26.1320810973),(2090,26.0857856354),(2091,26.0332938983),(2092,25.9743238655),(2093,25.9086058856),(2094,25.8360220674),(2095,25.7565489143),(2096,25.6702935552),(2097,25.5776897538),(2098,25.4794939056),(2099,25.376462423),(2100,25.2692677713)"/>
 		</isee:control>
 		<isee:control priority="imex" name="Investments_in_Fossil_Energy_Capital" type="exog">
-			<exog type="backward" pairs="(1995,0.0020567890067578),(2000,0.0046717701600842),(2005,0.00519970003203003),(2010,0.00595645797433697),(2015,0.00664439107113641),(2020,0.00753527742052129),(2025,0.0082746728499651),(2030,0.00890155399669904),(2035,0.00967743833545968),(2040,0.0104610390765078),(2045,0.0112837637000721),(2050,0.0120002444805427),(2055,0.0128583792541413),(2060,0.0136930604567362),(2065,0.0145931753666904),(2070,0.0155083245172293),(2075,0.0165078235461146),(2080,0.0174713351360691),(2085,0.0184480901408799),(2090,0.0193109847966029),(2095,0.0199502315278577),(2100,0.0199231523101561),(2105,0.0181528753942151),(2110,0.00716708289848835),(2115,0.00001000000000001),(2120,0.00001000000000001),(2125,0.00001000000000001),(2130,0.00001000000000001),(2135,0.00001000000000001),(2140,0.00001000000000001),(2145,0.00001000000000001),(2150,0.00001000000000001),(2155,0.00001000000000001),(2160,0.00001000000000001),(2165,0.00001000000000001),(2170,0.00001000000000001),(2175,0.00001000000000001),(2180,0.00001000000000001),(2185,0.00001000000000001),(2190,0.00031654102101892),(2195,0.0842429444555304),(2200,0.00001000000000001)"/>
+			<exog type="backward" pairs="(1995,0.00204550365374554),(2000,0.00458697757445499),(2005,0.00499231112732482),(2010,0.00540360477567959),(2015,0.00575915666162335),(2020,0.00569012229931552),(2025,0.00194415632242673),(2030,0.00001000000000001),(2035,0.00001000000000001),(2040,0.00001000000000001),(2045,0.00001000000000001),(2050,0.00001000000000001),(2055,0.00001000000000001),(2060,0.00001000000000001),(2065,0.00001000000000001),(2070,0.00001000000000001),(2075,0.00001000000000001),(2080,0.00001000000000001),(2085,0.00001000000000001),(2090,0.00001000000000001),(2095,0.00001000000000001),(2100,0.00001000000000001),(2105,0.00001000000000001),(2110,0.00001000000000001),(2115,0.00001000000000001),(2120,0.00001000000000001),(2125,0.00001000000000001),(2130,0.00001000000000001),(2135,0.00001000000000001),(2140,0.0000106124992692922),(2145,0.0000204052217833786),(2150,0.000018828748321346),(2155,0.0000174033984050138),(2160,0.0000179491533866169),(2165,0.000859655635902304),(2170,0.0019455389032669),(2175,0.00322714310860545),(2180,0.0058341116646219),(2185,0.0122776014320201),(2190,0.0279502761824915),(2195,0.0987331581453092),(2200,0.00001000000000001)"/>
 		</isee:control>
 		<isee:control priority="imex" name="Investments_in_Fossil_Fuel_Extraction_Capital" type="exog">
-			<exog type="backward" pairs="(1995,0.00298301862536294),(2000,0.00408776272843871),(2005,0.0039443702422868),(2010,0.0052521809162492),(2015,0.00571408228562822),(2020,0.0064668835811049),(2025,0.00711682059767906),(2030,0.00770294980790801),(2035,0.00848334175379774),(2040,0.00933519016447679),(2045,0.0103373415951503),(2050,0.0113486831503361),(2055,0.0126514272871136),(2060,0.0140883744802036),(2065,0.0158058089031442),(2070,0.0177526454372635),(2075,0.0200896036597301),(2080,0.0226748553615329),(2085,0.0256550388306493),(2090,0.0288798136139733),(2095,0.0322477275647706),(2100,0.0350317629523085),(2105,0.035222151724628),(2110,0.0257091488830624),(2115,0.000440568381861121),(2120,0.00001000000000001),(2125,0.00001000000000001),(2130,0.00001000000000001),(2135,0.00001000000000001),(2140,0.00001000000000001),(2145,0.00001000000000001),(2150,0.00001000000000001),(2155,0.00001000000000001),(2160,0.00001000000000001),(2165,0.00001000000000001),(2170,0.00001000000000001),(2175,0.00001000000000001),(2180,0.00001000000000001),(2185,0.00001000000000001),(2190,0.00161916020574522),(2195,0.190537529018378),(2200,0.00001000000000001)"/>
+			<exog type="backward" pairs="(1995,0.00298301862536294),(2000,0.00408776272843871),(2005,0.0039443702422868),(2010,0.0023330909781548),(2015,0.00382917079642011),(2020,0.00328389665847246),(2025,0.00001000000000001),(2030,0.00001000000000001),(2035,0.00001000000000001),(2040,0.00001000000000001),(2045,0.00001000000000001),(2050,0.00001000000000001),(2055,0.00001000000000001),(2060,0.00001000000000001),(2065,0.00001000000000001),(2070,0.00001000000000001),(2075,0.00001),(2080,0.00001000000000001),(2085,0.00001000000000001),(2090,0.00001000000000001),(2095,0.00001000000000001),(2100,0.00001000000000001),(2105,0.00001000000000001),(2110,0.00001000000000001),(2115,0.00001000000000001),(2120,0.00001000000000001),(2125,0.00001000000000001),(2130,0.0000190468286850744),(2135,0.000025),(2140,0.000025),(2145,0.000025),(2150,0.000025),(2155,0.000025),(2160,0.000025),(2165,0.0011013330270284),(2170,0.00228543271484778),(2175,0.00455699551467737),(2180,0.00938173117018483),(2185,0.0201086766827108),(2190,0.0470792191262258),(2195,0.128001682486344),(2200,0.00001000000000001)"/>
 		</isee:control>
 		<isee:control priority="imex" name="Investments_in_Renewable_Energy_Capacity" type="exog">
-			<exog type="backward" pairs="(1995,0.00001000000000001),(2000,0.00001000000000001),(2005,0.00001000000000001),(2010,0.00001000000000001),(2015,0.00001000000000001),(2020,0.00001000000000001),(2025,0.00001000000000001),(2030,0.00001000000000001),(2035,0.00001),(2040,0.00001000000000001),(2045,0.00001000000000001),(2050,0.00001),(2055,0.00001),(2060,0.000137517686706598),(2065,0.000314091973019013),(2070,0.000523465709925264),(2075,0.000806030156978965),(2080,0.00122775813945973),(2085,0.00190412304581723),(2090,0.00307633777395776),(2095,0.00526482910942197),(2100,0.00968335007431586),(2105,0.0194977868188768),(2110,0.0437660427345711),(2115,0.0836088339948323),(2120,0.0865757065185487),(2125,0.0828833540989267),(2130,0.0863778990340945),(2135,0.0974092902799044),(2140,0.111475400465614),(2145,0.118392904029242),(2150,0.126229643400686),(2155,0.135493455681701),(2160,0.141904436273012),(2165,0.152584307722008),(2170,0.136176586112132),(2175,0.206509343954985),(2180,0.245084137332967),(2185,0.273467712562538),(2190,0.227145288279541),(2195,0.182183065321958),(2200,0.00001000000000001)"/>
+			<exog type="backward" pairs="(1995,0.0000251201746539486),(2000,0.000323338329708251),(2005,0.000718113454508354),(2010,0.00141484252326865),(2015,0.00270046123077501),(2020,0.00590106047062019),(2025,0.0157504892642842),(2030,0.026533060494497),(2035,0.0280196898905486),(2040,0.0279729429048322),(2045,0.0298141727671322),(2050,0.0335179336531522),(2055,0.0378871294613516),(2060,0.0406641412515858),(2065,0.0428959369483655),(2070,0.0454358706178687),(2075,0.0487749540089625),(2080,0.0523400917199069),(2085,0.0557535539174361),(2090,0.0590712015600953),(2095,0.0626692986997108),(2100,0.066660847902417),(2105,0.0709842013717999),(2110,0.0754893273659793),(2115,0.0802035168029823),(2120,0.085236666022381),(2125,0.090801482402348),(2130,0.0967913925513794),(2135,0.10274538494787),(2140,0.109125257777316),(2145,0.115189421005246),(2150,0.125340089973484),(2155,0.136031372785656),(2160,0.141278432917215),(2165,0.147707080815875),(2170,0.128572147241788),(2175,0.196162545228884),(2180,0.227457335722862),(2185,0.239848010185084),(2190,0.276616016857091),(2195,0.124391772095005),(2200,0.00001000000000001)"/>
 		</isee:control>
 		<isee:control priority="imex" name="Population" type="exog">
-			<exog type="interpolate" pairs="(1980,4443.9582965),(1980.125,4452.65412325),(1980.25,4461.35544204),(1980.375,4470.06563394),(1980.5,4478.78739922),(1980.625,4487.52291693),(1980.75,4496.27490481),(1980.875,4505.04655672),(1981,4513.84061189),(1981.125,4522.65743917),(1981.25,4531.50038864),(1981.375,4540.37165971),(1981.5,4549.27321031),(1981.625,4558.20678331),(1981.75,4567.17383944),(1981.875,4576.17558846),(1982,4585.21309835),(1982.125,4594.28477164),(1982.25,4603.40373603),(1982.375,4612.57065981),(1982.5,4621.78610804),(1982.625,4631.05055019),(1982.75,4640.36264277),(1982.875,4649.71952805),(1983,4659.11868521),(1983.125,4668.55475384),(1983.25,4678.0295213),(1983.375,4687.54137108),(1983.5,4697.08888361),(1983.625,4706.67080756),(1983.75,4716.2863746),(1983.875,4725.93522286),(1984,4735.61701889),(1984.125,4745.32762746),(1984.25,4755.06657212),(1984.375,4764.83366853),(1984.5,4774.6287433),(1984.625,4784.45163161),(1984.75,4794.30269975),(1984.875,4804.18276866),(1985,4814.09256134),(1985.125,4824.02831032),(1985.25,4833.98934653),(1985.375,4843.97624341),(1985.5,4853.98951629),(1985.625,4864.029629),(1985.75,4874.09690011),(1985.875,4884.191521),(1986,4894.3136646),(1986.125,4904.45825233),(1986.25,4914.62353601),(1986.375,4924.8097189),(1986.5,4935.01698974),(1986.625,4945.24552381),(1986.75,4955.49535732),(1986.875,4965.76640416),(1987,4976.05858927),(1987.125,4986.36569386),(1987.25,4996.69167245),(1987.375,5007.03647858),(1987.5,5017.40007072),(1987.625,5027.78241116),(1987.75,5038.18344117),(1987.875,5048.60308304),(1988,5059.04126442),(1988.125,5069.49141985),(1988.25,5079.95861961),(1988.375,5090.44283213),(1988.5,5100.94402698),(1988.625,5111.46217431),(1988.75,5121.99758751),(1988.875,5132.55088523),(1989,5143.1226327),(1989.125,5153.70684936),(1989.25,5164.30687567),(1989.375,5174.92320339),(1989.5,5185.55628692),(1989.625,5196.2065464),(1989.75,5206.87616611),(1989.875,5217.56890818),(1990,5228.28823582),(1990.125,5239.03053595),(1990.25,5249.8023821),(1990.375,5260.6064775),(1990.5,5271.44527918),(1990.625,5282.32100385),(1990.75,5293.236231),(1990.875,5304.19383052),(1991,5315.1963248),(1991.125,5326.23862682),(1991.25,5337.32589159),(1991.375,5348.45963537),(1991.5,5359.64101269),(1991.625,5370.87081463),(1991.75,5382.14494857),(1991.875,5393.45530587),(1992,5404.79473623),(1992.125,5416.1492641),(1992.25,5427.51790725),(1992.375,5438.89610485),(1992.5,5450.27995647),(1992.625,5461.66611718),(1992.75,5473.05241401),(1992.875,5484.43763132),(1993,5495.82068621),(1993.125,5507.19207502),(1993.25,5518.5564475),(1993.375,5529.91299358),(1993.5,5541.26095134),(1993.625,5552.59959477),(1993.75,5563.92906248),(1993.875,5575.2502316),(1994,5586.56383684),(1994.125,5597.86152154),(1994.25,5609.14875846),(1994.375,5620.42600297),(1994.5,5631.69363736),(1994.625,5642.95198111),(1994.75,5654.20166774),(1994.875,5665.44360882),(1995,5676.67861618),(1995.125,5687.89856185),(1995.25,5699.11143526),(1995.375,5710.31780558),(1995.5,5721.5181836),(1995.625,5732.7130285),(1995.75,5743.90322615),(1995.875,5755.09004536),(1996,5766.27465016),(1996.125,5777.44959605),(1996.25,5788.62250347),(1996.375,5799.79428955),(1996.5,5810.96580188),(1996.625,5822.13782464),(1996.75,5833.31062937),(1996.875,5844.48402424),(1997,5855.65783195),(1997.125,5866.82352601),(1997.25,5877.98880074),(1997.375,5889.1535145),(1997.5,5900.31753524),(1997.625,5911.48073945),(1997.75,5922.64275294),(1997.875,5933.80297414),(1998,5944.96084189),(1998.125,5956.10804308),(1998.25,5967.25654007),(1998.375,5978.40584087),(1998.5,5989.55548116),(1998.625,6000.70502165),(1998.75,6011.85433625),(1998.875,6023.00358497),(1999,6034.15291102),(1999.125,6045.29408917),(1999.25,6056.43605693),(1999.375,6067.57901312),(1999.5,6078.72313838),(1999.625,6089.86859709),(1999.75,6101.01572354),(1999.875,6112.16500898),(2000,6123.31691241),(2000.125,6134.46276789),(2000.25,6145.60400428),(2000.375,6156.74136814),(2000.5,6167.87557807),(2000.625,6179.00732646),(2000.75,6190.13742001),(2000.875,6201.2667708),(2001,6212.39625395),(2001.125,6223.51842376),(2001.25,6234.63613047),(2001.375,6245.75023324),(2001.5,6256.86156245),(2001.625,6267.97092118),(2001.75,6279.07917684),(2001.875,6290.18725557),(2002,6301.29604935),(2002.125,6312.39862183),(2002.25,6323.49287195),(2002.375,6334.57975379),(2002.5,6345.66018966),(2002.625,6356.73507105),(2002.75,6367.80502476),(2002.875,6378.87043067),(2003,6389.93166574),(2003.125,6400.98127755),(2003.25,6412.02349093),(2003.375,6423.05868993),(2003.5,6434.08725651),(2003.625,6445.10957059),(2003.75,6456.12618216),(2003.875,6467.13779913),(2004,6478.14510978),(2004.125,6489.1399969),(2004.25,6500.13145329),(2004.375,6511.12009821),(2004.5,6522.10653517),(2004.625,6533.09135267),(2004.75,6544.07505329),(2004.875,6555.05805937),(2005,6566.04078758),(2005.125,6577.01487172),(2005.25,6587.98761661),(2005.375,6598.95942536),(2005.5,6609.9306953),(2005.625,6620.90181804),(2005.75,6631.87301304),(2005.875,6642.84433944),(2006,6653.81586812),(2006.125,6664.77915789),(2006.25,6675.7410572),(2006.375,6686.70165516),(2006.5,6697.66104958),(2006.625,6708.6193464),(2006.75,6719.57654877),(2006.875,6730.53256418),(2007,6741.48731776),(2007.125,6752.43124399),(2007.25,6763.36961023),(2007.375,6774.30242761),(2007.5,6785.22971987),(2007.625,6796.15152246),(2007.75,6807.06793588),(2007.875,6817.97912132),(2008,6828.88524418),(2008.125,6839.77699202),(2008.25,6850.65984547),(2008.375,6861.53400925),(2008.5,6872.39969065),(2008.625,6883.25709937),(2008.75,6894.10641836),(2008.875,6904.94780586),(2009,6915.78142535),(2009.125,6926.59887433),(2009.25,6937.40611753),(2009.375,6948.20333335),(2009.5,6958.99070548),(2009.625,6969.76842281),(2009.75,6980.53676636),(2009.875,6991.29610411),(2010,7002.04680164),(2010.125,7012.78084269),(2010.25,7023.50482873),(2010.375,7034.219117),(2010.5,7044.92406216),(2010.625,7055.62001618),(2010.75,7066.30731495),(2010.875,7076.98627828),(2011,7087.65722219),(2011.125,7098.31212479),(2011.25,7108.95871663),(2011.375,7119.59727847),(2011.5,7130.22808292),(2011.625,7140.85139367),(2011.75,7151.46725687),(2011.875,7162.07551213),(2012,7172.67600627),(2012.125,7183.26006956),(2012.25,7193.83446547),(2012.375,7204.399064),(2012.5,7214.95374251),(2012.625,7225.49838565),(2012.75,7236.03317122),(2012.875,7246.55855473),(2013,7257.07497596),(2013.125,7267.57530645),(2013.25,7278.06657393),(2013.375,7288.54917055),(2013.5,7299.02347624),(2013.625,7309.48985934),(2013.75,7319.94863996),(2013.875,7330.40009262),(2014,7340.84448526),(2014.125,7351.27920806),(2014.25,7361.70673089),(2014.375,7372.12729008),(2014.5,7382.54111641),(2014.625,7392.9484354),(2014.75,7403.34950377),(2014.875,7413.74460791),(2015,7424.13402713),(2015.125,7434.51903228),(2015.25,7444.89781376),(2015.375,7455.27064067),(2015.5,7465.63777606),(2015.625,7475.99947723),(2015.75,7486.35599792),(2015.875,7496.70758849),(2016,7507.05449411),(2016.125,7517.39576899),(2016.25,7527.73117008),(2016.375,7538.06093462),(2016.5,7548.38529471),(2016.625,7558.70447734),(2016.75,7569.01870554),(2016.875,7579.32819825),(2017,7589.63316922),(2017.125,7599.92837148),(2017.25,7610.21749035),(2017.375,7620.5007399),(2017.5,7630.77832936),(2017.625,7641.05046319),(2017.75,7651.31734245),(2017.875,7661.57916482),(2018,7671.8361235),(2018.125,7682.07556426),(2018.25,7692.30742418),(2018.375,7702.5319343),(2018.5,7712.74932145),(2018.625,7722.95980836),(2018.75,7733.16361197),(2018.875,7743.36094375),(2019,7753.55201186),(2019.125,7763.72058605),(2019.25,7773.8818746),(2019.375,7784.03604031),(2019.5,7794.18324779),(2019.625,7804.32366273),(2019.75,7814.45743158),(2019.875,7824.58468191),(2020,7834.70554196),(2020.125,7844.80682855),(2020.25,7854.90498202),(2020.375,7864.99978391),(2020.5,7875.09102221),(2020.625,7885.17849113),(2020.75,7895.26200634),(2020.875,7905.34140434),(2021,7915.41652673),(2021.125,7925.47999013),(2021.25,7935.53777255),(2021.375,7945.58967218),(2021.5,7955.63549186),(2021.625,7965.67503908),(2021.75,7975.70812684),(2021.875,7985.73457387),(2022,7995.75420402),(2022.125,8005.7542656),(2022.25,8015.74512494),(2022.375,8025.72651023),(2022.5,8035.69815703),(2022.625,8045.65980844),(2022.75,8055.61121204),(2022.875,8065.55211936),(2023,8075.48228827),(2023.125,8085.3901779),(2023.25,8095.28591707),(2023.375,8105.16925813),(2023.5,8115.03995856),(2023.625,8124.89778073),(2023.75,8134.74245922),(2023.875,8144.57370215),(2024,8154.39122419),(2024.125,8164.18589535),(2024.25,8173.96589272),(2024.375,8183.73097033),(2024.5,8193.48088726),(2024.625,8203.21540742),(2024.75,8212.93431027),(2024.875,8222.63739032),(2025,8232.32444598),(2025.125,8241.98455376),(2025.25,8251.62681259),(2025.375,8261.25107327),(2025.5,8270.85718984),(2025.625,8280.44501966),(2025.75,8290.01442447),(2025.875,8299.56527026),(2026,8309.09742597),(2026.125,8318.60016792),(2026.25,8328.08216547),(2026.375,8337.54335488),(2026.5,8346.98367449),(2026.625,8356.4030647),(2026.75,8365.80147084),(2026.875,8375.178843),(2027,8384.53513297),(2027.125,8393.85870195),(2027.25,8403.15924212),(2027.375,8412.43671857),(2027.5,8421.69109796),(2027.625,8430.92234858),(2027.75,8440.13043923),(2027.875,8449.3153392),(2028,8458.47701938),(2028.125,8467.60514046),(2028.25,8476.70820816),(2028.375,8485.78619965),(2028.5,8494.83909322),(2028.625,8503.86686816),(2028.75,8512.86949813),(2028.875,8521.84695118),(2029,8530.7991962),(2029.125,8539.717326),(2029.25,8548.60844241),(2029.375,8557.47254202),(2029.5,8566.30962048),(2029.625,8575.11967221),(2029.75,8583.90268007),(2029.875,8592.65861615),(2030,8601.38745266),(2030.125,8610.08420319),(2030.25,8618.75227415),(2030.375,8627.39166372),(2030.5,8636.00237036),(2030.625,8644.58439289),(2030.75,8653.13772204),(2030.875,8661.66234173),(2031,8670.15823935),(2031.125,8678.62273213),(2031.25,8687.05727372),(2031.375,8695.46190223),(2031.5,8703.83666232),(2031.625,8712.18160572),(2031.75,8720.49678795),(2031.875,8728.78226705),(2032,8737.03810535),(2032.125,8745.254884),(2032.25,8753.44095898),(2032.375,8761.5964281),(2032.5,8769.72139117),(2032.625,8777.81594977),(2032.75,8785.8802247),(2032.875,8793.91435542),(2033,8801.91848197),(2033.125,8809.88529492),(2033.25,8817.8215188),(2033.375,8825.72731781),(2033.5,8833.60285577),(2033.625,8841.44829588),(2033.75,8849.26379947),(2033.875,8857.04952612),(2034,8864.80563502),(2034.125,8872.52181253),(2034.25,8880.20772649),(2034.375,8887.86357329),(2034.5,8895.48954835),(2034.625,8903.08584617),(2034.75,8910.65268349),(2034.875,8918.19029847),(2035,8925.69892705),(2035.125,8933.16372157),(2035.25,8940.59956896),(2035.375,8948.0067122),(2035.5,8955.38539186),(2035.625,8962.73584603),(2035.75,8970.05830295),(2035.875,8977.35298143),(2036,8984.62009882),(2036.125,8991.84721532),(2036.25,8999.04625702),(2036.375,9006.21745582),(2036.5,9013.36104247),(2036.625,9020.47724671),(2036.75,9027.56630143),(2036.875,9034.62844255),(2037,9041.6639047),(2037.125,9048.66404834),(2037.25,9055.63711353),(2037.375,9062.58333334),(2037.5,9069.50293976),(2037.625,9076.39616376),(2037.75,9083.26323898),(2037.875,9090.10440157),(2038,9096.91988628),(2038.125,9103.70638245),(2038.25,9110.46746206),(2038.375,9117.20329799),(2038.5,9123.9140622),(2038.625,9130.59992566),(2038.75,9137.26105497),(2038.875,9143.89761249),(2039,9150.5097599),(2039.125,9157.0917235),(2039.25,9163.6493495),(2039.375,9170.18276739),(2039.5,9176.69210666),(2039.625,9183.17749661),(2039.75,9189.63906999),(2039.875,9196.07696273),(2040,9202.49130994),(2040.125,9208.87517803),(2040.25,9215.23613196),(2040.375,9221.57429667),(2040.5,9227.88979274),(2040.625,9234.18273638),(2040.75,9240.4532418),(2040.875,9246.70142125),(2041,9252.92738281),(2041.125,9259.13298022),(2041.25,9265.31408799),(2041.375,9271.47085901),(2041.5,9277.60344115),(2041.625,9283.71197727),(2041.75,9289.79660605),(2041.875,9295.85746212),(2042,9301.89467558),(2042.125,9307.90710475),(2042.25,9313.89193825),(2042.375,9319.84939247),(2042.5,9325.77967831),(2042.625,9331.68300142),(2042.75,9337.55955399),(2042.875,9343.40951506),(2043,9349.23305879),(2043.125,9355.02123773),(2043.25,9360.78209466),(2043.375,9366.51582044),(2043.5,9372.2226007),(2043.625,9377.90261584),(2043.75,9383.55604502),(2043.875,9389.18306609),(2044,9394.78385162),(2044.125,9400.34529399),(2044.25,9405.8811151),(2044.375,9411.39146889),(2044.5,9416.87650439),(2044.625,9422.33636581),(2044.75,9427.77119658),(2044.875,9433.18113935),(2045,9438.56633193),(2045.125,9443.89204632),(2045.25,9449.19339932),(2045.375,9454.47052184),(2045.5,9459.72354055),(2045.625,9464.952578),(2045.75,9470.15775349),(2045.875,9475.33918317),(2046,9480.49697909),(2046.125,9485.58519424),(2046.25,9490.65036813),(2046.375,9495.69260579),(2046.5,9500.7120088),(2046.625,9505.70867539),(2046.75,9510.68269775),(2046.875,9515.63416214),(2047,9520.56315165),(2047.125,9525.43694703),(2047.25,9530.28741271),(2047.375,9535.11465423),(2047.5,9539.91877378),(2047.625,9544.69987021),(2047.75,9549.45804443),(2047.875,9554.1933992),(2048,9558.90603377),(2048.125,9563.56620492),(2048.25,9568.20271312),(2048.375,9572.81568056),(2048.5,9577.40522565),(2048.625,9581.97146303),(2048.75,9586.51449593),(2048.875,9591.03441641),(2049,9595.53131316),(2049.125,9599.96824217),(2049.25,9604.38192916),(2049.375,9608.77247101),(2049.5,9613.13996079),(2049.625,9617.48448771),(2049.75,9621.80614959),(2049.875,9626.10505256),(2050,9630.38129829),(2050.125,9634.60244368),(2050.25,9638.80083356),(2050.375,9642.97657231),(2050.5,9647.12976009),(2050.625,9651.26049299),(2050.75,9655.36885709),(2050.875,9659.45492905),(2051,9663.51878265),(2051.125,9667.52996883),(2051.25,9671.51927808),(2051.375,9675.48678252),(2051.5,9679.43255315),(2051.625,9683.35666004),(2051.75,9687.25916983),(2051.875,9691.14014538),(2052,9694.9996481),(2052.125,9698.8086767),(2052.25,9702.59633158),(2052.375,9706.3626775),(2052.5,9710.10777752),(2052.625,9713.83169292),(2052.75,9717.53447813),(2052.875,9721.21618104),(2053,9724.87684831),(2053.125,9728.49366943),(2053.25,9732.08968709),(2053.375,9735.66494712),(2053.5,9739.21949415),(2053.625,9742.75337158),(2053.75,9746.26661974),(2053.875,9749.75927598),(2054,9753.23137659),(2054.125,9756.65299103),(2054.25,9760.0546538),(2054.375,9763.43639454),(2054.5,9766.79824205),(2054.625,9770.14022435),(2054.75,9773.46237049),(2054.875,9776.76471056),(2055,9780.04727375),(2055.125,9783.29601551),(2055.25,9786.52515527),(2055.375,9789.73472021),(2055.5,9792.92473669),(2055.625,9796.09523015),(2055.75,9799.24621947),(2055.875,9802.37771723),(2056,9805.4897356),(2056.125,9808.55889349),(2056.25,9811.60851814),(2056.375,9814.63862826),(2056.5,9817.6492423),(2056.625,9820.64037848),(2056.75,9823.61206703),(2056.875,9826.5643497),(2057,9829.49726723),(2057.125,9832.39499022),(2057.25,9835.27289276),(2057.375,9838.13102791),(2057.5,9840.96944766),(2057.625,9843.78820295),(2057.75,9846.58733052),(2057.875,9849.36685346),(2058,9852.12679465),(2058.125,9854.88364475),(2058.25,9857.61894369),(2058.375,9860.33275105),(2058.5,9863.02512531),(2058.625,9865.69612392),(2058.75,9868.34578847),(2058.875,9870.97414532),(2059,9873.58122068),(2059.125,9876.16848295),(2059.25,9878.73374297),(2059.375,9881.27701679),(2059.5,9883.79832279),(2059.625,9886.29768123),(2059.75,9888.77514613),(2059.875,9891.23080357),(2060,9893.66473814),(2060.125,9896.06474344),(2060.25,9898.44579883),(2060.375,9900.80778065),(2060.5,9903.15056807),(2060.625,9905.47404298),(2060.75,9907.77808788),(2060.875,9910.06258587),(2061,9912.32742275),(2061.125,9914.50888008),(2061.25,9916.67114121),(2061.375,9918.81407929),(2061.5,9920.93757089),(2061.625,9923.04149592),(2061.75,9925.12572819),(2061.875,9927.19013588),(2062,9929.23459145),(2062.125,9931.1502068),(2062.25,9933.04680825),(2062.375,9934.92424934),(2062.5,9936.78238999),(2062.625,9938.6210965),(2062.75,9940.44025002),(2062.875,9942.23974594),(2063,9944.01948494),(2063.125,9945.74536387),(2063.25,9947.45167301),(2063.375,9949.13831954),(2063.5,9950.80521525),(2063.625,9952.45227631),(2063.75,9954.07941662),(2063.875,9955.68654791),(2064,9957.27358609),(2064.125,9958.84469833),(2064.25,9960.39551447),(2064.375,9961.92596755),(2064.5,9963.43599396),(2064.625,9964.92553327),(2064.75,9966.39452684),(2064.875,9967.84291771),(2065,9969.27065202),(2065.125,9970.67275352),(2065.25,9972.05415425),(2065.375,9973.41482082),(2065.5,9974.75472264),(2065.625,9976.07383185),(2065.75,9977.37212245),(2065.875,9978.64957034),(2066,9979.90615406),(2066.125,9981.14063262),(2066.25,9982.35422549),(2066.375,9983.54693559),(2066.5,9984.71876793),(2066.625,9985.86972955),(2066.75,9986.99982766),(2066.875,9988.10906963),(2067,9989.19746485),(2067.125,9990.23134618),(2067.25,9991.24478122),(2067.375,9992.2377866),(2067.5,9993.21038088),(2067.625,9994.16258448),(2067.75,9995.0944227),(2067.875,9996.00592547),(2068,9996.89712418),(2068.125,9997.73208799),(2068.25,9998.54721781),(2068.375,9999.34254843),(2068.5,10000.118116),(2068.625,10000.8739578),(2068.75,10001.6101148),(2068.875,10002.3266308),(2069,10003.0235504),(2069.125,10003.6821367),(2069.25,10004.3214275),(2069.375,10004.9414749),(2069.5,10005.5423301),(2069.625,10006.124044),(2069.75,10006.6866757),(2069.875,10007.230292),(2070,10007.7549588),(2070.125,10008.2454685),(2070.25,10008.7173291),(2070.375,10009.1706097),(2070.5,10009.6053785),(2070.625,10010.021703),(2070.75,10010.4196385),(2070.875,10010.7992293),(2071,10011.1605213),(2071.125,10011.5010536),(2071.25,10011.8234145),(2071.375,10012.1276685),(2071.5,10012.4138834),(2071.625,10012.6821313),(2071.75,10012.9324894),(2071.875,10013.1650401),(2072,10013.3798691),(2072.125,10013.5693472),(2072.25,10013.7413698),(2072.375,10013.8960362),(2072.5,10014.0334468),(2072.625,10014.1537027),(2072.75,10014.2569097),(2072.875,10014.3431781),(2073,10014.412618),(2073.125,10014.4631833),(2073.25,10014.4971637),(2073.375,10014.5146743),(2073.5,10014.51583),(2073.625,10014.5007441),(2073.75,10014.4695308),(2073.875,10014.4223048),(2074,10014.3591796),(2074.125,10014.2860261),(2074.25,10014.1971299),(2074.375,10014.0926121),(2074.5,10013.9725921),(2074.625,10013.8371876),(2074.75,10013.6865061),(2074.875,10013.5206457),(2075,10013.339703),(2075.125,10013.1431805),(2075.25,10012.9317724),(2075.375,10012.7055758),(2075.5,10012.4646861),(2075.625,10012.2091977),(2075.75,10011.9392026),(2075.875,10011.6547908),(2076,10011.3560511),(2076.125,10011.035278),(2076.25,10010.7004413),(2076.375,10010.3516317),(2076.5,10009.988939),(2076.625,10009.6124519),(2076.75,10009.2222563),(2076.875,10008.8184354),(2077,10008.4010717),(2077.125,10007.9531635),(2077.25,10007.492073),(2077.375,10007.0178799),(2077.5,10006.5306634),(2077.625,10006.0305018),(2077.75,10005.517473),(2077.875,10004.9916541),(2078,10004.4531216),(2078.125,10003.8570439),(2078.25,10003.2489242),(2078.375,10002.6288164),(2078.5,10001.9967739),(2078.625,10001.3528497),(2078.75,10000.697088),(2078.875,10000.0295251),(2079,9999.35019674),(2079.125,9998.64077247),(2079.25,9997.91925611),(2079.375,9997.18573804),(2079.5,9996.44029832),(2079.625,9995.68300806),(2079.75,9994.9139371),(2079.875,9994.13315282),(2080,9993.34071258),(2080.125,9992.59390825),(2080.25,9991.83119441),(2080.375,9991.05270699),(2080.5,9990.25857677),(2080.625,9989.44892906),(2080.75,9988.62388441),(2080.875,9987.78356064),(2081,9986.9280737),(2081.125,9986.05753742),(2081.25,9985.17150091),(2081.375,9984.27009946),(2081.5,9983.35346541),(2081.625,9982.42172813),(2081.75,9981.47502544),(2081.875,9980.51350614),(2082,9979.53732095),(2082.125,9978.54662187),(2082.25,9977.54066879),(2082.375,9976.51966358),(2082.5,9975.48380675),(2082.625,9974.43329718),(2082.75,9973.3683182),(2082.875,9972.28903401),(2083,9971.19560002),(2083.125,9970.08816359),(2083.25,9968.9666663),(2083.375,9967.83125609),(2083.5,9966.68207425),(2083.625,9965.51925593),(2083.75,9964.34293453),(2083.875,9963.15324158),(2084,9961.95030272),(2084.125,9960.73423809),(2084.25,9959.50531334),(2084.375,9958.26363465),(2084.5,9957.00930371),(2084.625,9955.74241794),(2084.75,9954.46307479),(2084.875,9953.17137298),(2085,9951.86740959),(2085.125,9950.55128002),(2085.25,9949.22337168),(2085.375,9947.88377358),(2085.5,9946.53257308),(2085.625,9945.16985589),(2085.75,9943.79571197),(2085.875,9942.41023526),(2086,9941.01351779),(2086.125,9939.60564969),(2086.25,9938.18714605),(2086.375,9936.75808562),(2086.5,9935.31854557),(2086.625,9933.86860146),(2086.75,9932.40832161),(2086.875,9930.93776717),(2087,9929.45699776),(2087.125,9927.96607159),(2087.25,9926.46508459),(2087.375,9924.95410099),(2087.5,9923.43318351),(2087.625,9921.9023934),(2087.75,9920.36178473),(2087.875,9918.81140409),(2088,9917.25129584),(2088.125,9915.68150234),(2088.25,9914.10205702),(2088.375,9912.5130094),(2088.5,9910.91440705),(2088.625,9909.30629571),(2088.75,9907.68872522),(2088.875,9906.06174679),(2089,9904.42540486),(2089.125,9902.77973759),(2089.25,9901.12496679),(2089.375,9899.46112189),(2089.5,9897.7882275),(2089.625,9896.10630383),(2089.75,9894.41535656),(2089.875,9892.71538001),(2090,9891.00637067),(2090.125,9889.28832727),(2090.25,9887.56142542),(2090.375,9885.82567085),(2090.5,9884.08107202),(2090.625,9882.3276404),(2090.75,9880.56539606),(2090.875,9878.79437561),(2091,9877.01463358),(2091.125,9875.22623983),(2091.25,9873.42952582),(2091.375,9871.62458191),(2091.5,9869.81150729),(2091.625,9867.99040815),(2091.75,9866.16139896),(2091.875,9864.3245926),(2092,9862.48008935),(2092.125,9860.62797853),(2092.25,9858.76852701),(2092.375,9856.90180575),(2092.5,9855.02787889),(2092.625,9853.14680478),(2092.75,9851.258639),(2092.875,9849.3634348),(2093,9847.46124129),(2093.125,9845.5521039),(2093.25,9843.63623691),(2093.375,9841.71367744),(2093.5,9839.78446006),(2093.625,9837.84861693),(2093.75,9835.9061601),(2093.875,9833.95708324),(2094,9832.00138085),(2094.125,9830.03904817),(2094.25,9828.07036737),(2094.375,9826.09532828),(2094.5,9824.11392152),(2094.625,9822.12613839),(2094.75,9820.13199418),(2094.875,9818.13152691),(2095,9816.12477335),(2095.125,9814.11176909),(2095.25,9812.09265123),(2095.375,9810.06745109),(2095.5,9808.03619906),(2095.625,9805.99892463),(2095.75,9803.95564643),(2095.875,9801.90637414),(2096,9799.85112012),(2096.125,9797.7898994),(2096.25,9795.72285689),(2096.375,9793.65001178),(2096.5,9791.57138547),(2096.625,9789.48700132),(2096.75,9787.39689359),(2096.875,9785.30110658),(2097,9783.19968497),(2097.125,9781.09267378),(2097.25,9778.98011849),(2097.375,9776.86206844),(2097.5,9774.7385731),(2097.625,9772.60968213),(2097.75,9770.47543589),(2097.875,9768.33586505),(2098,9766.19099952),(2098.125,9764.04086854),(2098.25,9761.88505709),(2098.375,9759.72361368),(2098.5,9757.55658588),(2098.625,9755.38402038),(2098.75,9753.20596326),(2098.875,9751.02246023),(2099,9748.8335566),(2099.125,9746.63929726),(2099.25,9744.43958182),(2099.375,9742.23445961),(2099.5,9740.02397997),(2099.625,9737.80819215),(2099.75,9735.58715571),(2099.875,9733.36094008),(2100,9731.12961389)"/>
+			<exog type="interpolate" pairs="(1980,4443.9582965),(1981,4513.84061189),(1982,4585.21309835),(1983,4659.11868521),(1984,4735.61701889),(1985,4814.09256134),(1986,4894.3136646),(1987,4976.05858927),(1988,5059.04126442),(1989,5143.1226327),(1990,5228.28823582),(1991,5315.1963248),(1992,5404.79473623),(1993,5495.82068621),(1994,5586.56383684),(1995,5676.67861618),(1996,5766.27465016),(1997,5855.65783195),(1998,5944.96084189),(1999,6034.15291102),(2000,6123.31691241),(2001,6212.39625395),(2002,6301.29604935),(2003,6389.93166574),(2004,6478.14510978),(2005,6566.04078758),(2006,6653.81586812),(2007,6741.48731776),(2008,6828.88524418),(2009,6915.78142535),(2010,7002.04680164),(2011,7087.65722219),(2012,7172.67600627),(2013,7257.07497596),(2014,7340.84448526),(2015,7424.13402713),(2016,7507.05449411),(2017,7589.63316922),(2018,7671.8361235),(2019,7753.55201186),(2020,7834.70554196),(2021,7915.41652673),(2022,7995.75420402),(2023,8075.48228827),(2024,8154.39122419),(2025,8232.32444598),(2026,8309.09742597),(2027,8384.53513297),(2028,8458.47701938),(2029,8530.7991962),(2030,8601.38745266),(2031,8670.15823935),(2032,8737.03810535),(2033,8801.91848197),(2034,8864.80563502),(2035,8925.69892705),(2036,8984.62009882),(2037,9041.6639047),(2038,9096.91988628),(2039,9150.5097599),(2040,9202.49130994),(2041,9252.92738281),(2042,9301.89467558),(2043,9349.23305879),(2044,9394.78385162),(2045,9438.56633193),(2046,9480.49697909),(2047,9520.56315165),(2048,9558.90603377),(2049,9595.53131316),(2050,9630.38129829),(2051,9663.51878265),(2052,9694.9996481),(2053,9724.87684831),(2054,9753.23137659),(2055,9780.04727375),(2056,9805.4897356),(2057,9829.49726723),(2058,9852.12679465),(2059,9873.58122068),(2060,9893.66473814),(2061,9912.32742275),(2062,9929.23459145),(2063,9944.01948494),(2064,9957.27358609),(2065,9969.27065202),(2066,9979.90615406),(2067,9989.19746485),(2068,9996.89712418),(2069,10003.0235504),(2070,10007.7549588),(2071,10011.1605213),(2072,10013.3798691),(2073,10014.412618),(2074,10014.3591796),(2075,10013.339703),(2076,10011.3560511),(2077,10008.4010717),(2078,10004.4531216),(2079,9999.35019674),(2080,9993.34071258),(2081,9986.9280737),(2082,9979.53732095),(2083,9971.19560002),(2084,9961.95030272),(2085,9951.86740959),(2086,9941.01351779),(2087,9929.45699776),(2088,9917.25129584),(2089,9904.42540486),(2090,9891.00637067),(2091,9877.01463358),(2092,9862.48008935),(2093,9847.46124129),(2094,9832.00138085),(2095,9816.12477335),(2096,9799.85112012),(2097,9783.19968497),(2098,9766.19099952),(2099,9748.8335566),(2100,9731.12961389)"/>
 		</isee:control>
 		<isee:control priority="imex" name="Surface_Temperature_Anomaly" type="exog">
-			<exog type="interpolate" pairs="(1980,0.47048327647),(1980.125,0.48587195888),(1980.25,0.499252003132),(1980.375,0.510986931022),(1980.5,0.521354813224),(1980.625,0.530071157816),(1980.75,0.536883374261),(1980.875,0.542030725958),(1981,0.545712026444),(1981.125,0.548095630363),(1981.25,0.549326459959),(1981.375,0.549531051414),(1981.5,0.548821248014),(1981.625,0.547343558493),(1981.75,0.545227684162),(1981.875,0.542545648867),(1982,0.539363175493),(1982.125,0.5357404989),(1982.25,0.531733021191),(1982.375,0.527391816694),(1982.5,0.522764018355),(1982.625,0.518793090085),(1982.75,0.516268923543),(1982.875,0.515018420889),(1983,0.514886283521),(1983.125,0.515735176251),(1983.25,0.51744511979),(1983.375,0.519912364937),(1983.5,0.523047966318),(1983.625,0.526599383938),(1983.75,0.530353382835),(1983.875,0.534292538675),(1984,0.538402259295),(1984.125,0.542670363137),(1984.25,0.547086716761),(1984.375,0.55164292881),(1984.5,0.556332092674),(1984.625,0.56087722013),(1984.75,0.565039985805),(1984.875,0.568866891176),(1985,0.572398046536),(1985.125,0.575668212925),(1985.25,0.578707640448),(1985.375,0.581542751579),(1985.5,0.584196703395),(1985.625,0.586741155258),(1985.75,0.589238754432),(1985.875,0.591696335974),(1986,0.594119962757),(1986.125,0.596515021615),(1986.25,0.598886304632),(1986.375,0.601238081216),(1986.5,0.603574162488),(1986.625,0.605962968754),(1986.75,0.608464688677),(1986.875,0.61107124848),(1987,0.613775510983),(1987.125,0.616571173164),(1987.25,0.619452677498),(1987.375,0.622415129782),(1987.5,0.625454222913),(1987.625,0.628578459597),(1987.75,0.631795420408),(1987.875,0.635100294248),(1988,0.638488851467),(1988.125,0.641957380121),(1988.25,0.645502632815),(1988.375,0.649121775984),(1988.5,0.652812341327),(1988.625,0.656395993089),(1988.75,0.659713010198),(1988.875,0.662787083555),(1989,0.665639498962),(1989.125,0.668289433066),(1989.25,0.670754206034),(1989.375,0.673049496378),(1989.5,0.675189524398),(1989.625,0.676264988447),(1989.75,0.675457077132),(1989.875,0.672906594673),(1990,0.668745648208),(1990.125,0.663099863469),(1990.25,0.656090136377),(1990.375,0.647834026949),(1990.5,0.638446866822),(1990.625,0.627734669409),(1990.75,0.615539546269),(1990.875,0.602030813613),(1991,0.587379944791),(1991.125,0.571761283499),(1991.25,0.555352270428),(1991.375,0.538333112129),(1991.5,0.520885806704),(1991.625,0.505520430935),(1991.75,0.494313837795),(1991.875,0.486791574328),(1992,0.48249047801),(1992.125,0.480979781275),(1992.25,0.481874483771),(1992.375,0.484841523829),(1992.5,0.489600388186),(1992.625,0.495551516142),(1992.75,0.50220312842),(1992.875,0.509486751359),(1993,0.517348412102),(1993.125,0.525746080535),(1993.25,0.534647523848),(1993.375,0.544028530784),(1993.5,0.553871454289),(1993.625,0.563730392787),(1993.75,0.57322190389),(1993.875,0.582415892098),(1994,0.591370809784),(1994.125,0.600135928912),(1994.25,0.608753088077),(1994.375,0.617258056635),(1994.5,0.625681612551),(1994.625,0.63385909511),(1994.75,0.641643245608),(1994.875,0.649082156109),(1995,0.65621749909),(1995.125,0.66308557606),(1995.25,0.66971815996),(1995.375,0.676143180584),(1995.5,0.682385287515),(1995.625,0.688219298025),(1995.75,0.69344100307),(1995.875,0.698099867215),(1996,0.702240119495),(1996.125,0.705901513812),(1996.25,0.709119950328),(1996.375,0.711927987822),(1996.5,0.714355269598),(1996.625,0.716668269458),(1996.75,0.719109841047),(1996.875,0.721672728682),(1997,0.724350294642),(1997.125,0.727136470734),(1997.25,0.730025714512),(1997.375,0.733012967095),(1997.5,0.736093612572),(1997.625,0.739400562761),(1997.75,0.743055568551),(1997.875,0.747038984636),(1998,0.751332928935),(1998.125,0.755921156077),(1998.25,0.760788940248),(1998.375,0.765922956821),(1998.5,0.771311163913),(1998.625,0.776787194022),(1998.75,0.78219769732),(1998.875,0.787550514372),(1999,0.792852824347),(1999.125,0.798111210822),(1999.25,0.803331721184),(1999.375,0.808519918249),(1999.5,0.813680924879),(1999.625,0.818719971528),(1999.75,0.82354894657),(1999.875,0.82818176934),(2000,0.832631273986),(2000.125,0.836909315446),(2000.25,0.841026854254),(2000.375,0.844994041314),(2000.5,0.848820301186),(2000.625,0.852439023736),(2000.75,0.855788002112),(2000.875,0.8588819706),(2001,0.86173468817),(2001.125,0.864359025032),(2001.25,0.866767038754),(2001.375,0.868970042193),(2001.5,0.870978664443),(2001.625,0.872753475479),(2001.75,0.874257645898),(2001.875,0.875504630663),(2002,0.876507142208),(2002.125,0.877277208312),(2002.25,0.877826222943),(2002.375,0.878164992743),(2002.5,0.878303779829),(2002.625,0.878381300407),(2002.75,0.87852754648),(2002.875,0.878739423205),(2003,0.879013982949),(2003.125,0.879348419445),(2003.25,0.879740060634),(2003.375,0.880186363057),(2003.5,0.880684907807),(2003.625,0.881138283515),(2003.75,0.881455241835),(2003.875,0.881642440463),(2004,0.881706210649),(2004.125,0.881652577011),(2004.25,0.881487274187),(2004.375,0.881215763675),(2004.5,0.880843250963),(2004.625,0.88041457573),(2004.75,0.879971804778),(2004.875,0.879515769897),(2005,0.879047262763),(2005.125,0.878567036938),(2005.25,0.878075806546),(2005.375,0.877574248108),(2005.5,0.877063005436),(2005.625,0.876635597281),(2005.75,0.876379546673),(2005.875,0.876286771673),(2006,0.876349569551),(2006.125,0.876560605706),(2006.25,0.876912898129),(2006.375,0.877399805489),(2006.5,0.878015018827),(2006.625,0.878814221647),(2006.75,0.87984947112),(2006.875,0.881109716721),(2007,0.882584499434),(2007.125,0.884263930861),(2007.25,0.8861386685),(2007.375,0.888199893562),(2007.5,0.890439291464),(2007.625,0.892818692566),(2007.75,0.895302269632),(2007.875,0.897885784404),(2008,0.900565251503),(2008.125,0.90333692446),(2008.25,0.906197279615),(2008.375,0.909143003351),(2008.5,0.912170982604),(2008.625,0.915294518705),(2008.75,0.918526120479),(2008.875,0.92186181897),(2009,0.925297886166),(2009.125,0.928830821049),(2009.25,0.932457333201),(2009.375,0.936174330171),(2009.5,0.939978908531),(2009.625,0.943819976768),(2009.75,0.947649378358),(2009.875,0.951468677319),(2010,0.955279349373),(2010.125,0.959082787373),(2010.25,0.962880303768),(2010.375,0.966673135319),(2010.5,0.970462450015),(2010.625,0.974256881975),(2010.75,0.978064590943),(2010.875,0.981885967787),(2011,0.985721382288),(2011.125,0.989571184192),(2011.25,0.993435701877),(2011.375,0.997315243291),(2011.5,1.00121009908),(2011.625,1.00523599094),(2011.75,1.00950253102),(2011.875,1.01400119633),(2012,1.0187239293),(2012.125,1.02366311517),(2012.25,1.02881155715),(2012.375,1.03416245453),(2012.5,1.03970938378),(2012.625,1.04528697541),(2012.75,1.05073821322),(2012.875,1.0560692067),(2013,1.06128572908),(2013.125,1.06639324004),(2013.25,1.07139690451),(2013.375,1.07630161172),(2013.5,1.08111199455),(2013.625,1.08585338535),(2013.75,1.09054987742),(2013.875,1.0952039617),(2014,1.09981800061),(2014.125,1.10439423531),(2014.25,1.10893479002),(2014.375,1.11344167836),(2014.5,1.1179168117),(2014.625,1.12234196578),(2014.75,1.12669976436),(2014.875,1.13099320472),(2015,1.13522514046),(2015.125,1.13939828929),(2015.25,1.14351523869),(2015.375,1.14757845279),(2015.5,1.15159028022),(2015.625,1.15555197283),(2015.75,1.15946472371),(2015.875,1.16333063496),(2016,1.16715171229),(2016.125,1.17092986974),(2016.25,1.1746669322),(2016.375,1.1783646397),(2016.5,1.18202465346),(2016.625,1.1856479027),(2016.75,1.18923527462),(2016.875,1.19278825881),(2017,1.19630827835),(2017.125,1.19979669295),(2017.25,1.20325480043),(2017.375,1.20668383953),(2017.5,1.21008499404),(2017.625,1.21345867899),(2017.75,1.21680529083),(2017.875,1.22012590901),(2018,1.22342156562),(2018.125,1.22669324748),(2018.25,1.22994189892),(2018.375,1.23316842367),(2018.5,1.23637368599),(2018.625,1.23955960118),(2018.75,1.24272800132),(2018.875,1.24587957371),(2019,1.24901497524),(2019.125,1.25213483375),(2019.25,1.25523974892),(2019.375,1.25833029342),(2019.5,1.26140701454),(2019.625,1.26448123917),(2019.75,1.26756380894),(2019.875,1.2706545273),(2020,1.27375320094),(2020.125,1.27685963977),(2020.25,1.27997365561),(2020.375,1.2830950622),(2020.5,1.28622367637),(2020.625,1.28935097086),(2020.75,1.29246877416),(2020.875,1.29557742698),(2021,1.2986772546),(2021.125,1.3017685675),(2021.25,1.30485165806),(2021.375,1.30792680122),(2021.5,1.31099425893),(2021.625,1.31405378373),(2021.75,1.31710513703),(2021.875,1.32014857537),(2022,1.32318434329),(2022.125,1.32621267389),(2022.25,1.32923378243),(2022.375,1.33224786693),(2022.5,1.33525511533),(2022.625,1.33825717562),(2022.75,1.34125562573),(2022.875,1.34425053707),(2023,1.34724197574),(2023.125,1.35023000272),(2023.25,1.35321467159),(2023.375,1.35619602882),(2023.5,1.35917411652),(2023.625,1.3621663868),(2023.75,1.36518957265),(2023.875,1.36824265875),(2024,1.3713246614),(2024.125,1.37443462751),(2024.25,1.37757163323),(2024.375,1.38073478303),(2024.5,1.38392320912),(2024.625,1.38713030564),(2024.75,1.39034972755),(2024.875,1.39358102852),(2025,1.39682377502),(2025.125,1.40007754601),(2025.25,1.40334193064),(2025.375,1.40661652799),(2025.5,1.40990094839),(2025.625,1.41319413782),(2025.75,1.41649508007),(2025.875,1.41980345705),(2026,1.42311895923),(2026.125,1.42644128529),(2026.25,1.42977013996),(2026.375,1.43310523379),(2026.5,1.43644628483),(2026.625,1.43979145784),(2026.75,1.44313898729),(2026.875,1.44648870409),(2027,1.44984044277),(2027.125,1.45319404136),(2027.25,1.45654933793),(2027.375,1.45990617051),(2027.5,1.4632643804),(2027.625,1.46662438592),(2027.75,1.46998658551),(2027.875,1.47335079606),(2028,1.47671683842),(2028.125,1.48008453722),(2028.25,1.48345371753),(2028.375,1.48682420472),(2028.5,1.49019582775),(2028.625,1.49357182893),(2028.75,1.49695531847),(2028.875,1.500345937),(2029,1.50374333459),(2029.125,1.50714717046),(2029.25,1.51055711016),(2029.375,1.51397282533),(2029.5,1.51739399605),(2029.625,1.52082564932),(2029.75,1.52427260885),(2029.875,1.52773426914),(2030,1.53121004179),(2030.125,1.53469935494),(2030.25,1.53820165069),(2030.375,1.54171638468),(2030.5,1.54524302771),(2030.625,1.54878543783),(2030.75,1.55234731507),(2030.875,1.55592792061),(2031,1.55952653683),(2031.125,1.56314246664),(2031.25,1.56677503159),(2031.375,1.57042357135),(2031.5,1.57408744433),(2031.625,1.57776726185),(2031.75,1.58146360434),(2031.875,1.58517581212),(2032,1.58890324427),(2032.125,1.59264527801),(2032.25,1.59640130658),(2032.375,1.60017073877),(2032.5,1.60395299992),(2032.625,1.60773903376),(2032.75,1.61152013229),(2032.875,1.61529625551),(2033,1.61906736331),(2033.125,1.62283341555),(2033.25,1.62659437097),(2033.375,1.63035018723),(2033.5,1.63410082194),(2033.625,1.63784689285),(2033.75,1.64158899189),(2033.875,1.64532703864),(2034,1.64906095373),(2034.125,1.65279065885),(2034.25,1.65651607584),(2034.375,1.66023712669),(2034.5,1.66395373441),(2034.625,1.6676548128),(2034.75,1.67132970592),(2034.875,1.67497896933),(2035,1.67860314086),(2035.125,1.68220274112),(2035.25,1.68577827332),(2035.375,1.68933022375),(2035.5,1.69285906302),(2035.625,1.69636880622),(2035.75,1.6998633151),(2035.875,1.70334281264),(2036,1.706807514),(2036.125,1.7102576267),(2036.25,1.71369334955),(2036.375,1.71711487291),(2036.5,1.72052238034),(2036.625,1.72391408557),(2036.75,1.72728827241),(2036.875,1.73064521754),(2037,1.73398518849),(2037.125,1.73730844397),(2037.25,1.74061523254),(2037.375,1.74390579296),(2037.5,1.74718035607),(2037.625,1.7504374123),(2037.75,1.75367551204),(2037.875,1.75689496288),(2038,1.76009606263),(2038.125,1.76327909971),(2038.25,1.76644435146),(2038.375,1.76959208448),(2038.5,1.77272255695),(2038.625,1.77583759671),(2038.75,1.77893896245),(2038.875,1.78202679875),(2039,1.78510124549),(2039.125,1.78816243804),(2039.25,1.7912105064),(2039.375,1.79424557535),(2039.5,1.79726776566),(2039.625,1.80027551001),(2039.75,1.80326730285),(2039.875,1.80624334991),(2040,1.80920385078),(2040.125,1.81214899915),(2040.25,1.8150789856),(2040.375,1.8179939976),(2040.5,1.82089421684),(2040.625,1.82377879919),(2040.75,1.82664693477),(2040.875,1.8294988473),(2041,1.83233475386),(2041.125,1.83515486507),(2041.25,1.83795938324),(2041.375,1.84074850269),(2041.5,1.84352241198),(2041.625,1.84628098384),(2041.75,1.84902409775),(2041.875,1.8517519439),(2042,1.85446470701),(2042.125,1.85716256653),(2042.25,1.8598456932),(2042.375,1.8625142494),(2042.5,1.86516839285),(2042.625,1.86781187283),(2042.75,1.87044829465),(2042.875,1.87307759812),(2043,1.87569972499),(2043.125,1.87831461898),(2043.25,1.88092222453),(2043.375,1.88352248683),(2043.5,1.88611535306),(2043.625,1.88869904639),(2043.75,1.89127185901),(2043.875,1.89383384246),(2044,1.89638504744),(2044.125,1.89892552378),(2044.25,1.90145532058),(2044.375,1.90397448617),(2044.5,1.90648306829),(2044.625,1.90897937405),(2044.75,1.9114617777),(2044.875,1.91393042461),(2045,1.91638545685),(2045.125,1.91882701332),(2045.25,1.92125522925),(2045.375,1.92367023634),(2045.5,1.92607216343),(2045.625,1.92846074758),(2045.75,1.93083573836),(2045.875,1.93319727904),(2046,1.93554550983),(2046.125,1.93788056802),(2046.25,1.94020258747),(2046.375,1.9425116987),(2046.5,1.94480802963),(2046.625,1.94709283084),(2046.75,1.94936730674),(2046.875,1.95163151394),(2047,1.95388550871),(2047.125,1.95612934704),(2047.25,1.9583630832),(2047.375,1.96058676976),(2047.5,1.96280045919),(2047.625,1.96500199046),(2047.75,1.9671892886),(2047.875,1.96936253221),(2048,1.97152189623),(2048.125,1.97366755206),(2048.25,1.97579966618),(2048.375,1.97791840023),(2048.5,1.98002391271),(2048.625,1.98211950001),(2048.75,1.98420833338),(2048.875,1.9862903831),(2049,1.9883656219),(2049.125,1.99043402487),(2049.25,1.99249556843),(2049.375,1.99455023021),(2049.5,1.99659799015),(2049.625,1.99863379886),(2049.75,2.00065280498),(2049.875,2.00265528242),(2050,2.00464149885),(2050.125,2.00661171593),(2050.25,2.00856618855),(2050.375,2.010505165),(2050.5,2.01242888805),(2050.625,2.01433998597),(2050.75,2.01624098876),(2050.875,2.01813198692),(2051,2.02001307002),(2051.125,2.02188432669),(2051.25,2.02374584422),(2051.375,2.02559770863),(2051.5,2.02744000516),(2051.625,2.02927377365),(2051.75,2.03110001606),(2051.875,2.03291876099),(2052,2.03473003799),(2052.125,2.03653387759),(2052.25,2.0383303107),(2052.375,2.04011936854),(2052.5,2.04190108332),(2052.625,2.04367753001),(2052.75,2.04545070499),(2052.875,2.04722052652),(2053,2.04898691712),(2053.125,2.05074980347),(2053.25,2.05250911598),(2053.375,2.05426478864),(2053.5,2.05601675933),(2053.625,2.05776569889),(2053.75,2.05951225339),(2053.875,2.06125632997),(2054,2.06299784043),(2054.125,2.06473670109),(2054.25,2.06647283249),(2054.375,2.06820615925),(2054.5,2.06993661012),(2054.625,2.07166341891),(2054.75,2.07338585058),(2054.875,2.07510388561),(2055,2.076817507),(2055.125,2.07852670019),(2055.25,2.08023145281),(2055.375,2.08193175454),(2055.5,2.08362759728),(2055.625,2.08532115653),(2055.75,2.08701452478),(2055.875,2.0887075753),(2056,2.09040018684),(2056.125,2.09209224354),(2056.25,2.09378363418),(2056.375,2.09547425205),(2056.5,2.09716399532),(2056.625,2.09884811237),(2056.75,2.10052203763),(2056.875,2.10218594938),(2057,2.10384002245),(2057.125,2.10548442833),(2057.25,2.10711933446),(2057.375,2.10874490436),(2057.5,2.11036129837),(2057.625,2.11197363791),(2057.75,2.11358684773),(2057.875,2.11520079499),(2058,2.11681535212),(2058.125,2.11843039678),(2058.25,2.12004581042),(2058.375,2.12166147825),(2058.5,2.12327729022),(2058.625,2.12489866225),(2058.75,2.12653079934),(2058.875,2.12817328875),(2059,2.12982573106),(2059.125,2.13148773982),(2059.25,2.13315894062),(2059.375,2.13483897073),(2059.5,2.13652747924),(2059.625,2.13821214808),(2059.75,2.13988113775),(2059.875,2.14153481667),(2060,2.14317354386),(2060.125,2.14479766911),(2060.25,2.14640753478),(2060.375,2.14800347586),(2060.5,2.14958581845),(2060.625,2.15115560661),(2060.75,2.15271384754),(2060.875,2.15426080022),(2061,2.15579671673),(2061.125,2.1573218424),(2061.25,2.15883641524),(2061.375,2.16034066605),(2061.5,2.16183481932),(2061.625,2.16332254744),(2061.75,2.16480738196),(2061.875,2.1662893317),(2062,2.16776840554),(2062.125,2.1692446125),(2062.25,2.17071796039),(2062.375,2.17218845575),(2062.5,2.1736561052),(2062.625,2.17511785873),(2062.75,2.17657078578),(2062.875,2.1780150684),(2063,2.1794508837),(2063.125,2.18087840408),(2063.25,2.18229779693),(2063.375,2.18370922479),(2063.5,2.1851128459),(2063.625,2.18651113404),(2063.75,2.18790646835),(2063.875,2.18929886209),(2064,2.19068832862),(2064.125,2.19207488139),(2064.25,2.19345853401),(2064.375,2.19483930026),(2064.5,2.19621719402),(2064.625,2.19759270033),(2064.75,2.19896628593),(2064.875,2.20033793804),(2065,2.20170764475),(2065.125,2.20307539498),(2065.25,2.20444117843),(2065.375,2.20580498547),(2065.5,2.20716680727),(2065.625,2.20852692356),(2065.75,2.20988560352),(2065.875,2.21124282386),(2066,2.21259856239),(2066.125,2.21395279795),(2066.25,2.21530551041),(2066.375,2.21665668055),(2066.5,2.21800629012),(2066.625,2.21935497145),(2066.75,2.22070333232),(2066.875,2.2220513198),(2067,2.22339888279),(2067.125,2.22474597198),(2067.25,2.22609253938),(2067.375,2.22743853826),(2067.5,2.22878392346),(2067.625,2.23012756977),(2067.75,2.23146839573),(2067.875,2.23280642262),(2068,2.23414167129),(2068.125,2.23547416218),(2068.25,2.23680391483),(2068.375,2.23813094791),(2068.5,2.23945527967),(2068.625,2.24077610842),(2068.75,2.24209266405),(2068.875,2.24340501045),(2069,2.2447132097),(2069.125,2.24601732212),(2069.25,2.24731740607),(2069.375,2.248613518),(2069.5,2.24990571272),(2069.625,2.251190855),(2069.75,2.2524659326),(2069.875,2.25373117841),(2070,2.25498681851),(2070.125,2.25623307228),(2070.25,2.25747015249),(2070.375,2.2586982654),(2070.5,2.25991761111),(2070.625,2.26113230138),(2070.75,2.26234628906),(2070.875,2.26355953221),(2071,2.26477198997),(2071.125,2.26598362248),(2071.25,2.26719439091),(2071.375,2.26840425739),(2071.5,2.26961318502),(2071.625,2.27082073699),(2071.75,2.2720264931),(2071.875,2.27323044235),(2072,2.27443257398),(2072.125,2.27563287749),(2072.25,2.27683134255),(2072.375,2.27802795899),(2072.5,2.27922271688),(2072.625,2.28041415326),(2072.75,2.28160086219),(2072.875,2.28278291783),(2073,2.28396039212),(2073.125,2.28513335488),(2073.25,2.28630187382),(2073.375,2.28746601461),(2073.5,2.28862584095),(2073.625,2.2897808095),(2073.75,2.2909303987),(2073.875,2.29207470139),(2074,2.29321380766),(2074.125,2.29434780489),(2074.25,2.29547677794),(2074.375,2.29660080917),(2074.5,2.29771997851),(2074.625,2.29883715297),(2074.75,2.29995508822),(2074.875,2.30107369728),(2075,2.30219289561),(2075.125,2.30331260108),(2075.25,2.30443273393),(2075.375,2.30555321666),(2075.5,2.306673974),(2075.625,2.30779518198),(2075.75,2.30891700902),(2075.875,2.31003937196),(2076,2.31116219008),(2076.125,2.31228538503),(2076.25,2.31340888071),(2076.375,2.31453260317),(2076.5,2.31565648068),(2076.625,2.31678106491),(2076.75,2.31790688537),(2076.875,2.31903384095),(2077,2.3201618336),(2077.125,2.3212907682),(2077.25,2.32242055229),(2077.375,2.32355109597),(2077.5,2.32468231206),(2077.625,2.32581400904),(2077.75,2.32694600212),(2077.875,2.32807821788),(2078,2.32921058515),(2078.125,2.3303430349),(2078.25,2.33147549972),(2078.375,2.33260791368),(2078.5,2.33374021281),(2078.625,2.33487494214),(2078.75,2.33601454663),(2078.875,2.33715881836),(2079,2.33830755553),(2079.125,2.33946056225),(2079.25,2.3406176482),(2079.375,2.34177862846),(2079.5,2.34294332354),(2079.625,2.34410871319),(2079.75,2.34527189352),(2079.875,2.3464328636),(2080,2.34759162257),(2080.125,2.34874816963),(2080.25,2.34990250468),(2080.375,2.35105462825),(2080.5,2.35220454084),(2080.625,2.35335270103),(2080.75,2.35449954938),(2080.875,2.3556450599),(2081,2.3567892072),(2081.125,2.35793196654),(2081.25,2.35907331372),(2081.375,2.36021322512),(2081.5,2.36135167766),(2081.625,2.3624859969),(2081.75,2.36361361254),(2081.875,2.36473465495),(2082,2.36584925048),(2082.125,2.36695752159),(2082.25,2.36805958691),(2082.375,2.36915556136),(2082.5,2.37024555628),(2082.625,2.37133263706),(2082.75,2.37241975014),(2082.875,2.37350682703),(2083,2.37459380097),(2083.125,2.37568060684),(2083.25,2.37676718119),(2083.375,2.37785346212),(2083.5,2.37893938931),(2083.625,2.38002349998),(2083.75,2.3811043877),(2083.875,2.38218207703),(2084,2.38325659156),(2084.125,2.38432795396),(2084.25,2.38539618598),(2084.375,2.38646130851),(2084.5,2.38752334154),(2084.625,2.38858142009),(2084.75,2.38963471289),(2084.875,2.39068328819),(2085,2.39172721201),(2085.125,2.39276654816),(2085.25,2.39380135836),(2085.375,2.39483170222),(2085.5,2.39585763738),(2085.625,2.39687733156),(2085.75,2.39788902437),(2085.875,2.39889287595),(2086,2.39988904148),(2086.125,2.40087767134),(2086.25,2.40185891126),(2086.375,2.4028329024),(2086.5,2.40379978152),(2086.625,2.40476146065),(2086.75,2.40571977813),(2086.875,2.40667475629),(2087,2.40762641651),(2087.125,2.40857477928),(2087.25,2.40951986422),(2087.375,2.41046169012),(2087.5,2.41140027499),(2087.625,2.41233726315),(2087.75,2.41327423463),(2087.875,2.41421111202),(2088,2.41514781996),(2088.125,2.41608428506),(2088.25,2.41702043591),(2088.375,2.41795620302),(2088.5,2.41889151873),(2088.625,2.41982356437),(2088.75,2.42074963054),(2088.875,2.42166981264),(2089,2.42258420319),(2089.125,2.42349289185),(2089.25,2.42439596554),(2089.375,2.42529350847),(2089.5,2.42618560226),(2089.625,2.42707661501),(2089.75,2.42797074486),(2089.875,2.42886782039),(2090,2.42976767501),(2090.125,2.43067014686),(2090.25,2.43157507872),(2090.375,2.43248231783),(2090.5,2.43339171582),(2090.625,2.43430441084),(2090.75,2.43522149514),(2090.875,2.43614275932),(2091,2.43706800006),(2091.125,2.43799701991),(2091.25,2.43892962718),(2091.375,2.43986563575),(2091.5,2.44080486493),(2091.625,2.44174295363),(2091.75,2.44267570928),(2091.875,2.44360320627),(2092,2.44452551685),(2092.125,2.44544271116),(2092.25,2.44635485725),(2092.375,2.44726202122),(2092.5,2.44816426718),(2092.625,2.44906092832),(2092.75,2.44995136444),(2092.875,2.45083567584),(2093,2.45171395983),(2093.125,2.45258631084),(2093.25,2.45345282048),(2093.375,2.4543135776),(2093.5,2.45516866841),(2093.625,2.45602426921),(2093.75,2.45688631607),(2093.875,2.45775453884),(2094,2.45862867519),(2094.125,2.45950847041),(2094.25,2.46039367719),(2094.375,2.46128405546),(2094.5,2.46217937213),(2094.625,2.46307185769),(2094.75,2.46395404357),(2094.875,2.46482614839),(2095,2.46568838446),(2095.125,2.46654095792),(2095.25,2.46738406891),(2095.375,2.46821791173),(2095.5,2.46904267498),(2095.625,2.46986226877),(2095.75,2.47068045245),(2095.875,2.47149718521),(2096,2.47231242741),(2096.125,2.47312614057),(2096.25,2.4739382873),(2096.375,2.47474883133),(2096.5,2.47555773748),(2096.625,2.47636195191),(2096.75,2.47715853963),(2096.875,2.47794764141),(2097,2.47872939399),(2097.125,2.47950393022),(2097.25,2.48027137915),(2097.375,2.48103186616),(2097.5,2.48178551307),(2097.625,2.48253519396),(2097.75,2.48328367212),(2097.875,2.48403090168),(2098,2.48477683822),(2098.125,2.48552143874),(2098.25,2.48626466167),(2098.375,2.48700646678),(2098.5,2.48774681522),(2098.625,2.48848566074),(2098.75,2.48922295874),(2098.875,2.48995867473),(2099,2.49069277547),(2099.125,2.49142522892),(2099.25,2.49215600417),(2099.375,2.4928850715),(2099.5,2.49361240228),(2099.625,2.49433465188),(2099.75,2.49504860598),(2099.875,2.49575442884),(2100,2.49645228018)"/>
+			<exog type="interpolate" pairs="(1980,0.47048327647),(1981,0.545712026444),(1982,0.539363175493),(1983,0.514886283521),(1984,0.538402259295),(1985,0.572398046536),(1986,0.594119962757),(1987,0.613775510983),(1988,0.638488851467),(1989,0.665639498962),(1990,0.668745648208),(1991,0.587379944791),(1992,0.48249047801),(1993,0.517348412102),(1994,0.591370809784),(1995,0.65621749909),(1996,0.702240119495),(1997,0.724350294642),(1998,0.751332928935),(1999,0.792852824347),(2000,0.832631273986),(2001,0.86173468817),(2002,0.876507142208),(2003,0.879013982949),(2004,0.881706210649),(2005,0.879047262763),(2006,0.876349569551),(2007,0.882584499434),(2008,0.900565251503),(2009,0.925297886166),(2010,0.955279349373),(2011,0.985721382288),(2012,1.0187239293),(2013,1.06128572908),(2014,1.09981800061),(2015,1.13522514046),(2016,1.16715171229),(2017,1.19630827835),(2018,1.22342156562),(2019,1.24901497524),(2020,1.27375320094),(2021,1.2986772546),(2022,1.32318434329),(2023,1.34724197574),(2024,1.3713246614),(2025,1.39682377502),(2026,1.42311895923),(2027,1.44984044277),(2028,1.47671683842),(2029,1.50374333459),(2030,1.53121004179),(2031,1.55952653683),(2032,1.58890324427),(2033,1.61906736331),(2034,1.64906095373),(2035,1.67860314086),(2036,1.706807514),(2037,1.73398518849),(2038,1.76009606263),(2039,1.78510124549),(2040,1.80920385078),(2041,1.83233475386),(2042,1.85446470701),(2043,1.87569972499),(2044,1.89638504744),(2045,1.91638545685),(2046,1.93554550983),(2047,1.95388550871),(2048,1.97152189623),(2049,1.9883656219),(2050,2.00464149885),(2051,2.02001307002),(2052,2.03473003799),(2053,2.04898691712),(2054,2.06299784043),(2055,2.076817507),(2056,2.09040018684),(2057,2.10384002245),(2058,2.11681535212),(2059,2.12982573106),(2060,2.14317354386),(2061,2.15579671673),(2062,2.16776840554),(2063,2.1794508837),(2064,2.19068832862),(2065,2.20170764475),(2066,2.21259856239),(2067,2.22339888279),(2068,2.23414167129),(2069,2.2447132097),(2070,2.25498681851),(2071,2.26477198997),(2072,2.27443257398),(2073,2.28396039212),(2074,2.29321380766),(2075,2.30219289561),(2076,2.31116219008),(2077,2.3201618336),(2078,2.32921058515),(2079,2.33830755553),(2080,2.34759162257),(2081,2.3567892072),(2082,2.36584925048),(2083,2.37459380097),(2084,2.38325659156),(2085,2.39172721201),(2086,2.39988904148),(2087,2.40762641651),(2088,2.41514781996),(2089,2.42258420319),(2090,2.42976767501),(2091,2.43706800006),(2092,2.44452551685),(2093,2.45171395983),(2094,2.45862867519),(2095,2.46568838446),(2096,2.47231242741),(2097,2.47872939399),(2098,2.48477683822),(2099,2.49069277547),(2100,2.49645228018)"/>
 		</isee:control>
 	</isee:controls>
 </xmile>
