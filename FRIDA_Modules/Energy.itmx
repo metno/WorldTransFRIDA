@@ -5,9 +5,9 @@
 		<name>Energy</name>
 		<uuid>eed773d1-f4f7-4725-8d05-452b96d4f2dc</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.4.1" isee:build_number="3048" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.4" isee:build_number="3020" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
-	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
+	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
 		<stop>2100</stop>
 		<dt reciprocal="true">8</dt>
@@ -19,11 +19,10 @@
 	</isee:time_formats>
 	<default_format/>
 	<model_units>
-		<unit name="Dimensionless">
-			<eqn>1</eqn>
-			<alias>dmnl</alias>
-			<alias>unitless</alias>
-			<alias>fraction</alias>
+		<unit name="Years">
+			<eqn/>
+			<alias>yr</alias>
+			<alias>year</alias>
 		</unit>
 		<unit name="Watts">
 			<eqn/>
@@ -56,9 +55,6 @@
 		</unit>
 		<unit name="kh">
 			<eqn>kilo*h</eqn>
-		</unit>
-		<unit name="M">
-			<eqn>Million</eqn>
 		</unit>
 		<unit name="M$">
 			<eqn>Million*$</eqn>
@@ -137,10 +133,6 @@
 			<eqn/>
 			<alias>Hours</alias>
 		</unit>
-		<unit name="K">
-			<eqn/>
-			<alias>C</alias>
-		</unit>
 		<unit name="Month">
 			<eqn/>
 			<alias>Months</alias>
@@ -158,16 +150,23 @@
 			<eqn/>
 			<alias>Weeks</alias>
 		</unit>
-		<unit name="Year">
-			<eqn/>
-			<alias>yr</alias>
-			<alias>years</alias>
-		</unit>
 		<unit name="GtCO2">
 			<eqn>Giga*tCO2</eqn>
 		</unit>
-		<unit name="GtSO2">
-			<eqn>Giga*tSO2</eqn>
+		<unit name="Kelvin">
+			<eqn/>
+			<alias>K</alias>
+		</unit>
+		<unit name="Dimensionless">
+			<eqn>1</eqn>
+			<alias>dmnl</alias>
+			<alias>unitless</alias>
+		</unit>
+		<unit name="MtSO2">
+			<eqn>Million*tSO2</eqn>
+		</unit>
+		<unit name="M">
+			<eqn>Million</eqn>
 		</unit>
 	</model_units>
 	<model name="Energy">
@@ -220,7 +219,7 @@ BP Statistical Review of World Energy; Ember (2022)</doc>
 				<units>MWh/(p*year)</units>
 			</aux>
 			<aux name="cost of fossil fuel\nfor non electricity use">
-				<eqn>(demand_for_fossil_fuel_for_non_electricity_use*traditional_cost_of_fossil_fuel_for_non_electricity_use)/&quot;UNIT_G/M&quot;</eqn>
+				<eqn>(demand_for_fossil_fuel_for_non_electricity_use*traditional_cost_of_fossil_fuel_for_non_electricity_use)/&quot;UNIT_M/G&quot;</eqn>
 				<units>G$/year</units>
 			</aux>
 			<aux name="cost of electricity">
@@ -232,8 +231,8 @@ BP Statistical Review of World Energy; Ember (2022)</doc>
 				<units>G$/year</units>
 			</aux>
 			<aux name="CO2 emissions" access="output" isee:autocreated="true">
-				<eqn>use_of_fossil_fuels*(tCO2_per_toe/&quot;UNIT_G/M&quot;)</eqn>
-				<units>GtCO2/year</units>
+				<eqn>use_of_fossil_fuels*tCO2_per_toe</eqn>
+				<units>MtCO2/year</units>
 			</aux>
 			<aux name="use of fossil fuels">
 				<eqn>demand_for_fossil_fuel_for_non_electricity_use+fossil_fuels_for_electricity</eqn>
@@ -487,7 +486,7 @@ BP Statistical Review of World Energy; Ember (2022)
 
 Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saiful Islam AKM, Rahimi M, Carrascal DR, Sillmann J. 2021. Climate Change Information for Regional Impact and for Risk Assessment. In Climate Change 2021: The Physical Science Basis. Contribution of Working Group I to the Sixth Assessment Report of the Intergovernmental Panel on Climate Change. Cambridge University Press, Cambridge, United Kingdom and New York, NY, USA, pp. 1767–1926, doi: 10.1017/9781009157896.014.
 </doc>
-				<eqn> 1+sensitivity_of_traditional_per_person_use_of_electricity_to_surface_temperature_anomaly*(Observed_warming_deg_C/Observed_warming_in_1980-1)</eqn>
+				<eqn> 1+sensitivity_of_traditional_per_person_use_of_electricity_to_surface_temperature_anomaly*(Observed_warming_deg_C/INIT(Observed_warming_deg_C)-1)</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="sensitivity of\ntraditional per person\nuse of electricity to surface\ntemperature anomaly">
@@ -498,10 +497,6 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 			<aux name="Observed warming deg C" access="input">
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>deg C</units>
-			</aux>
-			<aux name="UNIT G/M">
-				<eqn>1000</eqn>
-				<units>M/G</units>
 			</aux>
 			<aux name="Traditional per person use of\nfossil fuels for non electricity use">
 				<eqn>normal_traditional_per_person_use_of_fossil_fuels_for_non_electricity_use*effect_of_GDP_per_person_on_traditional_per_person_use_of_fossil_fuels_for_non_electricity_use</eqn>
@@ -614,10 +609,6 @@ West J, Bailey I, Winter M. 2010. Renewable energy policy and public perceptions
 				<eqn>0.641352777396216</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="Observed warming in 1980" access="input">
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>deg C</units>
-			</aux>
 			<aux name="UNIT TWh/(Giga*kWh)">
 				<eqn>1</eqn>
 				<units>TWh/(Giga*kWh)</units>
@@ -672,8 +663,8 @@ West J, Bailey I, Winter M. 2010. Renewable energy policy and public perceptions
 				<units>years</units>
 			</aux>
 			<aux name="CH4 emissions" access="output" isee:autocreated="true">
-				<eqn>use_of_fossil_fuels*(tCH4_per_toe/&quot;UNIT_G/M&quot;)</eqn>
-				<units>GtCH4/Year</units>
+				<eqn>use_of_fossil_fuels*tCH4_per_toe</eqn>
+				<units>MtCH4/Year</units>
 			</aux>
 			<aux name="rate of change\nin tCH4 per toe">
 				<doc>Calibration Parameter: CO2 from energy and industry</doc>
@@ -690,8 +681,8 @@ West J, Bailey I, Winter M. 2010. Renewable energy policy and public perceptions
 				<units>tCH4/toe</units>
 			</aux>
 			<aux name="SO2 emissions" access="output" isee:autocreated="true">
-				<eqn>use_of_fossil_fuels*(tSO2_per_toe/&quot;UNIT_G/M&quot;)</eqn>
-				<units>GtSO2/Year</units>
+				<eqn>use_of_fossil_fuels*tSO2_per_toe</eqn>
+				<units>MtSO2/Year</units>
 			</aux>
 			<aux name="rate of change\nin tSO2 per toe">
 				<doc>Calibration Parameter: CO2 from energy and industry</doc>
@@ -700,12 +691,16 @@ West J, Bailey I, Winter M. 2010. Renewable energy policy and public perceptions
 			</aux>
 			<aux name="tSO2 per toe">
 				<eqn>tSO2_per_toe_1980*EXP(rate_of_change_in_tSO2_per_toe*(TIME-1980))</eqn>
-				<units>tSO2/toe</units>
+				<units>tSO2/(toe)</units>
 			</aux>
 			<aux name="tSO2 per toe 1980">
 				<doc>Calibration Parameter: CO2 from energy and industry</doc>
 				<eqn>0.0242902295570239</eqn>
 				<units>tSO2/toe</units>
+			</aux>
+			<aux name="UNIT M/G">
+				<eqn>1000</eqn>
+				<units>M/G</units>
 			</aux>
 		</variables>
 		<views>
@@ -754,7 +749,7 @@ West J, Bailey I, Winter M. 2010. Renewable energy policy and public perceptions
 				<isee:iframe color="black" border_style="solid" text_align="left" border_width="thin" background="white" vertical_text_align="top" font_size="12pt"/>
 				<isee:financial_table color="black" header_font_weight="bold" header_text_decoration="none" hide_border="false" font_size="12pt" first_column_width="250" background="#E0E0E0" text_align="right" header_text_border_style="none" auto_fit="true" header_font_size="14pt" header_text_border_width="thin" header_text_border_color="black" other_column_width="100" header_font_style="normal" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_text_padding="2"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="4" isee:scroll_x="0.833333" isee:scroll_y="1156.67" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="5" isee:page_rows="4" isee:scroll_x="1311.67" isee:scroll_y="1490" zoom="60" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1142,13 +1137,6 @@ West J, Bailey I, Winter M. 2010. Renewable energy policy and public perceptions
 					<from>Observed_warming_deg_C</from>
 					<to>effect_of_surface_temperature_anomaly_on_traditional_per_person_use_of_electricity</to>
 				</connector>
-				<aux background="white" label_side="bottom" x="700.536" y="1273.93" name="UNIT G/M"/>
-				<connector uid="2819" angle="352.29">
-					<from>
-						<alias uid="2820"/>
-					</from>
-					<to>cost_of_fossil_fuel_for_non_electricity_use</to>
-				</connector>
 				<aux background="white" label_side="left" label_angle="225" x="1012.32" y="765.107" name="Traditional per person use of\nfossil fuels for non electricity use"/>
 				<aux background="white" label_side="top" x="1142.75" y="1458.75" name="UNIT TWh/(Million*MWh)"/>
 				<connector uid="2840" angle="246.99">
@@ -1309,11 +1297,6 @@ West J, Bailey I, Winter M. 2010. Renewable energy policy and public perceptions
 				<connector uid="2940" angle="225.92">
 					<from>effect_of_surface_temperature_anomaly_on_traditional_per_person_use_of_electricity</from>
 					<to>Traditional_per_person_use_of_electricity</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="top" x="1479.54" y="255.536" name="Observed warming in 1980"/>
-				<connector uid="2942" angle="238.249">
-					<from>Observed_warming_in_1980</from>
-					<to>effect_of_surface_temperature_anomaly_on_traditional_per_person_use_of_electricity</to>
 				</connector>
 				<aux background="white" x="3031.75" y="2217" name="UNIT TWh/(Giga*kWh)"/>
 				<connector uid="2835" angle="241.028">
@@ -1500,10 +1483,6 @@ West J, Bailey I, Winter M. 2010. Renewable energy policy and public perceptions
 					</from>
 					<to>capital_expenditure_fossil_electricity</to>
 				</connector>
-				<connector uid="3004" angle="204.651">
-					<from>&quot;UNIT_G/M&quot;</from>
-					<to>CO2_emissions</to>
-				</connector>
 				<aux x="544.167" y="1504.17" name="CH4 emissions"/>
 				<connector uid="3005" angle="215.084">
 					<from>use_of_fossil_fuels</from>
@@ -1524,10 +1503,6 @@ West J, Bailey I, Winter M. 2010. Renewable energy policy and public perceptions
 					<from>tCH4_per_toe</from>
 					<to>CH4_emissions</to>
 				</connector>
-				<connector uid="3009" angle="241.343">
-					<from>&quot;UNIT_G/M&quot;</from>
-					<to>CH4_emissions</to>
-				</connector>
 				<aux x="448.333" y="1426.67" name="SO2 emissions"/>
 				<connector uid="3010" angle="187.169">
 					<from>use_of_fossil_fuels</from>
@@ -1544,19 +1519,17 @@ West J, Bailey I, Winter M. 2010. Renewable energy policy and public perceptions
 					<from>tSO2_per_toe_1980</from>
 					<to>tSO2_per_toe</to>
 				</connector>
-				<connector uid="3013" angle="40.924">
+				<connector uid="3015" angle="42.8938">
 					<from>tSO2_per_toe</from>
 					<to>SO2_emissions</to>
 				</connector>
-				<connector uid="3014" angle="218.798">
-					<from>&quot;UNIT_G/M&quot;</from>
-					<to>SO2_emissions</to>
+				<aux x="2907.75" y="1842.85" name="UNIT M/G"/>
+				<connector uid="3018" angle="287.748">
+					<from>&quot;UNIT_M/G&quot;</from>
+					<to>cost_of_fossil_fuel_for_non_electricity_use</to>
 				</connector>
 				<alias background="white" uid="2709" x="2814.75" y="2167.25" width="18" height="18">
 					<of>electricity_production</of>
-				</alias>
-				<alias background="white" font_style="italic" uid="2820" x="2691.92" y="1876.75" width="18" height="18">
-					<of>&quot;UNIT_G/M&quot;</of>
 				</alias>
 				<alias background="white" label_side="top" uid="2699" x="2728.17" y="1809.42" width="18" height="18">
 					<of>demand_for_fossil_fuel_for_non_electricity_use</of>
