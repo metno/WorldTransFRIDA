@@ -5,12 +5,12 @@
 		<name>Temperature</name>
 		<uuid>73071c37-ea0f-4ef2-8b31-b678c9accfb1</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.4" isee:build_number="3014" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.4" isee:build_number="3020" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
-	<sim_specs isee:sim_duration="1.5" isee:run_prefix="Run" isee:simulation_delay="0.125" isee:restore_on_start="false" method="Euler" time_units="Months" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
-		<start>0</start>
-		<stop>12</stop>
-		<dt reciprocal="true">4</dt>
+	<sim_specs isee:sim_duration="2" isee:run_prefix="Run" isee:simulation_delay="0.05" isee:restore_on_start="false" method="RK4" time_units="Years" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
+		<start>1980</start>
+		<stop>2020</stop>
+		<dt reciprocal="true">8</dt>
 	</sim_specs>
 	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true"/>
 	<isee:multiplayer_settings include_chat="true" allow_observers="false" advance_time_increment="1" max_advance_time_in_ms="0" model_stops_when_players_drop="false" observer_start_page="home_page" enabled="false"/>
@@ -19,10 +19,13 @@
 	</isee:time_formats>
 	<default_format/>
 	<data>
-		<export enabled="false" resource="r../Data/Output.csv" interval="1" precomputed="false" isee:format="numbers">
-			<all/>
+		<export enabled="false" frequency="on_demand" resource="r../Data/Output/Output_1980_2100.csv" interval="1" precomputed="false" isee:format="numbers">
+			<table name="Top-Level Table 1"/>
 		</export>
-		<import enabled="false" isee:overwrite="false" isee:timevarying="true" resource="r../Data/climate_inputs.csv"/>
+		<import isee:overwrite="false" isee:timevarying="true" resource="C:/Users/earcwel/Documents/WorldTransPostdoc/Github/chrisdwells/WorldTransFRIDA/scratchboard/climate/Data/emissions_bounds_historical.csv"/>
+		<import isee:overwrite="false" isee:timevarying="true" resource="C:/Users/earcwel/Documents/WorldTransPostdoc/Github/chrisdwells/WorldTransFRIDA/scratchboard/climate/Data/forcings.csv"/>
+		<import isee:overwrite="true" resource="C:/Users/earcwel/Documents/WorldTransPostdoc/Github/chrisdwells/WorldTransFRIDA/scratchboard/climate/Data/input_parameters_median.csv"/>
+		<import isee:overwrite="true" resource="C:/Users/earcwel/Documents/WorldTransPostdoc/Github/chrisdwells/WorldTransFRIDA/scratchboard/climate/Data/ClimateInitials.csv"/>
 	</data>
 	<model_units>
 		<unit name="Kilograms">
@@ -34,11 +37,6 @@
 			<eqn/>
 			<alias>mol</alias>
 			<alias>mole</alias>
-		</unit>
-		<unit name="Years">
-			<eqn/>
-			<alias>yr</alias>
-			<alias>year</alias>
 		</unit>
 		<unit name="Watts">
 			<eqn/>
@@ -161,10 +159,6 @@
 			<eqn/>
 			<alias>Weeks</alias>
 		</unit>
-		<unit name="Kelvin">
-			<eqn/>
-			<alias>K</alias>
-		</unit>
 		<unit name="Day">
 			<eqn/>
 			<alias>Days</alias>
@@ -172,6 +166,20 @@
 		<unit name="Month">
 			<eqn/>
 			<alias>Months</alias>
+		</unit>
+		<unit name="Meters">
+			<eqn/>
+			<alias>m</alias>
+			<alias>meter</alias>
+		</unit>
+		<unit name="Years">
+			<eqn/>
+			<alias>yr</alias>
+			<alias>year</alias>
+		</unit>
+		<unit name="Kelvin">
+			<eqn/>
+			<alias>K</alias>
 		</unit>
 		<unit name="Dimensionless">
 			<eqn>1</eqn>
@@ -182,96 +190,95 @@
 	<model name="Temperature">
 		<variables>
 			<stock name="T1" access="output">
-				<eqn>0</eqn>
+				<eqn>0.444397957972</eqn>
 				<outflow>dT1</outflow>
 				<units>K</units>
 			</stock>
 			<stock name="T2">
-				<eqn>0</eqn>
+				<eqn>0.291342361736</eqn>
 				<outflow>dT2</outflow>
 				<units>K</units>
 			</stock>
 			<stock name="T3">
-				<eqn>0</eqn>
+				<eqn>0.111822382118</eqn>
 				<outflow>dT3</outflow>
 				<units>K</units>
 			</stock>
-			<flow name="dT1" access="output" isee:autocreated="true">
-				<eqn>-1/C1*(Total_Radiative_Forcing-kappa1*T1-kappa2*(T1-T2))</eqn>
+			<flow name="dT1" access="output">
+				<eqn>-1/C1*(&quot;Efficacy-Adjusted_ERF&quot;-kappa1*T1-kappa2*(T1-T2))</eqn>
 				<units>K/Years</units>
 			</flow>
-			<aux name="C1" access="output" isee:autocreated="true">
-				<eqn>4.22335014</eqn>
+			<aux name="C1" access="output">
+				<eqn>4.14686520349701</eqn>
 				<units>W*year/metre^2/K</units>
 			</aux>
 			<aux name="kappa1">
-				<eqn>1.31180598</eqn>
+				<eqn>1.29793955122322</eqn>
 				<units>W/metre^2/K</units>
 			</aux>
 			<aux name="kappa2">
-				<eqn>2.61194068</eqn>
+				<eqn>2.61361590722114</eqn>
 				<units>W/metre^2/K</units>
 			</aux>
-			<flow name="dT2" access="output" isee:autocreated="true">
+			<flow name="dT2" access="output">
 				<eqn>-1/C2*(kappa2*(T1-T2)-kappa3*epsilon*(T2-T3))</eqn>
 				<units>K/Years</units>
 			</flow>
-			<aux name="C2" access="output" isee:autocreated="true">
-				<eqn>16.5073541</eqn>
+			<aux name="C2" access="output">
+				<eqn>15.4117218696699</eqn>
 				<units>W*year/metre^2/K</units>
 			</aux>
-			<aux name="C3" access="output" isee:autocreated="true">
-				<eqn>86.1841127</eqn>
+			<aux name="C3" access="output">
+				<eqn>81.2010914577786</eqn>
 				<units>W*year/metre^2/K</units>
 			</aux>
 			<aux name="kappa3">
-				<eqn>0.92986733</eqn>
+				<eqn>0.885112443377774</eqn>
 				<units>W/metre^2/K</units>
 			</aux>
 			<aux name="epsilon">
-				<eqn>1.29020599</eqn>
+				<eqn>1.2876299241518</eqn>
 				<units>Dimensionless</units>
 			</aux>
-			<flow name="dT3" access="output" isee:autocreated="true">
+			<flow name="dT3" access="output">
 				<eqn>-1/C3*(kappa3*(T2-T3))</eqn>
 				<units>K/Years</units>
 			</flow>
 			<aux name="CO2 Fossil Emissions">
-				<eqn>NAN</eqn>
+				<eqn>9.505619891</eqn>
 				<units>MtCO2/yr</units>
 			</aux>
 			<aux name="CO2 AFOLU Emissions">
-				<eqn>NAN</eqn>
+				<eqn>297.4646065</eqn>
 				<units>MtCO2/yr</units>
 			</aux>
 			<stock name="Atmos Carbon 1">
-				<eqn>0</eqn>
+				<eqn>245318.874581</eqn>
 				<inflow>Atmos_Carbon_1_delta</inflow>
 				<outflow>Atmos_Carbon_1_sink</outflow>
 				<units>MtCO2</units>
 			</stock>
 			<stock name="Atmos Carbon 2">
-				<eqn>0</eqn>
+				<eqn>165572.055271</eqn>
 				<inflow>Atmos_Carbon_2_delta</inflow>
 				<outflow>Atmos_Carbon_2_sink</outflow>
 				<units>MtCO2</units>
 			</stock>
 			<stock name="Atmos Carbon 3">
-				<eqn>0</eqn>
+				<eqn>56249.0602882</eqn>
 				<inflow>Atmos_Carbon_3_delta</inflow>
 				<outflow>Atmos_Carbon_3_sink</outflow>
 				<units>MtCO2</units>
 			</stock>
 			<stock name="Atmos Carbon 4">
-				<eqn>0</eqn>
+				<eqn>8050.57333601</eqn>
 				<inflow>Atmos_Carbon_4_delta</inflow>
 				<outflow>Atmos_Carbon_4_sink</outflow>
 				<units>MtCO2</units>
 			</stock>
 			<flow name="Atmos Carbon 1 delta">
 				<eqn>Total_CO2_Emissions*Partition_fraction_1</eqn>
-				<non_negative/>
-				<units>MtCO2/Years</units>
+				<units>MtCO2/yr</units>
 			</flow>
 			<aux name="Partition fraction 1">
 				<eqn>0.2173</eqn>
@@ -291,8 +298,7 @@
 			</aux>
 			<flow name="Atmos Carbon 2 delta">
 				<eqn>Total_CO2_Emissions*Partition_fraction_2</eqn>
-				<non_negative/>
-				<units>MtCO2/Years</units>
+				<units>MtCO2/yr</units>
 			</flow>
 			<aux name="Total CO2 Emissions">
 				<eqn>CO2_Fossil_Emissions+CO2_AFOLU_Emissions</eqn>
@@ -300,49 +306,43 @@
 			</aux>
 			<flow name="Atmos Carbon 3 delta">
 				<eqn>Total_CO2_Emissions*Partition_fraction_3</eqn>
-				<non_negative/>
-				<units>MtCO2/Years</units>
+				<units>MtCO2/yr</units>
 			</flow>
 			<flow name="Atmos Carbon 4 delta">
 				<eqn>Total_CO2_Emissions*Partition_fraction_4</eqn>
-				<non_negative/>
-				<units>MtCO2/Years</units>
+				<units>MtCO2/yr</units>
 			</flow>
 			<flow name="Atmos Carbon 1 sink">
 				<eqn>Atmos_Carbon_1/(Unperturbed_Lifetime_1*Carbon_lifetime_scale_factor)</eqn>
-				<non_negative/>
-				<units>MtCO2/Years</units>
+				<units>MtCO2/yr</units>
 			</flow>
 			<aux name="Unperturbed Lifetime 1">
-				<eqn>1.000e+09</eqn>
+				<eqn>1000000000</eqn>
 				<units>Years</units>
 			</aux>
 			<aux name="Unperturbed Lifetime 2">
-				<eqn>3.944e+02</eqn>
+				<eqn>394.4</eqn>
 				<units>Years</units>
 			</aux>
 			<aux name="Unperturbed Lifetime 3">
-				<eqn>3.654e+01</eqn>
+				<eqn>36.54</eqn>
 				<units>Years</units>
 			</aux>
 			<aux name="Unperturbed Lifetime 4">
-				<eqn>4.304e+00</eqn>
+				<eqn>4.304</eqn>
 				<units>Years</units>
 			</aux>
 			<flow name="Atmos Carbon 2 sink">
 				<eqn>Atmos_Carbon_2/(Unperturbed_Lifetime_2*Carbon_lifetime_scale_factor)</eqn>
-				<non_negative/>
-				<units>MtCO2/Years</units>
+				<units>MtCO2/yr</units>
 			</flow>
 			<flow name="Atmos Carbon 3 sink">
 				<eqn>Atmos_Carbon_3/(Unperturbed_Lifetime_3*Carbon_lifetime_scale_factor)</eqn>
-				<non_negative/>
-				<units>MtCO2/Years</units>
+				<units>MtCO2/yr</units>
 			</flow>
 			<flow name="Atmos Carbon 4 sink">
 				<eqn>Atmos_Carbon_4/(Unperturbed_Lifetime_4*Carbon_lifetime_scale_factor)</eqn>
-				<non_negative/>
-				<units>MtCO2/Years</units>
+				<units>MtCO2/yr</units>
 			</flow>
 			<aux name="Total Atmos Carbon MtCO2" isee:derived_units="true">
 				<eqn>Atmos_Carbon_1 + Atmos_Carbon_2 + Atmos_Carbon_3 + Atmos_Carbon_4</eqn>
@@ -350,23 +350,22 @@
 				<units>MtCO2</units>
 			</aux>
 			<stock name="Atmos CH4">
-				<eqn>0</eqn>
+				<eqn>2393.65942187</eqn>
 				<inflow>Atmos_CH4_delta</inflow>
 				<outflow>Atmos_CH4_sink</outflow>
 				<units>MtCH4</units>
 			</stock>
 			<flow name="Atmos CH4 delta">
-				<eqn>Total_CH4_Emissions</eqn>
-				<non_negative/>
-				<units>MtCH4/Years</units>
+				<eqn>Total_CH4_Emissions - CH4_Baseline_Emissions</eqn>
+				<units>MtCH4/yr</units>
 			</flow>
 			<flow name="Atmos CH4 sink">
 				<eqn>Atmos_CH4/(Unperturbed_CH4_Lifetime*CH4_lifetime_scale_factor)</eqn>
-				<non_negative/>
-				<units>MtCH4/Years</units>
+				<units>MtCH4/yr</units>
 			</flow>
 			<aux name="Total CH4 Emissions">
 				<eqn>TIME</eqn>
+				<format precision="full"/>
 				<gf>
 					<xscale min="1750.5" max="2015.5"/>
 					<yscale min="0" max="400"/>
@@ -383,23 +382,23 @@
 				<units>Dimensionless</units>
 			</aux>
 			<stock name="Atmos N2O">
-				<eqn>0</eqn>
+				<eqn>260203.985255</eqn>
 				<inflow>Atmos_N2O_delta</inflow>
 				<outflow>Atmos_N2O_sink</outflow>
 				<units>ktN2O</units>
 			</stock>
 			<flow name="Atmos N2O delta">
-				<eqn>Total_N2O_Emissions</eqn>
-				<non_negative/>
-				<units>ktN2O/Years</units>
+				<eqn>Total_N2O_Emissions - N2O_Baseline_emissions</eqn>
+				<units>ktN2O/yr</units>
 			</flow>
 			<flow name="Atmos N2O sink">
 				<eqn>Atmos_N2O/(Unperturbed_N2O_Lifetime*N2O_lifetime_scale_factor)</eqn>
 				<non_negative/>
-				<units>ktN2O/Years</units>
+				<units>ktN2O/yr</units>
 			</flow>
 			<aux name="Total N2O Emissions">
 				<eqn>TIME</eqn>
+				<format precision="full"/>
 				<gf>
 					<xscale min="1750.5" max="2015.5"/>
 					<yscale min="0" max="11000"/>
@@ -412,7 +411,7 @@
 				<units>years</units>
 			</aux>
 			<aux name="Mass Atmosphere">
-				<eqn>5.1352e18</eqn>
+				<eqn>5135200000000000000</eqn>
 				<units>kilogram</units>
 			</aux>
 			<aux name="Molecular Weight Air">
@@ -428,7 +427,7 @@
 				<units>ppm</units>
 			</aux>
 			<aux name="CO2 Conc 1750">
-				<eqn>278.3</eqn>
+				<eqn>278.214137419709</eqn>
 				<units>ppm</units>
 			</aux>
 			<aux name="MtCO2 to GtCO2">
@@ -456,19 +455,19 @@
 				<units>Dimensionless</units>
 			</aux>
 			<aux name="iirf0 CO2">
-				<eqn>29</eqn>
+				<eqn>33.4377055103714</eqn>
 				<units>Dimensionless</units>
 			</aux>
 			<aux name="iirf airborne CO2">
-				<eqn>0.000819</eqn>
+				<eqn>0.0019156548426605</eqn>
 				<units>1/GtCO2</units>
 			</aux>
 			<aux name="iirf temperature CO2">
-				<eqn>4</eqn>
+				<eqn>2.20420969156915</eqn>
 				<units>1/K</units>
 			</aux>
 			<aux name="iirf uptake CO2">
-				<eqn>0.00846</eqn>
+				<eqn>0.0032800604147575</eqn>
 				<units>1/GtCO2</units>
 			</aux>
 			<aux name="iirf CO2">
@@ -476,15 +475,13 @@
 				<units>Dimensionless</units>
 			</aux>
 			<stock name="Cumulative CO2 emissions">
-				<eqn>0</eqn>
+				<eqn>1128941.22245</eqn>
 				<inflow>CO2_emissions</inflow>
-				<non_negative/>
 				<units>MtCO2</units>
 			</stock>
 			<flow name="CO2 emissions">
 				<eqn>Total_CO2_Emissions</eqn>
-				<non_negative/>
-				<units>MtCO2/Years</units>
+				<units>MtCO2/yr</units>
 			</flow>
 			<aux name="CO2 Tropospheric Adjustment">
 				<eqn>0.05</eqn>
@@ -515,15 +512,15 @@
 				<units>(W/metre^2)/sqrt_ppb</units>
 			</aux>
 			<aux name="CO2 ERF">
-				<eqn>(f1_CO2*LN(CO2_Concentration/CO2_Conc_1750) + (SQRT(f3_CO2_squared*CO2_Concentration) - SQRT(f3_CO2_squared*CO2_Conc_1750))) * (1+CO2_Tropospheric_Adjustment)</eqn>
+				<eqn>(f1_CO2*LN(CO2_Concentration/CO2_Conc_1750) + (SQRT(f3_CO2_squared*CO2_Concentration) - (SQRT(f3_CO2_squared*CO2_Conc_1750))) * (1+CO2_Tropospheric_Adjustment))*scale_CO2</eqn>
 				<units>W/(metre^2)</units>
 			</aux>
-			<aux name="Total Radiative Forcing">
-				<eqn>Solar_Forcing + Volcanic_Forcing + Anthropogenic_Forcing</eqn>
+			<aux name="Total Forcing">
+				<eqn>Scaled_Solar_Forcing + Scaled_Volcanic_Forcing + Anthropogenic_Forcing</eqn>
 				<units>W/(metre^2)</units>
 			</aux>
 			<aux name="Anthropogenic Forcing">
-				<eqn>CO2_ERF + CH4_ERF + N2O_ERF + Land_Use_forcing + ACI_ERF + ARI_ERF + CH4_Strat_Water_Vapour_ERF + O3_ERF</eqn>
+				<eqn>CO2_ERF + CH4_ERF + N2O_ERF + Land_Use_forcing + ACI_ERF + ARI_ERF + CH4_Strat_Water_Vapour_ERF + O3_ERF + BC_Snow_Forcing +&quot;CFCs,_F-gases_Forcing&quot;</eqn>
 				<units>W/(metre^2)</units>
 			</aux>
 			<aux name="CH4 lifetime\nscale factor">
@@ -539,15 +536,15 @@
 				<units>Dimensionless</units>
 			</aux>
 			<aux name="iirf0 CH4">
-				<eqn>8.249955097</eqn>
+				<eqn>10.2415176833</eqn>
 				<units>Dimensionless</units>
 			</aux>
 			<aux name="iirf airborne CH4">
-				<eqn>0.00032</eqn>
+				<eqn>0.0002</eqn>
 				<units>1/MtCH4</units>
 			</aux>
 			<aux name="iirf temperature CH4">
-				<eqn>-0.3</eqn>
+				<eqn>-0.6</eqn>
 				<units>1/K</units>
 			</aux>
 			<aux name="iirf uptake CH4">
@@ -559,15 +556,14 @@
 				<units>Dimensionless</units>
 			</aux>
 			<stock name="Cumulative CH4 emissions">
-				<eqn>0</eqn>
+				<eqn>18327.1204877</eqn>
 				<inflow>CH4_emissions</inflow>
 				<non_negative/>
 				<units>MtCH4</units>
 			</stock>
 			<flow name="CH4 emissions">
 				<eqn>Total_CH4_Emissions</eqn>
-				<non_negative/>
-				<units>MtCH4/Years</units>
+				<units>MtCH4/yr</units>
 			</flow>
 			<aux name="CH4 Concentration">
 				<eqn>(Atmos_CH4*MtCH4_to_GtCH4/((Mass_Atmosphere/(GtCH4_to_kg*fraction_to_ppm))*Molecular_Weight_CH4/Molecular_Weight_Air))*ppm_to_ppb  + CH4_Conc_1750</eqn>
@@ -578,7 +574,7 @@
 				<units>ppb/ppm</units>
 			</aux>
 			<aux name="CH4 ERF">
-				<eqn>((SQRT(f3_CH4_squared*CH4_Concentration) - SQRT(f3_CH4_squared*CH4_Conc_1750))) * (1+CH4_Tropospheric_Adjustment)</eqn>
+				<eqn>((SQRT(f3_CH4_squared*CH4_Concentration) - (SQRT(f3_CH4_squared*CH4_Conc_1750))) * (1+CH4_Tropospheric_Adjustment))*scale_CH4</eqn>
 				<units>W/(metre^2)</units>
 			</aux>
 			<aux name="N2O Conc 1750">
@@ -614,7 +610,7 @@
 				<units>1/MtN2O</units>
 			</aux>
 			<aux name="iirf N2O">
-				<eqn>iirf0_N2O + iirf_uptake_N2O*(Cumulative_N2O_emissions*ktN2O_to_MtN2O - Atmos_N2O*ktN2O_to_MtN2O) + iirf_temperature_N2O*T1 + iirf_airborne_N2O*Atmos_N2O*ktN2O_to_MtN2O</eqn>
+				<eqn>iirf0_N2O + iirf_uptake_N2O*(Cumulative_N2O_Emissions*ktN2O_to_MtN2O - Atmos_N2O*ktN2O_to_MtN2O) + iirf_temperature_N2O*T1 + iirf_airborne_N2O*Atmos_N2O*ktN2O_to_MtN2O</eqn>
 				<units>Dimensionless</units>
 			</aux>
 			<aux name="N2O Concentration">
@@ -622,45 +618,45 @@
 				<units>ppb</units>
 			</aux>
 			<aux name="N2O ERF">
-				<eqn>((SQRT(f3_N2O_squared*N2O_Concentration) - SQRT(f3_N2O_squared*N2O_Conc_1750))) * (1+N2O_Tropospheric_Adjustment)</eqn>
+				<eqn>((SQRT(f3_N2O_squared*N2O_Concentration) - (SQRT(f3_N2O_squared*N2O_Conc_1750))) * (1+N2O_Tropospheric_Adjustment))*scale_N2O</eqn>
 				<units>W/(metre^2)</units>
 			</aux>
-			<stock name="Cumulative N2O emissions">
-				<eqn>0</eqn>
+			<stock name="Cumulative N2O Emissions">
+				<eqn>369316.190142</eqn>
+				<format precision="full"/>
 				<inflow>N2O_emissions</inflow>
 				<non_negative/>
 				<units>ktN2O</units>
 			</stock>
 			<flow name="N2O emissions">
 				<eqn>Total_N2O_Emissions</eqn>
-				<non_negative/>
-				<units>ktN2O/Years</units>
+				<format precision="full"/>
+				<units>ktN2O/yr</units>
 			</flow>
 			<aux name="ktN2O to GtN2O">
-				<eqn>1e-6</eqn>
+				<eqn>0.000001</eqn>
 				<units>GtN2O/KtN2O</units>
 			</aux>
 			<stock name="Cumulative CO2 AFOLU emissions">
-				<eqn>0</eqn>
+				<eqn>518024.59425</eqn>
 				<inflow>CO2_AFOLU</inflow>
-				<non_negative/>
 				<units>MtCO2</units>
 			</stock>
 			<flow name="CO2 AFOLU">
 				<eqn>CO2_AFOLU_Emissions</eqn>
-				<non_negative/>
-				<units>MtCO2/Years</units>
+				<units>MtCO2/yr</units>
 			</flow>
 			<aux name="CO2 AFOLU forcing scale factor">
 				<eqn>-0.00028729</eqn>
 				<units>(W/(metre^2))/(GtCO2)</units>
 			</aux>
 			<aux name="Land Use forcing">
-				<eqn>Cumulative_CO2_AFOLU_emissions*MtCO2_to_GtCO2*CO2_AFOLU_forcing_scale_factor</eqn>
+				<eqn>(DELAY(Cumulative_CO2_AFOLU_emissions,  1)*MtCO2_to_GtCO2*CO2_AFOLU_forcing_scale_factor)*scale_Land_Use</eqn>
 				<units>W/(metre^2)</units>
 			</aux>
 			<aux name="Total SO2 Emissions">
 				<eqn>TIME</eqn>
+				<format precision="full"/>
 				<gf>
 					<xscale min="1750.5" max="2015.5"/>
 					<yscale min="0" max="11000"/>
@@ -669,31 +665,23 @@
 				<units>MtSO2/yr</units>
 			</aux>
 			<aux name="beta ACI">
-				<eqn>-1.03057237</eqn>
+				<eqn>-0.933089878683607</eqn>
 				<units>W/(metre^2)</units>
 			</aux>
 			<aux name="s SO2 ACI">
-				<eqn>0.0169</eqn>
+				<eqn>0.0132544315900094</eqn>
 				<units>1/(MtSO2/yr)</units>
 			</aux>
 			<aux name="ACI ERF">
-				<eqn>beta_ACI*LN(1 + s_SO2_ACI*Total_SO2_Emissions) - Baseline_ACI_radiative_effect</eqn>
-				<units>W/(metre^2)</units>
-			</aux>
-			<aux name="SO2 emissions 1750">
-				<eqn>2.440048435</eqn>
-				<units>MtSO2/yr</units>
-			</aux>
-			<aux name="Baseline ACI radiative effect">
-				<eqn>beta_ACI*LN(1 + s_SO2_ACI*SO2_emissions_1750)</eqn>
+				<eqn>beta_ACI*LN(1 + s_SO2_ACI*DELAY(Total_SO2_Emissions, 1)) - beta_ACI*LN(1 + s_SO2_ACI*SO2_Baseline_Emissions)</eqn>
 				<units>W/(metre^2)</units>
 			</aux>
 			<aux name="ARI ERF">
-				<eqn>(Total_SO2_Emissions - SO2_emissions_1750)*SO2_ARI_Efficiency</eqn>
+				<eqn>(DELAY(Total_SO2_Emissions, 1) - SO2_Baseline_Emissions)*SO2_ARI_Efficiency</eqn>
 				<units>W/(metre^2)</units>
 			</aux>
 			<aux name="SO2 ARI Efficiency">
-				<eqn>-0.00286</eqn>
+				<eqn>-0.0025049754622963</eqn>
 				<units>(W/(metre^2))/(MtSO2/yr)</units>
 			</aux>
 			<aux name="CH4 Strat Water Vapour Factor">
@@ -701,27 +689,11 @@
 				<units>Dimensionless</units>
 			</aux>
 			<aux name="CH4 Strat Water Vapour ERF">
-				<eqn>CH4_Strat_Water_Vapour_Factor * CH4_ERF</eqn>
+				<eqn>(CH4_Strat_Water_Vapour_Factor * CH4_ERF)*scale_CH4_Strat_Water_Vapour</eqn>
 				<units>W/(metre^2)</units>
 			</aux>
-			<aux name="CH4 O3 Factor">
-				<eqn>0.000175</eqn>
-				<units>(W/(metre^2))/ppb</units>
-			</aux>
-			<aux name="N2O O3 Factor">
-				<eqn>0.00071</eqn>
-				<units>(W/(metre^2))/ppb</units>
-			</aux>
-			<aux name="CH4 O3 ERF">
-				<eqn>(CH4_Concentration - CH4_Conc_1750) * CH4_O3_Factor</eqn>
-				<units>W/(metre^2)</units>
-			</aux>
-			<aux name="N2O O3 ERF">
-				<eqn>(N2O_Concentration- N2O_Conc_1750) * N2O_O3_Factor</eqn>
-				<units>W/(metre^2)</units>
-			</aux>
-			<aux name="O3 ERF">
-				<eqn>N2O_O3_ERF + CH4_O3_ERF</eqn>
+			<aux name="O3 ERF components">
+				<eqn>(O3_from_CH4*(DELAY(Total_CH4_Emissions,  0.5) - CH4_Baseline_Emissions) + O3_from_Sulfur*(DELAY(Total_SO2_Emissions,  0.5) - SO2_Baseline_Emissions))*scale_ozone</eqn>
 				<units>W/(metre^2)</units>
 			</aux>
 			<aux name="CO2 leaving Atmos">
@@ -730,11 +702,11 @@
 				<units>MtCO2/yr</units>
 			</aux>
 			<aux name="fraction to ppm">
-				<eqn>1e6</eqn>
+				<eqn>1000000</eqn>
 				<units>ppm</units>
 			</aux>
 			<aux name="GtCO2 to kg">
-				<eqn>1e12</eqn>
+				<eqn>1000000000000</eqn>
 				<units>Kg/GtCO2</units>
 			</aux>
 			<aux name="f3 CO2 squared">
@@ -746,7 +718,7 @@
 				<units>MtN2O/ktN2O</units>
 			</aux>
 			<aux name="GtCH4 to kg">
-				<eqn>1e12</eqn>
+				<eqn>1000000000000</eqn>
 				<units>Kg/GtCH4</units>
 			</aux>
 			<aux name="MtCH4 to GtCH4">
@@ -758,7 +730,7 @@
 				<units>((W/metre^2)^2)/ppb</units>
 			</aux>
 			<aux name="GtN2O to kg">
-				<eqn>1e12</eqn>
+				<eqn>1000000000000</eqn>
 				<units>Kg/GtN2O</units>
 			</aux>
 			<aux name="f3 N2O squared">
@@ -774,7 +746,7 @@
 				<units>Dimensionless</units>
 			</aux>
 			<aux name="N2O airborne fraction">
-				<eqn>Atmos_N2O // Cumulative_N2O_emissions</eqn>
+				<eqn>Atmos_N2O // Cumulative_N2O_Emissions</eqn>
 				<units>Dimensionless</units>
 			</aux>
 			<aux name="Solar Forcing">
@@ -794,6 +766,122 @@
 					<ypts>0.185745674,0.185756746,0.185760472,0.185761717,0.185762136,0.16149051,-0.064139904,0.06548149,0.143706674,0.171560264,0.180988301,0.184158544,-0.719878886,-0.439960121,-0.039047325,0.109581666,-0.178487527,-0.230039677,0.029544124,0.132534616,0.036362348,0.088893036,0.151100522,0.174022557,0.181814436,0.184436008,0.185316816,0.185612686,0.185712075,0.185745465,0.185756681,0.185760451,0.185761713,-1.607111309,-3.487549643,-1.322721197,-0.487257524,-0.096137761,0.088531065,0.152985893,0.174747138,0.182061991,0.184519353,0.185344816,0.1856221,0.185715243,0.056138903,-0.042794853,0.057545268,0.140354145,0.170402887,0.180598096,0.184027398,0.185179556,0.185566583,0.185696593,0.185740259,0.185754929,0.185759857,-3.365688134,-2.313830028,-0.712301621,-0.118562997,0.083415406,0.151377418,-3.341804901,-4.328813792,-1.519519756,-0.39544552,-0.009852952,0.120035717,0.060375173,0.065432506,-0.270067719,-0.029661384,0.110565061,0.160373955,0.177228255,0.182895388,0.184799294,0.185438847,-2.244740601,-1.498768211,-0.419484544,-0.019337182,-1.66336253,-1.06772528,-0.264059121,0.033355019,0.134507634,0.168542631,0.179977936,0.183819296,0.185109659,0.1855431,0.185688705,0.003535562,0.059861508,0.140529989,0.170434577,0.180745975,0.184312799,0.17954034,0.015887254,-0.014112612,0.112948595,0.122255611,-0.044823331,0.086287826,0.153503429,0.176769374,0.116236223,-0.623799831,-0.258572909,0.037999846,0.142928868,0.174410474,0.184669175,0.188148666,0.189412365,0.18995084,0.190250397,0.188834316,-0.015830031,0.101375665,0.118986332,0.130107324,0.169607247,0.184410743,0.188659304,0.15238703,0.148042519,0.187436202,-0.324594054,-1.815061861,-0.642019714,-0.085245382,-0.025019475,0.135007303,0.185818909,0.070301587,-0.102313757,0.077630856,0.186415602,0.192842999,0.193091045,0.193183461,0.193224412,0.193244382,0.19325204,0.193249677,0.193161684,0.09059744,-0.708727474,-0.26430884,0.077583125,0.174940429,0.06203162,0.125774211,0.191777551,0.191590191,0.191399622,-0.248308447,-0.309431692,0.020398445,0.164137539,0.189221758,0.190183188,0.189976312,0.189760102,0.189540707,0.189318112,0.087704577,0.120937834,0.188631211,0.188395742,0.188157062,0.187915087,0.163268495,0.008459436,0.179911958,0.186915284,0.042542621,0.150370915,0.186131287,0.185863535,0.185592518,0.185318258,0.185040737,0.184759911,0.184475834,0.184188586,0.183898094,0.183604376,0.183307382,0.183007129,0.182703595,0.182396816,0.182086799,0.181773502,0.181456963,0.181137119,0.180814011,0.180487675,0.180158046,0.179825169,0.179489006,0.179149521,0.178806754,0.178460757,0.178111464,0.174842591,0.018878478,-0.715813972,-0.620300396,-0.29272932,0.116909652,-0.076337447,0.001120993,0.074859218,0.078910079,-0.03213341,0.049119654,0.155228831,0.102790661,-0.204969017,0.042795931,0.128454013,0.150663548,0.14731143,0.109190157,0.075737275,-0.15641584,-0.677594526,-0.228907835,-0.011715701,-0.000146582,0.062169756,0.110247934,0.142615462,0.140795312,-0.414818578,-1.683576748,-0.817084404,-0.081385008,0.085307721,0.145692226,0.166902489,0.171092583,0.17324185,0.174582417,0.170843036,0.176522258,0.165150043,0.171903289,0.149807853,0.124554113,0.121419389,0.133277034,0.106684212,0.137987555,0.109056913,0.138675181,0.157671543,0.139778363,0.125800527</ypts>
 				</gf>
 				<units>W/(metre^2)</units>
+			</aux>
+			<aux name="O3 ERF temperature\nfactor">
+				<eqn>-0.037</eqn>
+				<units>W/metre^2/K</units>
+			</aux>
+			<aux name="O3 ERF">
+				<eqn>O3_ERF_components + O3_ERF_temperature_factor*T1</eqn>
+				<units>W/(metre^2)</units>
+			</aux>
+			<aux name="BC Snow from Sulfur Emissions">
+				<eqn>0.000466686199039</eqn>
+				<units>(W/(metre^2))/(MtSO2/yr)</units>
+			</aux>
+			<aux name="BC Snow Forcing">
+				<eqn>(BC_Snow_from_Sulfur_Emissions*(DELAY(Total_SO2_Emissions,  0.5) - SO2_Baseline_Emissions) + BC_Snow_from_CO2_AFOLU_Emissions*(DELAY(CO2_AFOLU_Emissions,  0.5)-CO2_AFOLU_Baseline_Emission)*MtCO2_to_GtCO2)*scale_BC_Snow</eqn>
+				<units>W/(metre^2)</units>
+			</aux>
+			<aux name="CFCs, F-gases Forcing">
+				<eqn>(&quot;CFCs,_F-gases_from_N2O&quot;*(DELAY(Total_N2O_Emissions,  0.5) - N2O_Baseline_emissions)*ktN2O_to_MtN2O)*&quot;scale_CFCs,_F-gases&quot;</eqn>
+				<units>W/(metre^2)</units>
+			</aux>
+			<aux name="BC Snow from CO2 AFOLU Emissions">
+				<eqn>0.000515479183553</eqn>
+				<units>(W/(metre^2))/(GtCO2/yr)</units>
+			</aux>
+			<aux name="O3\nfrom CH4">
+				<eqn>0.00133352744056</eqn>
+				<units>(W/(metre^2))/(MtCH4/yr)</units>
+			</aux>
+			<aux name="CFCs, F-gases\nfrom N2O">
+				<eqn>0.0263519138</eqn>
+				<units>(W/(metre^2))/(MtN2O/yr)</units>
+			</aux>
+			<aux name="O3 from Sulfur">
+				<eqn>-0.000026589554279</eqn>
+				<units>(W/(metre^2))/(MtSO2/yr)</units>
+			</aux>
+			<aux name="scale CH4">
+				<eqn>1.00150416280549</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="scale N2O">
+				<eqn>0.997954209783329</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="scale CH4 Strat Water Vapour">
+				<eqn>0.986532490874611</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="scale CFCs, F-gases">
+				<eqn>0.994214545721268</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="scale BC Snow">
+				<eqn>1.03405964399924</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="scale Land Use">
+				<eqn>0.987159719359484</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="scale Volcanic">
+				<eqn>1.00199914145366</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="solar trend">
+				<eqn>0.0013106218825265</eqn>
+				<units>(W/(metre^2))/yr</units>
+			</aux>
+			<aux name="scale CO2">
+				<eqn>1.02018664370551</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="solar amplitude">
+				<eqn>1.01015397208108</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="scale ozone">
+				<eqn>1.00585577722784</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="Volcanic Efficacy">
+				<eqn>0.6</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="Efficacy-Adjusted ERF">
+				<eqn>Scaled_Volcanic_Forcing*Volcanic_Efficacy + Scaled_Solar_Forcing + Anthropogenic_Forcing</eqn>
+				<units>W/(metre^2)</units>
+			</aux>
+			<aux name="Scaled Solar Forcing">
+				<eqn>Solar_Forcing*solar_amplitude + solar_trend*solar_trend_shape</eqn>
+				<units>W/(metre^2)</units>
+			</aux>
+			<aux name="Scaled Volcanic Forcing">
+				<eqn>Volcanic_Forcing*scale_Volcanic</eqn>
+				<units>W/(metre^2)</units>
+			</aux>
+			<aux name="solar trend shape">
+				<eqn>IF(TIME&lt;2021) THEN (TIME-1751)/270 ELSE 1</eqn>
+				<units>years</units>
+			</aux>
+			<aux name="CH4 Baseline Emissions">
+				<eqn>19.0197831178</eqn>
+				<units>MtCH4/yr</units>
+			</aux>
+			<aux name="N2O Baseline emissions">
+				<eqn>0.08602230754</eqn>
+				<units>ktN2O/yr</units>
+			</aux>
+			<aux name="SO2 Baseline Emissions">
+				<eqn>2.440048435</eqn>
+				<units>MtSO2/yr</units>
+			</aux>
+			<aux name="CO2 AFOLU Baseline Emission">
+				<eqn>297.4646065</eqn>
+				<units>MtCO2/yr</units>
 			</aux>
 		</variables>
 		<views>
@@ -842,7 +930,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="123.75" isee:scroll_y="375" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="205" isee:scroll_y="1057.5" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -973,20 +1061,13 @@
 					<from>T3</from>
 					<to>dT3</to>
 				</connector>
-				<stacked_container uid="25" x="574.083" y="1543.67" width="423" height="273">
-					<graph width="423" height="273" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="T1"/>
-						</plot>
-					</graph>
-				</stacked_container>
 				<aux x="291" y="20" name="CO2 Fossil Emissions"/>
 				<aux x="397" y="34" name="CO2 AFOLU Emissions"/>
 				<stock label_side="top" x="230.167" y="306.333" name="Atmos Carbon 1"/>
 				<stock x="307.167" y="306.333" name="Atmos Carbon 2"/>
 				<stock x="386.167" y="306.333" name="Atmos Carbon 3"/>
 				<stock x="463.167" y="306.333" name="Atmos Carbon 4"/>
-				<flow x="229" y="232.917" name="Atmos Carbon 1 delta">
+				<flow x="229" y="237.417" name="Atmos Carbon 1 delta">
 					<pts>
 						<pt x="229" y="177"/>
 						<pt x="229" y="288.833"/>
@@ -996,11 +1077,11 @@
 				<aux x="157" y="159.25" name="Partition fraction 2"/>
 				<aux x="537.5" y="148.625" name="Partition fraction 3"/>
 				<aux x="555.5" y="196.75" name="Partition fraction 4"/>
-				<connector uid="28" angle="340.957">
+				<connector uid="28" angle="338.277">
 					<from>Partition_fraction_1</from>
 					<to>Atmos_Carbon_1_delta</to>
 				</connector>
-				<flow x="309" y="214.917" name="Atmos Carbon 2 delta">
+				<flow x="309" y="219.417" name="Atmos Carbon 2 delta">
 					<pts>
 						<pt x="309" y="141"/>
 						<pt x="309" y="288.833"/>
@@ -1015,7 +1096,7 @@
 					<from>CO2_AFOLU_Emissions</from>
 					<to>Total_CO2_Emissions</to>
 				</connector>
-				<connector uid="31" angle="241.321">
+				<connector uid="31" angle="242.046">
 					<from>Total_CO2_Emissions</from>
 					<to>Atmos_Carbon_1_delta</to>
 				</connector>
@@ -1023,23 +1104,23 @@
 					<from>Partition_fraction_2</from>
 					<to>Atmos_Carbon_2_delta</to>
 				</connector>
-				<flow x="383" y="231.917" name="Atmos Carbon 3 delta">
+				<flow x="383" y="236.417" name="Atmos Carbon 3 delta">
 					<pts>
 						<pt x="383" y="175"/>
 						<pt x="383" y="288.833"/>
 					</pts>
 				</flow>
-				<flow x="459" y="215.917" name="Atmos Carbon 4 delta">
+				<flow x="459" y="220.417" name="Atmos Carbon 4 delta">
 					<pts>
 						<pt x="459" y="143"/>
 						<pt x="459" y="288.833"/>
 					</pts>
 				</flow>
-				<connector uid="34" angle="208.329">
+				<connector uid="34" angle="209.607">
 					<from>Partition_fraction_3</from>
 					<to>Atmos_Carbon_3_delta</to>
 				</connector>
-				<connector uid="35" angle="191.234">
+				<connector uid="35" angle="193.78">
 					<from>Partition_fraction_4</from>
 					<to>Atmos_Carbon_4_delta</to>
 				</connector>
@@ -1051,7 +1132,7 @@
 					<from>Total_CO2_Emissions</from>
 					<to>Atmos_Carbon_4_delta</to>
 				</connector>
-				<flow x="230" y="362.417" name="Atmos Carbon 1 sink">
+				<flow x="230" y="368.417" name="Atmos Carbon 1 sink">
 					<pts>
 						<pt x="230" y="323.833"/>
 						<pt x="230" y="422"/>
@@ -1069,19 +1150,19 @@
 					<from>Atmos_Carbon_1</from>
 					<to>Atmos_Carbon_1_sink</to>
 				</connector>
-				<flow x="306" y="353.417" name="Atmos Carbon 2 sink">
+				<flow x="306" y="359.417" name="Atmos Carbon 2 sink">
 					<pts>
 						<pt x="306" y="323.833"/>
 						<pt x="306" y="404"/>
 					</pts>
 				</flow>
-				<flow x="385" y="364.417" name="Atmos Carbon 3 sink">
+				<flow x="385" y="370.417" name="Atmos Carbon 3 sink">
 					<pts>
 						<pt x="385" y="323.833"/>
 						<pt x="385" y="426"/>
 					</pts>
 				</flow>
-				<flow x="463" y="350.417" name="Atmos Carbon 4 sink">
+				<flow x="463" y="356.417" name="Atmos Carbon 4 sink">
 					<pts>
 						<pt x="463" y="323.833"/>
 						<pt x="463" y="398"/>
@@ -1091,11 +1172,11 @@
 					<from>Atmos_Carbon_2</from>
 					<to>Atmos_Carbon_2_sink</to>
 				</connector>
-				<connector uid="41" angle="268.849">
+				<connector uid="41" angle="268.957">
 					<from>Atmos_Carbon_3</from>
 					<to>Atmos_Carbon_3_sink</to>
 				</connector>
-				<connector uid="42" angle="269.783">
+				<connector uid="42" angle="269.809">
 					<from>Atmos_Carbon_4</from>
 					<to>Atmos_Carbon_4_sink</to>
 				</connector>
@@ -1113,13 +1194,13 @@
 				</connector>
 				<aux x="219" y="654.792" name="Total Atmos Carbon MtCO2"/>
 				<stock x="1121.67" y="221" name="Atmos CH4"/>
-				<flow x="1119" y="147.25" name="Atmos CH4 delta">
+				<flow x="1119" y="151.75" name="Atmos CH4 delta">
 					<pts>
 						<pt x="1119" y="91"/>
 						<pt x="1119" y="203.5"/>
 					</pts>
 				</flow>
-				<flow x="1120" y="288.75" name="Atmos CH4 sink">
+				<flow x="1120" y="294.75" name="Atmos CH4 sink">
 					<pts>
 						<pt x="1120" y="238.5"/>
 						<pt x="1120" y="360"/>
@@ -1137,7 +1218,7 @@
 				<aux x="1201.75" y="275.417" name="Unperturbed CH4 Lifetime"/>
 				<aux label_side="bottom" x="252.667" y="485.167" width="18" height="18" name="Carbon lifetime\nscale factor"/>
 				<stock x="1629.17" y="830.125" name="Atmos N2O"/>
-				<flow x="1630" y="750.813" name="Atmos N2O delta">
+				<flow x="1630" y="755.313" name="Atmos N2O delta">
 					<pts>
 						<pt x="1630" y="689"/>
 						<pt x="1630" y="812.625"/>
@@ -1200,7 +1281,7 @@
 				<aux label_side="bottom" x="56" y="577.916" name="iirf uptake CO2"/>
 				<aux x="148" y="578.5" name="iirf CO2"/>
 				<stock x="57" y="196.75" name="Cumulative CO2 emissions"/>
-				<flow x="56" y="123.125" name="CO2 emissions">
+				<flow x="56" y="127.625" name="CO2 emissions">
 					<pts>
 						<pt x="56" y="67"/>
 						<pt x="56" y="179.25"/>
@@ -1254,11 +1335,11 @@
 					<from>Carbon_lifetime_scale_factor</from>
 					<to>Atmos_Carbon_1_sink</to>
 				</connector>
-				<connector uid="84" angle="75.6186">
+				<connector uid="84" angle="71.7888">
 					<from>Carbon_lifetime_scale_factor</from>
 					<to>Atmos_Carbon_2_sink</to>
 				</connector>
-				<connector uid="85" angle="53.4711">
+				<connector uid="85" angle="45.0968">
 					<from>Carbon_lifetime_scale_factor</from>
 					<to>Atmos_Carbon_3_sink</to>
 				</connector>
@@ -1268,9 +1349,9 @@
 				</connector>
 				<aux x="440" y="813.667" name="CO2 Tropospheric Adjustment"/>
 				<aux x="915.333" y="690.792" name="CH4 Tropospheric Adjustment"/>
-				<aux x="1286.25" y="1159.08" name="N2O Tropospheric Adjustment"/>
+				<aux x="1280.42" y="1153.25" name="N2O Tropospheric Adjustment"/>
 				<aux x="266" y="846.667" name="f1 CO2"/>
-				<aux x="305.5" y="889.667" name="f3 CO2"/>
+				<aux x="272.5" y="889.667" name="f3 CO2"/>
 				<aux x="927" y="641.083" name="f3 CH4"/>
 				<aux x="1351.42" y="1084.92" name="f3 N2O"/>
 				<aux x="348.833" y="825.667" name="CO2 ERF"/>
@@ -1290,15 +1371,11 @@
 					<from>CO2_Tropospheric_Adjustment</from>
 					<to>CO2_ERF</to>
 				</connector>
-				<aux x="712.167" y="1319.42" name="Total Radiative Forcing"/>
-				<aux x="949.25" y="1206" name="Anthropogenic Forcing"/>
-				<connector uid="92" angle="327.648">
+				<aux x="608.667" y="1301.09" name="Total Forcing"/>
+				<aux x="900.44" y="1259.92" name="Anthropogenic Forcing"/>
+				<connector uid="92" angle="321.788">
 					<from>CO2_ERF</from>
 					<to>Anthropogenic_Forcing</to>
-				</connector>
-				<connector uid="95" angle="189.173">
-					<from>Total_Radiative_Forcing</from>
-					<to>dT1</to>
 				</connector>
 				<aux label_side="bottom" x="1007.5" y="347.833" name="CH4 lifetime\nscale factor"/>
 				<aux x="1069.5" y="347.833" name="g0 CH4"/>
@@ -1345,13 +1422,13 @@
 					<to>iirf_CH4</to>
 				</connector>
 				<stock x="912.5" y="244.25" name="Cumulative CH4 emissions"/>
-				<flow x="912.5" y="178.125" name="CH4 emissions">
+				<flow x="912.5" y="182.625" name="CH4 emissions">
 					<pts>
 						<pt x="912.5" y="129.5"/>
 						<pt x="912.5" y="226.75"/>
 					</pts>
 				</flow>
-				<connector uid="112" angle="219.363">
+				<connector uid="112" angle="220.293">
 					<from>Total_CH4_Emissions</from>
 					<to>CH4_emissions</to>
 				</connector>
@@ -1363,11 +1440,11 @@
 					<from>T1</from>
 					<to>iirf_CH4</to>
 				</connector>
-				<connector uid="116" angle="189.263">
+				<connector uid="116" angle="193.305">
 					<from>Unperturbed_CH4_Lifetime</from>
 					<to>Atmos_CH4_sink</to>
 				</connector>
-				<connector uid="117" angle="27.7077">
+				<connector uid="117" angle="25.2602">
 					<from>CH4_lifetime_scale_factor</from>
 					<to>Atmos_CH4_sink</to>
 				</connector>
@@ -1402,7 +1479,7 @@
 					<from>CH4_Tropospheric_Adjustment</from>
 					<to>CH4_ERF</to>
 				</connector>
-				<connector uid="129" angle="252.744">
+				<connector uid="129" angle="259.196">
 					<from>CH4_ERF</from>
 					<to>Anthropogenic_Forcing</to>
 				</connector>
@@ -1457,7 +1534,7 @@
 					<from>N2O_Conc_1750</from>
 					<to>N2O_ERF</to>
 				</connector>
-				<connector uid="145" angle="138.5">
+				<connector uid="145" angle="138.947">
 					<from>N2O_Tropospheric_Adjustment</from>
 					<to>N2O_ERF</to>
 				</connector>
@@ -1465,27 +1542,27 @@
 					<from>Molecular_Weight_N2O</from>
 					<to>N2O_Concentration</to>
 				</connector>
-				<connector uid="147" angle="13.5538">
+				<connector uid="147" angle="13.5535">
 					<from>Unperturbed_N2O_Lifetime</from>
 					<to>Atmos_N2O_sink</to>
 				</connector>
-				<connector uid="148" angle="128.317">
+				<connector uid="148" angle="128.315">
 					<from>N2O_lifetime_scale_factor</from>
 					<to>Atmos_N2O_sink</to>
 				</connector>
-				<stock x="1804" y="873" name="Cumulative N2O emissions"/>
-				<flow x="1804" y="801" name="N2O emissions">
+				<stock x="1804" y="872.188" name="Cumulative N2O Emissions"/>
+				<flow x="1804" y="805.094" name="N2O emissions">
 					<pts>
 						<pt x="1804" y="746.5"/>
-						<pt x="1804" y="855.5"/>
+						<pt x="1804" y="854.688"/>
 					</pts>
 				</flow>
-				<connector uid="149" angle="315.156">
+				<connector uid="149" angle="314.59">
 					<from>Total_N2O_Emissions</from>
 					<to>N2O_emissions</to>
 				</connector>
-				<connector uid="150" angle="269.462">
-					<from>Cumulative_N2O_emissions</from>
+				<connector uid="150" angle="269.464">
+					<from>Cumulative_N2O_Emissions</from>
 					<to>iirf_N2O</to>
 				</connector>
 				<connector uid="153" angle="11.2061">
@@ -1496,7 +1573,7 @@
 					<from>Atmos_N2O</from>
 					<to>N2O_Concentration</to>
 				</connector>
-				<connector uid="159" angle="198.557">
+				<connector uid="159" angle="204.176">
 					<from>N2O_ERF</from>
 					<to>Anthropogenic_Forcing</to>
 				</connector>
@@ -1506,7 +1583,7 @@
 					<to>N2O_Concentration</to>
 				</connector>
 				<stock x="562.333" y="550.917" name="Cumulative CO2 AFOLU emissions"/>
-				<flow x="562.333" y="484.792" name="CO2 AFOLU">
+				<flow x="562.333" y="489.292" name="CO2 AFOLU">
 					<pts>
 						<pt x="562.333" y="436.167"/>
 						<pt x="562.333" y="533.417"/>
@@ -1526,33 +1603,15 @@
 					<from>CO2_AFOLU_forcing_scale_factor</from>
 					<to>Land_Use_forcing</to>
 				</connector>
-				<connector uid="165" angle="301.523">
+				<connector uid="165" angle="295.55">
 					<from>Land_Use_forcing</from>
 					<to>Anthropogenic_Forcing</to>
 				</connector>
 				<aux x="1484.33" y="1337.5" name="Total SO2 Emissions"/>
-				<aux x="1292.33" y="1337.5" name="beta ACI"/>
-				<aux x="1306.16" y="1384.5" name="s SO2 ACI"/>
+				<aux x="1305.3" y="1360.36" name="beta ACI"/>
+				<aux x="1323.3" y="1409.5" name="s SO2 ACI"/>
 				<aux x="1196.67" y="1366.5" name="ACI ERF"/>
-				<aux x="1265.66" y="1449" name="SO2 emissions 1750"/>
-				<aux x="1239" y="1402.5" name="Baseline ACI radiative effect"/>
-				<connector uid="167" angle="230.632">
-					<from>beta_ACI</from>
-					<to>Baseline_ACI_radiative_effect</to>
-				</connector>
-				<connector uid="168" angle="195.003">
-					<from>s_SO2_ACI</from>
-					<to>Baseline_ACI_radiative_effect</to>
-				</connector>
-				<connector uid="169" angle="119.83">
-					<from>SO2_emissions_1750</from>
-					<to>Baseline_ACI_radiative_effect</to>
-				</connector>
-				<connector uid="170" angle="107.103">
-					<from>Baseline_ACI_radiative_effect</from>
-					<to>ACI_ERF</to>
-				</connector>
-				<connector uid="171" angle="131.128">
+				<connector uid="171" angle="173.911">
 					<from>Total_SO2_Emissions</from>
 					<to>ACI_ERF</to>
 				</connector>
@@ -1566,65 +1625,21 @@
 					<from>Total_SO2_Emissions</from>
 					<to>ARI_ERF</to>
 				</connector>
-				<connector uid="178" angle="215.106">
-					<from>SO2_emissions_1750</from>
-					<to>ARI_ERF</to>
-				</connector>
-				<aux x="1056.58" y="775.666" name="CH4 Strat Water Vapour Factor"/>
-				<aux x="1029.25" y="883.512" name="CH4 Strat Water Vapour ERF"/>
-				<connector uid="180" angle="278.484">
+				<aux x="922.107" y="779.952" name="CH4 Strat Water Vapour Factor"/>
+				<aux x="922.107" y="883.512" name="CH4 Strat Water Vapour ERF"/>
+				<connector uid="180" angle="243.889">
 					<from>CH4_ERF</from>
 					<to>CH4_Strat_Water_Vapour_ERF</to>
 				</connector>
-				<connector uid="181" angle="255.778">
+				<connector uid="181" angle="270">
 					<from>CH4_Strat_Water_Vapour_Factor</from>
 					<to>CH4_Strat_Water_Vapour_ERF</to>
 				</connector>
-				<connector uid="182" angle="256.068">
+				<connector uid="182" angle="266.706">
 					<from>CH4_Strat_Water_Vapour_ERF</from>
 					<to>Anthropogenic_Forcing</to>
 				</connector>
-				<aux x="1132.5" y="854.833" name="CH4 O3 Factor"/>
-				<aux x="1295.58" y="919.458" name="N2O O3 Factor"/>
-				<aux x="1177.67" y="901.512" name="CH4 O3 ERF"/>
-				<aux x="1241.58" y="919.458" name="N2O O3 ERF"/>
-				<aux x="1167.67" y="970.833" name="O3 ERF"/>
-				<connector uid="183" angle="312.855">
-					<from>CH4_O3_Factor</from>
-					<to>CH4_O3_ERF</to>
-				</connector>
-				<connector uid="184" angle="180">
-					<from>N2O_O3_Factor</from>
-					<to>N2O_O3_ERF</to>
-				</connector>
-				<connector uid="185" angle="158.379">
-					<from>N2O_Concentration</from>
-					<to>N2O_O3_ERF</to>
-				</connector>
-				<connector uid="186" angle="333.841">
-					<from>CH4_Concentration</from>
-					<to>CH4_O3_ERF</to>
-				</connector>
-				<connector uid="187" angle="261.791">
-					<from>CH4_O3_ERF</from>
-					<to>O3_ERF</to>
-				</connector>
-				<connector uid="188" angle="214.803">
-					<from>N2O_O3_ERF</from>
-					<to>O3_ERF</to>
-				</connector>
-				<connector uid="189" angle="227.115">
-					<from>O3_ERF</from>
-					<to>Anthropogenic_Forcing</to>
-				</connector>
-				<connector uid="190" angle="272.163">
-					<from>CH4_Conc_1750</from>
-					<to>CH4_O3_ERF</to>
-				</connector>
-				<connector uid="191" angle="185.13">
-					<from>N2O_Conc_1750</from>
-					<to>N2O_O3_ERF</to>
-				</connector>
+				<aux x="1105.52" y="1019.52" name="O3 ERF components"/>
 				<connector uid="33" angle="281.634">
 					<from>Total_CO2_Emissions</from>
 					<to>Atmos_Carbon_2_delta</to>
@@ -1678,10 +1693,6 @@
 					<from>Atmos_N2O</from>
 					<to>iirf_N2O</to>
 				</connector>
-				<connector uid="93" angle="205.566">
-					<from>Anthropogenic_Forcing</from>
-					<to>Total_Radiative_Forcing</to>
-				</connector>
 				<aux x="398.571" y="690.792" name="fraction to ppm"/>
 				<aux x="395.571" y="736.917" name="GtCO2 to kg"/>
 				<connector uid="210" angle="183.2">
@@ -1692,7 +1703,7 @@
 					<from>GtCO2_to_kg</from>
 					<to>CO2_Concentration</to>
 				</connector>
-				<aux x="360.953" y="904.096" name="f3 CO2 squared"/>
+				<aux x="310.953" y="907.667" name="f3 CO2 squared"/>
 				<connector uid="218" angle="85.5144">
 					<from>f3_CO2_squared</from>
 					<to>CO2_ERF</to>
@@ -1734,8 +1745,8 @@
 					</from>
 					<to>N2O_Concentration</to>
 				</connector>
-				<aux x="1313.58" y="1119.08" name="f3 N2O squared"/>
-				<connector uid="230" angle="167.106">
+				<aux x="1310.25" y="1106.58" name="f3 N2O squared"/>
+				<connector uid="230" angle="183.291">
 					<from>f3_N2O_squared</from>
 					<to>N2O_ERF</to>
 				</connector>
@@ -1765,7 +1776,7 @@
 					<to>N2O_airborne_fraction</to>
 				</connector>
 				<connector uid="237" angle="118.301">
-					<from>Cumulative_N2O_emissions</from>
+					<from>Cumulative_N2O_Emissions</from>
 					<to>N2O_airborne_fraction</to>
 				</connector>
 				<connector uid="238" angle="127.089">
@@ -1776,15 +1787,275 @@
 					<from>ARI_ERF</from>
 					<to>Anthropogenic_Forcing</to>
 				</connector>
-				<aux x="671.667" y="1201.92" name="Solar Forcing"/>
-				<aux x="774.667" y="1206" name="Volcanic Forcing"/>
-				<connector uid="240" angle="323.948">
-					<from>Solar_Forcing</from>
-					<to>Total_Radiative_Forcing</to>
+				<aux x="626.667" y="1154.42" name="Solar Forcing"/>
+				<aux x="690.5" y="1168.67" name="Volcanic Forcing"/>
+				<aux x="1010" y="1032.52" name="O3 ERF temperature\nfactor"/>
+				<aux x="1041.83" y="1118.08" name="O3 ERF"/>
+				<connector uid="246" angle="237.129">
+					<from>O3_ERF_components</from>
+					<to>O3_ERF</to>
 				</connector>
-				<connector uid="241" angle="240.941">
+				<connector uid="247" angle="290.406">
+					<from>O3_ERF_temperature_factor</from>
+					<to>O3_ERF</to>
+				</connector>
+				<connector uid="248" angle="225.091">
+					<from>O3_ERF</from>
+					<to>Anthropogenic_Forcing</to>
+				</connector>
+				<connector uid="249" angle="4.83049">
+					<from>T1</from>
+					<to>O3_ERF</to>
+				</connector>
+				<aux label_side="bottom" x="1287.3" y="1220.35" name="BC Snow from Sulfur Emissions"/>
+				<aux x="1184.29" y="1247.86" name="BC Snow Forcing"/>
+				<connector uid="252" angle="149.036">
+					<from>BC_Snow_from_Sulfur_Emissions</from>
+					<to>BC_Snow_Forcing</to>
+				</connector>
+				<connector uid="253" angle="156.19">
+					<from>Total_SO2_Emissions</from>
+					<to>BC_Snow_Forcing</to>
+				</connector>
+				<connector uid="254" angle="145.62">
+					<from>BC_Snow_Forcing</from>
+					<to>Anthropogenic_Forcing</to>
+				</connector>
+				<aux x="725.714" y="1007.86" name="CFCs, F-gases Forcing"/>
+				<connector uid="257" angle="304.729">
+					<from>&quot;CFCs,_F-gases_Forcing&quot;</from>
+					<to>Anthropogenic_Forcing</to>
+				</connector>
+				<stacked_container uid="25" x="574.083" y="1543.67" width="423" height="273">
+					<graph width="423" height="273" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="T1"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<aux x="1214.67" y="1193" name="BC Snow from CO2 AFOLU Emissions"/>
+				<connector uid="262" angle="294.222">
+					<from>
+						<alias uid="261"/>
+					</from>
+					<to>BC_Snow_Forcing</to>
+				</connector>
+				<connector uid="263" angle="246.455">
+					<from>BC_Snow_from_CO2_AFOLU_Emissions</from>
+					<to>BC_Snow_Forcing</to>
+				</connector>
+				<connector uid="265" angle="357.622">
+					<from>
+						<alias uid="259"/>
+					</from>
+					<to>BC_Snow_Forcing</to>
+				</connector>
+				<aux x="1071.52" y="937.458" name="O3\nfrom CH4"/>
+				<connector uid="268" angle="315.969">
+					<from>
+						<alias uid="267"/>
+					</from>
+					<to>O3_ERF_components</to>
+				</connector>
+				<connector uid="269" angle="292.505">
+					<from>O3_from_CH4</from>
+					<to>O3_ERF_components</to>
+				</connector>
+				<aux x="671.667" y="909.917" name="CFCs, F-gases\nfrom N2O"/>
+				<connector uid="274" angle="298.891">
+					<from>&quot;CFCs,_F-gases_from_N2O&quot;</from>
+					<to>&quot;CFCs,_F-gases_Forcing&quot;</to>
+				</connector>
+				<connector uid="275" angle="168.967">
+					<from>
+						<alias uid="273"/>
+					</from>
+					<to>&quot;CFCs,_F-gases_Forcing&quot;</to>
+				</connector>
+				<connector uid="276" angle="330.129">
+					<from>
+						<alias uid="277"/>
+					</from>
+					<to>&quot;CFCs,_F-gases_Forcing&quot;</to>
+				</connector>
+				<aux x="1210.33" y="970.666" name="O3 from Sulfur"/>
+				<connector uid="278" angle="247.126">
+					<from>
+						<alias uid="279"/>
+					</from>
+					<to>O3_ERF_components</to>
+				</connector>
+				<connector uid="280" angle="204.99">
+					<from>O3_from_Sulfur</from>
+					<to>O3_ERF_components</to>
+				</connector>
+				<aux x="1100.17" y="728" name="scale CH4"/>
+				<aux x="1214.67" y="1059.17" name="scale N2O"/>
+				<aux x="845.381" y="837.381" name="scale CH4 Strat Water Vapour"/>
+				<aux x="725.714" y="1046.31" name="scale CFCs, F-gases"/>
+				<aux x="1189.29" y="1288.71" name="scale BC Snow"/>
+				<aux x="680.5" y="618.916" name="scale Land Use"/>
+				<aux x="704.167" y="1208.42" name="scale Volcanic"/>
+				<aux x="586.792" y="1168.67" name="solar trend"/>
+				<aux x="365.571" y="883.512" name="scale CO2"/>
+				<aux x="552" y="1190.42" name="solar amplitude"/>
+				<aux x="1173.05" y="1006.67" name="scale ozone"/>
+				<connector uid="292" angle="90.9212">
+					<from>scale_CO2</from>
+					<to>CO2_ERF</to>
+				</connector>
+				<connector uid="293" angle="193.188">
+					<from>scale_Land_Use</from>
+					<to>Land_Use_forcing</to>
+				</connector>
+				<connector uid="294" angle="155.538">
+					<from>scale_CH4</from>
+					<to>CH4_ERF</to>
+				</connector>
+				<connector uid="295" angle="297.093">
+					<from>scale_N2O</from>
+					<to>N2O_ERF</to>
+				</connector>
+				<connector uid="297" angle="186.432">
+					<from>scale_ozone</from>
+					<to>O3_ERF_components</to>
+				</connector>
+				<connector uid="298" angle="85.1183">
+					<from>&quot;scale_CFCs,_F-gases&quot;</from>
+					<to>&quot;CFCs,_F-gases_Forcing&quot;</to>
+				</connector>
+				<connector uid="299" angle="94.5569">
+					<from>scale_BC_Snow</from>
+					<to>BC_Snow_Forcing</to>
+				</connector>
+				<connector uid="300" angle="336.906">
+					<from>scale_CH4_Strat_Water_Vapour</from>
+					<to>CH4_Strat_Water_Vapour_ERF</to>
+				</connector>
+				<aux x="704.167" y="1344.17" name="Volcanic Efficacy"/>
+				<aux x="577.334" y="1378" name="Efficacy-Adjusted ERF"/>
+				<aux x="595.334" y="1231.25" name="Scaled Solar Forcing"/>
+				<aux x="655.5" y="1249.25" name="Scaled Volcanic Forcing"/>
+				<connector uid="301" angle="272.814">
+					<from>Solar_Forcing</from>
+					<to>Scaled_Solar_Forcing</to>
+				</connector>
+				<connector uid="302" angle="341.701">
+					<from>solar_amplitude</from>
+					<to>Scaled_Solar_Forcing</to>
+				</connector>
+				<connector uid="303" angle="302.772">
+					<from>solar_trend</from>
+					<to>Scaled_Solar_Forcing</to>
+				</connector>
+				<connector uid="304" angle="295">
 					<from>Volcanic_Forcing</from>
-					<to>Total_Radiative_Forcing</to>
+					<to>Scaled_Volcanic_Forcing</to>
+				</connector>
+				<connector uid="305" angle="282.438">
+					<from>scale_Volcanic</from>
+					<to>Scaled_Volcanic_Forcing</to>
+				</connector>
+				<connector uid="306" angle="288.146">
+					<from>Scaled_Solar_Forcing</from>
+					<to>Total_Forcing</to>
+				</connector>
+				<connector uid="307" angle="229.528">
+					<from>Scaled_Volcanic_Forcing</from>
+					<to>Total_Forcing</to>
+				</connector>
+				<connector uid="308" angle="167.453">
+					<from>Anthropogenic_Forcing</from>
+					<to>Total_Forcing</to>
+				</connector>
+				<connector uid="309" angle="268.887">
+					<from>Scaled_Volcanic_Forcing</from>
+					<to>&quot;Efficacy-Adjusted_ERF&quot;</to>
+				</connector>
+				<connector uid="310" angle="263.007">
+					<from>Scaled_Solar_Forcing</from>
+					<to>&quot;Efficacy-Adjusted_ERF&quot;</to>
+				</connector>
+				<connector uid="311" angle="194.936">
+					<from>Volcanic_Efficacy</from>
+					<to>&quot;Efficacy-Adjusted_ERF&quot;</to>
+				</connector>
+				<connector uid="312" angle="166.564">
+					<from>Anthropogenic_Forcing</from>
+					<to>&quot;Efficacy-Adjusted_ERF&quot;</to>
+				</connector>
+				<connector uid="313" angle="198.621">
+					<from>&quot;Efficacy-Adjusted_ERF&quot;</from>
+					<to>dT1</to>
+				</connector>
+				<aux x="523.333" y="1245.83" name="solar trend shape"/>
+				<connector uid="314" angle="23.8387">
+					<from>solar_trend_shape</from>
+					<to>Scaled_Solar_Forcing</to>
+				</connector>
+				<aux x="1188.67" y="140.833" name="CH4 Baseline Emissions"/>
+				<connector uid="315" angle="166.422">
+					<from>CH4_Baseline_Emissions</from>
+					<to>Atmos_CH4_delta</to>
+				</connector>
+				<aux x="1544.17" y="723.333" name="N2O Baseline emissions"/>
+				<connector uid="316" angle="14.0362">
+					<from>N2O_Baseline_emissions</from>
+					<to>Atmos_N2O_delta</to>
+				</connector>
+				<stacked_container uid="317" x="534" y="2027">
+					<table width="350" height="250" comparative="true" isee:export_name="Top-Level Table 1" isee:mark_for_export="true" title="T1 Ensemble">
+						<item type="time"/>
+						<item>
+							<entity name="T1"/>
+						</item>
+					</table>
+				</stacked_container>
+				<stacked_container uid="318" x="1270" y="1746.67">
+					<table width="350" height="250" isee:export_name="Stocks" isee:mark_for_export="true">
+						<item type="time"/>
+						<item>
+							<entity name="T1"/>
+						</item>
+					</table>
+				</stacked_container>
+				<connector uid="320" angle="218.347">
+					<from>
+						<alias uid="319"/>
+					</from>
+					<to>&quot;CFCs,_F-gases_Forcing&quot;</to>
+				</connector>
+				<aux x="1244" y="1420" name="SO2 Baseline Emissions"/>
+				<connector uid="322" angle="122.905">
+					<from>SO2_Baseline_Emissions</from>
+					<to>ACI_ERF</to>
+				</connector>
+				<connector uid="326" angle="281.898">
+					<from>
+						<alias uid="325"/>
+					</from>
+					<to>O3_ERF_components</to>
+				</connector>
+				<connector uid="327" angle="221.686">
+					<from>
+						<alias uid="321"/>
+					</from>
+					<to>O3_ERF_components</to>
+				</connector>
+				<aux x="1262" y="1294.29" name="CO2 AFOLU Baseline Emission"/>
+				<connector uid="329" angle="167.713">
+					<from>
+						<alias uid="328"/>
+					</from>
+					<to>BC_Snow_Forcing</to>
+				</connector>
+				<connector uid="330" angle="137.961">
+					<from>CO2_AFOLU_Baseline_Emission</from>
+					<to>BC_Snow_Forcing</to>
+				</connector>
+				<connector uid="331" angle="246.801">
+					<from>SO2_Baseline_Emissions</from>
+					<to>ARI_ERF</to>
 				</connector>
 				<alias font_style="italic" uid="192" x="535.333" y="602.792" width="18" height="18">
 					<of>MtCO2_to_GtCO2</of>
@@ -1814,6 +2085,38 @@
 				</alias>
 				<alias font_style="italic" uid="233" x="161.5" y="774.167" width="45" height="35">
 					<of>Cumulative_CO2_emissions</of>
+				</alias>
+				<alias font_style="italic" uid="259" x="1114.52" y="1224.57" width="18" height="18">
+					<of>MtCO2_to_GtCO2</of>
+				</alias>
+				<alias font_style="italic" uid="261" x="1138.34" y="1156" width="18" height="18">
+					<of>CO2_AFOLU_Emissions</of>
+				</alias>
+				<alias font_style="italic" uid="267" x="1032.83" y="971.33" width="18" height="18">
+					<of>Total_CH4_Emissions</of>
+				</alias>
+				<alias font_style="italic" uid="273" x="765.667" y="969.52" width="18" height="18">
+					<of>Total_N2O_Emissions</of>
+				</alias>
+				<alias font_style="italic" uid="277" x="658.667" y="965.52" width="18" height="18">
+					<of>ktN2O_to_MtN2O</of>
+				</alias>
+				<alias font_style="italic" uid="279" x="1135.17" y="918.917" width="18" height="18">
+					<of>Total_SO2_Emissions</of>
+				</alias>
+				<alias font_style="italic" uid="319" x="779.333" y="913.5" width="18" height="18">
+					<of>N2O_Baseline_emissions</of>
+				</alias>
+				<alias font_style="italic" uid="321" x="1212" y="924.333" width="18" height="18">
+					<of>CH4_Baseline_Emissions</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="325" x="1091.17" y="868.5" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>SO2_Baseline_Emissions</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="328" x="1308.02" y="1184" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>SO2_Baseline_Emissions</of>
 				</alias>
 			</view>
 		</views>
