@@ -34,17 +34,13 @@
 	</isee:sensi_specs_list>
 	<isee:optimizer_specs_list active_index="0">
 		<isee:optimizer_specs name="Optimization" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" tolerance="0.001" init_step="0.1">
-			<isee:parameter name="Initial_Fossil_Energy_Sulfur_Intensity" min="0" max="1000000000"/>
-			<isee:parameter name="Fossil_Energy_Sulfur_Intensity_Trend" min="-10" max="10" scaling="10"/>
+			<isee:parameter name="Initial_Fossil_Energy_Sulfur_Intensity" min="NaN" max="NaN"/>
+			<isee:parameter name="desulphurisation_rate_of_energy_related_emissions" min="NaN" max="NaN"/>
 			<isee:payoff name="Payoff" action="min"/>
 		</isee:optimizer_specs>
 	</isee:optimizer_specs_list>
 	<isee:payoff_specs_list>
-		<isee:payoff_specs name="Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="realWorldCalibrationData-scaled">
-			<isee:payoff_element name="SO2_emissions_from_fossil_fuels" weight="1605660">
-				<isee:time_range type="terminal_value"/>
-			</isee:payoff_element>
-		</isee:payoff_specs>
+		<isee:payoff_specs name="Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="realWorldCalibrationData-scaled 1"/>
 	</isee:payoff_specs_list>
 	<model_units>
 		<unit name="Dimensionless">
@@ -232,7 +228,7 @@ share_of_primary_energy_in_fossil_energy*
 			<flow name="Fossil Energy Extraction">
 				<eqn>Fossil_Fuel_Extraction_Capital*Fossil_Fuel_Extraction_Productivity</eqn>
 				<non_negative/>
-				<units>gtC/Year</units>
+				<units>GtC/Year</units>
 			</flow>
 			<aux name="Primary Fossil Energy (FUEL)">
 				<doc>This is extracted usable fuels in the current period.
@@ -538,7 +534,7 @@ With the time series of total renewable energy capcity we can calculate the entr
 				<units>1/$</units>
 			</aux>
 			<aux name="knowledgePerProductivity">
-				<eqn>1.57523252508644</eqn>
+				<eqn>1.57412500661732</eqn>
 				<units>gtC/$/Year/Extractionknowledge</units>
 			</aux>
 			<aux name="gWh to TWh">
@@ -677,14 +673,13 @@ LN(relative_GDP_per_person) + effect_of_GDP_on_traditional_per_person_use_of_ele
 			<aux name="SO2 emissions from\nfossil fuels">
 				<doc>This depends on the sulphur content of the burnt fuels, depends on the fuel mix
 Calibration from FRIDA 0.1 or from MIND</doc>
-				<eqn>MAX(Minimum_Sulfur_Intensity, 
-Fossil_Energy_Extraction*(Initial_Fossil_Energy_Sulfur_Intensity+Fossil_Energy_Sulfur_Intensity_Trend*1e-4*(TIME-STARTTIME)))</eqn>
-				<units>GtS/Year</units>
+				<eqn>CO2_emissions_from_fossil_fuels*coupling_factor_of_CO2_and_SO2_emissions</eqn>
+				<units>GtSO2/Year</units>
 			</aux>
 			<aux name="CO2 emissions\nfrom fossil fuels">
 				<doc>Calibration from FRIDA 0.1 , but in principle should be equal to extracted carbon</doc>
-				<eqn>Fossil_Energy_Extraction</eqn>
-				<units>GtC/Year</units>
+				<eqn>Fossil_Energy_Extraction*GtC_to_GtCO2</eqn>
+				<units>GtCO2/Year</units>
 			</aux>
 			<aux name="Investments in Fossil\nFuel Extraction Capital">
 				<eqn>World_GDP*share_of_GDP_invested_in_fuel_extraction</eqn>
@@ -692,7 +687,7 @@ Fossil_Energy_Extraction*(Initial_Fossil_Energy_Sulfur_Intensity+Fossil_Energy_S
 			</aux>
 			<aux name="Fossil Energy Capital Productivity">
 				<doc>Implied in the MIND code as all units were in 100T$ and this model is in T$</doc>
-				<eqn>1.48950342669e-14</eqn>
+				<eqn>1.41574398206667e-14</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Investments in\nFossil Energy Capital">
@@ -891,16 +886,54 @@ Hydropower_Energy_Calib_Parm_2*Hydropower_Energy_Capacity</eqn>
 				<units>$/kW</units>
 			</aux>
 			<aux name="Initial Fossil Energy Sulfur Intensity">
-				<eqn>0.00452202904711408</eqn>
-				<units>GtS/GtC</units>
+				<eqn>0.00513391545662469</eqn>
+				<units>GtSO2/GtCO2</units>
 			</aux>
-			<aux name="Fossil Energy Sulfur Intensity Trend">
-				<eqn>-2.16596777335532</eqn>
-				<units>GtS/GtC/Year</units>
+			<aux name="CH4 emissions from fossil fuels">
+				<eqn>CO2_emissions_from_fossil_fuels
+*
+coupling_factor_of_CO2_and_CH4_emissions</eqn>
+				<units>GtCH4/year</units>
 			</aux>
-			<aux name="Minimum Sulfur Intensity">
-				<eqn>0</eqn>
-				<units>GtS/GtC</units>
+			<aux name="N20 emissions from fossil fuels">
+				<eqn>CO2_emissions_from_fossil_fuels*coupling_factor_of_CO2_and_N2O_emissions_1</eqn>
+				<units>GtN2O/year</units>
+			</aux>
+			<aux name="desulphurisation rate of energy related emissions">
+				<eqn>-0.022471992761003</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="coupling factor of CO2\nand SO2 emissions">
+				<eqn>Initial_Fossil_Energy_Sulfur_Intensity * EXP(desulphurisation_rate_of_energy_related_emissions*(TIME-STARTTIME))</eqn>
+				<units>GtSO2/GtCO2</units>
+			</aux>
+			<aux name="Initial Fossil Energy\nN2O Intensity">
+				<eqn>0.0000477501482960523</eqn>
+				<units>GtN2O/GtCO2</units>
+			</aux>
+			<aux name="rate of\nchange in energy\nrelated N2O emissions">
+				<eqn>-0.053333184643129</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="coupling factor of CO2\nand N2O emissions 1">
+				<eqn>Initial_Fossil_Energy_N2O_Intensity * EXP(rate_of_change_in_energy_related_N2O_emissions*(TIME-STARTTIME))</eqn>
+				<units>GtN2O/GtCO2</units>
+			</aux>
+			<aux name="Initial Fossil Energy\nCH4 Intensity">
+				<eqn>0.0048856946735697</eqn>
+				<units>GtCH4/GtCO2</units>
+			</aux>
+			<aux name="rate of\nchange in energy\nrelated CH4 emissions">
+				<eqn>0.00119601219131735</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="coupling factor of CO2\nand CH4 emissions">
+				<eqn>Initial_Fossil_Energy_CH4_Intensity * EXP(rate_of_change_in_energy_related_CH4_emissions*(TIME-STARTTIME))</eqn>
+				<units>GtCH4/GtCO2</units>
+			</aux>
+			<aux name="GtC to GtCO2">
+				<eqn>1</eqn>
+				<units>GtCO2/GTC</units>
 			</aux>
 		</variables>
 		<views>
@@ -951,7 +984,7 @@ Hydropower_Energy_Calib_Parm_2*Hydropower_Energy_Capacity</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="6" isee:page_rows="4" isee:scroll_x="975" isee:scroll_y="420" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="6" isee:page_rows="4" isee:scroll_x="271.667" isee:scroll_y="430" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1134,12 +1167,12 @@ Hydropower_Energy_Calib_Parm_2*Hydropower_Energy_Capacity</eqn>
 				</flow>
 				<aux background="#FFAAFF" x="2168.63" y="836.322" name="Renewable Energy Output"/>
 				<aux x="1853.99" y="954.154" name="Renewable Energy Full Load Hours"/>
-				<aux background="#FFAAFF" x="1688.07" y="706.583" name="Total Energy Output"/>
-				<connector uid="74" angle="22.8103">
+				<aux background="#FFAAFF" x="1484.66" y="632.833" name="Total Energy Output"/>
+				<connector uid="74" angle="56.2722">
 					<from>Secondary_Fossil_Energy_Output</from>
 					<to>Total_Energy_Output</to>
 				</connector>
-				<connector uid="75" angle="164.892">
+				<connector uid="75" angle="163.432">
 					<from>Renewable_Energy_Output</from>
 					<to>Total_Energy_Output</to>
 				</connector>
@@ -1215,7 +1248,7 @@ Hydropower_Energy_Calib_Parm_2*Hydropower_Energy_Capacity</eqn>
 				</connector>
 				<aux label_side="bottom" x="817.667" y="1451.51" name="initial fossil\nextraction knowledge"/>
 				<aux x="1926.89" y="1158.75" name="kW to GW"/>
-				<connector uid="136" angle="322.822">
+				<connector uid="136" angle="322.823">
 					<from>kW_to_GW</from>
 					<to>Renewable_Energy_Capacity_Construction</to>
 				</connector>
@@ -1317,7 +1350,7 @@ We might want to change back to decay later, as that would be more compatible wi
 				<aux background="lime" label_side="top" x="1136.81" y="352.166" name="Population"/>
 				<aux background="lime" label_side="top" x="427.417" y="360.333" name="GDP per person"/>
 				<aux background="white" label_side="left" label_angle="225" x="788.75" y="706.583" name="Traditional per person use of\nelectricity"/>
-				<aux background="#FFAAFF" label_side="left" label_angle="225" x="929" y="896.916" name="demand for energy"/>
+				<aux background="#FFAAFF" label_side="left" label_angle="225" x="1181.9" y="632.833" name="demand for energy"/>
 				<aux background="white" label_side="right" label_angle="315" x="873" y="619.583" name="effect of surface temperature\nanomaly on traditional per\nperson use of electricity"/>
 				<aux background="white" label_side="top" x="885.32" y="468.333" name="sensitivity of\ntraditional per person\nuse of electricity to surface\ntemperature anomaly"/>
 				<connector uid="247" angle="265.343">
@@ -1358,11 +1391,11 @@ We might want to change back to decay later, as that would be more compatible wi
 					<from>effect_of_GDP_on_traditional_per_person_use_of_electricity_beta</from>
 					<to>effect_of_GDP_per_person_on_traditional_per_person_use_of_electricity</to>
 				</connector>
-				<connector uid="260" angle="249.119">
+				<connector uid="260" angle="279.127">
 					<from>Population</from>
 					<to>demand_for_energy</to>
 				</connector>
-				<connector uid="261" angle="306.385">
+				<connector uid="261" angle="10.6244">
 					<from>Traditional_per_person_use_of_electricity</from>
 					<to>demand_for_energy</to>
 				</connector>
@@ -1370,12 +1403,12 @@ We might want to change back to decay later, as that would be more compatible wi
 					<from>effect_of_surface_temperature_anomaly_on_traditional_per_person_use_of_electricity</from>
 					<to>Traditional_per_person_use_of_electricity</to>
 				</connector>
-				<aux x="1365.3" y="460.833" name="Energy Balance"/>
-				<connector uid="267" angle="45.1126">
+				<aux x="1335.48" y="460.833" name="Energy Balance"/>
+				<connector uid="267" angle="48.2387">
 					<from>demand_for_energy</from>
 					<to>Energy_Balance</to>
 				</connector>
-				<connector uid="268" angle="142.715">
+				<connector uid="268" angle="130.936">
 					<from>Total_Energy_Output</from>
 					<to>Energy_Balance</to>
 				</connector>
@@ -1387,13 +1420,9 @@ We might want to change back to decay later, as that would be more compatible wi
 				<text_box uid="271" x="1345.79" y="1243.32" width="260" height="32.49">Related to exploration and extraction of fossil fuels.
 The stock is the currently employed capital.</text_box>
 				<text_box uid="272" x="1505.08" y="985.923" width="260" height="58">Related to transformation of fossil fuels into usable energy (electricity, heat, movement,...)</text_box>
-				<aux background="aqua" x="817.667" y="1145.46" name="SO2 emissions from\nfossil fuels"/>
-				<aux background="#FFAAFF" x="832.487" y="1073.75" name="CO2 emissions\nfrom fossil fuels"/>
-				<connector uid="275" angle="142.143">
-					<from>Fossil_Energy_Extraction</from>
-					<to>CO2_emissions_from_fossil_fuels</to>
-				</connector>
-				<text_box uid="277" x="912.903" y="955.846" width="260" height="74.714">emissions connected to extraction comes from the assumption that everything extracted is burnt and ends up as emissions. Alternatively from a process persp. it should be linked to secondary fossil energy creation</text_box>
+				<aux background="#FFAAFF" x="817.667" y="1145.46" name="SO2 emissions from\nfossil fuels"/>
+				<aux background="#FFAAFF" x="891" y="1096.75" name="CO2 emissions\nfrom fossil fuels"/>
+				<text_box uid="277" x="926.653" y="890.797" width="260" height="74.714">emissions connected to extraction comes from the assumption that everything extracted is burnt and ends up as emissions. Alternatively from a process persp. it should be linked to secondary fossil energy creation</text_box>
 				<text_box border_color="aqua" border_width="thick" border_style="solid" uid="278" x="1679.54" y="9.333" width="260" height="20.7778">Entries in cyan require more data</text_box>
 				<aux background="#FFAAFF" x="1653.75" y="588.625" name="Investments in Fossil\nFuel Extraction Capital"/>
 				<connector uid="284" angle="240.654">
@@ -1453,8 +1482,8 @@ Nuclear and bio are omitted as of now</text_box>
 				</flow>
 				<aux x="2438.14" y="954.154" name="Hydropower Energy Calib Parm 2"/>
 				<aux x="2352.5" y="953.321" name="Hydropower Energy Calib Parm 1"/>
-				<aux x="2299.58" y="581.542" name="Investments in Hydropower\nEnergy Capcity"/>
-				<connector uid="304" angle="303.996">
+				<aux background="#55FFFF" x="2299.58" y="579.875" name="Investments in Hydropower\nEnergy Capcity"/>
+				<connector uid="304" angle="303.918">
 					<from>Investments_in_Hydropower_Energy_Capcity</from>
 					<to>Installation_of_Hydropower_Capacity</to>
 				</connector>
@@ -1505,10 +1534,6 @@ Nuclear and bio are omitted as of now</text_box>
 				<aux x="2667.5" y="1027.5" name="Hydropower Installation Costs"/>
 				<connector uid="315" angle="307.569">
 					<from>Hydropower_Installation_Costs</from>
-					<to>Installation_of_Hydropower_Capacity</to>
-				</connector>
-				<connector uid="316" angle="1.06034">
-					<from>kW_to_GW</from>
 					<to>Installation_of_Hydropower_Capacity</to>
 				</connector>
 				<aux x="1432.91" y="265.708" name="k$ to $"/>
@@ -1732,7 +1757,7 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name='"Installation_Cost_of_S&amp;W_capacity"'/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name='"Installation_Cost_of_S&amp;W_capacity"'/>
@@ -1743,7 +1768,7 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Wind_and_Solar_Energy_Capacity"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="Wind_and_Solar_Energy_Capacity"/>
@@ -1754,7 +1779,7 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Investments_in_Solar_and_Wind_Energy_Capacity"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="Investments_in_Solar_and_Wind_Energy_Capacity"/>
@@ -1770,7 +1795,7 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="share_of_GDP_invested_in_fuel_extraction"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="share_of_GDP_invested_in_fuel_extraction"/>
@@ -1781,7 +1806,7 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="share_of_GDP_invested_in_Energy_Production"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="share_of_GDP_invested_in_Energy_Production"/>
@@ -1792,7 +1817,7 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Investments_in_Fossil_Fuel_Extraction_Capital"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="Investments_in_Fossil_Fuel_Extraction_Capital"/>
@@ -1803,7 +1828,7 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Investments_in_Fossil_Energy_Capital"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="Investments_in_Fossil_Energy_Capital"/>
@@ -1814,7 +1839,7 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Investments_in_Renewables"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="Investments_in_Renewables"/>
@@ -1825,7 +1850,7 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Total_Energy_Output"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="Total_Energy_Output"/>
@@ -1836,7 +1861,7 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Secondary_Fossil_Energy_Output"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="Secondary_Fossil_Energy_Output"/>
@@ -1847,7 +1872,7 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Renewable_Energy_Output"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="Renewable_Energy_Output"/>
@@ -1858,7 +1883,7 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Hydropower_Energy_Output"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="Hydropower_Energy_Output"/>
@@ -1869,7 +1894,7 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Hydropower_Energy_Capacity"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="Hydropower_Energy_Capacity"/>
@@ -1880,7 +1905,7 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Wind_and_Solar_Energy_Output"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="Wind_and_Solar_Energy_Output"/>
@@ -1891,18 +1916,18 @@ Nuclear and bio are omitted as of now</text_box>
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Total_Renewable_Energy_Capacity"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="Total_Renewable_Energy_Capacity"/>
 						</plot>
 					</graph>
 				</stacked_container>
-				<stacked_container uid="398" x="3900" y="1467.74">
+				<stacked_container uid="398" x="4260.83" y="1608.99">
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name='"Primary_Fossil_Energy_(FUEL)"'/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name='"Primary_Fossil_Energy_(FUEL)"'/>
@@ -1911,50 +1936,123 @@ Nuclear and bio are omitted as of now</text_box>
 				</stacked_container>
 				<text_box border_color="#FFAAFF" border_width="thick" border_style="solid" uid="399" x="1678.39" y="42.8882" width="260" height="23.5556">Pink nodes have data provided</text_box>
 				<text_box uid="400" x="4342.5" y="370" width="260" height="58">difference here most likely an accounting issue, that the data counts more types of investments in energy production than we have included in the model . e.g. grids</text_box>
-				<stacked_container uid="401" x="3487.5" y="1299.82">
+				<stacked_container uid="401" x="3892.5" y="1524.82">
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="CO2_emissions_from_fossil_fuels"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="CO2_emissions_from_fossil_fuels"/>
 						</plot>
 					</graph>
 				</stacked_container>
-				<stacked_container uid="402" x="3487.5" y="1567.5">
+				<stacked_container uid="402" x="3521.25" y="1393.75">
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="SO2_emissions_from_fossil_fuels"/>
-							<isee:data name="realWorldCalibrationData-scaled"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name="SO2_emissions_from_fossil_fuels"/>
 						</plot>
 					</graph>
 				</stacked_container>
-				<connector uid="403" angle="163.126">
-					<from>Fossil_Energy_Extraction</from>
-					<to>SO2_emissions_from_fossil_fuels</to>
-				</connector>
-				<aux x="716" y="1107" name="Initial Fossil Energy Sulfur Intensity"/>
-				<connector uid="404" angle="343.61">
+				<aux x="564" y="1210.89" name="Initial Fossil Energy Sulfur Intensity"/>
+				<text_box uid="405" x="1042.81" y="1269.45" width="260" height="41.125">Fossil Fuel Extraction Productivity is the inverse of the price of fossil fuel extraction</text_box>
+				<aux background="#FFAAFF" x="745.167" y="969" name="CH4 emissions from fossil fuels"/>
+				<aux background="#FFAAFF" x="736.083" y="1060.75" name="N20 emissions from fossil fuels"/>
+				<aux x="582" y="1280.45" name="desulphurisation rate of energy related emissions"/>
+				<aux x="695.75" y="1198.46" name="coupling factor of CO2\nand SO2 emissions"/>
+				<connector uid="409" angle="5.38964">
 					<from>Initial_Fossil_Energy_Sulfur_Intensity</from>
+					<to>coupling_factor_of_CO2_and_SO2_emissions</to>
+				</connector>
+				<connector uid="410" angle="35.7837">
+					<from>desulphurisation_rate_of_energy_related_emissions</from>
+					<to>coupling_factor_of_CO2_and_SO2_emissions</to>
+				</connector>
+				<connector uid="411" angle="34.176">
+					<from>coupling_factor_of_CO2_and_SO2_emissions</from>
 					<to>SO2_emissions_from_fossil_fuels</to>
 				</connector>
-				<text_box uid="405" x="874.99" y="1283.86" width="260" height="41.125">Fossil Fuel Extraction Productivity is the inverse of the price of fossil fuel extraction</text_box>
-				<aux x="713.75" y="1163.46" name="Fossil Energy Sulfur Intensity Trend"/>
-				<connector uid="406" angle="13.045">
-					<from>Fossil_Energy_Sulfur_Intensity_Trend</from>
+				<connector uid="412" angle="213.593">
+					<from>CO2_emissions_from_fossil_fuels</from>
 					<to>SO2_emissions_from_fossil_fuels</to>
 				</connector>
-				<aux x="734" y="1210.83" name="Minimum Sulfur Intensity"/>
-				<connector uid="407" angle="40.7261">
-					<from>Minimum_Sulfur_Intensity</from>
-					<to>SO2_emissions_from_fossil_fuels</to>
+				<connector uid="413" angle="153.958">
+					<from>CO2_emissions_from_fossil_fuels</from>
+					<to>N20_emissions_from_fossil_fuels</to>
 				</connector>
-				<text_box uid="408" x="401.364" y="1096.46" width="260" height="58">The calibration data for sulfur currently contains interpolated values between 1990 and 2000
-</text_box>
+				<connector uid="414" angle="113.962">
+					<from>CO2_emissions_from_fossil_fuels</from>
+					<to>CH4_emissions_from_fossil_fuels</to>
+				</connector>
+				<aux x="463" y="1089.89" name="Initial Fossil Energy\nN2O Intensity"/>
+				<aux x="481" y="1159.45" name="rate of\nchange in energy\nrelated N2O emissions"/>
+				<aux x="594.75" y="1077.46" name="coupling factor of CO2\nand N2O emissions 1"/>
+				<connector uid="415" angle="5.38964">
+					<from>Initial_Fossil_Energy_N2O_Intensity</from>
+					<to>coupling_factor_of_CO2_and_N2O_emissions_1</to>
+				</connector>
+				<connector uid="416" angle="35.7837">
+					<from>rate_of_change_in_energy_related_N2O_emissions</from>
+					<to>coupling_factor_of_CO2_and_N2O_emissions_1</to>
+				</connector>
+				<aux x="491" y="955.89" name="Initial Fossil Energy\nCH4 Intensity"/>
+				<aux x="509" y="1025.45" name="rate of\nchange in energy\nrelated CH4 emissions"/>
+				<aux x="622.75" y="943.46" name="coupling factor of CO2\nand CH4 emissions"/>
+				<connector uid="417" angle="5.38964">
+					<from>Initial_Fossil_Energy_CH4_Intensity</from>
+					<to>coupling_factor_of_CO2_and_CH4_emissions</to>
+				</connector>
+				<connector uid="418" angle="35.7837">
+					<from>rate_of_change_in_energy_related_CH4_emissions</from>
+					<to>coupling_factor_of_CO2_and_CH4_emissions</to>
+				</connector>
+				<connector uid="419" angle="6.74286">
+					<from>coupling_factor_of_CO2_and_N2O_emissions_1</from>
+					<to>N20_emissions_from_fossil_fuels</to>
+				</connector>
+				<connector uid="420" angle="2.67491">
+					<from>coupling_factor_of_CO2_and_CH4_emissions</from>
+					<to>CH4_emissions_from_fossil_fuels</to>
+				</connector>
+				<aux x="976.236" y="1078.75" name="GtC to GtCO2"/>
+				<connector uid="421" angle="174.802">
+					<from>GtC_to_GtCO2</from>
+					<to>CO2_emissions_from_fossil_fuels</to>
+				</connector>
+				<stacked_container uid="422" x="3521.25" y="1654.5">
+					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="N20_emissions_from_fossil_fuels"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
+						</plot>
+						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="N20_emissions_from_fossil_fuels"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<stacked_container uid="423" x="3521.25" y="1921.25">
+					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="CH4_emissions_from_fossil_fuels"/>
+							<isee:data name="realWorldCalibrationData-scaled 1"/>
+						</plot>
+						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="CH4_emissions_from_fossil_fuels"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<connector uid="316" angle="1.06042">
+					<from>kW_to_GW</from>
+					<to>Installation_of_Hydropower_Capacity</to>
+				</connector>
+				<connector uid="275" angle="142.143">
+					<from>Fossil_Energy_Extraction</from>
+					<to>CO2_emissions_from_fossil_fuels</to>
+				</connector>
 			</view>
 		</views>
 	</model>
