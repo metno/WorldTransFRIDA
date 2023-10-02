@@ -5,9 +5,9 @@
 		<name>Economy</name>
 		<uuid>9782d9d4-131c-4831-8400-0e1417fc3a21</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.4" isee:build_number="3012" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.4.1" isee:build_number="3048" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
-	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
+	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
 		<stop>2100</stop>
 		<dt reciprocal="true">8</dt>
@@ -34,9 +34,6 @@
 		<unit name="GtCH4">
 			<eqn>Giga*tCH4</eqn>
 		</unit>
-		<unit name="GtCO2">
-			<eqn>Giga*tCO2</eqn>
-		</unit>
 		<unit name="GtCO2e">
 			<eqn>Giga*tCO2e</eqn>
 		</unit>
@@ -48,9 +45,6 @@
 		</unit>
 		<unit name="kh">
 			<eqn>kilo*h</eqn>
-		</unit>
-		<unit name="M">
-			<eqn>Million</eqn>
 		</unit>
 		<unit name="M$">
 			<eqn>Million*$</eqn>
@@ -129,10 +123,6 @@
 			<eqn/>
 			<alias>Hours</alias>
 		</unit>
-		<unit name="K">
-			<eqn/>
-			<alias>C</alias>
-		</unit>
 		<unit name="Month">
 			<eqn/>
 			<alias>Months</alias>
@@ -150,10 +140,23 @@
 			<eqn/>
 			<alias>Weeks</alias>
 		</unit>
-		<unit name="Year">
+		<unit name="GtCO2">
+			<eqn>Giga*tCO2</eqn>
+		</unit>
+		<unit name="Kelvin">
 			<eqn/>
-			<alias>yr</alias>
-			<alias>years</alias>
+			<alias>K</alias>
+		</unit>
+		<unit name="Dimensionless">
+			<eqn>1</eqn>
+			<alias>dmnl</alias>
+			<alias>unitless</alias>
+		</unit>
+		<unit name="MtSO2">
+			<eqn>Million*tSO2</eqn>
+		</unit>
+		<unit name="M">
+			<eqn>Million</eqn>
 		</unit>
 	</model_units>
 	<model name="Economy">
@@ -165,20 +168,24 @@
 				<connect2 to='Supply."Labour_use_in_1980_Gph/y"' from="Labor.labor_use_1980"/>
 				<connect to='Demand."Worker_share_of_output_(1)"' from="Labor.Workers_Share_of_Output"/>
 				<connect2 to='Demand."Worker_share_of_output_(1)"' from="Labor.Workers_Share_of_Output"/>
-				<connect to='Labor."Aged_20-pension_age_Mp"' from="Population.working_age_population"/>
-				<connect2 to='Labor."Aged_20-pension_age_Mp"' from="Population.working_age_population"/>
 				<connect to="Labor.GDP_per_person_in_1980" from="Population.GDP_per_person_in_1980"/>
 				<connect2 to="Labor.GDP_per_person_in_1980" from="Population.GDP_per_person_in_1980"/>
 				<connect to='Labor."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
 				<connect2 to='Labor."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
+				<connect to="Labor.working_age_population_2" from="Population.working_age_population"/>
+				<connect2 to="Labor.working_age_population_2" from="Population.working_age_population"/>
 			</module>
 			<module name="Supply" isee:label="">
+				<connect to="Temperature.CH4_emissions_3" from="Supply.CH4_emissions"/>
+				<connect2 to="Temperature.CH4_emissions_3" from="Supply.CH4_emissions"/>
+				<connect to="Temperature.CO2_emissions_1" from="Supply.CO2_emissions"/>
+				<connect2 to="Temperature.CO2_emissions_1" from="Supply.CO2_emissions"/>
 				<connect to="Demand.GDP" from="Supply.GDP"/>
 				<connect2 to="Demand.GDP" from="Supply.GDP"/>
 				<connect to="Population.GDP" from="Supply.GDP"/>
 				<connect2 to="Population.GDP" from="Supply.GDP"/>
-				<connect to="Energy.Observed_warming_in_1980" from="Supply.Observed_warming_in_1980"/>
-				<connect2 to="Energy.Observed_warming_in_1980" from="Supply.Observed_warming_in_1980"/>
+				<connect to="Temperature.N2O_emissions_2" from="Supply.N2O_emissions"/>
+				<connect2 to="Temperature.N2O_emissions_2" from="Supply.N2O_emissions"/>
 				<connect to='Supply."Cost_of_energy_G$/y_1"' from="Energy.cost_of_energy"/>
 				<connect2 to='Supply."Cost_of_energy_G$/y_1"' from="Energy.cost_of_energy"/>
 				<connect to="Supply.GDP_per_person_in_1980" from="Population.GDP_per_person_in_1980"/>
@@ -193,10 +200,10 @@
 				<connect2 to='Supply."Labour_use_Gph/y"' from="Labor.labor_use"/>
 				<connect to='Supply."Labour_use_in_1980_Gph/y"' from="Labor.labor_use_1980"/>
 				<connect2 to='Supply."Labour_use_in_1980_Gph/y"' from="Labor.labor_use_1980"/>
-				<connect to="Supply.Observed_warming_deg_C" from="Climate.Surface_Temperature_Anomaly"/>
-				<connect2 to="Supply.Observed_warming_deg_C" from="Climate.Surface_Temperature_Anomaly"/>
-				<connect to="Supply.Observed_warming_in_1980" from="Climate.Surface_Temperature_Anomaly_1980"/>
-				<connect2 to="Supply.Observed_warming_in_1980" from="Climate.Surface_Temperature_Anomaly_1980"/>
+				<connect to="Supply.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect2 to="Supply.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect to="Supply.Population_Mp" from="Population.Population"/>
+				<connect2 to="Supply.Population_Mp" from="Population.Population"/>
 				<connect to='Supply."Total_savings_G$/y"' from="Demand.total_savings"/>
 				<connect2 to='Supply."Total_savings_G$/y"' from="Demand.total_savings"/>
 			</module>
@@ -267,7 +274,7 @@
 				<isee:iframe color="black" border_style="solid" text_align="left" border_width="thin" background="white" vertical_text_align="top" font_size="12pt"/>
 				<isee:financial_table color="black" header_text_decoration="none" header_font_weight="bold" hide_border="false" font_size="12pt" first_column_width="250" background="#E0E0E0" text_align="right" header_text_border_style="none" auto_fit="true" header_text_border_color="black" other_column_width="100" header_font_size="14pt" header_text_border_width="thin" header_font_style="normal" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_text_padding="2"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -734,6 +741,7 @@ Hsiang S, Sekar N. 2016. Does legalization reduce black market activity? Evidenc
 				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
 				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
 				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
 				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
 				<isee:sim_speed_slider color="black" background="white"/>
 				<isee:time_slider color="#E95F74" background="silver"/>
@@ -1461,7 +1469,7 @@ Hsiang S, Sekar N. 2016. Does legalization reduce black market activity? Evidenc
 			</aux>
 			<aux name="labor participation\nrate 1980">
 				<doc>Calibration Parameter: Workers Share of Output, Unemployment Rate, Workforce</doc>
-				<eqn>0.864808</eqn>
+				<eqn>0.812435685180353</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="sensitivity of labor participation\nrate to workers share of output">
@@ -1583,7 +1591,7 @@ Feenstra RC, Inklaar R, Timmer MP. 2015. The Next Generation of the Penn World T
 				<units>1/year</units>
 			</aux>
 			<aux name="available workforce">
-				<eqn>&quot;Aged_20-pension_age_Mp&quot;*labor_participation_rate</eqn>
+				<eqn>working_age_population_2*labor_participation_rate</eqn>
 				<units>Mp</units>
 			</aux>
 			<flow name="long term erosion\nof workers share of output">
@@ -1596,9 +1604,6 @@ Feenstra RC, Inklaar R, Timmer MP. 2015. The Next Generation of the Penn World T
 			</flow>
 			<aux name="GDP per person k$/p/y" access="input">
 				<units>k$/p/year</units>
-			</aux>
-			<aux name="Aged 20-pension age Mp" access="input">
-				<units>Mp</units>
 			</aux>
 			<aux name="UNIT Gh/Mkh">
 				<eqn>1</eqn>
@@ -1654,6 +1659,10 @@ The World Bank (2022)</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>k$/p/year</units>
 			</aux>
+			<aux name="working age population 2" access="input">
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mp</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -1681,6 +1690,7 @@ The World Bank (2022)</doc>
 				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
 				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
 				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
 				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
 				<isee:sim_speed_slider color="black" background="white"/>
 				<isee:time_slider color="#E95F74" background="silver"/>
@@ -1701,7 +1711,7 @@ The World Bank (2022)</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="506" isee:scroll_y="847" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="815" isee:scroll_y="487" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1792,7 +1802,6 @@ The World Bank (2022)</doc>
 					<from>Workers_Share_of_Output_1980</from>
 					<to>indicated_labor_participation_rate</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="right" x="1576" y="671" name="Aged 20-pension age Mp"/>
 				<connector uid="15" angle="275.983">
 					<from>labor_participation_rate</from>
 					<to>available_workforce</to>
@@ -1956,10 +1965,6 @@ The World Bank (2022)</doc>
 					<from>labor_use</from>
 					<to>labor_use_1980</to>
 				</connector>
-				<connector uid="123" angle="233.94">
-					<from>&quot;Aged_20-pension_age_Mp&quot;</from>
-					<to>available_workforce</to>
-				</connector>
 				<connector uid="129" angle="181.79">
 					<from>workforce</from>
 					<to>desired_workforce</to>
@@ -1977,6 +1982,11 @@ The World Bank (2022)</doc>
 						<alias uid="131"/>
 					</from>
 					<to>indicated_unemployment_rate</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1730" y="755" name="working age population 2"/>
+				<connector uid="132" angle="165.466">
+					<from>working_age_population_2</from>
+					<to>available_workforce</to>
 				</connector>
 				<alias font_style="italic" label_side="right" label_angle="45" uid="131" x="1287" y="942" width="18" height="18">
 					<of>available_workforce</of>
@@ -2050,7 +2060,7 @@ Wild M, Folini D, Henschel F, Fischer N, Müller B. 2015: Projections of long-te
 			</aux>
 			<flow name="change in total factor\nproductivity">
 				<eqn>(Indicated_Total_Factor_Productivity-Total_Factor_Productivity)*capital_replacement_renewal_rate</eqn>
-				<units>Per Year</units>
+				<units>1/year</units>
 			</flow>
 			<aux name="capital replacement\nrenewal rate">
 				<eqn>private_capital_finishing_construction/Private_Capital</eqn>
@@ -2235,7 +2245,7 @@ Wild M, Folini D, Henschel F, Fischer N, Müller B. 2015: Projections of long-te
 				<units>G$/year</units>
 			</aux>
 			<aux name="effect of\nsurface temperature\nanomaly on life of\ncapacity">
-				<eqn> 1+sensitivity_of_life_of_capital_to_surface_temperature_anomaly*(Observed_warming_deg_C/Observed_warming_in_1980-1)</eqn>
+				<eqn> 1+sensitivity_of_life_of_capital_to_surface_temperature_anomaly*(Observed_warming_deg_C/INIT(Observed_warming_deg_C)-1)</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="sensitivity of life of capital\nto surface temperature anomaly">
@@ -2265,7 +2275,7 @@ Sohag K, Chukavina K, Samargandi N. 2021. Renewable energy and total factor prod
 				<units>1</units>
 			</aux>
 			<aux name="effect of surface\ntemperature anomaly\non cost per unit of capital">
-				<eqn> 1+sensitivity_of_cost_per_unit_of_capital_to_surface_temperature_anomaly*(Observed_warming_deg_C/Observed_warming_in_1980-1)</eqn>
+				<eqn> 1+sensitivity_of_cost_per_unit_of_capital_to_surface_temperature_anomaly*(Observed_warming_deg_C/INIT(Observed_warming_deg_C)-1)</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="Private Capital\nUnder Construction\n1980">
@@ -2306,7 +2316,7 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 
 
 </doc>
-				<eqn>1+sensitivity_of_effect_of_observed_warming_on_indicated_total_factor_productivity*(Observed_warming_deg_C/Observed_warming_in_1980-1)</eqn>
+				<eqn>1+sensitivity_of_effect_of_observed_warming_on_indicated_total_factor_productivity*(Observed_warming_deg_C/INIT(Observed_warming_deg_C)-1)</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="sensitivity of\neffect of observed warming\non indicated\ntotal factor productivity">
@@ -2316,7 +2326,7 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 			</aux>
 			<flow name="change in\nindicated\ntotal factor\nproductivity">
 				<eqn>rate_of_change_in_indicated_total_factor_productivity*Indicated_Total_Factor_Productivity</eqn>
-				<units>Per Year</units>
+				<units>1/year</units>
 			</flow>
 			<aux name="Indicated\nTotal Factor\nProductivity 1980">
 				<eqn>1</eqn>
@@ -2330,13 +2340,59 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 			<aux name="INEQUALITY INDEX (1980=1)" access="input">
 				<units>1</units>
 			</aux>
-			<aux name="Observed warming in 1980" access="output" throughput="true" isee:autocreated="true">
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>deg C</units>
-			</aux>
 			<aux name="GDP per person in 1980" access="input">
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>k$/p/year</units>
+			</aux>
+			<aux name="max non fossil CO2\nper person">
+				<doc>Calibration Parameter: CO2 from energy and industry</doc>
+				<eqn>1.54679176045275</eqn>
+				<units>tCO2/(p*year)</units>
+			</aux>
+			<aux name="CO2 emissions" access="output" isee:autocreated="true">
+				<eqn>Non_fossil_CO2_per_person*Population_Mp</eqn>
+				<units>MtCO2/year</units>
+			</aux>
+			<aux name="Non fossil CO2 per\nperson">
+				<eqn>max_non_fossil_CO2_per_person*(1-EXP(-(&quot;GDP_per_person_k$/p/y&quot;/baseline_GDP_per_person)))</eqn>
+				<units>tCO2/(p*year)</units>
+			</aux>
+			<aux name="Population Mp" access="input">
+				<units>Mp</units>
+			</aux>
+			<aux name="baseline GDP per person">
+				<eqn>10</eqn>
+				<units>k$/p/year</units>
+			</aux>
+			<aux name="CH4 emissions" access="output" isee:autocreated="true">
+				<eqn>Non_fossil_CH4_per_person*Population_Mp</eqn>
+				<units>MtCH4/Year</units>
+			</aux>
+			<aux name="Non fossil CH4 per\nperson">
+				<eqn>max_non_fossil_CH4_per_person*(1-EXP(-(&quot;GDP_per_person_k$/p/y&quot;/baseline_GDP_per_person)))</eqn>
+				<units>tCH4/(p*year)</units>
+			</aux>
+			<aux name="max non fossil CH4\nper person">
+				<doc>Calibration Parameter: CO2 from energy and industry</doc>
+				<eqn>0.0122723714861596</eqn>
+				<units>tCH4/(p*year)</units>
+			</aux>
+			<aux name="N2O emissions" access="output" isee:autocreated="true">
+				<eqn>(Non_fossil_N2O_per_person*&quot;Unit_ktN2O/MtN2O&quot;)*Population_Mp</eqn>
+				<units>ktN2O/Year</units>
+			</aux>
+			<aux name="Non fossil N2O per\nperson">
+				<eqn>max_non_fossil_N2O_per_person*(1-EXP(-(&quot;GDP_per_person_k$/p/y&quot;/baseline_GDP_per_person)))</eqn>
+				<units>tN2O/(p*year)</units>
+			</aux>
+			<aux name="max non fossil N2O\nper person" access="output" isee:autocreated="true">
+				<doc>Calibration Parameter: CO2 from energy and industry</doc>
+				<eqn>0.000451993717909854</eqn>
+				<units>tN2O/(p*year)</units>
+			</aux>
+			<aux name="Unit ktN2O/MtN2O">
+				<eqn>1000</eqn>
+				<units>ktN2O/MtN2O</units>
 			</aux>
 		</variables>
 		<views>
@@ -2365,6 +2421,7 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
 				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
 				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
 				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
 				<isee:sim_speed_slider color="black" background="white"/>
 				<isee:time_slider color="#E95F74" background="silver"/>
@@ -2385,7 +2442,7 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="325" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="310" isee:scroll_y="1684" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2808,23 +2865,6 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 					</from>
 					<to>effect_of_observed_warming_on_indicated_total_factor_productivity</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1194" y="1193" name="Observed warming in 1980"/>
-				<connector uid="133" angle="145.774">
-					<from>Observed_warming_in_1980</from>
-					<to>effect_of_surface_temperature_anomaly_on_cost_per_unit_of_capital</to>
-				</connector>
-				<connector uid="134" angle="181.535">
-					<from>
-						<alias uid="135"/>
-					</from>
-					<to>effect_of_observed_warming_on_indicated_total_factor_productivity</to>
-				</connector>
-				<connector uid="136" angle="39.4911">
-					<from>
-						<alias uid="137"/>
-					</from>
-					<to>effect_of_surface_temperature_anomaly_on_life_of_capacity</to>
-				</connector>
 				<aux font_style="italic" font_weight="bold" x="407" y="1434" name="GDP per person in 1980"/>
 				<connector uid="142" angle="67.751">
 					<from>GDP_per_person_in_1980</from>
@@ -2858,6 +2898,88 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 					</from>
 					<to>investment_share_of_GDP</to>
 				</connector>
+				<aux background="white" label_side="bottom" x="861.286" y="1756.6" name="CO2 emissions"/>
+				<aux background="white" label_side="right" x="773.953" y="1714.85" name="Non fossil CO2 per\nperson"/>
+				<connector uid="151" angle="147.895">
+					<from>Population_Mp</from>
+					<to>CO2_emissions</to>
+				</connector>
+				<connector uid="152" angle="334.45">
+					<from>Non_fossil_CO2_per_person</from>
+					<to>CO2_emissions</to>
+				</connector>
+				<connector uid="153" angle="1.00157">
+					<from>
+						<alias uid="154"/>
+					</from>
+					<to>Non_fossil_CO2_per_person</to>
+				</connector>
+				<aux background="white" label_side="left" label_angle="135" x="751.286" y="1612.01" name="max non fossil CO2\nper person"/>
+				<connector uid="155" angle="282.43">
+					<from>max_non_fossil_CO2_per_person</from>
+					<to>Non_fossil_CO2_per_person</to>
+				</connector>
+				<aux label_side="left" x="547" y="1890.01" name="baseline GDP per person"/>
+				<connector uid="157" angle="37.6606">
+					<from>baseline_GDP_per_person</from>
+					<to>Non_fossil_CO2_per_person</to>
+				</connector>
+				<aux background="white" font_style="italic" font_weight="bold" label_side="bottom" x="1084.95" y="1896.93" name="Population Mp"/>
+				<aux x="858" y="1984" name="CH4 emissions"/>
+				<aux background="white" label_side="left" label_angle="225" x="745.953" y="1984" name="Non fossil CH4 per\nperson"/>
+				<aux background="white" label_side="left" label_angle="135" x="646.286" y="2117.01" name="max non fossil CH4\nper person"/>
+				<connector uid="164" angle="53.1551">
+					<from>max_non_fossil_CH4_per_person</from>
+					<to>Non_fossil_CH4_per_person</to>
+				</connector>
+				<connector uid="165" angle="308.39">
+					<from>
+						<alias uid="154"/>
+					</from>
+					<to>Non_fossil_CH4_per_person</to>
+				</connector>
+				<connector uid="166" angle="334.713">
+					<from>baseline_GDP_per_person</from>
+					<to>Non_fossil_CH4_per_person</to>
+				</connector>
+				<connector uid="167" angle="0">
+					<from>Non_fossil_CH4_per_person</from>
+					<to>CH4_emissions</to>
+				</connector>
+				<connector uid="169" angle="200.989">
+					<from>Population_Mp</from>
+					<to>CH4_emissions</to>
+				</connector>
+				<aux x="972" y="2107" name="N2O emissions"/>
+				<aux background="white" label_side="left" label_angle="225" x="754.953" y="2177" name="Non fossil N2O per\nperson"/>
+				<aux background="white" label_side="left" label_angle="135" x="655.286" y="2310.01" name="max non fossil N2O\nper person"/>
+				<connector uid="170" angle="53.1551">
+					<from>max_non_fossil_N2O_per_person</from>
+					<to>Non_fossil_N2O_per_person</to>
+				</connector>
+				<connector uid="171" angle="295.551">
+					<from>
+						<alias uid="154"/>
+					</from>
+					<to>Non_fossil_N2O_per_person</to>
+				</connector>
+				<connector uid="172" angle="296.588">
+					<from>baseline_GDP_per_person</from>
+					<to>Non_fossil_N2O_per_person</to>
+				</connector>
+				<connector uid="174" angle="241.734">
+					<from>Population_Mp</from>
+					<to>N2O_emissions</to>
+				</connector>
+				<connector uid="175" angle="17.8751">
+					<from>Non_fossil_N2O_per_person</from>
+					<to>N2O_emissions</to>
+				</connector>
+				<aux x="1072" y="2092" name="Unit ktN2O/MtN2O"/>
+				<connector uid="176" angle="183.18">
+					<from>&quot;Unit_ktN2O/MtN2O&quot;</from>
+					<to>N2O_emissions</to>
+				</connector>
 				<alias label_side="left" uid="86" x="437" y="753.5" width="18" height="18">
 					<of>Observed_warming_deg_C</of>
 				</alias>
@@ -2870,12 +2992,6 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 				<alias font_style="italic" font_weight="bold" uid="131" x="2027" y="1069.75" width="18" height="18">
 					<of>Observed_warming_deg_C</of>
 				</alias>
-				<alias font_style="italic" font_weight="bold" uid="135" x="2183" y="968" width="18" height="18">
-					<of>Observed_warming_in_1980</of>
-				</alias>
-				<alias font_style="italic" font_weight="bold" uid="137" x="492" y="767" width="18" height="18">
-					<of>Observed_warming_in_1980</of>
-				</alias>
 				<alias font_style="italic" uid="145" x="613" y="246" width="18" height="18">
 					<of>Public_Capital_1980</of>
 				</alias>
@@ -2884,6 +3000,9 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 				</alias>
 				<alias font_style="italic" label_side="left" uid="150" x="1665.94" y="669" width="18" height="18">
 					<of>investment_in_private_capital</of>
+				</alias>
+				<alias background="white" label_side="top" uid="154" x="527" y="1710.01" width="18" height="18">
+					<of>&quot;GDP_per_person_k$/p/y&quot;</of>
 				</alias>
 			</view>
 		</views>
