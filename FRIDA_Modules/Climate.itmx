@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE">
 	<header>
-		<smile version="1.0" namespace="std, isee"/>
+		<smile version="1.0" namespace="std, isee" uses_submodels=""/>
 		<name>Climate</name>
-		<uuid>1ab1509e-8691-4e46-98f7-94a08176fc6a</uuid>
+		<uuid>0af75029-e1b7-4e26-a497-6b303ac46a78</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.4" isee:build_number="3020" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.5" isee:build_number="3121" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
-	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
+	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
 		<stop>2100</stop>
 		<dt reciprocal="true">8</dt>
@@ -17,13 +17,9 @@
 	<isee:time_formats default_format="Builtin">
 		<isee:time_format name="Builtin" type="adaptive"/>
 	</isee:time_formats>
+	<isee:number_format_extenders/>
 	<default_format/>
 	<model_units>
-		<unit name="Watts">
-			<eqn/>
-			<alias>w</alias>
-			<alias>watt</alias>
-		</unit>
 		<unit name="G">
 			<eqn>Giga</eqn>
 		</unit>
@@ -148,581 +144,91 @@
 		<unit name="GtCO2">
 			<eqn>Giga*tCO2</eqn>
 		</unit>
-		<unit name="GtSO2">
-			<eqn>Giga*tSO2</eqn>
-		</unit>
-		<unit name="Meters">
-			<eqn/>
-			<alias>m</alias>
-			<alias>meter</alias>
-		</unit>
-		<unit name="Years">
-			<eqn/>
-			<alias>yr</alias>
-			<alias>year</alias>
-		</unit>
-		<unit name="Kelvin">
-			<eqn/>
-			<alias>K</alias>
-		</unit>
 		<unit name="Dimensionless">
 			<eqn>1</eqn>
 			<alias>dmnl</alias>
 			<alias>unitless</alias>
 		</unit>
+		<unit name="MtSO2">
+			<eqn>Million*tSO2</eqn>
+		</unit>
+		<unit name="M">
+			<eqn>Million</eqn>
+		</unit>
+		<unit name="Kelvin">
+			<eqn/>
+			<alias>K</alias>
+		</unit>
+		<unit name="KtN2O">
+			<eqn>kilo*tN2O</eqn>
+		</unit>
 	</model_units>
 	<model name="Climate">
 		<variables>
-			<flow name="melting ice and\nshow">
-				<eqn>Amount_of_Ice_and_Snow*melting_rate</eqn>
-				<units>km3/Year</units>
-			</flow>
-			<stock name="Amount of Ice\nand Snow">
-				<eqn>Amount_of_Ice_and_Snow_1980</eqn>
-				<outflow>melting_ice_and_show</outflow>
-				<units>km3</units>
-			</stock>
-			<aux name="melting rate">
-				<eqn>melting_rate_surface_in_1980*(Surface_Temperature_Anomaly/Surface_Temperature_Anomaly_1980)</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="albedo">
-				<eqn>albedo_1980*effect_of_ice_on_albedo</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="N2O concentration in atm PPM">
-				<doc>Calibration data from:
-Smith CJ, Forster PM, Berger S, Collins W, Hall B, Lunt D, Palmer MD, Watanabe M, Cain M, Harris G, Leach NJ, Ringer M, Zelinka M. 2021. Figure and data generation for Chapter 7 of the IPCC&apos;s Sixth Assessment Report, Working Group 1 (plus assorted other contributions). Version 1.0. https://doi.org/10.5281/zenodo.5211357</doc>
-				<eqn>N2O_in_atmosphere/GtN2O_per_PPM</eqn>
-				<units>ppm</units>
-			</aux>
-			<stock name="N2O in atmosphere">
-				<eqn>N2O_in_atmosphere_1980</eqn>
-				<inflow>N2O_emissions</inflow>
-				<outflow>N2O_breakdown</outflow>
-				<units>GtN2O</units>
-			</stock>
-			<aux name="GtN2O per PPM">
-				<doc>Calibration Parameter: N2O concentration in PPM</doc>
-				<eqn>2.91026088343104</eqn>
-				<units>GtN2O/ppm</units>
-			</aux>
-			<aux name="CO2 concentration in atm PPM" access="output">
-				<doc>Calibration data from:
-Smith CJ, Forster PM, Berger S, Collins W, Hall B, Lunt D, Palmer MD, Watanabe M, Cain M, Harris G, Leach NJ, Ringer M, Zelinka M. 2021. Figure and data generation for Chapter 7 of the IPCC&apos;s Sixth Assessment Report, Working Group 1 (plus assorted other contributions). Version 1.0. https://doi.org/10.5281/zenodo.5211357
-</doc>
-				<eqn>CO2_in_atmosphere/GtCO2_per_PPM</eqn>
-				<units>ppm</units>
-			</aux>
-			<aux name="warming per ZJ of extra heat">
-				<doc>Calibration Parameter: Surface Temperature Anomaly</doc>
-				<eqn>0.009651</eqn>
-				<units>deg C/ZJ</units>
-			</aux>
-			<stock name="Extra Heat in Surface">
-				<eqn>Extra_Heat_in_Surface_1980</eqn>
-				<inflow>extra_heat_from_forcing</inflow>
-				<outflow>extra_heat_to_deep_ocean</outflow>
-				<outflow>Extra_heat_to_space</outflow>
-				<outflow>extra_heat_used_to_melt_ice</outflow>
-				<units>ZJ</units>
-			</stock>
-			<aux name="Extra Heat in Surface 1980">
-				<doc>Definition-ally 0</doc>
-				<eqn>0</eqn>
-				<units>ZJ</units>
-			</aux>
-			<aux name="anthropogenic forcing">
-				<eqn>forcing_from_CO2+forcing_from_CH4+forcing_from_N2O+forcing_from_other_gases</eqn>
-				<units>W/m2</units>
-			</aux>
-			<aux name="forcing from other gases">
-				<doc>The residual anthropogenic forcing is taken from the IPCC’s best estimate time series for 1750-2014 (Smith et al. 2021) and for 2015-2100 is the median from 1202 IAM scenarios contributing results to the IPCC AR6 Scenario Database for Working Group III (Byers et al. 2022; Riahi et al. 2022) evaluated using v1.6.2 of the FaIR climate emulator (Smith et al. 2018), 
-
-Smith CJ, Forster PM, Berger S, Collins W, Hall B, Lunt D, Palmer MD, Watanabe M, Cain M, Harris G, Leach NJ, Ringer M, Zelinka M. 2021. Figure and data generation for Chapter 7 of the IPCC&apos;s Sixth Assessment Report, Working Group 1 (plus assorted other contributions). Version 1.0. https://doi.org/10.5281/zenodo.5211357
-
-Byers E, Krey V, Kriegler E, Riahi K, Schaeffer R, Kikstra J, Lamboll R, Nicholls Z, Sandstad M, Smith C, van der Wijst K., 2022. AR6 Scenarios Database hosted by IIASA International Institute for Applied Systems Analysis, 2022. doi: 10.5281/zenodo.5886911 
-
-Riahi K, Schaeffer R, Arango J, Calvin K, Guivarch C, Hasegawa T, Jiang K, Kriegler E, Matthews R, Peters GP, Rao A. 2022. Mitigation of Climate Change. Contribution of Working Group III to the Sixth Assessment Report of the Intergovernmental Panel on Climate Change. Cambridge University Press, Cambridge, UK and New York, NY, USA. doi: 10.1017/9781009157926.005
-
-Smith C J, Forster PM, Allen M, Leach N, Millar RJ, Passerello G A, Regayre LA. 2018. FAIR v1.3: a simple emissions-based impulse response and carbon cycle model. Geoscientific Model Development 11(6): 2273–2297. https://doi.org/10.5194/gmd-11-2273-2018, 
-
-
-
-
-
-
-
-</doc>
-				<eqn>TIME+1</eqn>
-				<gf>
-					<yscale min="-3" max="3"/>
-					<xpts>1979.5,1980.5,1981.5,1982.5,1983.5,1984.5,1985.5,1986.5,1987.5,1988.5,1989.5,1990.5,1991.5,1992.5,1993.5,1994.5,1995.5,1996.5,1997.5,1998.5,1999.5,2000.5,2001.5,2002.5,2003.5,2004.5,2005.5,2006.5,2007.5,2008.5,2009.5,2010.5,2011.5,2012.5,2013.5,2014.5,2015.5,2016.5,2017.5,2018.5,2019.5,2020.5,2021.5,2022.5,2023.5,2024.5,2025.5,2026.5,2027.5,2028.5,2029.5,2030.5,2031.5,2032.5,2033.5,2034.5,2035.5,2036.5,2037.5,2038.5,2039.5,2040.5,2041.5,2042.5,2043.5,2044.5,2045.5,2046.5,2047.5,2048.5,2049.5,2050.5,2051.5,2052.5,2053.5,2054.5,2055.5,2056.5,2057.5,2058.5,2059.5,2060.5,2061.5,2062.5,2063.5,2064.5,2065.5,2066.5,2067.5,2068.5,2069.5,2070.5,2071.5,2072.5,2073.5,2074.5,2075.5,2076.5,2077.5,2078.5,2079.5,2080.5,2081.5,2082.5,2083.5,2084.5,2085.5,2086.5,2087.5,2088.5,2089.5,2090.5,2091.5,2092.5,2093.5,2094.5,2095.5,2096.5,2097.5,2098.5,2099.5,2100.5</xpts>
-					<ypts>-0.739629905,-0.771683407,-0.747674255,-1.155067884,-1.522532375,-1.115638825,-0.860760042,-0.838018959,-0.771524517,-0.649697695,-0.51743512,-0.534461277,-1.33168047,-2.390378304,-1.442372732,-0.812834172,-0.554189136,-0.457955185,-0.570542161,-0.481126783,-0.276150719,-0.201990569,-0.21138582,-0.284005204,-0.398060904,-0.404028535,-0.489707416,-0.541966668,-0.516353772,-0.439050964,-0.387164798,-0.321692365,-0.296692159,-0.265394071,-0.137602729,-0.142877849,-0.130671121,-0.135187406,-0.140527345,-0.146415273,-0.152900561,-0.158478131,-0.155049411,-0.158578049,-0.162520854,-0.165238996,-0.153446907,-0.146458015,-0.140031701,-0.134905429,-0.129301119,-0.120856523,-0.10796521,-0.091432103,-0.073870701,-0.063386476,-0.052352391,-0.050487519,-0.045658173,-0.042463797,-0.040712427,-0.037647087,-0.035984318,-0.035171176,-0.034616412,-0.031067007,-0.028954961,-0.028291922,-0.027952911,-0.026676951,-0.027244218,-0.025195774,-0.027337481,-0.027488101,-0.026843134,-0.024497741,-0.021545062,-0.019174494,-0.014987218,-0.014676201,-0.010231063,-0.001187751,-0.002120225,-0.002447521,0.000101648,0.000105188,0.002040555,0.004368193,0.006935568,0.010044007,0.012251688,0.013776911,0.012646774,0.014779245,0.016577822,0.017166079,0.017250358,0.01965775,0.022272602,0.025404845,0.028448012,0.033662386,0.036506566,0.039732287,0.040749543,0.044229909,0.046541062,0.048115869,0.048118396,0.049602923,0.052442484,0.052989439,0.05710827,0.062294983,0.063995877,0.065089642,0.071257388,0.07114313,0.074132699,0.074607461,0.077377166,0.080139617</ypts>
-				</gf>
-				<units>W/m2</units>
-			</aux>
-			<aux name="total forcing">
-				<eqn>anthropogenic_forcing+water_vapor_forcing</eqn>
-				<units>W/m2</units>
-			</aux>
-			<aux name="water vapor forcing">
-				<eqn>base_level_water_vapor_forcing*effect_of_observed_warming_on_water_vapor_forcing</eqn>
-				<units>W/m2</units>
-			</aux>
-			<aux name="CH4 concentration in atm PPM">
-				<doc>Calibration data from:
-Smith CJ, Forster PM, Berger S, Collins W, Hall B, Lunt D, Palmer MD, Watanabe M, Cain M, Harris G, Leach NJ, Ringer M, Zelinka M. 2021. Figure and data generation for Chapter 7 of the IPCC&apos;s Sixth Assessment Report, Working Group 1 (plus assorted other contributions). Version 1.0. https://doi.org/10.5281/zenodo.5211357</doc>
-				<eqn>CH4_in_atmosphere/GtCH4_per_PPM</eqn>
-				<units>ppm</units>
-			</aux>
-			<stock name="CH4 in atmosphere">
-				<eqn>CH4_in_atmosphere_1980</eqn>
-				<inflow>CH4_emissions</inflow>
-				<outflow>CH4_breakdown</outflow>
-				<units>GtCH4</units>
-			</stock>
-			<aux name="GtCH4 per PPM">
-				<doc>Calibration Parameter: CH4 concentration in PPM</doc>
-				<eqn>1.69959695477761</eqn>
-				<units>GtCH4/ppm</units>
-			</aux>
-			<aux name="CO2 emissions">
-				<doc>Calibration data from RCMIP (Nicholls et al. 2020)
-
-Nicholls Z, Meinshausen M, Lewis J, Corradi MR, Dorheim K, Gasser T, Gieseke R, Hope AP, Leach NJ, McBride LA, Quilcaille Y. 2021. Reduced complexity Model Intercomparison Project Phase 2: Synthesizing Earth system knowledge for probabilistic climate projections. Earth’s Future 9:6, e2020EF001900. https://doi.org/10.1029/2020EF001900
-</doc>
-				<eqn>&quot;CO2_emissions_from_LULUC_GtCO2/y&quot;+CO2_from_energy_and_industry</eqn>
-				<units>GtCO2/year</units>
-			</aux>
-			<aux name="Surface Temperature\nAnomaly" access="output">
-				<doc>Calibration data from Chapter 7 of the IPCC&apos;s Sixth Assessment Report, Working Group 1 (Smith et al. 2021)
-
-Smith CJ, Forster PM, Berger S, Collins W, Hall B, Lunt D, Palmer MD, Watanabe M, Cain M, Harris G, Leach NJ, Ringer M, Zelinka M. 2021. Figure and data generation for Chapter 7 of the IPCC&apos;s Sixth Assessment Report, Working Group 1 (plus assorted other contributions). Version 1.0. https://doi.org/10.5281/zenodo.5211357
-</doc>
-				<eqn>Surface_Temperature_Anomaly_1980+(Extra_Heat_in_Surface-Extra_Heat_in_Surface_1980)*warming_per_ZJ_of_extra_heat</eqn>
-				<units>deg C</units>
-			</aux>
-			<aux name="extra CO2\nabsorption\nbreakdown\ntime">
-				<doc>absorption times of CO2 in the atmosphere is done using a calibrated linear function based on the amount of extra CO2 sequestered since 1850 which allows for the absorption process to slow by a factor of 2x over the simulation period accounting for the known changes in rates of CO2 sequestration by the oceans and biosphere (Friedlingstein et al. 2006). 
-
-Friedlingstein P, Cox P, Betts R, Bopp L, von Bloh W, Brovkin V, Cadule P, Doney S, Eby M, Fung I, Bala G. 2006. Climate–carbon cycle feedback analysis: results from the C4MIP model intercomparison. Journal of climate 19(14): 3337-3353. https://doi.org/10.1175/JCLI3800.1.
-</doc>
-				<eqn>extra_CO2_absorption_breakdown_time_1980*effect_of_extra_CO2_absorbed_on_extra_CO2_absorption_breakdown_time</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="extra CO2\nabsorption\nbreakdown\ntime 1980">
-				<doc>Calibration Parameter: CO2 concentration in atm PPM</doc>
-				<eqn>6.35900971412278</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="tCO2e/tCH4">
-				<eqn>23</eqn>
-				<units>tCO2e/tCH4</units>
-			</aux>
-			<aux name="ghg emissions">
-				<eqn>CO2_emissions*&quot;tCO2e/tCO2&quot;+CH4_emissions*&quot;tCO2e/tCH4&quot;+N2O_emissions*&quot;tCO2e/tN2O&quot;</eqn>
-				<units>GtCO2e/year</units>
-			</aux>
-			<aux name="tCO2e/tCO2">
-				<eqn>1</eqn>
-				<units>tCO2e/tCO2</units>
-			</aux>
-			<flow name="CH4 emissions">
-				<doc>Calibration data from RCMIP (Nicholls et al. 2020)
-
-Nicholls Z, Meinshausen M, Lewis J, Corradi MR, Dorheim K, Gasser T, Gieseke R, Hope AP, Leach NJ, McBride LA, Quilcaille Y. 2021. Reduced complexity Model Intercomparison Project Phase 2: Synthesizing Earth system knowledge for probabilistic climate projections. Earth’s Future 9:6, e2020EF001900. https://doi.org/10.1029/2020EF001900
-</doc>
-				<eqn>CH4_emissions_2+CH4_emissions_3+CH4_emissions_1</eqn>
-				<units>GtCH4/Year</units>
-			</flow>
-			<flow name="N2O emissions" access="output" isee:autocreated="true">
-				<doc>Calibration data from RCMIP (Nicholls et al. 2020)
-
-Nicholls Z, Meinshausen M, Lewis J, Corradi MR, Dorheim K, Gasser T, Gieseke R, Hope AP, Leach NJ, McBride LA, Quilcaille Y. 2021. Reduced complexity Model Intercomparison Project Phase 2: Synthesizing Earth system knowledge for probabilistic climate projections. Earth’s Future 9:6, e2020EF001900. https://doi.org/10.1029/2020EF001900
-</doc>
-				<eqn>N2O_emissions_1+NO2_emissions</eqn>
-				<units>GtN2O/Year</units>
-			</flow>
-			<aux name="tCO2e/tN2O">
-				<eqn>7</eqn>
-				<units>tCO2e/tN2O</units>
-			</aux>
-			<flow name="extra heat used\nto melt ice">
-				<eqn>melting_rate*Amount_of_Ice_and_Snow*Ton_per_km3_ice*heat_required_to_melt_ice/UNIT_KJ_to_ZJ</eqn>
-				<units>ZJ/Year</units>
-			</flow>
-			<aux name="Ton per km3 ice">
-				<doc>https://en.wikipedia.org/wiki/Antarctic_ice_sheet#:~:text=A%20cubic%20kilometer%20of%20ice,ice%20were%20above%20sea%20level.</doc>
-				<eqn>920000000</eqn>
-				<units>t/km3</units>
-			</aux>
-			<aux name="heat required to melt ice">
-				<doc>https://www.esa.int/SPECIALS/Eduspace_Global_EN/SEMHE7TWLUG_0.html#:~:text=To%20change%20the%20phase%20of,334%20Joules%20for%20each%20gram.</doc>
-				<eqn>334000</eqn>
-				<units>kJ/T</units>
-			</aux>
-			<flow name="N2O breakdown">
-				<eqn>N2O_in_atmosphere/N2O_breakdown_time</eqn>
-				<units>GtN2O/Year</units>
-			</flow>
-			<aux name="N2O\nbreakdown\ntime">
-				<doc>Prather MJ, Hsu J, DeLuca NM, Jackman CH, Oman LD, Douglass AR, Fleming EL, Strahan SE, Steenrod SD, Søvde OA, Isaksen IS. 2015. Measuring and modeling the lifetime of nitrous oxide including its variability. Journal of Geophysical Research: Atmospheres 120(11): 5693-5705.
-</doc>
-				<eqn>115.001645074255</eqn>
-				<units>year</units>
-			</aux>
-			<flow name="Extra heat to space">
-				<eqn>Extra_Heat_in_Surface*albedo</eqn>
-				<units>ZJ/Year</units>
-			</flow>
-			<flow name="extra heat to deep ocean">
-				<eqn>Extra_Heat_in_Surface*Transfer_rate_for_heat_going_to_abyss</eqn>
-				<units>ZJ/Year</units>
-			</flow>
-			<aux name="tCO2 per tCH4">
-				<doc>Calculated conversion stoichiometry</doc>
-				<eqn>2.75</eqn>
-				<units>tCO2/tCH4</units>
-			</aux>
-			<aux name="CO2 from CH4">
-				<eqn>CH4_breakdown*tCO2_per_tCH4</eqn>
-				<units>GtCO2/year</units>
-			</aux>
-			<flow name="CH4 breakdown">
-				<eqn>CH4_in_atmosphere/CH4_absorption_breakdown_time</eqn>
-				<units>GtCH4/Year</units>
-			</flow>
-			<aux name="CO2 in atmosphere 1980">
-				<doc>From ESMICON-pp</doc>
-				<eqn>752</eqn>
-				<units>GtCO2</units>
-			</aux>
-			<flow name="CO2 absorption">
-				<eqn>(CO2_in_atmosphere-CO2_in_atm_in_1850)/extra_CO2_absorption_breakdown_time</eqn>
-				<units>GtCO2/year</units>
-			</flow>
-			<aux name="CO2 in atm in 1850">
-				<doc>From ESMICON-pp</doc>
-				<eqn>600</eqn>
-				<units>GtCO2</units>
-			</aux>
-			<aux name="Transfer rate for heat\ngoing to abyss">
-				<eqn>transfer_rate_surface_to_abyss_1980*effect_of_warming_on_heat_transfer_to_oceans</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="transfer rate\nsurface to abyss 1980">
-				<doc>Calibration Parameter: Surface Temperature Anomaly</doc>
-				<eqn>0.917662779840488</eqn>
-				<units>1/year</units>
-			</aux>
-			<stock name="CO2 in atmosphere">
-				<eqn>CO2_in_atmosphere_1980</eqn>
-				<inflow>change_in_CO2_in_atmosphere</inflow>
-				<units>GtCO2</units>
-			</stock>
-			<aux name="GtCO2 per PPM">
-				<doc>Calibration Parameter: CO2 concentration in PPM</doc>
-				<eqn>2.18929766091901</eqn>
-				<units>GtCO2/ppm</units>
-			</aux>
-			<aux name="N2O in atmosphere 1980">
-				<doc>Calibration Parameter: N2O concentration in atm PPM</doc>
-				<eqn>0.882719494039584</eqn>
-				<units>GtN2O</units>
-			</aux>
-			<aux name="CH4 in atmosphere 1980">
-				<doc>Calibration Parameter: CH4 concentration in atm PPM</doc>
-				<eqn>2.66677210213751</eqn>
-				<units>GtCH4</units>
-			</aux>
-			<aux name="base level\nwater vapor forcing">
-				<doc>Calibration Parameter: Surface Temperature Anomaly</doc>
-				<eqn>1.06890069523368</eqn>
-				<units>W/m2</units>
-			</aux>
-			<aux name="sensitivity of effect of observed\nwarming on water vapor\nforcing alpha">
-				<doc>Calibration Parameter: Surface Temperature Anomaly</doc>
-				<eqn>3.44</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="melting rate\nsurface in 1980">
-				<doc>Calibration Parameter: Surface Temperature Anomaly &amp; Albedo</doc>
-				<eqn>0.000162662991060423</eqn>
-				<units>1/year</units>
-			</aux>
-			<flow name="change in CO2 in\natmosphere">
-				<eqn>CO2_emissions+CO2_from_CH4-CO2_absorption</eqn>
-				<units>GtCO2/year</units>
-			</flow>
-			<aux name="CO2 emissions from\nLULUC GtCO2/y" access="input">
-				<units>MtCO2/year</units>
-			</aux>
-			<aux name="effect of extra CO2 absorbed\non extra CO2 absorption\nbreakdown time">
-				<eqn> 1+sensitivity_of_extra_CO2_absorbed_on_extra_CO2_absorption_breakdown_time*(Extra_CO2_Absorbed/Extra_CO2_absorbed_1980-1)</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="sensitivity of extra CO2\nabsorbed on extra CO2\nabsorption breakdown time">
-				<doc>Calibration Parameter: CO2 concentration in atm PPM</doc>
-				<eqn>0.757187042591857</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="UNIT ZJ/W/m2">
-				<doc>Unit conversion</doc>
-				<eqn>16.08336</eqn>
-				<units>ZJ*m2/(year*W)</units>
-			</aux>
-			<aux name="UNIT KJ to ZJ">
-				<eqn>1000000000000000000</eqn>
-				<units>KJ/ZJ</units>
-			</aux>
-			<flow name="extra heat from forcing">
-				<eqn>total_forcing*&quot;UNIT_ZJ/W/m2&quot;</eqn>
-				<units>ZJ/Years</units>
-			</flow>
-			<aux name="Surface Temperature\nAnomaly 1980" access="output" isee:autocreated="true">
-				<doc>Calibration Parameter: Surface Temperature Anomaly</doc>
-				<eqn>0.470483276469913</eqn>
-				<units>deg C</units>
-			</aux>
-			<stock name="Extra CO2\nAbsorbed">
-				<eqn>Extra_CO2_absorbed_1980</eqn>
-				<inflow>CO2_absorption</inflow>
-				<non_negative/>
-				<units>GtCO2</units>
-			</stock>
-			<aux name="years between\n1980 and 1850">
-				<eqn>130</eqn>
-				<units>years</units>
-			</aux>
-			<aux name="Extra CO2 absorbed 1980">
-				<eqn>(CO2_in_atmosphere_1980 - CO2_in_atm_in_1850)/extra_CO2_absorption_breakdown_time_1980 * years_between_1980_and_1850</eqn>
-				<units>GtCO2</units>
-			</aux>
-			<aux name="CH4 absorption\nbreakdown\ntime 1980">
-				<doc>Mar KA, Unger C, Walderdorff L, Butler T. 2022. Beyond CO2 equivalence: The impacts of methane on climate, ecosystems, and health. Environmental science &amp; policy 134: 127-136.https://doi.org/10.1016/j.envsci.2022.03.027
-</doc>
-				<eqn>11.5246648709807</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="forcing from CO2">
-				<doc>https://gmd.copernicus.org/articles/13/3571/2020/#&amp;gid=1&amp;pid=1
-
-In FRIDA, the forcing based on the atmospheric concentration of CO2, CH4 and N2O uses Meinshausen et. al.’s (2020) formulation which captures the impacts of all three gasses and their interactions on radiative forcing due to each gas. 
-
-Meinshausen M, Nicholls ZR, Lewis J, Gidden MJ, Vogel E, Freund M, Beyerle U, Gessner C, Nauels A, Bauer N, Canadell JG. 2020. The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500. Geoscientific Model Development 13(8):3571-605. https://doi.org/10.5194/gmd-13-3571-2020 
-
-
-Calibration data from:
-Smith C, Hall B, Dentener F, Ahn J, Collins W , Jones C , Meinshausen M, Dlugokencky E, Keeling R, Krummel P, Mühle J, Nicholls Z, Simpson I . 2021. IPCC Working Group 1 (WG1) Sixth Assessment Report (AR6) Annex III Extended Data (v1.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.5705391.
-
-</doc>
-				<eqn>((((5.2488+extra_d1) + (-2.4785e-7*(CO2_concentration_in_atm_PPM/UNIT_PPM-C0)^2) + (0.00075906*(CO2_concentration_in_atm_PPM/UNIT_PPM-C0)))+alpha_N2O) * LN(CO2_concentration_in_atm_PPM/UNIT_PPM/C0))*&quot;UNIT_W/m2&quot;</eqn>
-				<units>W/m2</units>
-			</aux>
-			<aux name="CH4 concentration in atm PPB">
-				<eqn>CH4_concentration_in_atm_PPM/UNIT_PPM_to_PPB</eqn>
-				<units>ppb</units>
-			</aux>
-			<aux name="UNIT PPM to PPB">
-				<eqn>0.001</eqn>
-				<units>ppm/ppb</units>
-			</aux>
-			<aux name="N2O concentration in atm PPB">
-				<eqn>N2O_concentration_in_atm_PPM/UNIT_PPM_to_PPB</eqn>
-				<units>ppb</units>
-			</aux>
-			<aux name="forcing from CH4">
-				<doc>https://gmd.copernicus.org/articles/13/3571/2020/#&amp;gid=1&amp;pid=1
-
-In FRIDA, the forcing based on the atmospheric concentration of CO2, CH4 and N2O uses Meinshausen et. al.’s (2020) formulation which captures the impacts of all three gasses and their interactions on radiative forcing due to each gas. 
-
-Meinshausen M, Nicholls ZR, Lewis J, Gidden MJ, Vogel E, Freund M, Beyerle U, Gessner C, Nauels A, Bauer N, Canadell JG. 2020. The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500. Geoscientific Model Development 13(8):3571-605. https://doi.org/10.5194/gmd-13-3571-2020 
-
-
-Calibration data from:
-Smith C, Hall B, Dentener F, Ahn J, Collins W , Jones C , Meinshausen M, Dlugokencky E, Keeling R, Krummel P, Mühle J, Nicholls Z, Simpson I . 2021. IPCC Working Group 1 (WG1) Sixth Assessment Report (AR6) Annex III Extended Data (v1.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.5705391.</doc>
-				<eqn>(
-(-8.9603*10^-5*SQRT(CH4_concentration_in_atm_PPB/UNIT_PPB)) + (-0.00012462*SQRT(N2O_concentration_in_atm_PPB/UNIT_PPB)) +
-0.045194 + extra_d3
-)
-*
-(
-SQRT(CH4_concentration_in_atm_PPB/UNIT_PPB)-
-SQRT(731.41)
-) * &quot;UNIT_W/m2&quot;</eqn>
-				<units>W/m2</units>
-			</aux>
-			<aux name="forcing from N2O">
-				<doc>https://gmd.copernicus.org/articles/13/3571/2020/#&amp;gid=1&amp;pid=1
-
-In FRIDA, the forcing based on the atmospheric concentration of CO2, CH4 and N2O uses Meinshausen et. al.’s (2020) formulation which captures the impacts of all three gasses and their interactions on radiative forcing due to each gas. 
-
-Meinshausen M, Nicholls ZR, Lewis J, Gidden MJ, Vogel E, Freund M, Beyerle U, Gessner C, Nauels A, Bauer N, Canadell JG. 2020. The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500. Geoscientific Model Development 13(8):3571-605. https://doi.org/10.5194/gmd-13-3571-2020 
-
-Calibration data from:
-Smith C, Hall B, Dentener F, Ahn J, Collins W , Jones C , Meinshausen M, Dlugokencky E, Keeling R, Krummel P, Mühle J, Nicholls Z, Simpson I . 2021. IPCC Working Group 1 (WG1) Sixth Assessment Report (AR6) Annex III Extended Data (v1.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.5705391.</doc>
-				<eqn>((-0.00034197 * SQRT(CO2_concentration_in_atm_PPM/UNIT_PPM)) +
-(0.00025455 * SQRT(N2O_concentration_in_atm_PPB/UNIT_PPB)) +
-(-0.00024357 * SQRT(CH4_concentration_in_atm_PPB/UNIT_PPB)) +
-0.12173 + extra_d2)
-*
-(
-SQRT(N2O_concentration_in_atm_PPB/UNIT_PPB) - 
-SQRT(273.87)
-) * &quot;UNIT_W/m2&quot;</eqn>
-				<units>W/m2</units>
-			</aux>
-			<aux name="UNIT W/m2">
-				<eqn>1</eqn>
-				<units>W/m2</units>
-			</aux>
-			<aux name="UNIT PPB">
-				<eqn>1</eqn>
-				<units>PPB</units>
-			</aux>
-			<aux name="UNIT PPM">
-				<eqn>1</eqn>
-				<units>PPM</units>
-			</aux>
-			<aux name="extra d3">
-				<doc>Calibration Parameter: forcing from CH4
-
-Correction applied to parameter from Meinhausen et. al.
-
-Meinshausen M, Nicholls ZR, Lewis J, Gidden MJ, Vogel E, Freund M, Beyerle U, Gessner C, Nauels A, Bauer N, Canadell JG. 2020. The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500. Geoscientific Model Development 13(8):3571-605. https://doi.org/10.5194/gmd-13-3571-2020 </doc>
-				<eqn>-0.00570894685377435</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="extra d2">
-				<doc>Calibration Parameter: forcing from N20
-
-Correction applied to parameter from Meinhausen et. al.
-
-Meinshausen M, Nicholls ZR, Lewis J, Gidden MJ, Vogel E, Freund M, Beyerle U, Gessner C, Nauels A, Bauer N, Canadell JG. 2020. The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500. Geoscientific Model Development 13(8):3571-605. https://doi.org/10.5194/gmd-13-3571-2020 </doc>
-				<eqn>0.0152678114299091</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="CH4 absorption\nbreakdown\ntime">
-				<eqn> effect_of_CH4_in_atmosphere_on_CH4_absorption_breakdown_time* CH4_absorption_breakdown_time_1980</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="sensitivity of effect of CH4 in atmosphere\non CH4 absorption breakdown time">
-				<doc>Calibration Parameter: CH4 concentration in atm PPM</doc>
-				<eqn>-1.54026857141637</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="effect of CH4 in atmosphere\non CH4 absorption breakdown time">
-				<eqn> 1+sensitivity_of_effect_of_CH4_in_atmosphere_on_CH4_absorption_breakdown_time*(CH4_in_atmosphere/INIT(CH4_in_atmosphere)-1)</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="effect of observed\nwarming on water vapor\nforcing">
-				<eqn>sensitivity_of_effect_of_observed_warming_on_water_vapor_forcing_alpha*LN(MAX(1, Surface_Temperature_Anomaly/Surface_Temperature_Anomaly_1980))^sensitivity_of_effect_of_observed_warming_on_water_vapor_forcing_beta</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="albedo 1980">
-				<doc>https://earthobservatory.nasa.gov/images/84499/measuring-earths-albedo#:~:text=Using%20satellite%20measurements%20accumulated%20since,%2C%20and%20December%2031%2C%202011.</doc>
-				<eqn>0.3</eqn>
-				<units>dmnl/year</units>
-			</aux>
-			<aux name="effect of ice\non albedo">
-				<eqn>1+sensitivity_of_effect_of_ice_and_snow_on_albedo*(Amount_of_Ice_and_Snow/INIT(Amount_of_Ice_and_Snow) - 1)</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="sensitivity of\neffect of ice and snow on albedo">
-				<doc>Calibration Parameter: Surface Temperature Anomaly &amp; Albedo</doc>
-				<eqn>0.222469104470262</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="effect of warming\non heat transfer to oceans">
-				<eqn>1+sensitivity_of_effect_of_warming_on_heat_transfer_to_oceans*(Surface_Temperature_Anomaly/Surface_Temperature_Anomaly_1980 - 1)</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="sensitivity\nof effect of warming\non heat transfer to oceans">
-				<doc>Calibration Parameter: Surface Temperature Anomaly</doc>
-				<eqn>-0.0300402054186459</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="Amount of Ice and Snow 1980">
-				<doc>Antarctic: https://nsidc.org/learn/parts-cryosphere/ice-sheets/ice-sheet-quick-facts#:~:text=The%20Antarctic%20Ice%20Sheet%20extends,million%20cubic%20miles)%20of%20ice.
-Glacial and Ice Caps: https://bokeh.oggm.org/explorer/app
-Greenland: http://polarportal.dk/en/groenlands-indlandsis/nbsp/viden-om-groenlands-indlandsis/#:~:text=The%20Greenland%20Ice%20Sheet%20has,is%20approximately%202%2C900%2C000%20km3.</doc>
-				<eqn>33058157
-
-{
-30000000 southern pole
-+
-158157 glacial and ice caps
-+
-2900000 greenland
-}</eqn>
-				<units>km3</units>
-			</aux>
-			<aux name="alpha N2O">
-				<eqn>-0.0021492*SQRT(N2O_concentration_in_atm_PPB/UNIT_PPB)</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="C0">
-				<doc>Meinshausen M, Nicholls ZR, Lewis J, Gidden MJ, Vogel E, Freund M, Beyerle U, Gessner C, Nauels A, Bauer N, Canadell JG. 2020. The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500. Geoscientific Model Development 13(8):3571-605. https://doi.org/10.5194/gmd-13-3571-2020 
-</doc>
-				<eqn>277.15</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="extra d1">
-				<doc>Calibration Parameter: forcing from CO2
-
-Correction applied to parameter from Meinhausen et. al.
-
-Meinshausen M, Nicholls ZR, Lewis J, Gidden MJ, Vogel E, Freund M, Beyerle U, Gessner C, Nauels A, Bauer N, Canadell JG. 2020. The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500. Geoscientific Model Development 13(8):3571-605. https://doi.org/10.5194/gmd-13-3571-2020 
-</doc>
-				<eqn>0.247137542647565</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="sensitivity of effect of observed\nwarming on water vapor\nforcing beta">
-				<doc>Calibration Parameter: Surface Temperature Anomaly</doc>
-				<eqn>2.01</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="CO2 from energy\nproduction" access="input">
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>MtCO2/year</units>
-			</aux>
-			<aux name="CO2 from non fossil\nindustrial processes" access="input">
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>MtCO2/year</units>
-			</aux>
-			<aux name="CH4 emissions 1" access="input">
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>MtCH4/Year</units>
-			</aux>
-			<aux name="N2O emissions 1" access="input">
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>ktN2O/Year</units>
-			</aux>
-			<aux name="CH4 emissions 2" access="input">
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>MtCH4/Year</units>
-			</aux>
-			<aux name="SO2 Emissions" access="output" isee:autocreated="true">
-				<eqn>SO2_emissions_1</eqn>
-				<units>GtSO2/Year</units>
-			</aux>
-			<aux name="SO2 emissions 1" access="input">
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>MtSO2/Year</units>
-			</aux>
-			<aux name="CO2 from energy and industry">
-				<eqn>CO2_from_energy_production+CO2_from_non_fossil_industrial_processes</eqn>
-				<units>GtCO2/year</units>
-			</aux>
-			<aux name="CH4 emissions 3" access="input">
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>MtCH4/Year</units>
-			</aux>
-			<aux name="NO2 emissions" access="input">
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>ktN2O/Year</units>
-			</aux>
+			<module name="Temperature" isee:label="" url="/Users/bschoenberg/code/WorldTrans/Frida/FRIDA_Modules/Temperature.itmx">
+				<connect to="Sea_Level.C1" from="Temperature.C1"/>
+				<connect2 to="Sea_Level.C1" from="Temperature.C1"/>
+				<connect to="Sea_Level.C2" from="Temperature.C2"/>
+				<connect2 to="Sea_Level.C2" from="Temperature.C2"/>
+				<connect to="Sea_Level.C3" from="Temperature.C3"/>
+				<connect2 to="Sea_Level.C3" from="Temperature.C3"/>
+				<connect to="Food_and_land_use.CO2_concentration_in_atm_ppm" from="Temperature.CO2_Concentration"/>
+				<connect2 to="Food_and_land_use.CO2_concentration_in_atm_ppm" from="Temperature.CO2_Concentration"/>
+				<connect to="Sea_Level.dT1" from="Temperature.dT1"/>
+				<connect2 to="Sea_Level.dT1" from="Temperature.dT1"/>
+				<connect to="Sea_Level.dT2" from="Temperature.dT2"/>
+				<connect2 to="Sea_Level.dT2" from="Temperature.dT2"/>
+				<connect to="Sea_Level.dT3" from="Temperature.dT3"/>
+				<connect2 to="Sea_Level.dT3" from="Temperature.dT3"/>
+				<connect to="Energy.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect2 to="Energy.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect to="Food_and_land_use.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect2 to="Food_and_land_use.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect to="Population.Observed_warming" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect2 to="Population.Observed_warming" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect to="Sea_Level.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect2 to="Sea_Level.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect to="Supply.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect2 to="Supply.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect to="Temperature.CH4_emissions_1" from="Food_and_land_use.CH4_emissions"/>
+				<connect2 to="Temperature.CH4_emissions_1" from="Food_and_land_use.CH4_emissions"/>
+				<connect to="Temperature.CH4_emissions_2" from="Energy.CH4_emissions"/>
+				<connect2 to="Temperature.CH4_emissions_2" from="Energy.CH4_emissions"/>
+				<connect to="Temperature.CH4_emissions_3" from="Supply.CH4_emissions"/>
+				<connect2 to="Temperature.CH4_emissions_3" from="Supply.CH4_emissions"/>
+				<connect to="Temperature.CO2_emissions_1" from="Supply.CO2_emissions"/>
+				<connect2 to="Temperature.CO2_emissions_1" from="Supply.CO2_emissions"/>
+				<connect to="Temperature.CO2_emissions_2" from="Food_and_land_use.CO2_emissions"/>
+				<connect2 to="Temperature.CO2_emissions_2" from="Food_and_land_use.CO2_emissions"/>
+				<connect to="Temperature.CO2_emissions_3" from="Energy.CO2_emissions"/>
+				<connect2 to="Temperature.CO2_emissions_3" from="Energy.CO2_emissions"/>
+				<connect to="Temperature.N2O_emissions_1" from="Food_and_land_use.N2O_emissions"/>
+				<connect2 to="Temperature.N2O_emissions_1" from="Food_and_land_use.N2O_emissions"/>
+				<connect to="Temperature.N2O_emissions_2" from="Supply.N2O_emissions"/>
+				<connect2 to="Temperature.N2O_emissions_2" from="Supply.N2O_emissions"/>
+				<connect to="Temperature.N2O_emissions_3" from="Energy.N2O_emissions"/>
+				<connect2 to="Temperature.N2O_emissions_3" from="Energy.N2O_emissions"/>
+				<connect to="Temperature.SO2_emissions" from="Energy.SO2_emissions"/>
+				<connect2 to="Temperature.SO2_emissions" from="Energy.SO2_emissions"/>
+				<connect to="Temperature.SO2_emissions_1" from="Food_and_land_use.SO2_emissions"/>
+				<connect2 to="Temperature.SO2_emissions_1" from="Food_and_land_use.SO2_emissions"/>
+			</module>
+			<module name="Sea Level" isee:label="" url="/Users/bschoenberg/code/WorldTrans/Frida/FRIDA_Modules/Sea Level.itmx">
+				<connect to="Sea_Level.C1" from="Temperature.C1"/>
+				<connect2 to="Sea_Level.C1" from="Temperature.C1"/>
+				<connect to="Sea_Level.C2" from="Temperature.C2"/>
+				<connect2 to="Sea_Level.C2" from="Temperature.C2"/>
+				<connect to="Sea_Level.C3" from="Temperature.C3"/>
+				<connect2 to="Sea_Level.C3" from="Temperature.C3"/>
+				<connect to="Sea_Level.dT1" from="Temperature.dT1"/>
+				<connect2 to="Sea_Level.dT1" from="Temperature.dT1"/>
+				<connect to="Sea_Level.dT2" from="Temperature.dT2"/>
+				<connect2 to="Sea_Level.dT2" from="Temperature.dT2"/>
+				<connect to="Sea_Level.dT3" from="Temperature.dT3"/>
+				<connect2 to="Sea_Level.dT3" from="Temperature.dT3"/>
+				<connect to="Sea_Level.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect2 to="Sea_Level.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
+			</module>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -750,6 +256,7 @@ Meinshausen M, Nicholls ZR, Lewis J, Gidden MJ, Vogel E, Freund M, Beyerle U, Ge
 				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
 				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
 				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
 				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
 				<isee:sim_speed_slider color="black" background="white"/>
 				<isee:time_slider color="#E95F74" background="silver"/>
@@ -770,22 +277,22 @@ Meinshausen M, Nicholls ZR, Lewis J, Gidden MJ, Vogel E, Freund M, Beyerle U, Ge
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="1140" isee:scroll_y="1377" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
+					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
 					</stock>
-					<flow color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="bottom">
+					<flow color="blue" background="white" font_color="blue" font_size="9pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</flow>
-					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="12.51pt" label_side="bottom"/>
-					<module color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
-						<shape type="rectangle" width="67" height="55"/>
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="9pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
+						<shape type="rectangle" width="55" height="45"/>
 					</module>
-					<aux color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="bottom">
+					<aux color="blue" background="white" font_color="blue" font_size="9pt" label_side="bottom">
 						<shape type="circle" radius="18"/>
 					</aux>
-					<group color="red" background="white" font_color="red" font_size="12.51pt"/>
+					<group color="red" background="white" font_color="red" font_size="9pt"/>
 					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
 					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
 					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
@@ -809,673 +316,12 @@ Meinshausen M, Nicholls ZR, Lewis J, Gidden MJ, Vogel E, Freund M, Beyerle U, Ge
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<stock background="white" label_side="center" x="931.5" y="1051.5" width="144" height="31" name="CO2 in atmosphere"/>
-				<aux background="white" label_side="left" label_angle="135" x="611.5" y="1191" name="CO2 emissions"/>
-				<flow background="white" label_side="right" label_angle="315" x="1009.88" y="1138" name="CO2 absorption">
-					<pts>
-						<pt x="877" y="1138"/>
-						<pt x="1130.75" y="1138"/>
-					</pts>
-				</flow>
-				<aux background="white" label_side="left" label_angle="135" x="771.5" y="1376" name="extra CO2\nabsorption\nbreakdown\ntime"/>
-				<connector uid="1" angle="328.736">
-					<from>CO2_in_atmosphere</from>
-					<to>CO2_absorption</to>
+				<module x="192" y="126" name="Temperature"/>
+				<module x="334" y="126" name="Sea Level"/>
+				<connector uid="1" isee:thickness="2" angle="33.1785">
+					<from>Temperature</from>
+					<to>Sea_Level</to>
 				</connector>
-				<connector uid="2" angle="44.9549">
-					<from>extra_CO2_absorption_breakdown_time</from>
-					<to>CO2_absorption</to>
-				</connector>
-				<aux background="white" label_side="right" x="959" y="1316" name="CO2 in atm in 1850"/>
-				<connector uid="3" angle="74.0493">
-					<from>CO2_in_atm_in_1850</from>
-					<to>CO2_absorption</to>
-				</connector>
-				<aux label_side="left" label_angle="135" x="959" y="1405" name="CO2 in atmosphere 1980"/>
-				<stock label_side="center" x="1441.5" y="390.5" width="143" height="33" name="Extra Heat in Surface"/>
-				<aux label_side="right" label_angle="45" x="1571" y="158" name="melting rate"/>
-				<aux label_side="right" label_angle="45" x="1705" y="274" name="heat required to melt ice"/>
-				<aux label_side="top" x="1098" y="96" name="Extra Heat in Surface 1980"/>
-				<aux label_side="right" x="1634" y="243" name="Ton per km3 ice"/>
-				<aux label_side="left" label_angle="135" x="1523" y="78" name="melting rate\nsurface in 1980"/>
-				<connector uid="4" angle="300.964">
-					<from>melting_rate_surface_in_1980</from>
-					<to>melting_rate</to>
-				</connector>
-				<stock background="white" label_side="center" x="1506.5" y="1525.5" width="115" height="32" name="CH4 in atmosphere"/>
-				<flow background="white" x="1409.75" y="1542" name="CH4 breakdown">
-					<pts>
-						<pt x="1506.5" y="1542"/>
-						<pt x="1301" y="1542"/>
-					</pts>
-				</flow>
-				<aux background="white" label_side="left" x="1131.75" y="1289" name="CO2 from CH4"/>
-				<connector uid="5" angle="137.696">
-					<from>CH4_breakdown</from>
-					<to>CO2_from_CH4</to>
-				</connector>
-				<connector uid="6" angle="163.773">
-					<from>CH4_in_atmosphere</from>
-					<to>CH4_breakdown</to>
-				</connector>
-				<aux x="1630.5" y="1444" name="CH4 in atmosphere 1980"/>
-				<connector uid="8" angle="109.164">
-					<from>CH4_in_atmosphere</from>
-					<to>CH4_concentration_in_atm_PPM</to>
-				</connector>
-				<aux label_side="right" x="947" y="911" name="CO2 concentration in atm PPM"/>
-				<connector uid="9" angle="107.851">
-					<from>CO2_in_atmosphere</from>
-					<to>CO2_concentration_in_atm_PPM</to>
-				</connector>
-				<stock label_side="center" x="1872.5" y="331.5" width="109" height="39" name="Amount of Ice\nand Snow"/>
-				<flow label_side="right" x="1934" y="287.25" name="melting ice and\nshow">
-					<pts>
-						<pt x="1934" y="331.5"/>
-						<pt x="1934" y="234"/>
-					</pts>
-				</flow>
-				<connector uid="10" angle="37.875">
-					<from>Amount_of_Ice_and_Snow</from>
-					<to>melting_ice_and_show</to>
-				</connector>
-				<aux x="862" y="952" name="GtCO2 per PPM"/>
-				<flow background="white" label_side="left" x="1503" y="310.75" name="extra heat used\nto melt ice">
-					<pts>
-						<pt x="1503" y="390.5"/>
-						<pt x="1503" y="222"/>
-					</pts>
-				</flow>
-				<connector uid="12" angle="190.311">
-					<from>heat_required_to_melt_ice</from>
-					<to>extra_heat_used_to_melt_ice</to>
-				</connector>
-				<connector uid="14" angle="207.347">
-					<from>Ton_per_km3_ice</from>
-					<to>extra_heat_used_to_melt_ice</to>
-				</connector>
-				<flow label_side="top" x="1664.75" y="409" name="Extra heat to space">
-					<pts>
-						<pt x="1584.5" y="409"/>
-						<pt x="1757" y="409"/>
-					</pts>
-				</flow>
-				<aux label_side="right" x="1071" y="251" name="Surface Temperature\nAnomaly"/>
-				<connector uid="19" angle="160.56">
-					<from>Extra_Heat_in_Surface</from>
-					<to>Surface_Temperature_Anomaly</to>
-				</connector>
-				<connector uid="20" angle="260.119">
-					<from>Extra_Heat_in_Surface_1980</from>
-					<to>Surface_Temperature_Anomaly</to>
-				</connector>
-				<connector uid="22" angle="51.6135">
-					<from>Surface_Temperature_Anomaly</from>
-					<to>melting_rate</to>
-				</connector>
-				<flow background="white" label_side="top" x="1712.25" y="1555.25" name="CH4 emissions">
-					<pts>
-						<pt x="1815" y="1555.25"/>
-						<pt x="1621.5" y="1555.25"/>
-					</pts>
-				</flow>
-				<stock label_side="center" x="1888.5" y="1092" width="119" height="56" name="N2O in atmosphere"/>
-				<aux label_side="bottom" x="1735" y="1183" name="N2O\nbreakdown\ntime"/>
-				<connector uid="24" angle="234.372">
-					<from>N2O_in_atmosphere</from>
-					<to>N2O_breakdown</to>
-				</connector>
-				<connector uid="25" angle="38.8939">
-					<from>N2O_breakdown_time</from>
-					<to>N2O_breakdown</to>
-				</connector>
-				<aux x="1938" y="1195" name="N2O in atmosphere 1980"/>
-				<flow x="1964" y="1037" name="N2O emissions">
-					<pts>
-						<pt x="1964" y="973"/>
-						<pt x="1964" y="1092"/>
-					</pts>
-				</flow>
-				<connector uid="26" angle="125.577">
-					<from>N2O_in_atmosphere</from>
-					<to>N2O_concentration_in_atm_PPM</to>
-				</connector>
-				<aux background="white" x="1210.75" y="1227" name="tCO2 per tCH4"/>
-				<connector uid="39" angle="218.125">
-					<from>tCO2_per_tCH4</from>
-					<to>CO2_from_CH4</to>
-				</connector>
-				<flow label_side="top" x="1346.75" y="400.5" width="17" height="17" name="extra heat to deep ocean">
-					<pts>
-						<pt x="1441.5" y="409"/>
-						<pt x="1257" y="409"/>
-					</pts>
-				</flow>
-				<connector uid="40" angle="199.44">
-					<from>Extra_Heat_in_Surface</from>
-					<to>extra_heat_to_deep_ocean</to>
-				</connector>
-				<aux label_side="bottom" x="1276" y="545" name="Transfer rate for heat\ngoing to abyss"/>
-				<connector uid="41" angle="287.188">
-					<from>Surface_Temperature_Anomaly</from>
-					<to>effect_of_warming_on_heat_transfer_to_oceans</to>
-				</connector>
-				<aux x="1150" y="538" name="transfer rate\nsurface to abyss 1980"/>
-				<connector uid="42" angle="356.82">
-					<from>transfer_rate_surface_to_abyss_1980</from>
-					<to>Transfer_rate_for_heat_going_to_abyss</to>
-				</connector>
-				<connector uid="45" angle="289.703">
-					<from>Extra_Heat_in_Surface</from>
-					<to>Extra_heat_to_space</to>
-				</connector>
-				<aux x="2126" y="956" name="GtN2O per PPM"/>
-				<flow label_side="top" x="1824.25" y="1111" name="N2O breakdown">
-					<pts>
-						<pt x="1888.5" y="1111"/>
-						<pt x="1748" y="1111"/>
-					</pts>
-				</flow>
-				<aux x="1796" y="477" name="albedo"/>
-				<connector uid="57" angle="355.333">
-					<from>melting_rate</from>
-					<to>melting_ice_and_show</to>
-				</connector>
-				<connector uid="60" angle="25.56">
-					<from>Transfer_rate_for_heat_going_to_abyss</from>
-					<to>extra_heat_to_deep_ocean</to>
-				</connector>
-				<aux label_side="left" label_angle="135" x="1913" y="1376" name="ghg emissions"/>
-				<connector uid="62" angle="17.1027">
-					<from>CH4_emissions</from>
-					<to>ghg_emissions</to>
-				</connector>
-				<connector uid="63" angle="328.29">
-					<from>N2O_emissions</from>
-					<to>ghg_emissions</to>
-				</connector>
-				<aux x="2100" y="1462" name="tCO2e/tCO2"/>
-				<aux label_side="right" label_angle="45" x="2089" y="1405" name="tCO2e/tCH4"/>
-				<aux label_side="top" x="2086" y="1358" name="tCO2e/tN2O"/>
-				<connector uid="64" angle="155.303">
-					<from>&quot;tCO2e/tCO2&quot;</from>
-					<to>ghg_emissions</to>
-				</connector>
-				<connector uid="65" angle="170.643">
-					<from>&quot;tCO2e/tCH4&quot;</from>
-					<to>ghg_emissions</to>
-				</connector>
-				<connector uid="66" angle="185.94">
-					<from>&quot;tCO2e/tN2O&quot;</from>
-					<to>ghg_emissions</to>
-				</connector>
-				<aux background="white" label_side="bottom" x="891.75" y="1611" name="extra CO2\nabsorption\nbreakdown\ntime 1980"/>
-				<connector uid="67" angle="117.099">
-					<from>extra_CO2_absorption_breakdown_time_1980</from>
-					<to>extra_CO2_absorption_breakdown_time</to>
-				</connector>
-				<aux background="white" font_style="italic" font_weight="bold" x="436" y="1268" name="CO2 emissions from\nLULUC GtCO2/y"/>
-				<connector uid="68" angle="23.6893">
-					<from>&quot;CO2_emissions_from_LULUC_GtCO2/y&quot;</from>
-					<to>CO2_emissions</to>
-				</connector>
-				<aux x="1098" y="613" name="water vapor forcing"/>
-				<aux label_side="top" x="747" y="189" name="sensitivity of effect of observed\nwarming on water vapor\nforcing alpha"/>
-				<aux label_side="right" label_angle="45" x="1824.25" y="947" name="N2O concentration in atm PPM"/>
-				<aux label_side="right" x="1392" y="598" name="total forcing"/>
-				<aux label_side="left" label_angle="225" x="872" y="598" name="base level\nwater vapor forcing"/>
-				<connector uid="79" angle="356.203">
-					<from>base_level_water_vapor_forcing</from>
-					<to>water_vapor_forcing</to>
-				</connector>
-				<connector uid="81" angle="348.634">
-					<from>water_vapor_forcing</from>
-					<to>total_forcing</to>
-				</connector>
-				<aux x="1222" y="843" name="forcing from other gases"/>
-				<connector uid="82" angle="46.0032">
-					<from>forcing_from_other_gases</from>
-					<to>anthropogenic_forcing</to>
-				</connector>
-				<aux label_side="left" x="1464" y="1253.75" name="CH4 concentration in atm PPM"/>
-				<aux x="1623" y="1358" name="GtCH4 per PPM"/>
-				<connector uid="90" angle="178.292">
-					<from>GtN2O_per_PPM</from>
-					<to>N2O_concentration_in_atm_PPM</to>
-				</connector>
-				<connector uid="91" angle="146.749">
-					<from>GtCH4_per_PPM</from>
-					<to>CH4_concentration_in_atm_PPM</to>
-				</connector>
-				<connector uid="92" angle="25.7505">
-					<from>GtCO2_per_PPM</from>
-					<to>CO2_concentration_in_atm_PPM</to>
-				</connector>
-				<aux label_side="left" label_angle="135" x="1355.25" y="705" name="anthropogenic forcing"/>
-				<connector uid="94" angle="71.0446">
-					<from>anthropogenic_forcing</from>
-					<to>total_forcing</to>
-				</connector>
-				<aux label_side="left" label_angle="135" x="991.875" y="85" name="warming per ZJ of extra heat"/>
-				<connector uid="95" angle="295.485">
-					<from>warming_per_ZJ_of_extra_heat</from>
-					<to>Surface_Temperature_Anomaly</to>
-				</connector>
-				<flow label_side="top" x="784.75" y="1065" name="change in CO2 in\natmosphere">
-					<pts>
-						<pt x="626" y="1065"/>
-						<pt x="931.5" y="1065"/>
-					</pts>
-				</flow>
-				<connector uid="104" angle="36.0274">
-					<from>CO2_emissions</from>
-					<to>change_in_CO2_in_atmosphere</to>
-				</connector>
-				<connector uid="106" angle="162.034">
-					<from>CO2_absorption</from>
-					<to>change_in_CO2_in_atmosphere</to>
-				</connector>
-				<aux background="white" x="894.75" y="1857" name="sensitivity of extra CO2\nabsorbed on extra CO2\nabsorption breakdown time"/>
-				<aux background="white" label_side="left" label_angle="225" x="844" y="1733" name="effect of extra CO2 absorbed\non extra CO2 absorption\nbreakdown time"/>
-				<connector uid="109" angle="112.258">
-					<from>sensitivity_of_extra_CO2_absorbed_on_extra_CO2_absorption_breakdown_time</from>
-					<to>effect_of_extra_CO2_absorbed_on_extra_CO2_absorption_breakdown_time</to>
-				</connector>
-				<connector uid="112" angle="101.48">
-					<from>effect_of_extra_CO2_absorbed_on_extra_CO2_absorption_breakdown_time</from>
-					<to>extra_CO2_absorption_breakdown_time</to>
-				</connector>
-				<aux background="white" x="1546" y="636" name="UNIT ZJ/W/m2"/>
-				<aux label_side="right" x="1598" y="207" name="UNIT KJ to ZJ"/>
-				<connector uid="121" angle="227.521">
-					<from>UNIT_KJ_to_ZJ</from>
-					<to>extra_heat_used_to_melt_ice</to>
-				</connector>
-				<flow label_side="top" x="1500" y="506.25" name="extra heat from forcing">
-					<pts>
-						<pt x="1500" y="598"/>
-						<pt x="1500" y="423.5"/>
-					</pts>
-				</flow>
-				<aux label_side="left" label_angle="135" x="922.5" y="128" name="Surface Temperature\nAnomaly 1980"/>
-				<stock label_side="center" x="1130.75" y="1120" width="119" height="36" name="Extra CO2\nAbsorbed"/>
-				<aux label_side="top" x="1066" y="1401" name="years between\n1980 and 1850"/>
-				<aux label_side="right" x="1026" y="1530" name="Extra CO2 absorbed 1980"/>
-				<connector uid="147" angle="298.191">
-					<from>CO2_in_atmosphere_1980</from>
-					<to>Extra_CO2_absorbed_1980</to>
-				</connector>
-				<connector uid="148" angle="287.385">
-					<from>CO2_in_atm_in_1850</from>
-					<to>Extra_CO2_absorbed_1980</to>
-				</connector>
-				<connector uid="149" angle="31.1048">
-					<from>extra_CO2_absorption_breakdown_time_1980</from>
-					<to>Extra_CO2_absorbed_1980</to>
-				</connector>
-				<connector uid="150" angle="252.773">
-					<from>years_between_1980_and_1850</from>
-					<to>Extra_CO2_absorbed_1980</to>
-				</connector>
-				<connector uid="152" angle="284.036">
-					<from>Extra_CO2_absorbed_1980</from>
-					<to>effect_of_extra_CO2_absorbed_on_extra_CO2_absorption_breakdown_time</to>
-				</connector>
-				<aux background="white" label_side="right" label_angle="315" x="1433" y="1757" name="CH4 absorption\nbreakdown\ntime 1980"/>
-				<aux label_side="top" x="889" y="828" name="forcing from CO2"/>
-				<connector uid="86" angle="19.179">
-					<from>forcing_from_CO2</from>
-					<to>anthropogenic_forcing</to>
-				</connector>
-				<connector uid="84" angle="168.69">
-					<from>CO2_concentration_in_atm_PPM</from>
-					<to>forcing_from_CO2</to>
-				</connector>
-				<aux label_side="left" x="1491" y="1065" name="CH4 concentration in atm PPB"/>
-				<connector uid="164" angle="81.8593">
-					<from>CH4_concentration_in_atm_PPM</from>
-					<to>CH4_concentration_in_atm_PPB</to>
-				</connector>
-				<aux background="white" x="1564" y="1201" name="UNIT PPM to PPB"/>
-				<connector uid="165" angle="118.225">
-					<from>UNIT_PPM_to_PPB</from>
-					<to>CH4_concentration_in_atm_PPB</to>
-				</connector>
-				<aux label_side="left" x="1763" y="947" name="N2O concentration in atm PPB"/>
-				<connector uid="172" angle="120.993">
-					<from>
-						<alias uid="173"/>
-					</from>
-					<to>N2O_concentration_in_atm_PPB</to>
-				</connector>
-				<connector uid="174" angle="180">
-					<from>N2O_concentration_in_atm_PPM</from>
-					<to>N2O_concentration_in_atm_PPB</to>
-				</connector>
-				<aux label_side="right" label_angle="45" x="1386" y="836" name="forcing from CH4"/>
-				<connector uid="181" angle="114.632">
-					<from>CH4_concentration_in_atm_PPB</from>
-					<to>forcing_from_CH4</to>
-				</connector>
-				<aux label_side="left" x="1597.25" y="803" name="forcing from N2O"/>
-				<connector uid="184" angle="139.017">
-					<from>N2O_concentration_in_atm_PPB</from>
-					<to>forcing_from_N2O</to>
-				</connector>
-				<connector uid="185" angle="67.9258">
-					<from>CH4_concentration_in_atm_PPB</from>
-					<to>forcing_from_N2O</to>
-				</connector>
-				<connector uid="187" angle="103.21">
-					<from>forcing_from_CH4</from>
-					<to>anthropogenic_forcing</to>
-				</connector>
-				<connector uid="188" angle="147.724">
-					<from>forcing_from_N2O</from>
-					<to>anthropogenic_forcing</to>
-				</connector>
-				<aux x="1486" y="898" name="UNIT W/m2"/>
-				<connector uid="189" angle="148.201">
-					<from>&quot;UNIT_W/m2&quot;</from>
-					<to>forcing_from_CH4</to>
-				</connector>
-				<connector uid="190" angle="188.806">
-					<from>
-						<alias uid="191"/>
-					</from>
-					<to>forcing_from_N2O</to>
-				</connector>
-				<aux x="1523" y="851" name="UNIT PPB"/>
-				<connector uid="192" angle="173.752">
-					<from>UNIT_PPB</from>
-					<to>forcing_from_CH4</to>
-				</connector>
-				<connector uid="193" angle="174.048">
-					<from>
-						<alias uid="194"/>
-					</from>
-					<to>forcing_from_N2O</to>
-				</connector>
-				<aux label_side="top" x="1712.25" y="752" name="UNIT PPM"/>
-				<connector uid="195" angle="203.916">
-					<from>UNIT_PPM</from>
-					<to>forcing_from_N2O</to>
-				</connector>
-				<aux x="1364" y="956" name="extra d3"/>
-				<connector uid="196" angle="79.6111">
-					<from>extra_d3</from>
-					<to>forcing_from_CH4</to>
-				</connector>
-				<aux label_side="right" label_angle="45" x="1858" y="798" name="extra d2"/>
-				<connector uid="197" angle="181.099">
-					<from>extra_d2</from>
-					<to>forcing_from_N2O</to>
-				</connector>
-				<aux background="white" label_side="left" x="1329.75" y="1690" name="CH4 absorption\nbreakdown\ntime"/>
-				<connector uid="198" angle="147.02">
-					<from>CH4_absorption_breakdown_time_1980</from>
-					<to>CH4_absorption_breakdown_time</to>
-				</connector>
-				<connector uid="199" angle="116.565">
-					<from>CH4_absorption_breakdown_time</from>
-					<to>CH4_breakdown</to>
-				</connector>
-				<aux background="white" label_side="bottom" x="1574.25" y="1618" name="sensitivity of effect of CH4 in atmosphere\non CH4 absorption breakdown time"/>
-				<aux label_side="left" label_angle="135" x="1424" y="1630" name="effect of CH4 in atmosphere\non CH4 absorption breakdown time"/>
-				<connector uid="202" angle="184.566">
-					<from>sensitivity_of_effect_of_CH4_in_atmosphere_on_CH4_absorption_breakdown_time</from>
-					<to>effect_of_CH4_in_atmosphere_on_CH4_absorption_breakdown_time</to>
-				</connector>
-				<connector uid="203" angle="212.299">
-					<from>CH4_in_atmosphere</from>
-					<to>effect_of_CH4_in_atmosphere_on_CH4_absorption_breakdown_time</to>
-				</connector>
-				<connector uid="204" angle="212.481">
-					<from>effect_of_CH4_in_atmosphere_on_CH4_absorption_breakdown_time</from>
-					<to>CH4_absorption_breakdown_time</to>
-				</connector>
-				<connector uid="207" angle="24.7751">
-					<from>total_forcing</from>
-					<to>extra_heat_from_forcing</to>
-				</connector>
-				<connector uid="208" angle="109.521">
-					<from>&quot;UNIT_ZJ/W/m2&quot;</from>
-					<to>extra_heat_from_forcing</to>
-				</connector>
-				<aux label_side="left" label_angle="225" x="839" y="424.5" name="effect of observed\nwarming on water vapor\nforcing"/>
-				<connector uid="212" angle="293.199">
-					<from>effect_of_observed_warming_on_water_vapor_forcing</from>
-					<to>water_vapor_forcing</to>
-				</connector>
-				<connector uid="213" angle="291.339">
-					<from>sensitivity_of_effect_of_observed_warming_on_water_vapor_forcing_alpha</from>
-					<to>effect_of_observed_warming_on_water_vapor_forcing</to>
-				</connector>
-				<connector uid="216" angle="246.003">
-					<from>melting_rate</from>
-					<to>extra_heat_used_to_melt_ice</to>
-				</connector>
-				<connector uid="217" angle="174.577">
-					<from>Amount_of_Ice_and_Snow</from>
-					<to>extra_heat_used_to_melt_ice</to>
-				</connector>
-				<aux x="1924" y="506.25" name="albedo 1980"/>
-				<connector uid="218" angle="167.128">
-					<from>albedo_1980</from>
-					<to>albedo</to>
-				</connector>
-				<aux label_side="right" label_angle="315" x="1888" y="437.5" name="effect of ice\non albedo"/>
-				<connector uid="219" angle="268.698">
-					<from>Amount_of_Ice_and_Snow</from>
-					<to>effect_of_ice_on_albedo</to>
-				</connector>
-				<aux label_side="right" x="2070" y="373" name="sensitivity of\neffect of ice and snow on albedo"/>
-				<connector uid="220" angle="199.514">
-					<from>sensitivity_of_effect_of_ice_and_snow_on_albedo</from>
-					<to>effect_of_ice_on_albedo</to>
-				</connector>
-				<connector uid="221" angle="203.236">
-					<from>effect_of_ice_on_albedo</from>
-					<to>albedo</to>
-				</connector>
-				<connector uid="222" angle="152.612">
-					<from>albedo</from>
-					<to>Extra_heat_to_space</to>
-				</connector>
-				<aux label_side="left" label_angle="225" x="1144" y="487" name="effect of warming\non heat transfer to oceans"/>
-				<connector uid="224" angle="319.086">
-					<from>effect_of_warming_on_heat_transfer_to_oceans</from>
-					<to>Transfer_rate_for_heat_going_to_abyss</to>
-				</connector>
-				<aux label_side="left" label_angle="135" x="1080" y="434.5" name="sensitivity\nof effect of warming\non heat transfer to oceans"/>
-				<connector uid="225" angle="320.638">
-					<from>sensitivity_of_effect_of_warming_on_heat_transfer_to_oceans</from>
-					<to>effect_of_warming_on_heat_transfer_to_oceans</to>
-				</connector>
-				<connector uid="226" angle="275.069">
-					<from>
-						<alias uid="227"/>
-					</from>
-					<to>melting_rate</to>
-				</connector>
-				<aux x="1824" y="103" name="Amount of Ice and Snow 1980"/>
-				<aux label_side="left" x="1616" y="1026" name="alpha N2O"/>
-				<connector uid="228" angle="141.882">
-					<from>
-						<alias uid="229"/>
-					</from>
-					<to>alpha_N2O</to>
-				</connector>
-				<connector uid="230" angle="208.254">
-					<from>N2O_concentration_in_atm_PPB</from>
-					<to>alpha_N2O</to>
-				</connector>
-				<aux x="611.5" y="821" name="C0"/>
-				<aux x="602.5" y="868" name="extra d1"/>
-				<connector uid="231" angle="7.94803">
-					<from>extra_d1</from>
-					<to>forcing_from_CO2</to>
-				</connector>
-				<connector uid="232" angle="33.0917">
-					<from>
-						<alias uid="233"/>
-					</from>
-					<to>forcing_from_CO2</to>
-				</connector>
-				<connector uid="234" angle="358.555">
-					<from>C0</from>
-					<to>forcing_from_CO2</to>
-				</connector>
-				<connector uid="236" angle="15.4222">
-					<from>
-						<alias uid="237"/>
-					</from>
-					<to>forcing_from_CO2</to>
-				</connector>
-				<aux label_side="left" label_angle="135" x="718.5" y="261" name="sensitivity of effect of observed\nwarming on water vapor\nforcing beta"/>
-				<connector uid="238" angle="306.39">
-					<from>sensitivity_of_effect_of_observed_warming_on_water_vapor_forcing_beta</from>
-					<to>effect_of_observed_warming_on_water_vapor_forcing</to>
-				</connector>
-				<connector uid="242" angle="216.791">
-					<from>Surface_Temperature_Anomaly</from>
-					<to>effect_of_observed_warming_on_water_vapor_forcing</to>
-				</connector>
-				<connector uid="244" angle="320.366">
-					<from>Surface_Temperature_Anomaly_1980</from>
-					<to>Surface_Temperature_Anomaly</to>
-				</connector>
-				<connector uid="245" angle="254.272">
-					<from>Surface_Temperature_Anomaly_1980</from>
-					<to>effect_of_observed_warming_on_water_vapor_forcing</to>
-				</connector>
-				<connector uid="247" angle="162.646">
-					<from>
-						<alias uid="248"/>
-					</from>
-					<to>effect_of_extra_CO2_absorbed_on_extra_CO2_absorption_breakdown_time</to>
-				</connector>
-				<connector uid="249" angle="346.193">
-					<from>
-						<alias uid="250"/>
-					</from>
-					<to>forcing_from_CO2</to>
-				</connector>
-				<connector uid="251" angle="32.0234">
-					<from>
-						<alias uid="252"/>
-					</from>
-					<to>forcing_from_CH4</to>
-				</connector>
-				<connector uid="253" angle="166.445">
-					<from>
-						<alias uid="254"/>
-					</from>
-					<to>forcing_from_N2O</to>
-				</connector>
-				<connector uid="255" angle="106.209">
-					<from>
-						<alias uid="256"/>
-					</from>
-					<to>ghg_emissions</to>
-				</connector>
-				<connector uid="259" angle="301.242">
-					<from>
-						<alias uid="260"/>
-					</from>
-					<to>effect_of_warming_on_heat_transfer_to_oceans</to>
-				</connector>
-				<connector uid="261" angle="147.156">
-					<from>CO2_from_CH4</from>
-					<to>change_in_CO2_in_atmosphere</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="463.75" y="1401" name="CO2 from energy\nproduction"/>
-				<aux font_style="italic" font_weight="bold" x="616.25" y="1430" name="CO2 from non fossil\nindustrial processes"/>
-				<connector uid="262" angle="43.7455">
-					<from>CO2_from_energy_production</from>
-					<to>CO2_from_energy_and_industry</to>
-				</connector>
-				<connector uid="263" angle="74.3578">
-					<from>CO2_from_non_fossil_industrial_processes</from>
-					<to>CO2_from_energy_and_industry</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="1856.75" y="1662" name="CH4 emissions 1"/>
-				<aux font_style="italic" font_weight="bold" x="2140" y="1033.25" name="N2O emissions 1"/>
-				<connector uid="265" angle="183.814">
-					<from>N2O_emissions_1</from>
-					<to>N2O_emissions</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="1673.75" y="1751.25" name="CH4 emissions 2"/>
-				<aux x="1726.25" y="1886.25" name="SO2 Emissions"/>
-				<aux font_style="italic" font_weight="bold" x="1609.82" y="2003.57" name="SO2 emissions 1"/>
-				<connector uid="267" angle="45.2189">
-					<from>SO2_emissions_1</from>
-					<to>SO2_Emissions</to>
-				</connector>
-				<aux x="593.5" y="1323.75" name="CO2 from energy and industry"/>
-				<connector uid="269" angle="87.1376">
-					<from>CO2_from_energy_and_industry</from>
-					<to>CO2_emissions</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="1820.71" y="1794.46" name="CH4 emissions 3"/>
-				<connector uid="283" angle="83.6598">
-					<from>CH4_emissions_2</from>
-					<to>CH4_emissions</to>
-				</connector>
-				<connector uid="284" angle="114.39">
-					<from>CH4_emissions_3</from>
-					<to>CH4_emissions</to>
-				</connector>
-				<connector uid="285" angle="143.459">
-					<from>CH4_emissions_1</from>
-					<to>CH4_emissions</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="2227.5" y="1138.75" name="NO2 emissions"/>
-				<connector uid="286" angle="158.886">
-					<from>NO2_emissions</from>
-					<to>N2O_emissions</to>
-				</connector>
-				<alias background="white" font_style="italic" label_side="bottom" uid="173" x="1797.25" y="1010" width="18" height="18">
-					<of>UNIT_PPM_to_PPB</of>
-				</alias>
-				<alias color="blue" background="white" font_style="italic" label_side="right" label_angle="45" uid="191" x="1769" y="766" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>&quot;UNIT_W/m2&quot;</of>
-				</alias>
-				<alias color="blue" background="white" font_style="italic" label_side="right" label_angle="45" uid="194" x="1876" y="824" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>UNIT_PPB</of>
-				</alias>
-				<alias font_style="italic" label_side="right" uid="227" x="1553.75" y="56" width="18" height="18">
-					<of>Surface_Temperature_Anomaly_1980</of>
-				</alias>
-				<alias font_style="italic" label_side="bottom" uid="229" x="1672" y="1068" width="18" height="18">
-					<of>UNIT_PPB</of>
-				</alias>
-				<alias font_style="italic" uid="233" x="791" y="877" width="18" height="18">
-					<of>UNIT_PPM</of>
-				</alias>
-				<alias font_style="italic" uid="237" x="691.5" y="871" width="18" height="18">
-					<of>&quot;UNIT_W/m2&quot;</of>
-				</alias>
-				<alias font_style="italic" label_side="center" uid="248" x="976.5" y="1775" width="119" height="36">
-					<of>Extra_CO2_Absorbed</of>
-				</alias>
-				<alias font_style="italic" uid="250" x="615.5" y="754" width="18" height="18">
-					<of>alpha_N2O</of>
-				</alias>
-				<alias font_style="italic" uid="252" x="1162.75" y="961" width="18" height="18">
-					<of>N2O_concentration_in_atm_PPB</of>
-				</alias>
-				<alias font_style="italic" label_side="right" uid="254" x="1862" y="860" width="18" height="18">
-					<of>CO2_concentration_in_atm_PPM</of>
-				</alias>
-				<alias background="white" font_style="italic" label_side="right" label_angle="315" uid="256" x="1929" y="1453" width="18" height="18">
-					<of>CO2_emissions</of>
-				</alias>
-				<alias font_style="italic" label_side="left" label_angle="135" uid="260" x="1071" y="372.5" width="18" height="18">
-					<of>Surface_Temperature_Anomaly_1980</of>
-				</alias>
 			</view>
 		</views>
 	</model>
