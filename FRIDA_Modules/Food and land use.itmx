@@ -5,7 +5,7 @@
 		<name>Food and land use</name>
 		<uuid>825eafcf-13f3-4abf-a044-6373e05d903a</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.4.1" isee:build_number="3048" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.5" isee:build_number="3121" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -17,6 +17,7 @@
 	<isee:time_formats default_format="Builtin">
 		<isee:time_format name="Builtin" type="adaptive"/>
 	</isee:time_formats>
+	<isee:number_format_extenders/>
 	<default_format/>
 	<model_units>
 		<unit name="Hectares">
@@ -156,10 +157,6 @@
 		<unit name="GtCO2">
 			<eqn>Giga*tCO2</eqn>
 		</unit>
-		<unit name="Kelvin">
-			<eqn/>
-			<alias>K</alias>
-		</unit>
 		<unit name="Dimensionless">
 			<eqn>1</eqn>
 			<alias>dmnl</alias>
@@ -171,13 +168,20 @@
 		<unit name="M">
 			<eqn>Million</eqn>
 		</unit>
+		<unit name="Kelvin">
+			<eqn/>
+			<alias>K</alias>
+		</unit>
+		<unit name="KtN2O">
+			<eqn>kilo*tN2O</eqn>
+		</unit>
 	</model_units>
 	<model name="Food_and_land_use">
 		<variables>
 			<aux name="crop production" access="output">
 				<doc>Calibration data from:
 Food and Agriculture Organization of the United Nations (2023)</doc>
-				<eqn>average_crop_yield*Agricultural_Land</eqn>
+				<eqn>average_crop_yield*Cropland</eqn>
 				<units>Mtcrop/year</units>
 			</aux>
 			<aux name="Agricultural Land 1980">
@@ -185,7 +189,7 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<eqn>1449.92456105823</eqn>
 				<units>Mha</units>
 			</aux>
-			<stock name="Agricultural Land">
+			<stock name="Cropland">
 				<doc>Calibration data from:
 Food and Agriculture Organization of the United Nations (2023)</doc>
 				<eqn>Agricultural_Land_1980</eqn>
@@ -226,7 +230,7 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<units>1</units>
 			</aux>
 			<flow name="agricultural\nland loss">
-				<eqn>Agricultural_Land*agriculture_land_erosion_rate</eqn>
+				<eqn>Cropland*agriculture_land_erosion_rate</eqn>
 				<units>Mha/year</units>
 			</flow>
 			<aux name="effect of CO2 concentration on\naverage crop yield">
@@ -258,7 +262,7 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<units>Mha</units>
 			</stock>
 			<aux name="desired crop yield">
-				<eqn>crop_demand/Agricultural_Land</eqn>
+				<eqn>crop_demand/Cropland</eqn>
 				<units>tcrop/(ha*year)</units>
 			</aux>
 			<stock name="Soil Quality Index">
@@ -319,7 +323,7 @@ Friedlingstein P, O&apos;Sullivan M, Jones MW, Andrew R M, Gregor L, Hauck J, Le
 			<aux name="fertilizer use" access="output">
 				<doc>Calibration data from:
 Breier, J. (2023). Regionalisation of FAO &amp; Hyde data (Version 0.1.0) [Computer software]. https://github.com/jnnsbrr/reg_fao_hyde</doc>
-				<eqn>Agricultural_Land*fertilizer_use_per_ha/&quot;UNIT_kgN/tN&quot;</eqn>
+				<eqn>Cropland*fertilizer_use_per_ha/&quot;UNIT_kgN/tN&quot;</eqn>
 				<units>MtN/year</units>
 			</aux>
 			<aux name="sustainable fertilizer\nuse">
@@ -431,7 +435,7 @@ Lambin EF, Meyfroidt P. 2011. Global land use change, economic globalization, an
 			</aux>
 			<aux name="CO2 release per ha of old growth\nforest cut">
 				<doc>Calibration Parameter: CO2 emissions from land cover change</doc>
-				<eqn>955</eqn>
+				<eqn>935.908475381223</eqn>
 				<units>tCO2/ha</units>
 			</aux>
 			<aux name="CO2 concentration in atm ppm" access="input">
@@ -457,16 +461,16 @@ Lambin EF, Meyfroidt P. 2011. Global land use change, economic globalization, an
 			</aux>
 			<aux name="normal rate of CO2 absorption in\nforestry land">
 				<doc>Calibration Parameter: CO2 emissions from land cover change</doc>
-				<eqn>1.6</eqn>
+				<eqn>1.46674826947178</eqn>
 				<units>tCO2/(ha*year)</units>
 			</aux>
 			<aux name="CO2 release per ha of new\nforest cut">
 				<doc>Calibration Parameter: CO2 emissions from land cover change</doc>
-				<eqn>160</eqn>
+				<eqn>6.69305669955091</eqn>
 				<units>tCO2/ha</units>
 			</aux>
 			<aux name="Land Area">
-				<eqn>Unused_Land + Urban_Land + Agricultural_Land + Forestry_Land + Old_Growth_Forest_Land</eqn>
+				<eqn>Unused_Land + Urban_Land + Cropland + Forestry_Land + Old_Growth_Forest_Land</eqn>
 				<isee:summing/>
 				<units>Mha</units>
 			</aux>
@@ -517,7 +521,7 @@ Lambin EF, Meyfroidt P. 2011. Global land use change, economic globalization, an
 				<units>Mha/year</units>
 			</flow>
 			<aux name="new agricultural\nland">
-				<eqn>Agricultural_Land*agricultural_land_expansion_rate</eqn>
+				<eqn>Cropland*agricultural_land_expansion_rate</eqn>
 				<units>Mha/year</units>
 			</aux>
 			<aux name="fraction of new\nagricultural land\nfrom forests">
@@ -558,12 +562,12 @@ Lambin EF, Meyfroidt P. 2011. Global land use change, economic globalization, an
 			</aux>
 			<aux name="kg CH4 per kg crop in 1980">
 				<doc>Calibration Parameter: CH4 concentration in atm PPM &amp; CH4 Emissions</doc>
-				<eqn>0.0118856755479537</eqn>
+				<eqn>0.00488387568387632</eqn>
 				<units>tCH4/tcrop</units>
 			</aux>
 			<aux name="rate of decline in\nCH4 per kg crop">
 				<doc>Calibration Parameter: CH4 concentration in atm PPM &amp; CH4 Emissions</doc>
-				<eqn>0.0008704949480407</eqn>
+				<eqn>0.000908656927507745</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="CH4 emissions" access="output" isee:autocreated="true">
@@ -571,7 +575,7 @@ Lambin EF, Meyfroidt P. 2011. Global land use change, economic globalization, an
 
 Nicholls Z, Meinshausen M, Lewis J, Corradi MR, Dorheim K, Gasser T, Gieseke R, Hope AP, Leach NJ, McBride LA, Quilcaille Y. 2021. Reduced complexity Model Intercomparison Project Phase 2: Synthesizing Earth system knowledge for probabilistic climate projections. Earth’s Future 9:6, e2020EF001900. https://doi.org/10.1029/2020EF001900
 </doc>
-				<eqn>crop_production*kg_CH4_emission_per_kg_crop</eqn>
+				<eqn>baseline_CH4_emissions+crop_production*kg_CH4_emission_per_kg_crop</eqn>
 				<units>MtCH4/Year</units>
 			</aux>
 			<aux name="kg N2O emission\nper kg fertiliser">
@@ -580,12 +584,12 @@ Nicholls Z, Meinshausen M, Lewis J, Corradi MR, Dorheim K, Gasser T, Gieseke R, 
 			</aux>
 			<aux name="kg N2O per kg\nfertilizer in 1980">
 				<doc>Calibration Parameter: N2O concentration in atm PPM &amp; N2O Emissions</doc>
-				<eqn>0.01</eqn>
+				<eqn>0.0325785312382823</eqn>
 				<units>tN2O/tN</units>
 			</aux>
 			<aux name="rate of decline in N2O\nper kg fertiliser">
 				<doc>Calibration Parameter: N2O concentration in atm PPM &amp; N2O Emissions</doc>
-				<eqn>0.0175638235506213</eqn>
+				<eqn>0.00163926139937177</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="N2O emissions" access="output" isee:autocreated="true">
@@ -600,9 +604,17 @@ Nicholls Z, Meinshausen M, Lewis J, Corradi MR, Dorheim K, Gasser T, Gieseke R, 
 				<eqn>1000</eqn>
 				<units>ktN2O/MtN2O</units>
 			</aux>
+			<aux name="SO2 emissions" access="output" isee:autocreated="true">
+				<eqn>2</eqn>
+				<units>MtSO2/Year</units>
+			</aux>
 			<aux name="baseline\nN2O emissions">
-				<eqn>7525.88355913014</eqn>
+				<eqn>4706.30259878822</eqn>
 				<units>KtN2O/Year</units>
+			</aux>
+			<aux name="baseline\nCH4 emissions">
+				<eqn>98.225128916047</eqn>
+				<units>MtCH4/Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -651,7 +663,7 @@ Nicholls Z, Meinshausen M, Lewis J, Corradi MR, Dorheim K, Gasser T, Gieseke R, 
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="4" isee:scroll_x="2306.25" isee:scroll_y="982.5" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="4" isee:scroll_x="1685" isee:scroll_y="778.75" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -692,7 +704,7 @@ Nicholls Z, Meinshausen M, Lewis J, Corradi MR, Dorheim K, Gasser T, Gieseke R, 
 				</style>
 				<aux label_side="right" x="778.333" y="700.667" name="crop demand"/>
 				<stock label_side="center" x="1710.5" y="758.833" width="142" height="47" name="Forestry Land"/>
-				<stock label_side="center" x="1727.5" y="1021.5" width="115" height="59" name="Agricultural Land"/>
+				<stock label_side="center" x="1727.5" y="1021.5" width="115" height="59" name="Cropland"/>
 				<stock label_side="center" x="1729.5" y="1256" width="120" height="60" name="Unused Land"/>
 				<stock label_side="center" x="2079" y="1021.5" width="95" height="52" name="Urban Land"/>
 				<stock label_side="center" x="829" y="1621" width="131" height="47" name="Soil Quality Index"/>
@@ -703,7 +715,7 @@ Nicholls Z, Meinshausen M, Lewis J, Corradi MR, Dorheim K, Gasser T, Gieseke R, 
 					</pts>
 				</flow>
 				<connector uid="2" angle="275.528">
-					<from>Agricultural_Land</from>
+					<from>Cropland</from>
 					<to>agricultural_land_loss</to>
 				</connector>
 				<flow background="white" label_side="right" label_angle="315" x="1763.5" y="913.667" name="forest land entering\nagricultural land">
@@ -764,7 +776,7 @@ Nicholls Z, Meinshausen M, Lewis J, Corradi MR, Dorheim K, Gasser T, Gieseke R, 
 				</connector>
 				<aux label_side="right" x="1076" y="988" name="crop production"/>
 				<connector uid="16" angle="213.207">
-					<from>Agricultural_Land</from>
+					<from>Cropland</from>
 					<to>crop_production</to>
 				</connector>
 				<aux label_side="right" label_angle="315" x="1081" y="855.667" name="crop balance"/>
@@ -1078,7 +1090,7 @@ Nicholls Z, Meinshausen M, Lewis J, Corradi MR, Dorheim K, Gasser T, Gieseke R, 
 				</flow>
 				<aux label_side="top" x="1623" y="1031" name="new agricultural\nland"/>
 				<connector uid="256" angle="198.034">
-					<from>Agricultural_Land</from>
+					<from>Cropland</from>
 					<to>new_agricultural_land</to>
 				</connector>
 				<aux label_side="right" label_angle="315" x="1810.75" y="845.667" name="fraction of new\nagricultural land\nfrom forests"/>
@@ -1201,16 +1213,22 @@ Nicholls Z, Meinshausen M, Lewis J, Corradi MR, Dorheim K, Gasser T, Gieseke R, 
 					<from>&quot;UNIT_ktN2O/MtN2O&quot;</from>
 					<to>N2O_emissions</to>
 				</connector>
+				<aux x="2888.75" y="1597.5" name="SO2 emissions"/>
 				<aux x="2772" y="1126" name="baseline\nN2O emissions"/>
 				<connector uid="305" angle="289.026">
 					<from>baseline_N2O_emissions</from>
 					<to>N2O_emissions</to>
 				</connector>
+				<aux x="2382" y="1272.25" name="baseline\nCH4 emissions"/>
+				<connector uid="306" angle="211.931">
+					<from>baseline_CH4_emissions</from>
+					<to>CH4_emissions</to>
+				</connector>
 				<alias uid="32" x="1268" y="1685" width="18" height="18">
 					<of>sustainable_fertilizer_use</of>
 				</alias>
 				<alias uid="38" x="492.667" y="767" width="45" height="35">
-					<of>Agricultural_Land</of>
+					<of>Cropland</of>
 				</alias>
 				<alias font_style="italic" font_weight="bold" uid="241" x="2082" y="1254.67" width="18" height="18">
 					<of>Population</of>
