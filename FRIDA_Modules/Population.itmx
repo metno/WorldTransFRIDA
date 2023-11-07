@@ -5,7 +5,7 @@
 		<name>Population</name>
 		<uuid>754d41b4-6e07-4fd6-9ae8-1b296394f58a</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.5" isee:build_number="3121" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.5" isee:build_number="3081" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -22,7 +22,7 @@
 		<isee:time_format name="Builtin" type="adaptive"/>
 	</isee:time_formats>
 	<isee:number_format_extenders/>
-	<default_format/>
+	<default_format scale_by="1"/>
 	<model_units>
 		<unit name="Years">
 			<eqn/>
@@ -44,14 +44,8 @@
 		<unit name="Gph">
 			<eqn>Gh*p</eqn>
 		</unit>
-		<unit name="GtCH4">
-			<eqn>Giga*tCH4</eqn>
-		</unit>
 		<unit name="GtCO2e">
 			<eqn>Giga*tCO2e</eqn>
-		</unit>
-		<unit name="GtN2O">
-			<eqn>Giga*tN2O</eqn>
 		</unit>
 		<unit name="k$">
 			<eqn>kilo*$</eqn>
@@ -153,9 +147,6 @@
 			<eqn/>
 			<alias>Weeks</alias>
 		</unit>
-		<unit name="GtCO2">
-			<eqn>Giga*tCO2</eqn>
-		</unit>
 		<unit name="MtSO2">
 			<eqn>Million*tSO2</eqn>
 		</unit>
@@ -168,15 +159,6 @@
 		<unit name="MKg">
 			<eqn>Million*kg</eqn>
 		</unit>
-		<unit name="Dimensionless">
-			<eqn>1</eqn>
-			<alias>dmnl</alias>
-			<alias>unitless</alias>
-		</unit>
-		<unit name="Kelvin">
-			<eqn/>
-			<alias>K</alias>
-		</unit>
 		<unit name="p">
 			<eqn>people</eqn>
 		</unit>
@@ -188,12 +170,21 @@
 			<eqn/>
 			<alias>orders</alias>
 		</unit>
+		<unit name="Dimensionless">
+			<eqn>1</eqn>
+			<alias>dmnl</alias>
+			<alias>unitless</alias>
+		</unit>
+		<unit name="Kelvin">
+			<eqn/>
+			<alias>K</alias>
+		</unit>
 	</model_units>
 	<model name="Population">
 		<variables>
-			<aux name="GDP per person in 1980" access="output">
+			<aux name="GDP per person in 1980">
 				<eqn>INIT(GDP_per_person)</eqn>
-				<units>k$/p/year</units>
+				<units>b$/Mp/year</units>
 			</aux>
 			<aux name="GDP per person" access="output">
 				<doc>Penn World Table version 10.01 (Friedlingstein et al. 2022)
@@ -201,8 +192,8 @@
 Feenstra RC, Inklaar R, Timmer MP. 2015. The Next Generation of the Penn World Table. American Economic Review 105(10): 3150-3182. DOI: 10.1257/aer.20130954, available for download at www.ggdc.net/pwt
 
 </doc>
-				<eqn>(GDP/Population)/&quot;UNIT_G/(M*k)&quot;</eqn>
-				<units>k$/p/year</units>
+				<eqn>(GDP/Population)</eqn>
+				<units>b$/Mp/year</units>
 			</aux>
 			<stock name="Aged 20 to 40 years">
 				<eqn>Aged_20_to_40_in_1980[*]</eqn>
@@ -288,10 +279,6 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 				<non_negative/>
 				<units>Mp/Year</units>
 			</flow>
-			<aux name="time to adapt to\nhigher income">
-				<eqn>10.0676689167948</eqn>
-				<units>year</units>
-			</aux>
 			<aux name="population growth rate">
 				<eqn>birth_rate-death_rate</eqn>
 				<units>1/year</units>
@@ -765,11 +752,6 @@ Pörtner HO, Roberts DC, Adams H, Adler C, Aldunce P, Ali E, Begum RA, Betts R, 
 				</element>
 				<units>Mp</units>
 			</aux>
-			<aux name="effective GDP per person" access="output">
-				<eqn>SMTH1(GDP_per_person, time_to_adapt_to_higher_income, GDP_per_person_in_1980)</eqn>
-				<isee:delay_aux/>
-				<units>k$/p/year</units>
-			</aux>
 			<stock name="Aged 0 years">
 				<doc>All calibration data of Population sector form:
 
@@ -1058,7 +1040,7 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="1175" isee:scroll_y="1352" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="473" isee:scroll_y="1231" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1139,7 +1121,6 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				<aux label_side="left" x="1584.67" y="2028.84" name="GDP per person in 1980"/>
 				<aux label_side="bottom" x="530" y="1582.67" name="fertility"/>
 				<aux label_side="left" label_angle="135" x="1546.67" y="1899.5" name="GDP per person"/>
-				<aux label_side="left" label_angle="225" x="1575" y="2071.67" name="time to adapt to\nhigher income"/>
 				<aux label_side="left" label_angle="135" x="1599.33" y="1523.67" name="population growth rate"/>
 				<connector uid="48" angle="145.627">
 					<from>death_rate</from>
@@ -1180,10 +1161,6 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				</flow>
 				<aux background="white" label_side="right" x="1243.25" y="1810" name="effect of surface temperature\nanomaly on mortality"/>
 				<aux background="white" label_side="right" label_angle="45" x="1717.58" y="1763.17" name="UNIT G/(M*k)"/>
-				<connector uid="102" angle="218.579">
-					<from>&quot;UNIT_G/(M*k)&quot;</from>
-					<to>GDP_per_person</to>
-				</connector>
 				<aux background="white" label_side="left" label_angle="135" x="1194.67" y="1928.67" name="sensitivity of mortality\nto surface temperature anomaly"/>
 				<connector uid="104" angle="67.7354">
 					<from>sensitivity_of_mortality_to_surface_temperature_anomaly</from>
@@ -1260,19 +1237,6 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				<connector uid="196" angle="286.373">
 					<from>GDP_per_person</from>
 					<to>GDP_per_person_in_1980</to>
-				</connector>
-				<aux label_side="right" x="1707" y="2147" name="effective GDP per person"/>
-				<connector uid="42" angle="330.287">
-					<from>time_to_adapt_to_higher_income</from>
-					<to>effective_GDP_per_person</to>
-				</connector>
-				<connector uid="41" angle="302.935">
-					<from>GDP_per_person</from>
-					<to>effective_GDP_per_person</to>
-				</connector>
-				<connector uid="52" angle="315.993">
-					<from>GDP_per_person_in_1980</from>
-					<to>effective_GDP_per_person</to>
 				</connector>
 				<stock label_side="center" x="724.833" y="1199.67" width="113.333" height="39.1667" name="Aged 0 years"/>
 				<flow x="904.999" y="1219.17" name="Passing 0">
@@ -1508,12 +1472,6 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 					</from>
 					<to>Over_80_death_rate</to>
 				</connector>
-				<connector uid="347" angle="147.815">
-					<from>
-						<alias uid="348"/>
-					</from>
-					<to>relative_GDP_per_person</to>
-				</connector>
 				<connector uid="349" angle="101.539">
 					<from>
 						<alias uid="350"/>
@@ -1595,6 +1553,10 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 					</from>
 					<to>Dependency_ratio</to>
 				</connector>
+				<connector uid="390" angle="189.123">
+					<from>GDP_per_person_in_1980</from>
+					<to>relative_GDP_per_person</to>
+				</connector>
 				<alias font_style="italic" uid="330" x="1114.67" y="1688.83" width="18" height="18">
 					<of>relative_GDP_per_person</of>
 				</alias>
@@ -1621,9 +1583,6 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				</alias>
 				<alias background="white" font_style="italic" label_side="right" label_angle="45" uid="346" x="2603.17" y="1366.17" width="18" height="18">
 					<of>effect_of_surface_temperature_anomaly_on_mortality</of>
-				</alias>
-				<alias font_style="italic" uid="348" x="1245.5" y="2148.17" width="18" height="18">
-					<of>GDP_per_person_in_1980</of>
 				</alias>
 				<alias font_style="italic" uid="350" x="1623.33" y="1688.83" width="18" height="18">
 					<of>Births</of>

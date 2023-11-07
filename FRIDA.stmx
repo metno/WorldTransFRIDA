@@ -5,7 +5,7 @@
 		<name>FRIDA</name>
 		<uuid>eed773d1-f4f7-4725-8d05-452b96d4f2dc</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.5" isee:build_number="3121" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.5" isee:build_number="3081" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -14,6 +14,8 @@
 	</sim_specs>
 	<dimensions>
 		<dim name="Ensemble" size="1"/>
+		<dim name="Historical_Decades" size="4"/>
+		<dim name="Renewable_Age_Group" size="7"/>
 		<dim name="ShortPopCohort" size="19"/>
 		<dim name="StdPopCohort" size="20"/>
 	</dimensions>
@@ -23,14 +25,14 @@
 		<isee:time_format name="Builtin" type="adaptive"/>
 	</isee:time_formats>
 	<isee:number_format_extenders/>
-	<default_format/>
+	<default_format scale_by="1"/>
 	<data>
 		<import isee:overwrite="true" orientation="horizontal" resource="r../Data/Population Initialization.csv"/>
-		<import enabled="false" frequency="on_demand" isee:overwrite="true" orientation="horizontal" resource="r../Data/Scenario Parameters.xlsx" type="Excel" worksheet="Reduced Feedback"/>
-		<import enabled="false" frequency="on_demand" isee:overwrite="true" orientation="horizontal" resource="r../Data/Scenario Parameters.xlsx" type="Excel" worksheet="No Feedback"/>
 		<import isee:overwrite="false" resource="r../Data/ClimateInitials.csv"/>
 		<import isee:overwrite="false" isee:timevarying="true" resource="r../Data/forcings_1750_2300.csv"/>
 		<import isee:overwrite="false" resource="r../Data/input_parameters_median.csv"/>
+		<import enabled="false" isee:overwrite="false" orientation="horizontal" resource="r../Data/InvestmentsExtrapolatedTrend.csv"/>
+		<import isee:overwrite="false" orientation="horizontal" resource="r../Data/InvestmentsFixedShares.csv"/>
 	</data>
 	<isee:sensi_specs_list active_index="0">
 		<isee:sensi_specs name="Sensitivity" method="sobol_sequence" runs="0"/>
@@ -151,29 +153,29 @@
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
-		<isee:payoff_specs name="Population Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="-1">
-			<isee:payoff_element name="Population.Population" weight="0.000802415" compare_name="Population.Population" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.Aged_0_years" weight="0.0303451" compare_name="Population.Aged_0_years" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.Aged_1_to_20_years" weight="0.000251012" compare_name="Population.Aged_1_to_20_years" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.Aged_20_to_40_years" weight="0.00125008" compare_name="Population.Aged_1_to_20_years" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.Aged_40_to_60_years" weight="0.00353599" compare_name="Population.Aged_1_to_20_years" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.Aged_60_to_80_years" weight="0.0044406" compare_name="Population.Aged_1_to_20_years" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.Aged_Over_80_years" weight="0.0155129" compare_name="Population.Aged_1_to_20_years" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.fertility" weight="56.6414" compare_name="Population.Aged_1_to_20_years" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.deaths_0_years" weight="37.2343" compare_name="Population.deaths_0_years" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.deaths_1_to_20_years" weight="22.524" compare_name="Population.deaths_1_to_20_years" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.deaths_20_to_40_years" weight="14.5233" compare_name="Population.deaths_20_to_40_years" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.deaths_40_to_60_years" weight="6.52565" compare_name="Population.deaths_40_to_60_years" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.deaths_60_to_80_years" weight="0.820878" compare_name="Population.deaths_60_to_80_years" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.deaths_Over_80_years" weight="1.48706" compare_name="Population.deaths_Over_80_years" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.Births" weight="0.0281593" compare_name="Population.Births" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.total_deaths" weight="0.190124" compare_name="Population.total_deaths" compare_run="-1" tolerance="0" type="ls"/>
+		<isee:payoff_specs name="Population Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
+			<isee:payoff_element name="Population.Population" weight="0.000802415" compare_name="Population.Population" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_0_years" weight="0.0303451" compare_name="Population.Aged_0_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_1_to_20_years" weight="0.000251012" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_20_to_40_years" weight="0.00125008" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_40_to_60_years" weight="0.00353599" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_60_to_80_years" weight="0.0044406" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_Over_80_years" weight="0.0155129" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.fertility" weight="56.6414" compare_name="Population.Aged_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_0_years" weight="37.2343" compare_name="Population.deaths_0_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_1_to_20_years" weight="22.524" compare_name="Population.deaths_1_to_20_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_20_to_40_years" weight="14.5233" compare_name="Population.deaths_20_to_40_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_40_to_60_years" weight="6.52565" compare_name="Population.deaths_40_to_60_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_60_to_80_years" weight="0.820878" compare_name="Population.deaths_60_to_80_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_Over_80_years" weight="1.48706" compare_name="Population.deaths_Over_80_years" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Births" weight="0.0281593" compare_name="Population.Births" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.total_deaths" weight="0.190124" compare_name="Population.total_deaths" compare_run="Calibration Data" tolerance="0" type="ls"/>
 		</isee:payoff_specs>
-		<isee:payoff_specs name="Food and Land Use Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="-1">
-			<isee:payoff_element name="Food_and_land_use.crop_production" weight="0.000013727" compare_name="Food_and_land_use.crop_production" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Food_and_land_use.fertilizer_use" weight="0.0386165" compare_name="Food_and_land_use.fertilizer_use" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Food_and_land_use.Cropland" weight="0.00521348" compare_name="Food_and_land_use.Cropland" compare_run="-1" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Food_and_land_use.livestock_production" weight="1.79431e-8" compare_name="Food_and_land_use.livestock_production" compare_run="-1" tolerance="0" type="ls"/>
+		<isee:payoff_specs name="Food and Land Use Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
+			<isee:payoff_element name="Food_and_land_use.crop_production" weight="0.000013727" compare_name="Food_and_land_use.crop_production" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Food_and_land_use.fertilizer_use" weight="0.0386165" compare_name="Food_and_land_use.fertilizer_use" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Food_and_land_use.Cropland" weight="0.00521348" compare_name="Food_and_land_use.Cropland" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Food_and_land_use.livestock_production" weight="1.79431e-8" compare_name="Food_and_land_use.livestock_production" compare_run="Calibration Data" tolerance="0" type="ls"/>
 			<isee:payoff_element name="Food_and_land_use.Forest_Land" weight="0.000507815">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
@@ -210,9 +212,6 @@
 		</isee:payoff_specs>
 	</isee:payoff_specs_list>
 	<model_units>
-		<unit name="G">
-			<eqn>Giga</eqn>
-		</unit>
 		<unit name="G$">
 			<eqn>Giga*$</eqn>
 		</unit>
@@ -222,14 +221,8 @@
 		<unit name="Gph">
 			<eqn>Gh*p</eqn>
 		</unit>
-		<unit name="GtCH4">
-			<eqn>Giga*tCH4</eqn>
-		</unit>
 		<unit name="GtCO2e">
 			<eqn>Giga*tCO2e</eqn>
-		</unit>
-		<unit name="GtN2O">
-			<eqn>Giga*tN2O</eqn>
 		</unit>
 		<unit name="k$">
 			<eqn>kilo*$</eqn>
@@ -331,9 +324,6 @@
 			<eqn/>
 			<alias>Weeks</alias>
 		</unit>
-		<unit name="GtCO2">
-			<eqn>Giga*tCO2</eqn>
-		</unit>
 		<unit name="MtSO2">
 			<eqn>Million*tSO2</eqn>
 		</unit>
@@ -346,15 +336,6 @@
 		<unit name="MKg">
 			<eqn>Million*kg</eqn>
 		</unit>
-		<unit name="Dimensionless">
-			<eqn>1</eqn>
-			<alias>dmnl</alias>
-			<alias>unitless</alias>
-		</unit>
-		<unit name="Kelvin">
-			<eqn/>
-			<alias>K</alias>
-		</unit>
 		<unit name="p">
 			<eqn>people</eqn>
 		</unit>
@@ -366,40 +347,53 @@
 			<eqn/>
 			<alias>orders</alias>
 		</unit>
+		<unit name="Dimensionless">
+			<eqn>1</eqn>
+			<alias>dmnl</alias>
+			<alias>unitless</alias>
+		</unit>
+		<unit name="Kelvin">
+			<eqn/>
+			<alias>K</alias>
+		</unit>
 	</model_units>
 	<model>
 		<variables>
 			<module name="Energy" isee:label="" url="r../FRIDA_Modules/Energy.itmx">
+				<format scale_by="auto"/>
 				<connect to="Temperature.CH4_emissions_2" from="Energy.CH4_emissions"/>
 				<connect2 to="Temperature.CH4_emissions_2" from="Energy.CH4_emissions"/>
 				<connect to="Temperature.CO2_emissions_3" from="Energy.CO2_emissions"/>
 				<connect2 to="Temperature.CO2_emissions_3" from="Energy.CO2_emissions"/>
-				<connect to='Supply."Cost_of_energy_G$/y_1"' from="Energy.cost_of_energy"/>
-				<connect2 to='Supply."Cost_of_energy_G$/y_1"' from="Energy.cost_of_energy"/>
-				<connect to="Temperature.N2O_emissions_3" from="Energy.N2O_emissions"/>
-				<connect2 to="Temperature.N2O_emissions_3" from="Energy.N2O_emissions"/>
+				<connect to="Economy.energy_supply_demand_balance" from="Energy.Energy_Balance"/>
+				<connect2 to="Economy.energy_supply_demand_balance" from="Energy.Energy_Balance"/>
+				<connect to="Temperature.N2O_emissions_3" from="Energy.N20_emissions"/>
+				<connect2 to="Temperature.N2O_emissions_3" from="Energy.N20_emissions"/>
 				<connect to="Temperature.SO2_emissions" from="Energy.SO2_emissions"/>
 				<connect2 to="Temperature.SO2_emissions" from="Energy.SO2_emissions"/>
-				<connect to="Economy.energy_supply_demand_balance" from="Energy.supply_demand_balance"/>
-				<connect2 to="Economy.energy_supply_demand_balance" from="Energy.supply_demand_balance"/>
-				<connect to='Energy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect2 to='Energy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect to="Energy.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect2 to="Energy.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect to="Energy.Population_Mp" from="Population.Population"/>
-				<connect2 to="Energy.Population_Mp" from="Population.Population"/>
+				<connect to="Energy.GDP" from="Economy.GDP"/>
+				<connect2 to="Energy.GDP" from="Economy.GDP"/>
+				<connect to="Energy.GDP_per_person" from="Population.GDP_per_person"/>
+				<connect2 to="Energy.GDP_per_person" from="Population.GDP_per_person"/>
+				<connect to="Energy.Population" from="Population.Population"/>
+				<connect2 to="Energy.Population" from="Population.Population"/>
+				<connect to="Energy.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect2 to="Energy.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
 			</module>
 			<module name="Economy" isee:label="" url="r../FRIDA_Modules/Economy.itmx">
+				<format scale_by="auto"/>
 				<connect to="Temperature.CH4_emissions_3" from="Economy.CH4_emissions"/>
 				<connect2 to="Temperature.CH4_emissions_3" from="Economy.CH4_emissions"/>
 				<connect to="Temperature.CO2_emissions_1" from="Economy.CO2_emissions"/>
 				<connect2 to="Temperature.CO2_emissions_1" from="Economy.CO2_emissions"/>
+				<connect to="Energy.GDP" from="Economy.GDP"/>
+				<connect2 to="Energy.GDP" from="Economy.GDP"/>
 				<connect to="Population.GDP" from="Economy.GDP"/>
 				<connect2 to="Population.GDP" from="Economy.GDP"/>
 				<connect to="Temperature.N2O_emissions_2" from="Economy.N2O_emissions"/>
 				<connect2 to="Temperature.N2O_emissions_2" from="Economy.N2O_emissions"/>
-				<connect to="Economy.energy_supply_demand_balance" from="Energy.supply_demand_balance"/>
-				<connect2 to="Economy.energy_supply_demand_balance" from="Energy.supply_demand_balance"/>
+				<connect to="Economy.energy_supply_demand_balance" from="Energy.Energy_Balance"/>
+				<connect2 to="Economy.energy_supply_demand_balance" from="Energy.Energy_Balance"/>
 				<connect to='Economy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
 				<connect2 to='Economy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
 				<connect to="Economy.Population_Mp" from="Population.Population"/>
@@ -408,14 +402,13 @@
 				<connect2 to="Economy.surface_temperature_anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
 			</module>
 			<module name="Environment" isee:label="">
+				<format scale_by="auto"/>
 				<connect to="Economy.surface_temperature_anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect2 to="Economy.surface_temperature_anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect to="Energy.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect2 to="Energy.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect to="Energy.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect2 to="Energy.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect to="Population.Observed_warming" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect2 to="Population.Observed_warming" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect to="Supply.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect2 to="Supply.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect to="Temperature.CH4_emissions_2" from="Energy.CH4_emissions"/>
 				<connect2 to="Temperature.CH4_emissions_2" from="Energy.CH4_emissions"/>
 				<connect to="Temperature.CH4_emissions_3" from="Economy.CH4_emissions"/>
@@ -426,8 +419,8 @@
 				<connect2 to="Temperature.CO2_emissions_3" from="Energy.CO2_emissions"/>
 				<connect to="Temperature.N2O_emissions_2" from="Economy.N2O_emissions"/>
 				<connect2 to="Temperature.N2O_emissions_2" from="Economy.N2O_emissions"/>
-				<connect to="Temperature.N2O_emissions_3" from="Energy.N2O_emissions"/>
-				<connect2 to="Temperature.N2O_emissions_3" from="Energy.N2O_emissions"/>
+				<connect to="Temperature.N2O_emissions_3" from="Energy.N20_emissions"/>
+				<connect2 to="Temperature.N2O_emissions_3" from="Energy.N20_emissions"/>
 				<connect to="Temperature.SO2_emissions" from="Energy.SO2_emissions"/>
 				<connect2 to="Temperature.SO2_emissions" from="Energy.SO2_emissions"/>
 				<connect to='Food_and_land_use."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
@@ -436,43 +429,26 @@
 				<connect2 to="Food_and_land_use.Population" from="Population.Population"/>
 			</module>
 			<module name="Society" isee:label="">
-				<connect to='Demand."Effective_GDP_per_person_k$/p/y"' from="Population.effective_GDP_per_person"/>
-				<connect2 to='Demand."Effective_GDP_per_person_k$/p/y"' from="Population.effective_GDP_per_person"/>
+				<format scale_by="auto"/>
 				<connect to='Economy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
 				<connect2 to='Economy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect to='Energy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect2 to='Energy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
+				<connect to="Energy.GDP_per_person" from="Population.GDP_per_person"/>
+				<connect2 to="Energy.GDP_per_person" from="Population.GDP_per_person"/>
 				<connect to='Food_and_land_use."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
 				<connect2 to='Food_and_land_use."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect to='Labor."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect2 to='Labor."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect to='Supply."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect2 to='Supply."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect to='Demand."GDP_per_person_in_1980_k$/p/y"' from="Population.GDP_per_person_in_1980"/>
-				<connect2 to='Demand."GDP_per_person_in_1980_k$/p/y"' from="Population.GDP_per_person_in_1980"/>
-				<connect to="Labor.GDP_per_person_in_1980" from="Population.GDP_per_person_in_1980"/>
-				<connect2 to="Labor.GDP_per_person_in_1980" from="Population.GDP_per_person_in_1980"/>
-				<connect to="Supply.GDP_per_person_in_1980" from="Population.GDP_per_person_in_1980"/>
-				<connect2 to="Supply.GDP_per_person_in_1980" from="Population.GDP_per_person_in_1980"/>
-				<connect to="Demand.Population_Mp" from="Population.Population"/>
-				<connect2 to="Demand.Population_Mp" from="Population.Population"/>
 				<connect to="Economy.Population_Mp" from="Population.Population"/>
 				<connect2 to="Economy.Population_Mp" from="Population.Population"/>
-				<connect to="Energy.Population_Mp" from="Population.Population"/>
-				<connect2 to="Energy.Population_Mp" from="Population.Population"/>
+				<connect to="Energy.Population" from="Population.Population"/>
+				<connect2 to="Energy.Population" from="Population.Population"/>
 				<connect to="Food_and_land_use.Population" from="Population.Population"/>
 				<connect2 to="Food_and_land_use.Population" from="Population.Population"/>
-				<connect to='Demand."UNIT_G/(M*k)"' from='Population."UNIT_G/(M*k)"'/>
-				<connect2 to='Demand."UNIT_G/(M*k)"' from='Population."UNIT_G/(M*k)"'/>
-				<connect to="Labor.working_age_population_2" from="Population.working_age_population"/>
-				<connect2 to="Labor.working_age_population_2" from="Population.working_age_population"/>
 				<connect to="Population.GDP" from="Economy.GDP"/>
 				<connect2 to="Population.GDP" from="Economy.GDP"/>
 				<connect to="Population.Observed_warming" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect2 to="Population.Observed_warming" from="Temperature.Surface_Temperature_Anomaly"/>
 			</module>
 			<isee:placeholder name="Calibrated Variables">
-				<eqn>Population.GDP_per_person + Population.Population + Population.Aged_1_to_20_years + Population.Aged_20_to_40_years + Population.Aged_40_to_60_years + Population.Aged_60_to_80_years + Population.total_deaths + Population.Births + Population.fertility + Energy.renewable_electricity_production + Energy.fossil_electricity_production + Energy.Renewable_Electricity_Capacity + Energy.Fossil_Electricity_Capacity + Energy.electricity_production + Energy.demand_for_electricity + Food_and_land_use.Cropland + Food_and_land_use.Forest_Land + Food_and_land_use.crop_production + Food_and_land_use.fertilizer_use + Temperature.Surface_Temperature_Anomaly + Temperature.Total_CO2_Emissions + Temperature.Total_CH4_Emissions + Temperature.Total_N2O_Emissions + Temperature.CO2_Concentration + Temperature.N2O_Concentration + Temperature.CH4_Concentration + Energy.SO2_emissions + Temperature.CO2_ERF + Temperature.N2O_ERF + Temperature.CH4_ERF</eqn>
+				<eqn>Economy.GDP + Economy.government_spending + Economy.investment + Economy.private_consumption + Economy.N2O_emissions + Economy.CO2_emissions + Economy.CH4_emissions + Population.GDP_per_person + Population.Aged_0_years + Population.Aged_1_to_20_years + Population.Aged_20_to_40_years + Population.Aged_40_to_60_years + Population.Aged_60_to_80_years + Population.Aged_Over_80_years + Population.deaths_0_years + Population.deaths_1_to_20_years + Population.deaths_20_to_40_years + Population.deaths_40_to_60_years + Population.deaths_60_to_80_years + Population.deaths_Over_80_years + Population.Population + Population.fertility + Population.Births + Population.total_deaths + Temperature.Surface_Temperature_Anomaly + Temperature.CO2_ERF + Temperature.CH4_ERF + Temperature.N2O_ERF + Temperature.Total_CH4_Emissions + Temperature.Total_CO2_Emissions + Temperature.CO2_Concentration + Temperature.Total_N2O_Emissions + Temperature.N2O_Concentration + Temperature.CH4_Concentration + Temperature.Total_SO2_emissions + Food_and_land_use.N2O_emissions + Food_and_land_use.CO2_emissions + Food_and_land_use.CH4_Emissions + Food_and_land_use.SO2_Emissions + Food_and_land_use.Forest_Land + Food_and_land_use.crop_production + Food_and_land_use.Cropland + Food_and_land_use.total_water_withdrawal + Food_and_land_use.livestock_production + Food_and_land_use.fraction_of_water_withdrawal_for_agriculture + Food_and_land_use.fraction_of_crops_for_livestock + Food_and_land_use.available_water_supply + Food_and_land_use.man_made_fertilizer_use + Food_and_land_use.manure_fertilizer_use + Food_and_land_use.fertilizer_use + Food_and_land_use.soil_carbon_loss_cropland + Energy.Secondary_Fossil_Energy_Output + Energy.Renewable_Energy_Output + Energy.Wind_and_Solar_Energy_Output + Energy.Hydropower_Energy_Output + Energy.Nuclear_Energy_Output + Energy.Other_Energy_Output + Energy.Total_Energy_Output + Energy.Total_Renewable_Energy_Capacity + Energy.Wind_and_Solar_Energy_Capacity + Energy.Hydropower_Energy_Capacity + Energy.Other_Energy_Capacity + Energy.Nuclear_Energy_Capacity + Energy.demand_for_energy + Energy.Investments_in_Fossil_Fuel_Extraction_Capital + Energy.Investments_in_Fossil_Energy_Capital + Energy.Investments_in_Solar_and_Wind_Energy_Capacity + Energy.Investments_in_Renewables + Energy.Investments_in_Hydropower_Energy_Capcity + Energy.Investments_in_Nuclear_Capacity + Energy.Investments_in_Other_Capacity + Energy.&quot;Installation_Cost_of_S&amp;W_capacity&quot; + Energy.share_of_GDP_invested_in_fuel_extraction + Energy.CO2_emissions + Energy.CH4_emissions + Energy.N20_emissions + Energy.SO2_emissions + Energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy + Energy.&quot;Primary_Fossil_Energy_(FUEL)&quot; + Energy.&quot;share_of_GDP_invested_in_Energy_w/o_fuel&quot;</eqn>
 			</isee:placeholder>
 		</variables>
 		<views>
@@ -523,7 +499,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="339.375" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -615,6 +591,10 @@
 					<from>Energy</from>
 					<to>Economy</to>
 				</connector>
+				<connector uid="61" isee:thickness="2" angle="350.662">
+					<from>Economy</from>
+					<to>Energy</to>
+				</connector>
 			</view>
 			<view background="white" page_width="1066" page_height="600" home_view="true" type="interface">
 				<style>
@@ -647,18 +627,17 @@
 	<model name="Environment">
 		<variables>
 			<module name="Climate" isee:label="" url="r../FRIDA_Modules/Climate.itmx">
+				<format scale_by="auto"/>
 				<connect to="Food_and_land_use.CO2_concentration_in_atm_ppm" from="Temperature.CO2_Concentration"/>
 				<connect2 to="Food_and_land_use.CO2_concentration_in_atm_ppm" from="Temperature.CO2_Concentration"/>
 				<connect to="Economy.surface_temperature_anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect2 to="Economy.surface_temperature_anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect to="Energy.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect2 to="Energy.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect to="Energy.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect2 to="Energy.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect to="Food_and_land_use.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect2 to="Food_and_land_use.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect to="Population.Observed_warming" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect2 to="Population.Observed_warming" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect to="Supply.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect2 to="Supply.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect to="Temperature.CH4_emissions_1" from="Food_and_land_use.CH4_Emissions"/>
 				<connect2 to="Temperature.CH4_emissions_1" from="Food_and_land_use.CH4_Emissions"/>
 				<connect to="Temperature.CH4_emissions_2" from="Energy.CH4_emissions"/>
@@ -675,14 +654,15 @@
 				<connect2 to="Temperature.N2O_emissions_1" from="Food_and_land_use.N2O_emissions"/>
 				<connect to="Temperature.N2O_emissions_2" from="Economy.N2O_emissions"/>
 				<connect2 to="Temperature.N2O_emissions_2" from="Economy.N2O_emissions"/>
-				<connect to="Temperature.N2O_emissions_3" from="Energy.N2O_emissions"/>
-				<connect2 to="Temperature.N2O_emissions_3" from="Energy.N2O_emissions"/>
+				<connect to="Temperature.N2O_emissions_3" from="Energy.N20_emissions"/>
+				<connect2 to="Temperature.N2O_emissions_3" from="Energy.N20_emissions"/>
 				<connect to="Temperature.SO2_emissions" from="Energy.SO2_emissions"/>
 				<connect2 to="Temperature.SO2_emissions" from="Energy.SO2_emissions"/>
 				<connect to="Temperature.SO2_emissions_1" from="Food_and_land_use.SO2_Emissions"/>
 				<connect2 to="Temperature.SO2_emissions_1" from="Food_and_land_use.SO2_Emissions"/>
 			</module>
 			<module name="Food and\nland use" isee:label="" url="r../FRIDA_Modules/Food and land use.itmx">
+				<format scale_by="auto"/>
 				<connect to="Temperature.CH4_emissions_1" from="Food_and_land_use.CH4_Emissions"/>
 				<connect2 to="Temperature.CH4_emissions_1" from="Food_and_land_use.CH4_Emissions"/>
 				<connect to="Temperature.CO2_emissions_2" from="Food_and_land_use.CO2_emissions"/>
@@ -749,7 +729,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -804,36 +784,19 @@
 	<model name="Society">
 		<variables>
 			<module name="Population" isee:label="" url="r../FRIDA_Modules/Population.itmx">
-				<connect to='Demand."Effective_GDP_per_person_k$/p/y"' from="Population.effective_GDP_per_person"/>
-				<connect2 to='Demand."Effective_GDP_per_person_k$/p/y"' from="Population.effective_GDP_per_person"/>
+				<format scale_by="auto"/>
 				<connect to='Economy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
 				<connect2 to='Economy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect to='Energy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect2 to='Energy."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
+				<connect to="Energy.GDP_per_person" from="Population.GDP_per_person"/>
+				<connect2 to="Energy.GDP_per_person" from="Population.GDP_per_person"/>
 				<connect to='Food_and_land_use."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
 				<connect2 to='Food_and_land_use."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect to='Labor."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect2 to='Labor."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect to='Supply."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect2 to='Supply."GDP_per_person_k$/p/y"' from="Population.GDP_per_person"/>
-				<connect to='Demand."GDP_per_person_in_1980_k$/p/y"' from="Population.GDP_per_person_in_1980"/>
-				<connect2 to='Demand."GDP_per_person_in_1980_k$/p/y"' from="Population.GDP_per_person_in_1980"/>
-				<connect to="Labor.GDP_per_person_in_1980" from="Population.GDP_per_person_in_1980"/>
-				<connect2 to="Labor.GDP_per_person_in_1980" from="Population.GDP_per_person_in_1980"/>
-				<connect to="Supply.GDP_per_person_in_1980" from="Population.GDP_per_person_in_1980"/>
-				<connect2 to="Supply.GDP_per_person_in_1980" from="Population.GDP_per_person_in_1980"/>
-				<connect to="Demand.Population_Mp" from="Population.Population"/>
-				<connect2 to="Demand.Population_Mp" from="Population.Population"/>
 				<connect to="Economy.Population_Mp" from="Population.Population"/>
 				<connect2 to="Economy.Population_Mp" from="Population.Population"/>
-				<connect to="Energy.Population_Mp" from="Population.Population"/>
-				<connect2 to="Energy.Population_Mp" from="Population.Population"/>
+				<connect to="Energy.Population" from="Population.Population"/>
+				<connect2 to="Energy.Population" from="Population.Population"/>
 				<connect to="Food_and_land_use.Population" from="Population.Population"/>
 				<connect2 to="Food_and_land_use.Population" from="Population.Population"/>
-				<connect to='Demand."UNIT_G/(M*k)"' from='Population."UNIT_G/(M*k)"'/>
-				<connect2 to='Demand."UNIT_G/(M*k)"' from='Population."UNIT_G/(M*k)"'/>
-				<connect to="Labor.working_age_population_2" from="Population.working_age_population"/>
-				<connect2 to="Labor.working_age_population_2" from="Population.working_age_population"/>
 				<connect to="Population.GDP" from="Economy.GDP"/>
 				<connect2 to="Population.GDP" from="Economy.GDP"/>
 				<connect to="Population.Observed_warming" from="Temperature.Surface_Temperature_Anomaly"/>
@@ -932,6 +895,13 @@
 		</views>
 	</model>
 	<isee:controls>
+		<isee:control priority="imex" name="Energy.capital_efficiency_in_fossil_fuel_extraction" value="0.00140703028382"/>
+		<isee:control priority="imex" name="Energy.trend_in_future_investment_share_in_fossil_energy" value="-5.60179338857e-7"/>
+		<isee:control priority="imex" name="Energy.trend_in_future_investment_share_in_fossil_fuels" value="0.00000285254248469"/>
+		<isee:control priority="imex" name="Energy.trend_in_future_investment_share_in_hydropower_energy" value="-8.89119001178e-8"/>
+		<isee:control priority="imex" name="Energy.trend_in_future_investment_share_in_nuclear_energy" value="-6.59883316913e-8"/>
+		<isee:control priority="imex" name="Energy.trend_in_future_investment_share_in_other_energy" value="-3.09002519985e-8"/>
+		<isee:control priority="imex" name="Energy.trend_in_future_investment_share_in_wind_and_solar_energy" value="-5.9142601803e-7"/>
 		<isee:control priority="imex" name='Temperature."scale_CFCs,_F-gases"' value="0.994214546"/>
 		<isee:control priority="imex" name="Temperature.Atmos_CH4" value="2393.446841"/>
 		<isee:control priority="imex" name="Temperature.Atmos_Carbon_1" value="245318.8746"/>
