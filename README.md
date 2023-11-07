@@ -6,12 +6,6 @@ This repository contains the FRIDA model (Feedback-based knowledge Repository fo
 The model is being developed using <a href="https://www.iseesystems.com/store/products/stella-architect.aspx">Stella Architect</a>.
 
 ## Attributions
-### Model Starting Point
-<ul>
-  <li>
-    <a href="https://stockholmuniversity.app.box.com/s/uh7fjh52pvh7yx1mqfwqcyxdcvegrodf/folder/170486609958">Earth4All</a>
-  </li>
-</ul>
 
 ### Calibration Data
 <ul>
