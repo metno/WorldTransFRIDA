@@ -3,7 +3,7 @@
 	<header>
 		<smile version="1.0" namespace="std, isee" uses_submodels=""/>
 		<name>Economy</name>
-		<uuid>9782d9d4-131c-4831-8400-0e1417fc3a21</uuid>
+		<uuid>cefcdcab-ada9-4f3c-86fb-701a028d4cbf</uuid>
 		<vendor>isee systems, inc.</vendor>
 		<product version="3.5" isee:build_number="3121" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
@@ -20,6 +20,11 @@
 	<isee:number_format_extenders/>
 	<default_format/>
 	<model_units>
+		<unit name="Years">
+			<eqn/>
+			<alias>yr</alias>
+			<alias>year</alias>
+		</unit>
 		<unit name="G">
 			<eqn>Giga</eqn>
 		</unit>
@@ -183,16 +188,10 @@
 				<connect2 to="Labor.working_age_population_2" from="Population.working_age_population"/>
 			</module>
 			<module name="Supply" isee:label="">
-				<connect to="Temperature.CH4_emissions_3" from="Supply.CH4_emissions"/>
-				<connect2 to="Temperature.CH4_emissions_3" from="Supply.CH4_emissions"/>
-				<connect to="Temperature.CO2_emissions_1" from="Supply.CO2_emissions"/>
-				<connect2 to="Temperature.CO2_emissions_1" from="Supply.CO2_emissions"/>
 				<connect to="Demand.GDP" from="Supply.GDP"/>
 				<connect2 to="Demand.GDP" from="Supply.GDP"/>
 				<connect to="Population.GDP" from="Supply.GDP"/>
 				<connect2 to="Population.GDP" from="Supply.GDP"/>
-				<connect to="Temperature.N2O_emissions_2" from="Supply.N2O_emissions"/>
-				<connect2 to="Temperature.N2O_emissions_2" from="Supply.N2O_emissions"/>
 				<connect to='Supply."Cost_of_energy_G$/y_1"' from="Energy.cost_of_energy"/>
 				<connect2 to='Supply."Cost_of_energy_G$/y_1"' from="Energy.cost_of_energy"/>
 				<connect to="Supply.GDP_per_person_in_1980" from="Population.GDP_per_person_in_1980"/>
@@ -209,8 +208,6 @@
 				<connect2 to='Supply."Labour_use_in_1980_Gph/y"' from="Labor.labor_use_1980"/>
 				<connect to="Supply.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect2 to="Supply.Observed_warming_deg_C" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect to="Supply.Population_Mp" from="Population.Population"/>
-				<connect2 to="Supply.Population_Mp" from="Population.Population"/>
 				<connect to='Supply."Total_savings_G$/y"' from="Demand.total_savings"/>
 				<connect2 to='Supply."Total_savings_G$/y"' from="Demand.total_savings"/>
 			</module>
@@ -234,6 +231,71 @@
 				<connect to='Demand."Worker_share_of_output_(1)"' from="Labor.Workers_Share_of_Output"/>
 				<connect2 to='Demand."Worker_share_of_output_(1)"' from="Labor.Workers_Share_of_Output"/>
 			</module>
+			<aux name="GDP per person k$/p/y" access="input">
+				<units>k$/p/year</units>
+			</aux>
+			<aux name="max non fossil CO2\nper person">
+				<doc>Calibration Parameter: CO2 from energy and industry</doc>
+				<eqn>2.33557428333373</eqn>
+				<units>tCO2/(p*year)</units>
+			</aux>
+			<aux name="CO2 emissions" access="output" isee:autocreated="true">
+				<eqn>Non_fossil_CO2_per_person*Population_Mp</eqn>
+				<units>MtCO2/year</units>
+			</aux>
+			<aux name="Non fossil CO2 per\nperson">
+				<eqn>max_non_fossil_CO2_per_person*(1-EXP(-sensitivity_of_non_fossil_CO2_per_person_to_GDP_per_capita*(&quot;GDP_per_person_k$/p/y&quot;/baseline_GDP_per_person)))</eqn>
+				<units>tCO2/(p*year)</units>
+			</aux>
+			<aux name="Population Mp" access="input">
+				<units>Mp</units>
+			</aux>
+			<aux name="baseline GDP per person">
+				<eqn>10</eqn>
+				<units>k$/p/year</units>
+			</aux>
+			<aux name="CH4 emissions" access="output" isee:autocreated="true">
+				<eqn>Non_fossil_CH4_per_person*Population_Mp</eqn>
+				<units>MtCH4/Year</units>
+			</aux>
+			<aux name="Non fossil CH4 per\nperson">
+				<eqn>max_non_fossil_CH4_per_person*(1-EXP(-sensitivity_of_non_fossil_CH4_per_person_to_GDP_per_capita*(&quot;GDP_per_person_k$/p/y&quot;/baseline_GDP_per_person)))</eqn>
+				<units>tCH4/(p*year)</units>
+			</aux>
+			<aux name="max non fossil CH4\nper person">
+				<doc>Calibration Parameter: CO2 from energy and industry</doc>
+				<eqn>0.00947926150294449</eqn>
+				<units>tCH4/(p*year)</units>
+			</aux>
+			<aux name="N2O emissions" access="output" isee:autocreated="true">
+				<eqn>(Non_fossil_N2O_per_person*&quot;Unit_ktN2O/MtN2O&quot;)*Population_Mp</eqn>
+				<units>ktN2O/Year</units>
+			</aux>
+			<aux name="Non fossil N2O per\nperson">
+				<eqn>max_non_fossil_N2O_per_person*(1-EXP(-sensitivity_of_non_fossil_N2O_per_person_to_GDP_per_capita*(baseline_GDP_per_person/&quot;GDP_per_person_k$/p/y&quot;)))</eqn>
+				<units>tN2O/(p*year)</units>
+			</aux>
+			<aux name="max non fossil N2O\nper person">
+				<doc>Calibration Parameter: CO2 from energy and industry</doc>
+				<eqn>0.00241150003458238</eqn>
+				<units>tN2O/(p*year)</units>
+			</aux>
+			<aux name="Unit ktN2O/MtN2O">
+				<eqn>1000</eqn>
+				<units>ktN2O/MtN2O</units>
+			</aux>
+			<aux name="sensitivity of non fossil CH4 per person to GDP per capita">
+				<eqn>4.87172059289039</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sensitivity of non fossil N2O\nper person to GDP per capita">
+				<eqn>0.1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sensitivity of non fossil CO2\nper person to GDP per capita">
+				<eqn>0.0737493618484681</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" border_style="none" font_family="Arial" padding="2" background="white" text_align="center" border_width="thin" font_color="black" border_color="black" font_size="10pt" vertical_text_align="center" font_style="normal" text_decoration="none" font_weight="normal">
@@ -281,7 +343,7 @@
 				<isee:iframe color="black" border_style="solid" text_align="left" border_width="thin" background="white" vertical_text_align="top" font_size="12pt"/>
 				<isee:financial_table color="black" header_text_decoration="none" header_font_weight="bold" hide_border="false" font_size="12pt" first_column_width="250" background="#E0E0E0" text_align="right" header_text_border_style="none" auto_fit="true" header_text_border_color="black" other_column_width="100" header_font_size="14pt" header_text_border_width="thin" header_font_style="normal" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_text_padding="2"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_rows="3" isee:scroll_y="606" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -339,6 +401,98 @@
 					<from>Demand</from>
 					<to>Supply</to>
 				</connector>
+				<aux background="white" label_side="bottom" x="444.286" y="707.6" name="CO2 emissions"/>
+				<aux background="white" label_side="right" x="356.953" y="665.85" name="Non fossil CO2 per\nperson"/>
+				<connector uid="11" angle="147.895">
+					<from>Population_Mp</from>
+					<to>CO2_emissions</to>
+				</connector>
+				<connector uid="12" angle="334.45">
+					<from>Non_fossil_CO2_per_person</from>
+					<to>CO2_emissions</to>
+				</connector>
+				<connector uid="13" angle="1.00157">
+					<from>&quot;GDP_per_person_k$/p/y&quot;</from>
+					<to>Non_fossil_CO2_per_person</to>
+				</connector>
+				<aux background="white" label_side="left" label_angle="135" x="334.286" y="563.01" name="max non fossil CO2\nper person"/>
+				<connector uid="14" angle="282.43">
+					<from>max_non_fossil_CO2_per_person</from>
+					<to>Non_fossil_CO2_per_person</to>
+				</connector>
+				<aux label_side="left" x="130" y="841.01" name="baseline GDP per person"/>
+				<connector uid="15" angle="37.6606">
+					<from>baseline_GDP_per_person</from>
+					<to>Non_fossil_CO2_per_person</to>
+				</connector>
+				<aux background="white" font_style="italic" font_weight="bold" label_side="bottom" x="667.95" y="847.93" name="Population Mp"/>
+				<aux x="441" y="935" name="CH4 emissions"/>
+				<aux background="white" label_side="left" label_angle="225" x="328.953" y="935" name="Non fossil CH4 per\nperson"/>
+				<aux background="white" label_side="left" label_angle="135" x="229.286" y="1068.01" name="max non fossil CH4\nper person"/>
+				<connector uid="16" angle="53.1551">
+					<from>max_non_fossil_CH4_per_person</from>
+					<to>Non_fossil_CH4_per_person</to>
+				</connector>
+				<connector uid="17" angle="308.39">
+					<from>&quot;GDP_per_person_k$/p/y&quot;</from>
+					<to>Non_fossil_CH4_per_person</to>
+				</connector>
+				<connector uid="18" angle="334.713">
+					<from>baseline_GDP_per_person</from>
+					<to>Non_fossil_CH4_per_person</to>
+				</connector>
+				<connector uid="19" angle="0">
+					<from>Non_fossil_CH4_per_person</from>
+					<to>CH4_emissions</to>
+				</connector>
+				<connector uid="20" angle="200.989">
+					<from>Population_Mp</from>
+					<to>CH4_emissions</to>
+				</connector>
+				<aux x="555" y="1058" name="N2O emissions"/>
+				<aux background="white" label_side="left" label_angle="225" x="337.953" y="1128" name="Non fossil N2O per\nperson"/>
+				<aux background="white" label_side="left" label_angle="135" x="238.286" y="1261.01" name="max non fossil N2O\nper person"/>
+				<connector uid="21" angle="53.1551">
+					<from>max_non_fossil_N2O_per_person</from>
+					<to>Non_fossil_N2O_per_person</to>
+				</connector>
+				<connector uid="22" angle="295.551">
+					<from>&quot;GDP_per_person_k$/p/y&quot;</from>
+					<to>Non_fossil_N2O_per_person</to>
+				</connector>
+				<connector uid="23" angle="296.588">
+					<from>baseline_GDP_per_person</from>
+					<to>Non_fossil_N2O_per_person</to>
+				</connector>
+				<connector uid="24" angle="241.734">
+					<from>Population_Mp</from>
+					<to>N2O_emissions</to>
+				</connector>
+				<connector uid="25" angle="17.8751">
+					<from>Non_fossil_N2O_per_person</from>
+					<to>N2O_emissions</to>
+				</connector>
+				<aux x="655" y="1043" name="Unit ktN2O/MtN2O"/>
+				<connector uid="26" angle="183.18">
+					<from>&quot;Unit_ktN2O/MtN2O&quot;</from>
+					<to>N2O_emissions</to>
+				</connector>
+				<aux x="384" y="841.01" name="sensitivity of non fossil CH4 per person to GDP per capita"/>
+				<connector uid="27" angle="224.991">
+					<from>sensitivity_of_non_fossil_CH4_per_person_to_GDP_per_capita</from>
+					<to>Non_fossil_CH4_per_person</to>
+				</connector>
+				<aux x="409" y="1015.01" name="sensitivity of non fossil N2O\nper person to GDP per capita"/>
+				<connector uid="28" angle="236.682">
+					<from>sensitivity_of_non_fossil_N2O_per_person_to_GDP_per_capita</from>
+					<to>Non_fossil_N2O_per_person</to>
+				</connector>
+				<aux x="537" y="545.01" name="sensitivity of non fossil CO2\nper person to GDP per capita"/>
+				<connector uid="29" angle="211.689">
+					<from>sensitivity_of_non_fossil_CO2_per_person_to_GDP_per_capita</from>
+					<to>Non_fossil_CO2_per_person</to>
+				</connector>
+				<aux background="white" font_style="italic" font_weight="bold" label_side="top" x="119" y="670.01" name="GDP per person k$/p/y"/>
 			</view>
 		</views>
 	</model>
@@ -2353,68 +2507,6 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>k$/p/year</units>
 			</aux>
-			<aux name="max non fossil CO2\nper person">
-				<doc>Calibration Parameter: CO2 from energy and industry</doc>
-				<eqn>2.33557428333373</eqn>
-				<units>tCO2/(p*year)</units>
-			</aux>
-			<aux name="CO2 emissions" access="output" isee:autocreated="true">
-				<eqn>Non_fossil_CO2_per_person*Population_Mp</eqn>
-				<units>MtCO2/year</units>
-			</aux>
-			<aux name="Non fossil CO2 per\nperson">
-				<eqn>max_non_fossil_CO2_per_person*(1-EXP(-sensitivity_of_non_fossil_CO2_per_person_to_GDP_per_capita*(&quot;GDP_per_person_k$/p/y&quot;/baseline_GDP_per_person)))</eqn>
-				<units>tCO2/(p*year)</units>
-			</aux>
-			<aux name="Population Mp" access="input">
-				<units>Mp</units>
-			</aux>
-			<aux name="baseline GDP per person">
-				<eqn>10</eqn>
-				<units>k$/p/year</units>
-			</aux>
-			<aux name="CH4 emissions" access="output" isee:autocreated="true">
-				<eqn>Non_fossil_CH4_per_person*Population_Mp</eqn>
-				<units>MtCH4/Year</units>
-			</aux>
-			<aux name="Non fossil CH4 per\nperson">
-				<eqn>max_non_fossil_CH4_per_person*(1-EXP(-sensitivity_of_non_fossil_CH4_per_person_to_GDP_per_capita*(&quot;GDP_per_person_k$/p/y&quot;/baseline_GDP_per_person)))</eqn>
-				<units>tCH4/(p*year)</units>
-			</aux>
-			<aux name="max non fossil CH4\nper person">
-				<doc>Calibration Parameter: CO2 from energy and industry</doc>
-				<eqn>0.00947926150294449</eqn>
-				<units>tCH4/(p*year)</units>
-			</aux>
-			<aux name="N2O emissions" access="output" isee:autocreated="true">
-				<eqn>(Non_fossil_N2O_per_person*&quot;Unit_ktN2O/MtN2O&quot;)*Population_Mp</eqn>
-				<units>ktN2O/Year</units>
-			</aux>
-			<aux name="Non fossil N2O per\nperson">
-				<eqn>max_non_fossil_N2O_per_person*(1-EXP(-sensitivity_of_non_fossil_N2O_per_person_to_GDP_per_capita*(baseline_GDP_per_person/&quot;GDP_per_person_k$/p/y&quot;)))</eqn>
-				<units>tN2O/(p*year)</units>
-			</aux>
-			<aux name="max non fossil N2O\nper person">
-				<doc>Calibration Parameter: CO2 from energy and industry</doc>
-				<eqn>0.00241150003458238</eqn>
-				<units>tN2O/(p*year)</units>
-			</aux>
-			<aux name="Unit ktN2O/MtN2O">
-				<eqn>1000</eqn>
-				<units>ktN2O/MtN2O</units>
-			</aux>
-			<aux name="sensitivity of non fossil CH4 per person to GDP per capita">
-				<eqn>4.87172059289039</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="sensitivity of non fossil N2O\nper person to GDP per capita">
-				<eqn>0.1</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="sensitivity of non fossil CO2\nper person to GDP per capita">
-				<eqn>0.0737493618484681</eqn>
-				<units>dmnl</units>
-			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -2464,7 +2556,7 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="516" isee:scroll_y="1518" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="150" isee:scroll_y="1435" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2920,103 +3012,6 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 					</from>
 					<to>investment_share_of_GDP</to>
 				</connector>
-				<aux background="white" label_side="bottom" x="861.286" y="1756.6" name="CO2 emissions"/>
-				<aux background="white" label_side="right" x="773.953" y="1714.85" name="Non fossil CO2 per\nperson"/>
-				<connector uid="151" angle="147.895">
-					<from>Population_Mp</from>
-					<to>CO2_emissions</to>
-				</connector>
-				<connector uid="152" angle="334.45">
-					<from>Non_fossil_CO2_per_person</from>
-					<to>CO2_emissions</to>
-				</connector>
-				<connector uid="153" angle="1.00157">
-					<from>
-						<alias uid="154"/>
-					</from>
-					<to>Non_fossil_CO2_per_person</to>
-				</connector>
-				<aux background="white" label_side="left" label_angle="135" x="751.286" y="1612.01" name="max non fossil CO2\nper person"/>
-				<connector uid="155" angle="282.43">
-					<from>max_non_fossil_CO2_per_person</from>
-					<to>Non_fossil_CO2_per_person</to>
-				</connector>
-				<aux label_side="left" x="547" y="1890.01" name="baseline GDP per person"/>
-				<connector uid="157" angle="37.6606">
-					<from>baseline_GDP_per_person</from>
-					<to>Non_fossil_CO2_per_person</to>
-				</connector>
-				<aux background="white" font_style="italic" font_weight="bold" label_side="bottom" x="1084.95" y="1896.93" name="Population Mp"/>
-				<aux x="858" y="1984" name="CH4 emissions"/>
-				<aux background="white" label_side="left" label_angle="225" x="745.953" y="1984" name="Non fossil CH4 per\nperson"/>
-				<aux background="white" label_side="left" label_angle="135" x="646.286" y="2117.01" name="max non fossil CH4\nper person"/>
-				<connector uid="164" angle="53.1551">
-					<from>max_non_fossil_CH4_per_person</from>
-					<to>Non_fossil_CH4_per_person</to>
-				</connector>
-				<connector uid="165" angle="308.39">
-					<from>
-						<alias uid="154"/>
-					</from>
-					<to>Non_fossil_CH4_per_person</to>
-				</connector>
-				<connector uid="166" angle="334.713">
-					<from>baseline_GDP_per_person</from>
-					<to>Non_fossil_CH4_per_person</to>
-				</connector>
-				<connector uid="167" angle="0">
-					<from>Non_fossil_CH4_per_person</from>
-					<to>CH4_emissions</to>
-				</connector>
-				<connector uid="169" angle="200.989">
-					<from>Population_Mp</from>
-					<to>CH4_emissions</to>
-				</connector>
-				<aux x="972" y="2107" name="N2O emissions"/>
-				<aux background="white" label_side="left" label_angle="225" x="754.953" y="2177" name="Non fossil N2O per\nperson"/>
-				<aux background="white" label_side="left" label_angle="135" x="655.286" y="2310.01" name="max non fossil N2O\nper person"/>
-				<connector uid="170" angle="53.1551">
-					<from>max_non_fossil_N2O_per_person</from>
-					<to>Non_fossil_N2O_per_person</to>
-				</connector>
-				<connector uid="171" angle="295.551">
-					<from>
-						<alias uid="154"/>
-					</from>
-					<to>Non_fossil_N2O_per_person</to>
-				</connector>
-				<connector uid="172" angle="296.588">
-					<from>baseline_GDP_per_person</from>
-					<to>Non_fossil_N2O_per_person</to>
-				</connector>
-				<connector uid="174" angle="241.734">
-					<from>Population_Mp</from>
-					<to>N2O_emissions</to>
-				</connector>
-				<connector uid="175" angle="17.8751">
-					<from>Non_fossil_N2O_per_person</from>
-					<to>N2O_emissions</to>
-				</connector>
-				<aux x="1072" y="2092" name="Unit ktN2O/MtN2O"/>
-				<connector uid="176" angle="183.18">
-					<from>&quot;Unit_ktN2O/MtN2O&quot;</from>
-					<to>N2O_emissions</to>
-				</connector>
-				<aux x="801" y="1890.01" name="sensitivity of non fossil CH4 per person to GDP per capita"/>
-				<connector uid="177" angle="224.991">
-					<from>sensitivity_of_non_fossil_CH4_per_person_to_GDP_per_capita</from>
-					<to>Non_fossil_CH4_per_person</to>
-				</connector>
-				<aux x="826" y="2064.01" name="sensitivity of non fossil N2O\nper person to GDP per capita"/>
-				<connector uid="178" angle="236.682">
-					<from>sensitivity_of_non_fossil_N2O_per_person_to_GDP_per_capita</from>
-					<to>Non_fossil_N2O_per_person</to>
-				</connector>
-				<aux x="954" y="1594.01" name="sensitivity of non fossil CO2\nper person to GDP per capita"/>
-				<connector uid="179" angle="211.689">
-					<from>sensitivity_of_non_fossil_CO2_per_person_to_GDP_per_capita</from>
-					<to>Non_fossil_CO2_per_person</to>
-				</connector>
 				<alias label_side="left" uid="86" x="437" y="753.5" width="18" height="18">
 					<of>Observed_warming_deg_C</of>
 				</alias>
@@ -3037,9 +3032,6 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 				</alias>
 				<alias font_style="italic" label_side="left" uid="150" x="1665.94" y="669" width="18" height="18">
 					<of>investment_in_private_capital</of>
-				</alias>
-				<alias background="white" label_side="top" uid="154" x="527" y="1710.01" width="18" height="18">
-					<of>&quot;GDP_per_person_k$/p/y&quot;</of>
 				</alias>
 			</view>
 		</views>
