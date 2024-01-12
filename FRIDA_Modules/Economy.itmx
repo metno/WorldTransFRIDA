@@ -5,7 +5,7 @@
 		<name>Economy</name>
 		<uuid>fcee5f0e-014c-46f8-aae7-88ab3d659635</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.5" isee:build_number="3121" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.5" isee:build_number="3081" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -171,18 +171,6 @@
 		<unit name="Kelvin">
 			<eqn/>
 			<alias>K</alias>
-		</unit>
-		<unit name="G">
-			<eqn>Giga</eqn>
-		</unit>
-		<unit name="GtCO2">
-			<eqn>Giga*tCO2</eqn>
-		</unit>
-		<unit name="GtCH4">
-			<eqn>Giga*tCH4</eqn>
-		</unit>
-		<unit name="GtN2O">
-			<eqn>Giga*tN2O</eqn>
 		</unit>
 	</model_units>
 	<model name="Economy">
@@ -648,7 +636,8 @@
 				<units>dmnl</units>
 			</aux>
 			<aux name="indicated\nbank investment\ngrowth rate">
-				<eqn>energy_and_food_adjusted_bank_investment_growth_target+(max_change_in_bank_investment_growth_target*effect_of_gdp_growth_on_bank_investment)</eqn>
+				<eqn>energy_and_food_adjusted_bank_investment_growth_target+(max_change_in_bank_investment_growth_target*effect_of_gdp_growth_on_bank_investment*
+effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</eqn>
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="max change in\nbank investment\ngrowth target">
@@ -922,12 +911,7 @@ PREVIOUS(SELF, 1)</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="effect of energy\nsupply demand\nbalance on investment growth">
-				<eqn>MIN(1, energy_supply_demand_balance)</eqn>
-				<gf type="extrapolate">
-					<xscale min="0.7" max="1"/>
-					<yscale min="0" max="1"/>
-					<ypts>0,0.1667,0.3333,0.5,0.6667,0.8333,1</ypts>
-				</gf>
+				<eqn>1+sensitivity_of_effect_of_energy_supply_demand_balance_on_investment_growth*(energy_supply_demand_balance-1)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="switch break climate feedback\nto economy">
@@ -945,6 +929,32 @@ PREVIOUS(SELF, 1)</eqn>
 					<yscale min="0" max="1"/>
 					<ypts>0,0.1667,0.3333,0.5,0.6667,0.8333,1</ypts>
 				</gf>
+				<units>dmnl</units>
+			</aux>
+			<aux name="share of GDP invested in Energy" access="input">
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="expectation of share of GDP invested in energy">
+				<eqn>SMTH1(share_of_GDP_invested_in_Energy, 
+share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
+				<isee:delay_aux/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="share of gdp invested in\nenergy expectation\nformation time">
+				<eqn>5</eqn>
+				<units>years</units>
+			</aux>
+			<aux name="effect of share of GDP invested\nin energy vs expectation\non investment growth">
+				<eqn>1+sensitivity_of_effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth*
+(share_of_GDP_invested_in_Energy/expectation_of_share_of_GDP_invested_in_energy-1)</eqn>
+			</aux>
+			<aux name="sensitivity of effect of share of GDP invested\nin energy vs expectation\non investment growth">
+				<eqn>-1.7663128563363</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sensitivity of effect of energy\nsupply demand\nbalance on investment growth">
+				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
 		</variables>
@@ -994,7 +1004,7 @@ PREVIOUS(SELF, 1)</eqn>
 				<isee:iframe color="black" border_style="solid" text_align="left" border_width="thin" background="white" vertical_text_align="top" font_size="12pt"/>
 				<isee:financial_table color="black" header_text_decoration="none" header_font_weight="bold" hide_border="false" font_size="12pt" first_column_width="250" background="#E0E0E0" text_align="right" header_text_border_style="none" auto_fit="true" header_text_border_color="black" other_column_width="100" header_font_size="14pt" header_text_border_width="thin" header_font_style="normal" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_text_padding="2"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="6" isee:scroll_y="1711" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="3" isee:page_rows="6" isee:scroll_y="2094" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2184,6 +2194,45 @@ PREVIOUS(SELF, 1)</eqn>
 				<connector uid="230" angle="79.8665">
 					<from>effect_of_crop_balance_on_investment_growth</from>
 					<to>energy_and_food_adjusted_bank_investment_growth_target</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="668.571" y="2793.57" name="share of GDP invested in Energy"/>
+				<aux x="636.08" y="2725.71" name="expectation of share of GDP invested in energy"/>
+				<connector uid="231" angle="105.593">
+					<from>share_of_GDP_invested_in_Energy</from>
+					<to>expectation_of_share_of_GDP_invested_in_energy</to>
+				</connector>
+				<aux x="946" y="2792.61" name="share of gdp invested in\nenergy expectation\nformation time"/>
+				<connector uid="233" angle="162.999">
+					<from>share_of_gdp_invested_in_energy_expectation_formation_time</from>
+					<to>expectation_of_share_of_GDP_invested_in_energy</to>
+				</connector>
+				<aux x="512.857" y="2688.57" name="effect of share of GDP invested\nin energy vs expectation\non investment growth"/>
+				<connector uid="234" angle="161.087">
+					<from>expectation_of_share_of_GDP_invested_in_energy</from>
+					<to>effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth</to>
+				</connector>
+				<aux label_side="right" label_angle="315" x="650.571" y="2688.57" name="sensitivity of effect of share of GDP invested\nin energy vs expectation\non investment growth"/>
+				<connector uid="235" angle="180">
+					<from>sensitivity_of_effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth</from>
+					<to>effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth</to>
+				</connector>
+				<connector uid="236" angle="156.297">
+					<from>share_of_GDP_invested_in_Energy</from>
+					<to>effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth</to>
+				</connector>
+				<connector uid="237" angle="149.851">
+					<pts>
+						<pt x="505.075" y="2684.05"/>
+						<pt x="381.429" y="2612.14"/>
+						<pt x="329.902" y="2518.02"/>
+					</pts>
+					<from>effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth</from>
+					<to>indicated_bank_investment_growth_rate</to>
+				</connector>
+				<aux x="378.286" y="2793.57" name="sensitivity of effect of energy\nsupply demand\nbalance on investment growth"/>
+				<connector uid="238" angle="85.0008">
+					<from>sensitivity_of_effect_of_energy_supply_demand_balance_on_investment_growth</from>
+					<to>effect_of_energy_supply_demand_balance_on_investment_growth</to>
 				</connector>
 				<alias uid="55" x="1177.33" y="1801.83" width="18" height="18">
 					<of>time_to_change_consumption_habits</of>
