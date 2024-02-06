@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE">
 	<header>
-		<smile version="1.0" namespace="std, isee"/>
+		<smile version="1.0" namespace="std, isee" uses_arrays="1"/>
 		<name>Economy</name>
 		<uuid>fcee5f0e-014c-46f8-aae7-88ab3d659635</uuid>
 		<vendor>isee systems, inc.</vendor>
@@ -12,7 +12,29 @@
 		<stop>2100</stop>
 		<dt reciprocal="true">8</dt>
 	</sim_specs>
-	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="false"/>
+	<dimensions>
+		<dim name="PCTILE">
+			<elem name="Low"/>
+			<elem name="P25"/>
+			<elem name="Median"/>
+			<elem name="P75"/>
+			<elem name="High"/>
+		</dim>
+		<dim name="Run" size="1"/>
+	</dimensions>
+	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true">
+		<isee:ignored_words>
+			<isee:ignored_word>WolrdTrans</isee:ignored_word>
+			<isee:ignored_word>WorldTrans</isee:ignored_word>
+			<isee:ignored_word>IAM</isee:ignored_word>
+			<isee:ignored_word>FRIDA</isee:ignored_word>
+			<isee:ignored_word>IAMs</isee:ignored_word>
+			<isee:ignored_word>Sectorized</isee:ignored_word>
+			<isee:ignored_word>INvestment</isee:ignored_word>
+			<isee:ignored_word>Edenhofer</isee:ignored_word>
+			<isee:ignored_word>hydropower</isee:ignored_word>
+		</isee:ignored_words>
+	</isee:prefs>
 	<isee:multiplayer_settings include_chat="true" allow_observers="false" advance_time_increment="1" max_advance_time_in_ms="0" model_stops_when_players_drop="false" observer_start_page="home_page" enabled="false"/>
 	<isee:time_formats default_format="Builtin">
 		<isee:time_format name="Builtin" type="adaptive"/>
@@ -115,17 +137,9 @@
 			<alias>Dollars</alias>
 			<alias>$s</alias>
 		</unit>
-		<unit name="Day">
-			<eqn/>
-			<alias>Days</alias>
-		</unit>
 		<unit name="Hour">
 			<eqn/>
 			<alias>Hours</alias>
-		</unit>
-		<unit name="Month">
-			<eqn/>
-			<alias>Months</alias>
 		</unit>
 		<unit name="Person">
 			<eqn/>
@@ -188,6 +202,9 @@
 	<model name="Economy">
 		<variables>
 			<aux name="GDP Per Capita" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<units>b$/Mp/year</units>
 			</aux>
 			<aux name="max non fossil CO2\nper person">
@@ -196,14 +213,23 @@
 				<units>tCO2/(p*year)</units>
 			</aux>
 			<aux name="CO2 emissions" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Non_fossil_CO2_per_person*Population_Mp</eqn>
 				<units>MtCO2/year</units>
 			</aux>
 			<aux name="Non fossil CO2 per\nperson">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>max_non_fossil_CO2_per_person*(1-EXP(-sensitivity_of_non_fossil_CO2_per_person_to_GDP_per_capita*(GDP_Per_Capita/baseline_GDP_per_person)))</eqn>
 				<units>tCO2/(p*year)</units>
 			</aux>
 			<aux name="Population Mp" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<units>Mp</units>
 			</aux>
 			<aux name="baseline GDP per person">
@@ -211,10 +237,16 @@
 				<units>k$/p/year</units>
 			</aux>
 			<aux name="CH4 emissions" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Non_fossil_CH4_per_person*Population_Mp</eqn>
 				<units>MtCH4/Year</units>
 			</aux>
 			<aux name="Non fossil CH4 per\nperson">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>max_non_fossil_CH4_per_person*(1-EXP(-sensitivity_of_non_fossil_CH4_per_person_to_GDP_per_capita*(GDP_Per_Capita/baseline_GDP_per_person)))</eqn>
 				<units>tCH4/(p*year)</units>
 			</aux>
@@ -224,10 +256,16 @@
 				<units>tCH4/(p*year)</units>
 			</aux>
 			<aux name="N2O emissions" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(Non_fossil_N2O_per_person*&quot;Unit_ktN2O/MtN2O&quot;)*Population_Mp</eqn>
 				<units>ktN2O/Year</units>
 			</aux>
 			<aux name="Non fossil N2O per\nperson">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>max_non_fossil_N2O_per_person*(1-EXP(-sensitivity_of_non_fossil_N2O_per_person_to_GDP_per_capita*(baseline_GDP_per_person/GDP_Per_Capita)))</eqn>
 				<units>tN2O/(p*year)</units>
 			</aux>
@@ -256,6 +294,9 @@
 				<doc>Represents the firms&apos; liquid assets in its checking account, which can be readily used for payments such as wages, consumption, or other immediate expenses. It increases with 
 
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>initial_firms_checking_accounts</eqn>
 				<inflow>owner_consumption</inflow>
 				<inflow>worker_consumption</inflow>
@@ -267,15 +308,24 @@
 				<units>b$</units>
 			</stock>
 			<flow name="owner consumption">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>MAX (adjusted_owner_consumption, &quot;non-bank_profits&quot;*minimum_percentage_of_profits_to_consumption)</eqn>
 				<units>b$/year</units>
 			</flow>
 			<flow name="non-bank profits">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Firms_Checking_Accounts*profit_rate</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
 			<stock name="owner\nsavings">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>initial_owner_savings</eqn>
 				<inflow>&quot;non-bank_profits&quot;</inflow>
 				<inflow>owner_savings_interest</inflow>
@@ -285,11 +335,17 @@
 				<units>b$</units>
 			</stock>
 			<aux name="profit rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>1-wage_rate</eqn>
 				<format precision="0.001" scale_by="auto"/>
 				<units>1/year</units>
 			</aux>
 			<aux name="indicated desired\nowner savings goal">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(&quot;non-bank_profits&quot;+owner_savings_interest+bank_profits)*desired_savings_as_multiple_of_profits</eqn>
 				<units>b$</units>
 			</aux>
@@ -298,20 +354,32 @@
 				<units>Years</units>
 			</aux>
 			<aux name="target owner\nconsumption">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(&quot;non-bank_profits&quot;+owner_savings_interest+bank_profits)-annual_owner_savings_to_reach_goal</eqn>
 				<units>b$/year</units>
 			</aux>
 			<stock name="adjusted owner\nconsumption">
 				<doc>Represents the owner&apos;s consumption behavior over time. It is modified by the rate change_in_owner_consumption.</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>initial_adjusted_owner_consumption</eqn>
 				<inflow>change_in_owner_consumption</inflow>
 				<units>b$/year</units>
 			</stock>
 			<flow name="change in\nowner consumption">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>desired_change_in_owner_consumption/time_to_change_consumption_habits</eqn>
 				<units>b$/year/years</units>
 			</flow>
 			<aux name="desired change\nin owner consumption">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>target_owner_consumption-adjusted_owner_consumption</eqn>
 				<units>b$/year</units>
 			</aux>
@@ -320,10 +388,16 @@
 				<units>year</units>
 			</aux>
 			<aux name="owner savings\ngoal shortfall">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>desired_owner_savings-owner_savings</eqn>
 				<units>b$</units>
 			</aux>
 			<aux name="desired owner\nsavings">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>SMTH1(indicated_desired_owner_savings_goal, time_to_consider_desired_savings, initial_desired_owner_savings)</eqn>
 				<isee:delay_aux/>
 				<units>b$</units>
@@ -337,6 +411,9 @@
 				<units>year</units>
 			</aux>
 			<aux name="annual\nowner savings\nto reach goal">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>owner_savings_goal_shortfall/time_to_reach_savings_goal</eqn>
 				<units>b$/year</units>
 			</aux>
@@ -345,6 +422,9 @@
 				<units>dmnl</units>
 			</aux>
 			<stock name="Worker\nSavings">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>initial_worker_savings</eqn>
 				<inflow>wages</inflow>
 				<inflow>worker_savings_interest</inflow>
@@ -354,6 +434,9 @@
 				<units>b$</units>
 			</stock>
 			<flow name="wages">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Firms_Checking_Accounts*wage_rate</eqn>
 				<non_negative/>
 				<units>b$/year</units>
@@ -365,6 +448,9 @@
 				<units>1/year</units>
 			</aux>
 			<flow name="worker consumption">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>MAX (adjusted_worker_consumption, wages*minimum_percentage_of_wages_to_consumption)</eqn>
 				<non_negative/>
 				<units>b$/year</units>
@@ -375,36 +461,60 @@
 			</aux>
 			<stock name="adjusted worker\nconsumption">
 				<doc>Tracks the worker&apos;s consumption behavior over time. It changes based on change_in_worker_consumption.</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>initial_adjusted_worker_consumption</eqn>
 				<inflow>change_in_worker_consumption</inflow>
 				<units>b$/year</units>
 			</stock>
 			<flow name="change in\nworker consumption">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>desired_change_in_worker_consumption/time_to_change_consumption_habits</eqn>
 				<units>b$/year/years</units>
 			</flow>
 			<aux name="desired change\nin worker consumption">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>target_worker_consumption - adjusted_worker_consumption</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="target worker\nconsumption">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(wages+worker_savings_interest)-annual_worker_savings_to_reach_goal</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="annual\nworker savings\nto reach goal">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>worker_savings_goal_shortfall/time_to_reach_savings_goal</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="worker savings\ngoal shortfall">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>desired_worker_savings-Worker_Savings</eqn>
 				<units>b$</units>
 			</aux>
 			<aux name="desired worker\nsavings">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>SMTH1(indicated_desired_worker_savings_goal, time_to_consider_desired_savings, initial_desired_worker_savings)</eqn>
 				<isee:delay_aux/>
 				<units>b$</units>
 			</aux>
 			<aux name="indicated desired\nworker savings goal">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(wages+worker_savings_interest)*desired_savings_as_multiple_of_wages</eqn>
 				<units>b$</units>
 			</aux>
@@ -413,42 +523,66 @@
 				<units>Years</units>
 			</aux>
 			<flow name="private\ninvestment">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Bank_Investment</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
 			<aux name="Bank\nAssets" isee:derived_units="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Good_Loans + Bad_Loans + Safe_Loans</eqn>
 				<isee:summing/>
 				<units>b$</units>
 			</aux>
 			<aux name="Bank\nLiabilities" isee:derived_units="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>owner_savings + Firms_Checking_Accounts + Worker_Savings</eqn>
 				<isee:summing/>
 				<units>b$</units>
 			</aux>
 			<aux name="total bank\nassets">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Good_Loans
 +Bad_Loans
 + Safe_Loans</eqn>
 				<units>b$</units>
 			</aux>
 			<flow name="firms paying\ninterest">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(risky_bank_assets*risky_interest)
 + (safe_bank_assets*safe_interest)</eqn>
 				<non_negative/>
 				<units>B$/year</units>
 			</flow>
 			<aux name="risky\ninterest">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>safe_interest+(Risk_Premium)</eqn>
 				<units>1/year</units>
 			</aux>
 			<flow name="worker savings\ninterest">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Worker_Savings*safe_interest</eqn>
 				<non_negative/>
 				<units>B$/year</units>
 			</flow>
 			<flow name="owner savings\ninterest">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>owner_savings*safe_interest</eqn>
 				<non_negative/>
 				<units>B$/year</units>
@@ -458,10 +592,16 @@
 				<units>1/year</units>
 			</aux>
 			<aux name="risky bank assets">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Good_Loans+Bad_Loans</eqn>
 				<units>b$</units>
 			</aux>
 			<flow name="bank profits">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>bank_profit_payment</eqn>
 				<units>B$/year</units>
 			</flow>
@@ -470,18 +610,30 @@
 				<units>1/year</units>
 			</aux>
 			<aux name="net bank\nassets">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Bank_Assets-Bank_Liabilities</eqn>
 				<units>b$</units>
 			</aux>
 			<aux name="assets/\nliabilities">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Bank_Assets/Bank_Liabilities</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="safe bank assets">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Safe_Loans</eqn>
 				<units>b$</units>
 			</aux>
 			<flow name="bank wages">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Firms_Checking_Accounts*cost_rate</eqn>
 				<non_negative/>
 				<units>B$/year</units>
@@ -491,63 +643,102 @@
 				<units>1/year</units>
 			</aux>
 			<aux name="Total Bank\nLiabilities">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Worker_Savings+Firms_Checking_Accounts+owner_savings</eqn>
 				<units>b$</units>
 			</aux>
 			<aux name="bankruptcy\nrate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>defaults/risky_bank_assets</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="renegotiation time">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>loan_maturation_time</eqn>
 				<units>year</units>
 			</aux>
 			<stock name="Risk\nPremium">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>initial_risk_premium</eqn>
 				<inflow>change_in_risk_premium</inflow>
 				<non_negative/>
 				<units>1/year</units>
 			</stock>
 			<flow name="change in\nrisk premium">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(indicated_risk_premium-Risk_Premium)/renegotiation_time</eqn>
 				<units>1/year/years</units>
 			</flow>
 			<aux name="bank profit\npayment">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>net_bank_assets*bank_profit_payment_percentage</eqn>
 				<units>b$/year</units>
 			</aux>
 			<flow name="defaults">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Bad_Loans/loan_maturation_time</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
 			<flow name="loans turning safe">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Good_Loans/loan_maturation_time</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
 			<flow name="bad\ninvestments">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Bank_Investment*failure_rate</eqn>
 				<units>b$/year</units>
 			</flow>
 			<flow name="good\ninvestments">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Bank_Investment*(1-failure_rate)</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
 			<stock name="Good\nLoans">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>initial_good_loans</eqn>
 				<inflow>good_investments</inflow>
 				<outflow>loans_turning_safe</outflow>
 				<units>b$</units>
 			</stock>
 			<stock name="Bad\nLoans">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>initial_bad_loans</eqn>
 				<inflow>bad_investments</inflow>
 				<outflow>defaults</outflow>
 				<units>b$</units>
 			</stock>
 			<stock name="Safe\nLoans">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>initial_safe_loans</eqn>
 				<inflow>loans_turning_safe</inflow>
 				<inflow>public_investment</inflow>
@@ -558,20 +749,32 @@
 				<units>Years</units>
 			</aux>
 			<flow name="change in bank\ninvestment">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Bank_Investment*bank_investment_growth_rate</eqn>
 				<units>b$/year/years</units>
 			</flow>
 			<stock name="Bank\nInvestment">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>initial_bank_investment</eqn>
 				<inflow>change_in_bank_investment</inflow>
 				<units>b$/year</units>
 			</stock>
 			<stock name="lending standards">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>1</eqn>
 				<inflow>change_in_lending_standards</inflow>
 				<units>dmnl</units>
 			</stock>
 			<flow name="change in\nlending standards">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(indicated_lending_standards-lending_standards)/time_to_change_lending_standards</eqn>
 				<units>Per Year</units>
 			</flow>
@@ -580,6 +783,9 @@
 				<units>dmnl</units>
 			</aux>
 			<aux name="indicated lending\nstandards">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>lending_standards*(1+max_change_in_lending_standards*effect_of_default_rate_on_lending_standards)</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -592,10 +798,16 @@
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="bank investment\ngrowth rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>indicated_bank_investment_growth_rate*effect_of_lending_standards_on_bank_investment_growth_rate</eqn>
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="effect of default rate\non lending standards">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>measured_default_rate/INIT(measured_default_rate)</eqn>
 				<gf>
 					<xscale min="0" max="2"/>
@@ -605,6 +817,9 @@
 				<units>dmnl</units>
 			</aux>
 			<aux name="perceived\ndefaults">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>SMTH1(defaults, reporting_delay, initial_perceived_defaults)</eqn>
 				<isee:delay_aux/>
 				<units>b$/year</units>
@@ -614,15 +829,24 @@
 				<units>year</units>
 			</aux>
 			<aux name="Total Loans" isee:derived_units="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Good_Loans + Bad_Loans</eqn>
 				<isee:summing/>
 				<units>b$</units>
 			</aux>
 			<aux name="measured\ndefault rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(perceived_defaults/Total_Loans)</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="failure rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>MAX(0, climate_adjusted_failure_rate+(max_change_in_failure_rate*effect_of_lending_standards_on_failure_rate))</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -631,6 +855,9 @@
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of lending\nstandards on failure\nrate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>lending_standards</eqn>
 				<gf>
 					<xscale min="0" max="2"/>
@@ -640,6 +867,9 @@
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of lending\nstandards on\nbank investment\ngrowth rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(INIT(lending_standards)/lending_standards)^elasticity_of_desired_bank_growth_rate_to_changes_in_lending_standards</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -648,6 +878,9 @@
 				<units>dmnl</units>
 			</aux>
 			<aux name="indicated\nbank investment\ngrowth rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>energy_and_food_adjusted_bank_investment_growth_target+(max_change_in_bank_investment_growth_target*effect_of_gdp_growth_on_bank_investment*
 effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</eqn>
 				<units>dmnl/year</units>
@@ -657,6 +890,9 @@ effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="effect of gdp growth\non bank investment">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>GDP_growth_rate_relative_to_expected</eqn>
 				<gf>
 					<xscale min="0" max="2"/>
@@ -666,11 +902,17 @@ effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</
 				<units>dmnl</units>
 			</aux>
 			<aux name="recent GDP\ngrowth rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>SMTH1(GDP_growth_rate, bank_expectation_formation_time, initial_recent_GDP_growth_rate)</eqn>
 				<isee:delay_aux/>
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="GDP growth rate\nrelative to expected">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>((GDP_growth_rate//recent_GDP_growth_rate))</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -699,35 +941,59 @@ effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</
 				<units>b$/year</units>
 			</aux>
 			<aux name="total public tax income">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>profit_tax+wage_tax</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="proportion of taxes to public spending">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>effect_of_debt_to_GDP_ratio_on_government_spending</eqn>
 				<units>dmnl</units>
 			</aux>
 			<flow name="government\ntaking up debt">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>public_expenditure-total_public_tax_income</eqn>
 				<units>b$/year</units>
 			</flow>
 			<stock name="Government\nDebt">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>initial_government_debt</eqn>
 				<inflow>government_taking_up_debt</inflow>
 				<units>B$</units>
 			</stock>
 			<aux name="government\ninterest payments">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Government_Debt*safe_interest</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="public expenditure\nfor consumption\nand transfers">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>public_expenditure-government_interest_payments</eqn>
 				<units>b$/Years</units>
 			</aux>
 			<aux name="debt to GDP ratio">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Government_Debt/perceived_GDP</eqn>
 				<units>year</units>
 			</aux>
 			<aux name="effect of debt to GDP\nratio on government\nspending">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>debt_to_GDP_ratio</eqn>
 				<gf>
 					<xscale min="1" max="2"/>
@@ -737,22 +1003,34 @@ effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</
 				<units>dmnl</units>
 			</aux>
 			<aux name="public expenditure">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>total_public_tax_income*proportion_of_taxes_to_public_spending
 +
 government_interest_payments</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="GDP" access="output">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>consumption + private_investment</eqn>
 				<format scale_by="auto"/>
 				<units>b$/year</units>
 			</aux>
 			<aux name="perceived GDP">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>SMTH1(GDP,  GDP_perception_time,  initial_perceived_GDP)</eqn>
 				<isee:delay_aux/>
 				<units>b$/year</units>
 			</aux>
 			<aux name="consumption">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>government_spending + private_consumption</eqn>
 				<units>b$/year</units>
 			</aux>
@@ -769,15 +1047,24 @@ government_interest_payments</eqn>
 				<units>Years</units>
 			</aux>
 			<flow name="government spending">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>public_expenditure_for_consumption_and_transfers*public_consumption_rate</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
 			<aux name="private consumption">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>worker_consumption+owner_consumption</eqn>
 				<units>b$/year</units>
 			</aux>
 			<flow name="wage tax">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>wages*wage_tax_rate</eqn>
 				<non_negative/>
 				<units>b$/year</units>
@@ -791,11 +1078,17 @@ government_interest_payments</eqn>
 				<units>dmnl</units>
 			</aux>
 			<flow name="profit tax">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(&quot;non-bank_profits&quot;+bank_profits)*profit_tax_rate</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
 			<flow name="public investment">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>government_taking_up_debt</eqn>
 				<units>b$/year</units>
 			</flow>
@@ -805,24 +1098,39 @@ government_interest_payments</eqn>
 				<units>years</units>
 			</aux>
 			<aux name="GDP growth rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(GDP-Average_GDP)/(time_to_measure_GDP_growth_rate*Average_GDP)</eqn>
 				<units>1/year</units>
 			</aux>
 			<stock name="Average\nGDP">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>initial_average_GDP</eqn>
 				<inflow>change_in_average_GDP</inflow>
 				<non_negative/>
 				<units>b$/year</units>
 			</stock>
 			<flow name="change in\naverage GDP">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(GDP-Average_GDP)/time_to_measure_GDP_growth_rate</eqn>
 				<units>b$/year/years</units>
 			</flow>
 			<aux name="indicated risk premium">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>initial_risk_premium*effect_of_bankruptcy_rate_on_risk_premium</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="effect of bankruptcy\nrate on risk premium">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(bankruptcy_rate/INIT(bankruptcy_rate))^elasticity_of_bankruptcy_rate_on_risk_premium</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -835,22 +1143,39 @@ government_interest_payments</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="consumption share\nof GDP">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>private_consumption/GDP</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="climate adjusted\nfailure rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>normal_failure_rate*effect_of_STA_on_failure_rate</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="surface temperature anomaly" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>NAN</eqn>
 				<units>deg C</units>
 			</aux>
 			<aux name="elasticity of\nfailure rate to STA">
-				<eqn>0.556170595326867</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.556170595</eqn>
+				</element>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of STA\non failure rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>IF (switch_break_climate_feedback_to_economy = 0)
 THEN
 ((surface_temperature_anomaly/INIT(surface_temperature_anomaly))^elasticity_of_failure_rate_to_STA)
@@ -899,14 +1224,17 @@ PREVIOUS(SELF, 1)</eqn>
 				<units>B$</units>
 			</aux>
 			<aux name="investment" isee:derived_units="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>private_investment + public_investment</eqn>
 				<isee:summing/>
 				<units>b$/year</units>
 			</aux>
-			<isee:placeholder name="Economy Placeholder">
-				<eqn>Economy.GDP + Economy.investment + Economy.government_spending + Economy.private_consumption</eqn>
-			</isee:placeholder>
 			<aux name="initial average GDP">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>INIT(GDP)*(1-initial_recent_GDP_growth_rate*one_year)</eqn>
 				<units>b$/year</units>
 			</aux>
@@ -915,30 +1243,50 @@ PREVIOUS(SELF, 1)</eqn>
 				<units>year</units>
 			</aux>
 			<aux name="energy supply demand balance" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="energy and food adjusted\nbank investment\ngrowth target">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>normal_bank_investment_growth_target*effect_of_energy_supply_demand_balance_on_investment_growth*effect_of_crop_balance_on_investment_growth</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="effect of energy\nsupply demand\nbalance on investment growth">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>1+sensitivity_of_effect_of_energy_supply_demand_balance_on_investment_growth*(energy_supply_demand_balance-1)</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="switch break climate feedback\nto economy">
+			<aux name="switch break climate feedback\nto economy" access="output" isee:autocreated="true">
 				<eqn>0</eqn>
+				<format precision="1"/>
+				<range min="0" max="1"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="crop balance" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="share of GDP invested in Energy" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="expectation of share of GDP invested in energy">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>SMTH1(share_of_GDP_invested_in_Energy, 
 share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<isee:delay_aux/>
@@ -949,25 +1297,95 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<units>years</units>
 			</aux>
 			<aux name="effect of share of GDP invested\nin energy vs expectation\non investment growth">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>1+sensitivity_of_effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth*
 (share_of_GDP_invested_in_Energy/expectation_of_share_of_GDP_invested_in_energy-1)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="sensitivity of effect of share of GDP invested\nin energy vs expectation\non investment growth">
-				<eqn>-1.7663128563363</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>-1.766312856</eqn>
+				</element>
 				<units>dmnl</units>
 			</aux>
 			<aux name="sensitivity of effect of energy\nsupply demand\nbalance on investment growth">
-				<eqn>1</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>1</eqn>
+				</element>
 				<units>dmnl</units>
 			</aux>
 			<aux name="sensitivity of\neffect of crop balance on\ninvestment growth">
-				<eqn>3.33</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>3.33</eqn>
+				</element>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of crop balance\non investment growth">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>MIN(1,  1 + sensitivity_of_effect_of_crop_balance_on_investment_growth * (crop_balance-1))</eqn>
 				<units>dmnl</units>
+			</aux>
+			<aux name="GDP by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(GDP,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="government spending by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(government_spending,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="investment by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(investment,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="private consumption by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(private_consumption,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="N2O emissions by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(N2O_emissions,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
+				<units>KtN2O/Year</units>
+			</aux>
+			<aux name="CO2 emissions by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(CO2_emissions,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
+				<units>MtCO2/Year</units>
+			</aux>
+			<aux name="CH4 emissions by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(CH4_emissions,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
+				<units>MtCH4/Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -1016,7 +1434,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<isee:iframe color="black" border_style="solid" text_align="left" border_width="thin" background="white" vertical_text_align="top" font_size="12pt"/>
 				<isee:financial_table color="black" header_text_decoration="none" header_font_weight="bold" hide_border="false" font_size="12pt" first_column_width="250" background="#E0E0E0" text_align="right" header_text_border_style="none" auto_fit="true" header_text_border_color="black" other_column_width="100" header_font_size="14pt" header_text_border_width="thin" header_font_style="normal" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_text_padding="2"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="6" isee:scroll_x="12" isee:scroll_y="1376" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="6" isee:scroll_y="931" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1038,6 +1456,19 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
 					<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
 						<isee:series_styles>
+							<isee:series_style color="blue" thickness="1"/>
+							<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#FF7F00" thickness="1"/>
+							<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#FF007F" thickness="1"/>
+							<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#C8C8C8" thickness="1"/>
 							<isee:series_style color="blue" thickness="1"/>
 							<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
 							<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
@@ -1170,7 +1601,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				</connector>
 				<stock x="490.751" y="1571.17" name="owner\nsavings"/>
 				<aux x="672.418" y="1462.66" name="profit rate"/>
-				<connector uid="31" angle="214.718">
+				<connector uid="31" angle="214.722">
 					<from>profit_rate</from>
 					<to>&quot;non-bank_profits&quot;</to>
 				</connector>
@@ -1202,7 +1633,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<to>change_in_owner_consumption</to>
 				</connector>
 				<aux x="419" y="1810.83" name="time to change\nconsumption habits"/>
-				<connector uid="36" angle="21.4429">
+				<connector uid="36" angle="21.4386">
 					<from>time_to_change_consumption_habits</from>
 					<to>change_in_owner_consumption</to>
 				</connector>
@@ -1384,7 +1815,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<aux x="1347.25" y="2021.75" name="Bank\nAssets"/>
 				<aux x="1391.58" y="2021.75" name="Bank\nLiabilities"/>
 				<aux x="825.417" y="2148.92" name="total bank\nassets"/>
-				<flow x="812.795" y="1645.46" name="firms paying\ninterest">
+				<flow x="812.795" y="1645.45" name="firms paying\ninterest">
 					<pts>
 						<pt x="812.795" y="1589.08"/>
 						<pt x="812.795" y="1722.83"/>
@@ -1408,7 +1839,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>owner_savings</from>
 					<to>owner_savings_interest</to>
 				</connector>
-				<connector uid="72" angle="323.689">
+				<connector uid="72" angle="323.69">
 					<from>safe_interest</from>
 					<to>worker_savings_interest</to>
 				</connector>
@@ -1454,7 +1885,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>Bank_Liabilities</from>
 					<to>&quot;assets/_liabilities&quot;</to>
 				</connector>
-				<connector uid="81" angle="208.707">
+				<connector uid="81" angle="208.712">
 					<from>
 						<alias uid="82"/>
 					</from>
@@ -1492,13 +1923,13 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>Risk_Premium</from>
 					<to>risky_interest</to>
 				</connector>
-				<flow x="875.295" y="1987.29" name="change in\nrisk premium">
+				<flow x="875.295" y="1987.3" name="change in\nrisk premium">
 					<pts>
 						<pt x="875.295" y="2038.75"/>
 						<pt x="875.295" y="1944.84"/>
 					</pts>
 				</flow>
-				<connector uid="88" angle="0.197312">
+				<connector uid="88" angle="0.193753">
 					<from>renegotiation_time</from>
 					<to>change_in_risk_premium</to>
 				</connector>
@@ -1515,19 +1946,19 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>risky_interest</from>
 					<to>firms_paying_interest</to>
 				</connector>
-				<connector uid="92" angle="223.819">
+				<connector uid="92" angle="223.816">
 					<from>
 						<alias uid="93"/>
 					</from>
 					<to>firms_paying_interest</to>
 				</connector>
-				<connector uid="94" angle="204.018">
+				<connector uid="94" angle="204.01">
 					<from>
 						<alias uid="95"/>
 					</from>
 					<to>firms_paying_interest</to>
 				</connector>
-				<connector uid="96" angle="107.277">
+				<connector uid="96" angle="129.292">
 					<from>
 						<alias uid="97"/>
 					</from>
@@ -1646,7 +2077,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>Bank_Investment</from>
 					<to>private_investment</to>
 				</connector>
-				<connector uid="121" angle="331.583">
+				<connector uid="121" angle="327.758">
 					<from>Bank_Investment</from>
 					<to>bad_investments</to>
 				</connector>
@@ -1659,7 +2090,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>loan_maturation_time</from>
 					<to>renegotiation_time</to>
 				</connector>
-				<connector uid="124" angle="215.14">
+				<connector uid="124" angle="215.135">
 					<from>loan_maturation_time</from>
 					<to>loans_turning_safe</to>
 				</connector>
@@ -1692,7 +2123,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<to>change_in_lending_standards</to>
 				</connector>
 				<aux x="250.997" y="2396.79" name="time to change\nlending standards"/>
-				<connector uid="128" angle="44.7986">
+				<connector uid="128" angle="44.7985">
 					<from>time_to_change_lending_standards</from>
 					<to>change_in_lending_standards</to>
 				</connector>
@@ -1708,8 +2139,8 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				</connector>
 				<aux x="528.08" y="2527.5" name="effect of default rate\non lending standards"/>
 				<aux x="726.125" y="2355.42" name="perceived\ndefaults"/>
-				<aux x="783.625" y="2349.21" name="reporting\ndelay"/>
-				<connector uid="131" angle="186.164">
+				<aux x="785.625" y="2323.21" name="reporting\ndelay"/>
+				<connector uid="131" angle="208.429">
 					<from>reporting_delay</from>
 					<to>perceived_defaults</to>
 				</connector>
@@ -1750,7 +2181,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>failure_rate</from>
 					<to>good_investments</to>
 				</connector>
-				<connector uid="140" angle="268.437">
+				<connector uid="140" angle="274.174">
 					<from>failure_rate</from>
 					<to>bad_investments</to>
 				</connector>
@@ -1817,7 +2248,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>bank_expectation_formation_time</from>
 					<to>recent_GDP_growth_rate</to>
 				</connector>
-				<connector uid="155" angle="51.1238">
+				<connector uid="155" angle="45.9079">
 					<from>bank_profit_payment</from>
 					<to>bank_profits</to>
 				</connector>
@@ -1831,7 +2262,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				</connector>
 				<aux x="1432.44" y="1344.67" name="total public tax income"/>
 				<aux x="1582.05" y="1556.2" name="proportion of taxes to public spending"/>
-				<flow x="1793.14" y="1399.02" name="government\ntaking up debt">
+				<flow x="1793.14" y="1399.03" name="government\ntaking up debt">
 					<pts>
 						<pt x="1793.14" y="1338.63"/>
 						<pt x="1793.14" y="1450.42"/>
@@ -1978,7 +2409,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 						<pt x="597.167" y="1585.33"/>
 					</pts>
 				</flow>
-				<connector uid="184" angle="146.68">
+				<connector uid="184" angle="146.677">
 					<from>profit_tax_rate</from>
 					<to>profit_tax</to>
 				</connector>
@@ -2031,11 +2462,11 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>time_to_measure_GDP_growth_rate</from>
 					<to>GDP_growth_rate</to>
 				</connector>
-				<connector uid="194" angle="54.9129">
+				<connector uid="194" angle="54.9149">
 					<from>time_to_measure_GDP_growth_rate</from>
 					<to>change_in_average_GDP</to>
 				</connector>
-				<connector uid="195" angle="337.023">
+				<connector uid="195" angle="337.024">
 					<from>GDP</from>
 					<to>change_in_average_GDP</to>
 				</connector>
@@ -2141,7 +2572,6 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<to>consumption_share_of_GDP</to>
 				</connector>
 				<aux x="648.714" y="1884.14" name="investment"/>
-				<isee:placeholder x="698.918" y="1346.29" name="Economy Placeholder"/>
 				<aux x="1910.14" y="1766.42" name="initial average GDP"/>
 				<connector uid="217" angle="353.653">
 					<from>GDP</from>
@@ -2158,21 +2588,6 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>one_year</from>
 					<to>initial_average_GDP</to>
 				</connector>
-				<stacked_container uid="221" x="312.286" y="2925.57" width="434.286" height="314.286">
-					<graph width="434.286" height="314.286" comparative="true" type="time_series" show_grid="true" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="5" num_y_grid_lines="5" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" to="2020" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="Economy_Placeholder"/>
-						</plot>
-					</graph>
-				</stacked_container>
-				<isee:selector x="387.286" y="2880.57" width="300" height="30" select_placeholder="true" placeholder="Economy_Placeholder"/>
-				<stacked_container uid="222" x="765.143" y="2925.57" width="730.286" height="537.286">
-					<graph width="730.286" height="537.286" comparative="true" type="time_series" show_grid="true" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="5" num_y_grid_lines="5" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="GDP_growth_rate"/>
-						</plot>
-					</graph>
-				</stacked_container>
 				<aux font_style="italic" font_weight="bold" x="484.664" y="2797.71" name="energy supply demand balance"/>
 				<aux x="308.998" y="2609.08" name="energy and food adjusted\nbank investment\ngrowth target"/>
 				<connector uid="223" angle="356.556">
@@ -2198,9 +2613,9 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<to>effect_of_STA_on_failure_rate</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="259" y="2842" name="crop balance"/>
-				<aux font_style="italic" font_weight="bold" x="668.571" y="2793.57" name="share of GDP invested in Energy"/>
+				<aux font_style="italic" font_weight="bold" x="676.714" y="2804.57" name="share of GDP invested in Energy"/>
 				<aux x="636.08" y="2725.71" name="expectation of share of GDP invested in energy"/>
-				<connector uid="231" angle="105.593">
+				<connector uid="231" angle="117.261">
 					<from>share_of_GDP_invested_in_Energy</from>
 					<to>expectation_of_share_of_GDP_invested_in_energy</to>
 				</connector>
@@ -2251,6 +2666,55 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>effect_of_crop_balance_on_investment_growth</from>
 					<to>energy_and_food_adjusted_bank_investment_growth_target</to>
 				</connector>
+				<aux x="1130" y="605" name="GDP by PCTILE"/>
+				<connector uid="243" angle="13.627">
+					<from>
+						<alias uid="242"/>
+					</from>
+					<to>GDP_by_PCTILE</to>
+				</connector>
+				<aux x="1130" y="670.01" name="government spending by PCTILE"/>
+				<aux x="1119" y="747" name="investment by PCTILE"/>
+				<aux x="1130" y="829.93" name="private consumption by PCTILE"/>
+				<aux x="1119" y="890" name="N2O emissions by PCTILE"/>
+				<aux x="1112" y="963" name="CO2 emissions by PCTILE"/>
+				<aux x="1124" y="1043" name="CH4 emissions by PCTILE"/>
+				<connector uid="250" angle="17.8954">
+					<from>
+						<alias uid="244"/>
+					</from>
+					<to>government_spending_by_PCTILE</to>
+				</connector>
+				<connector uid="251" angle="22.6199">
+					<from>
+						<alias uid="245"/>
+					</from>
+					<to>investment_by_PCTILE</to>
+				</connector>
+				<connector uid="252" angle="14.4361">
+					<from>
+						<alias uid="246"/>
+					</from>
+					<to>private_consumption_by_PCTILE</to>
+				</connector>
+				<connector uid="253" angle="23.1986">
+					<from>
+						<alias uid="247"/>
+					</from>
+					<to>N2O_emissions_by_PCTILE</to>
+				</connector>
+				<connector uid="254" angle="20.1363">
+					<from>
+						<alias uid="248"/>
+					</from>
+					<to>CO2_emissions_by_PCTILE</to>
+				</connector>
+				<connector uid="255" angle="24.444">
+					<from>
+						<alias uid="249"/>
+					</from>
+					<to>CH4_emissions_by_PCTILE</to>
+				</connector>
 				<alias uid="55" x="1177.33" y="1801.83" width="18" height="18">
 					<of>time_to_change_consumption_habits</of>
 				</alias>
@@ -2275,7 +2739,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<alias uid="93" x="853.167" y="1589.08" width="18" height="18">
 					<of>risky_bank_assets</of>
 				</alias>
-				<alias uid="97" x="829" y="2276.96" width="18" height="18">
+				<alias uid="97" x="868.024" y="2299.57" width="18" height="18">
 					<of>risky_bank_assets</of>
 				</alias>
 				<alias uid="103" x="1152.5" y="2051.5" width="45" height="35">
@@ -2314,8 +2778,94 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<alias uid="219" x="1981.86" y="1756.57" width="18" height="18">
 					<of>initial_recent_GDP_growth_rate</of>
 				</alias>
+				<alias font_style="italic" uid="242" x="984" y="600" width="18" height="18">
+					<of>GDP</of>
+				</alias>
+				<alias font_style="italic" uid="244" x="984" y="661.01" width="18" height="18">
+					<of>government_spending</of>
+				</alias>
+				<alias font_style="italic" uid="245" x="987" y="732" width="18" height="18">
+					<of>investment</of>
+				</alias>
+				<alias font_style="italic" uid="246" x="980" y="814.01" width="18" height="18">
+					<of>private_consumption</of>
+				</alias>
+				<alias font_style="italic" uid="247" x="973" y="876" width="18" height="18">
+					<of>N2O_emissions</of>
+				</alias>
+				<alias background="white" font_style="italic" uid="248" x="966" y="949" width="18" height="18">
+					<of>CO2_emissions</of>
+				</alias>
+				<alias font_style="italic" uid="249" x="966" y="1038" width="18" height="18">
+					<of>CH4_emissions</of>
+				</alias>
 			</view>
 		</views>
 	</model>
+	<macro name="PCTILE5">
+		<eqn>out</eqn>
+		<parm>in</parm>
+		<variables>
+			<aux name="in" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="out" access="output">
+				<eqn>IF in = 1 THEN 0
+ELSE IF in = 2 THEN 25
+ELSE IF in = 3 THEN 50
+ELSE IF in = 4 THEN 75
+ELSE IF in = 5 THEN 100
+ELSE 0</eqn>
+				<units>dmnl</units>
+			</aux>
+		</variables>
+		<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
+					<shape type="rectangle" width="45" height="35"/>
+				</stock>
+				<flow color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
+					<shape type="circle" radius="18"/>
+				</flow>
+				<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="11pt" label_side="bottom"/>
+				<module color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
+					<shape type="rectangle" width="67" height="55"/>
+				</module>
+				<aux color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
+					<shape type="circle" radius="18"/>
+				</aux>
+				<group color="red" background="white" font_color="red" font_size="11pt"/>
+				<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="18pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="14pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="12pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1"/>
+						<isee:series_style color="fuchsia" thickness="1"/>
+						<isee:series_style color="#008F44" thickness="1"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1"/>
+						<isee:series_style color="#0CA0FF" thickness="1"/>
+						<isee:series_style color="lime" thickness="1"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1"/>
+						<isee:series_style color="#F586FF" thickness="1"/>
+						<isee:series_style color="black" thickness="1"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<aux font_weight="bold" x="192" y="278" name="in"/>
+			<aux x="279" y="278" name="out"/>
+			<connector uid="1" angle="9.16235">
+				<from>in</from>
+				<to>out</to>
+			</connector>
+		</view>
+	</macro>
 </xmile>
 

@@ -13,10 +13,30 @@
 		<dt reciprocal="true">8</dt>
 	</sim_specs>
 	<dimensions>
+		<dim name="PCTILE">
+			<elem name="Low"/>
+			<elem name="P25"/>
+			<elem name="Median"/>
+			<elem name="P75"/>
+			<elem name="High"/>
+		</dim>
+		<dim name="Run" size="1"/>
 		<dim name="ShortPopCohort" size="19"/>
 		<dim name="StdPopCohort" size="20"/>
 	</dimensions>
-	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="false"/>
+	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true">
+		<isee:ignored_words>
+			<isee:ignored_word>WolrdTrans</isee:ignored_word>
+			<isee:ignored_word>WorldTrans</isee:ignored_word>
+			<isee:ignored_word>IAM</isee:ignored_word>
+			<isee:ignored_word>FRIDA</isee:ignored_word>
+			<isee:ignored_word>IAMs</isee:ignored_word>
+			<isee:ignored_word>Sectorized</isee:ignored_word>
+			<isee:ignored_word>INvestment</isee:ignored_word>
+			<isee:ignored_word>Edenhofer</isee:ignored_word>
+			<isee:ignored_word>hydropower</isee:ignored_word>
+		</isee:ignored_words>
+	</isee:prefs>
 	<isee:multiplayer_settings include_chat="true" allow_observers="false" advance_time_increment="1" max_advance_time_in_ms="0" model_stops_when_players_drop="false" observer_start_page="home_page" enabled="false"/>
 	<isee:time_formats default_format="Builtin">
 		<isee:time_format name="Builtin" type="adaptive"/>
@@ -119,17 +139,9 @@
 			<alias>Dollars</alias>
 			<alias>$s</alias>
 		</unit>
-		<unit name="Day">
-			<eqn/>
-			<alias>Days</alias>
-		</unit>
 		<unit name="Hour">
 			<eqn/>
 			<alias>Hours</alias>
-		</unit>
-		<unit name="Month">
-			<eqn/>
-			<alias>Months</alias>
 		</unit>
 		<unit name="Person">
 			<eqn/>
@@ -192,6 +204,9 @@
 	<model name="Population">
 		<variables>
 			<aux name="GDP per person in 1980">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>INIT(GDP_per_person)</eqn>
 				<units>b$/Mp/year</units>
 			</aux>
@@ -201,10 +216,16 @@
 Feenstra RC, Inklaar R, Timmer MP. 2015. The Next Generation of the Penn World Table. American Economic Review 105(10): 3150-3182. DOI: 10.1257/aer.20130954, available for download at www.ggdc.net/pwt
 
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(GDP/Population)</eqn>
 				<units>b$/Mp/year</units>
 			</aux>
 			<stock name="Aged 20 to 40 years">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Aged_20_to_40_in_1980[*]</eqn>
 				<inflow>Passing_20</inflow>
 				<outflow>Passing_40</outflow>
@@ -228,25 +249,40 @@ Feenstra RC, Inklaar R, Timmer MP. 2015. The Next Generation of the Penn World T
 United Nations (2022)
 
 United Nations, Department of Economic and Social Affairs, Population Division (2022). World Population Prospects 2022, Online Edition. https://population.un.org/wpp/Download/Standard/MostUsed/</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>normal_fertility*effect_of_GDP_per_person_on_fertility</eqn>
 				<units>1</units>
 			</aux>
 			<flow name="Passing 60">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0</eqn>
 				<non_negative/>
 				<units>Mp/year</units>
 			</flow>
 			<flow name="Passing 40">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0</eqn>
 				<non_negative/>
 				<units>Mp/year</units>
 			</flow>
 			<flow name="Passing 80">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0</eqn>
 				<non_negative/>
 				<units>Mp/Year</units>
 			</flow>
 			<stock name="Aged 60 to 80 years">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Aged_60_to_80_in_1980[*]</eqn>
 				<inflow>Passing_60</inflow>
 				<outflow>Passing_80</outflow>
@@ -257,11 +293,17 @@ United Nations, Department of Economic and Social Affairs, Population Division (
 				<units>Mp</units>
 			</stock>
 			<flow name="Passing 20">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0</eqn>
 				<non_negative/>
 				<units>Mp/year</units>
 			</flow>
 			<stock name="Aged 40 to 60 years">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Aged_40_to_60_in_1980[*]</eqn>
 				<inflow>Passing_40</inflow>
 				<outflow>Passing_60</outflow>
@@ -284,23 +326,38 @@ Marquez-Ramos L, Mourelle E. 2019. Education and economic growth: an empirical a
 
 Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and life satisfaction. PLoS One 8(11):e79358. doi: 10.1371/journal.pone.0079358.
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(number_of_fertile_women*fertility)/fertile_period</eqn>
 				<non_negative/>
 				<units>Mp/Year</units>
 			</flow>
 			<aux name="population growth rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>birth_rate-death_rate</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="birth rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Births/Population</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="death rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>total_deaths/Population</eqn>
 				<units>1/year</units>
 			</aux>
 			<stock name="Aged 1 to 20 years">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Aged_1_to_20_in_1980[*]</eqn>
 				<inflow>Passing_0</inflow>
 				<outflow>Passing_20</outflow>
@@ -311,31 +368,49 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 				<units>Mp</units>
 			</stock>
 			<aux name="Dependency ratio">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(Population-working_age_population)/working_age_population</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="GDP" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<units>b$/year</units>
 			</aux>
 			<flow name="deaths\n1 to 20 years">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;1_to_20_death_rate&quot;</eqn>
 				<non_negative/>
 				<leak/>
 				<units>Mp/year</units>
 			</flow>
 			<flow name="deaths\n60 to 80 years">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;60_to_80_death_rate&quot;</eqn>
 				<non_negative/>
 				<leak/>
 				<units>Mp/year</units>
 			</flow>
 			<flow name="deaths\n40 to 60 years">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;40_to_60_death_rate&quot;</eqn>
 				<non_negative/>
 				<leak/>
 				<units>Mp/year</units>
 			</flow>
 			<flow name="deaths\n20 to 40 years">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;20_to_40_death_rate&quot;</eqn>
 				<non_negative/>
 				<leak/>
@@ -346,12 +421,20 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 
 Pörtner HO, Roberts DC, Adams H, Adler C, Aldunce P, Ali E, Begum RA, Betts R, Kerr RB, Biesbroek R, Birkmann J. 2022. IPCC, 2022: Climate Change 2022. Impacts, Adaptation, and Vulnerability. Contribution of Working Group II to the Sixth Assessment Report of the Intergovernmental Panel on Climate Change. Cambridge University Press, Cambridge, UK and New York, NY, USA, 3056 pp., doi:10.1017/9781009325844.
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>1+sensitivity_of_mortality_to_surface_temperature_anomaly*(Surface_Temperature_Anomaly/INIT(Surface_Temperature_Anomaly)-1)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="sensitivity of mortality\nto surface temperature anomaly">
 				<doc>Calibration Parameter: All death rates &amp; population</doc>
-				<eqn>0.131520481312392</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.131520481</eqn>
+				</element>
 				<units>1</units>
 			</aux>
 			<aux name="cohort length">
@@ -360,18 +443,30 @@ Pörtner HO, Roberts DC, Adams H, Adler C, Aldunce P, Ali E, Begum RA, Betts R, 
 				<units>years</units>
 			</aux>
 			<aux name="1 to 20 death\nrate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;1_to_20_normal_death_rate&quot;*effect_of_surface_temperature_anomaly_on_mortality*effect_of_GDP_per_person_on_1_to_20_mortality</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="20 to 40 death\nrate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;20_to_40_normal_death_rate&quot;*effect_of_surface_temperature_anomaly_on_mortality*effect_of_GDP_per_person_on_20_to_40_mortality</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="40 to 60 death\nrate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;40_to_60_normal_death_rate&quot;*effect_of_surface_temperature_anomaly_on_mortality*effect_of_GDP_per_person_on_40_to_60_mortality</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="60 to 80 death\nrate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;60_to_80_normal_death_rate&quot;*effect_of_surface_temperature_anomaly_on_mortality*effect_of_GDP_per_person_on_60_to_80_mortality</eqn>
 				<units>Per Year</units>
 			</aux>
@@ -396,6 +491,9 @@ Pörtner HO, Roberts DC, Adams H, Adler C, Aldunce P, Ali E, Begum RA, Betts R, 
 				<units>Per Year</units>
 			</aux>
 			<aux name="Surface Temperature Anomaly" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>deg C</units>
 			</aux>
@@ -669,6 +767,9 @@ Pörtner HO, Roberts DC, Adams H, Adler C, Aldunce P, Ali E, Begum RA, Betts R, 
 				<units>Mp</units>
 			</aux>
 			<stock name="Aged Over 80 years">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Aged_Over_80_in_1980[*]</eqn>
 				<inflow>Passing_80</inflow>
 				<outflow>Passing_100</outflow>
@@ -679,11 +780,17 @@ Pörtner HO, Roberts DC, Adams H, Adler C, Aldunce P, Ali E, Begum RA, Betts R, 
 				<units>Mp</units>
 			</stock>
 			<flow name="Passing 100">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0</eqn>
 				<non_negative/>
 				<units>Mp/Year</units>
 			</flow>
 			<flow name="deaths Over 80 years">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Over_80_death_rate</eqn>
 				<non_negative/>
 				<leak/>
@@ -764,6 +871,9 @@ United Nations (2022)
 
 United Nations, Department of Economic and Social Affairs, Population Division (2022). World Population Prospects 2022, Online Edition. https://population.un.org/wpp/Download/Standard/MostUsed/
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Aged_0_in_1980</eqn>
 				<inflow>Births</inflow>
 				<outflow>Passing_0</outflow>
@@ -779,6 +889,9 @@ United Nations, Department of Economic and Social Affairs, Population Division (
 Eberlein RL, Thompson JP. 2013. Precise modeling of aging populations. System Dynamics Review 29(2):87-101. https://doi.org/10.1002/sdr.1497
 
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0</eqn>
 				<non_negative/>
 				<units>Mp/Year</units>
@@ -795,17 +908,26 @@ Eberlein RL, Thompson JP. 2013. Precise modeling of aging populations. System Dy
 				<units>years</units>
 			</aux>
 			<flow name="deaths\n0 years">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;0_death_rate&quot;</eqn>
 				<non_negative/>
 				<leak/>
 				<units>Mp/Year</units>
 			</flow>
 			<aux name="Population" access="output">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Aged_0_years + Aged_1_to_20_years + Aged_20_to_40_years + Aged_40_to_60_years + Aged_60_to_80_years + Aged_Over_80_years</eqn>
 				<isee:summing/>
 				<units>Mp</units>
 			</aux>
 			<aux name="0 death\nrate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;0_normal_death_rate&quot;*effect_of_surface_temperature_anomaly_on_mortality*effect_of_GDP_per_person_on_infant_mortality</eqn>
 				<units>Per Year</units>
 			</aux>
@@ -815,6 +937,9 @@ Eberlein RL, Thompson JP. 2013. Precise modeling of aging populations. System Dy
 				<units>Per Year</units>
 			</aux>
 			<aux name="total deaths">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>deaths_0_years + deaths_1_to_20_years + deaths_20_to_40_years + deaths_40_to_60_years + deaths_60_to_80_years + deaths_Over_80_years</eqn>
 				<isee:summing/>
 				<units>Million*p/Years</units>
@@ -825,6 +950,9 @@ Eberlein RL, Thompson JP. 2013. Precise modeling of aging populations. System Dy
 				<units>1</units>
 			</aux>
 			<aux name="relative GDP per person">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>GDP_per_person/GDP_per_person_in_1980</eqn>
 				<units>1</units>
 			</aux>
@@ -845,6 +973,9 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 
 
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>sensitivity_of_fertility_to_GDP_per_person_alpha*relative_GDP_per_person^sensitivity_of_fertility_to_GDP_per_person_gamma</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -873,6 +1004,9 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 
 Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: evidence from the EU accession candidate countries. Genus 76 (2). https://doi.org/10.1186/s41118-019-0071-0.
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>infant_mortality_alpha*relative_GDP_per_person^infant_mortality_gamma</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -891,6 +1025,9 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 
 Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: evidence from the EU accession candidate countries. Genus 76 (2). https://doi.org/10.1186/s41118-019-0071-0.
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;1_to_20_mortality_alpha&quot;*relative_GDP_per_person^&quot;1_to_20_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -909,6 +1046,9 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 
 Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: evidence from the EU accession candidate countries. Genus 76 (2). https://doi.org/10.1186/s41118-019-0071-0.
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;20_to_40_mortality_alpha&quot;*relative_GDP_per_person^&quot;20_to_40_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -927,6 +1067,9 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 
 Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: evidence from the EU accession candidate countries. Genus 76 (2). https://doi.org/10.1186/s41118-019-0071-0.
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;40_to_60_mortality_alpha&quot;*relative_GDP_per_person^&quot;40_to_60_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -945,6 +1088,9 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 
 Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: evidence from the EU accession candidate countries. Genus 76 (2). https://doi.org/10.1186/s41118-019-0071-0.
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;60_to_80_mortality_alpha&quot;*relative_GDP_per_person^&quot;60_to_80_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -963,10 +1109,16 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 
 Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: evidence from the EU accession candidate countries. Genus 76 (2). https://doi.org/10.1186/s41118-019-0071-0.
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Over_80_mortality_alpha*relative_GDP_per_person^Over_80_mortality_gamma</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Over 80 death\nrate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Over_80_normal_death_rate*effect_of_surface_temperature_anomaly_on_mortality*effect_of_GDP_per_person_on_Over_80_mortality</eqn>
 				<units>Per Year</units>
 			</aux>
@@ -976,10 +1128,16 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<units>Per Year</units>
 			</aux>
 			<aux name="number of fertile women">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(AGECOUNT(Aged_20_to_40_years, 0,  16) + AGECOUNT(Aged_1_to_20_years, 16, 19))*fraction_women</eqn>
 				<units>Mp</units>
 			</aux>
 			<aux name="working age population" access="output">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>AGECOUNT(Aged_1_to_20_years, 17, 19) +
 Aged_20_to_40_years+
 Aged_40_to_60_years+
@@ -987,6 +1145,9 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				<units>Mp</units>
 			</aux>
 			<aux name="net working age\nentrance rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>SMTH1(DERIVN(working_age_population, 1), smoothing_time, initial_net_working_age_entrance_rate)</eqn>
 				<units>Mp/Year</units>
 			</aux>
@@ -996,6 +1157,118 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 			</aux>
 			<aux name="initial net working\nage entrance rate">
 				<eqn>54</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="population by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(Population, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="Aged 0 years by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(Aged_0_years, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="Aged 1 to 20 yearsby PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(Aged_1_to_20_years, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="Aged 20 to 40 years by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(Aged_20_to_40_years, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="Aged 40 to 60 years by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(Aged_40_to_60_years, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="Aged 60 to 80 years by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(Aged_60_to_80_years, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="Aged Over 80 years by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(Aged_Over_80_years, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="deaths\n0 years by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(deaths_0_years, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="deaths\n1 to 20 years by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(deaths_1_to_20_years, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="deaths\n20 to 40 years by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(deaths_20_to_40_years, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="deaths\n40 to 60 years by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(deaths_40_to_60_years, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="deaths\n60 to 80 years by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(deaths_60_to_80_years, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="deaths Over 80 years by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(deaths_Over_80_years, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="fertility by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(fertility, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="Births by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(Births, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="total deaths by PCTILE">
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(total_deaths, PCTILE5(PCTILE),  PCTILE5(PCTILE-1))</eqn>
 				<units>Mp/year</units>
 			</aux>
 		</variables>
@@ -1045,7 +1318,7 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_y="1255" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_y="1206" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1561,6 +1834,118 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 					<from>GDP_per_person_in_1980</from>
 					<to>relative_GDP_per_person</to>
 				</connector>
+				<aux x="1499" y="161" name="population by PCTILE"/>
+				<connector uid="391" angle="34.1145">
+					<from>
+						<alias uid="392"/>
+					</from>
+					<to>population_by_PCTILE</to>
+				</connector>
+				<aux x="1471" y="242" name="Aged 0 years by PCTILE"/>
+				<aux x="1477" y="331" name="Aged 1 to 20 yearsby PCTILE"/>
+				<aux x="1459" y="401" name="Aged 20 to 40 years by PCTILE"/>
+				<aux x="1453" y="490" name="Aged 40 to 60 years by PCTILE"/>
+				<aux x="1449" y="567" name="Aged 60 to 80 years by PCTILE"/>
+				<aux x="1444" y="659" name="Aged Over 80 years by PCTILE"/>
+				<connector uid="408" angle="21.8014">
+					<from>
+						<alias uid="393"/>
+					</from>
+					<to>Aged_0_years_by_PCTILE</to>
+				</connector>
+				<aux x="1840" y="144" name="deaths\n0 years by PCTILE"/>
+				<aux x="1859" y="232" name="deaths\n1 to 20 years by PCTILE"/>
+				<aux x="1837" y="292" name="deaths\n20 to 40 years by PCTILE"/>
+				<aux x="1842" y="382" name="deaths\n40 to 60 years by PCTILE"/>
+				<aux x="1852" y="464" name="deaths\n60 to 80 years by PCTILE"/>
+				<aux x="1877" y="536" name="deaths Over 80 years by PCTILE"/>
+				<aux x="2209" y="141" name="fertility by PCTILE"/>
+				<aux x="2205" y="219" name="Births by PCTILE"/>
+				<aux x="2205" y="302" name="total deaths by PCTILE"/>
+				<connector uid="409" angle="6.09586">
+					<from>
+						<alias uid="394"/>
+					</from>
+					<to>Aged_1_to_20_yearsby_PCTILE</to>
+				</connector>
+				<connector uid="410" angle="7.28895">
+					<from>
+						<alias uid="395"/>
+					</from>
+					<to>Aged_20_to_40_years_by_PCTILE</to>
+				</connector>
+				<connector uid="411" angle="9.5601">
+					<from>
+						<alias uid="396"/>
+					</from>
+					<to>Aged_40_to_60_years_by_PCTILE</to>
+				</connector>
+				<connector uid="412" angle="6.48307">
+					<from>
+						<alias uid="397"/>
+					</from>
+					<to>Aged_60_to_80_years_by_PCTILE</to>
+				</connector>
+				<connector uid="413" angle="3.25195">
+					<from>
+						<alias uid="398"/>
+					</from>
+					<to>Aged_Over_80_years_by_PCTILE</to>
+				</connector>
+				<connector uid="414" angle="20.7723">
+					<from>
+						<alias uid="399"/>
+					</from>
+					<to>deaths_0_years_by_PCTILE</to>
+				</connector>
+				<connector uid="415" angle="11.3099">
+					<from>
+						<alias uid="400"/>
+					</from>
+					<to>deaths_1_to_20_years_by_PCTILE</to>
+				</connector>
+				<connector uid="416" angle="27.2161">
+					<from>
+						<alias uid="401"/>
+					</from>
+					<to>deaths_20_to_40_years_by_PCTILE</to>
+				</connector>
+				<connector uid="417" angle="30.0686">
+					<from>
+						<alias uid="402"/>
+					</from>
+					<to>deaths_40_to_60_years_by_PCTILE</to>
+				</connector>
+				<connector uid="418" angle="13.5704">
+					<from>
+						<alias uid="403"/>
+					</from>
+					<to>deaths_60_to_80_years_by_PCTILE</to>
+				</connector>
+				<connector uid="419" angle="36.2538">
+					<from>
+						<alias uid="404"/>
+					</from>
+					<to>deaths_Over_80_years_by_PCTILE</to>
+				</connector>
+				<connector uid="420" angle="41.0548">
+					<from>
+						<alias uid="405"/>
+					</from>
+					<to>fertility_by_PCTILE</to>
+				</connector>
+				<connector uid="421" angle="29.5388">
+					<from>
+						<alias uid="406"/>
+					</from>
+					<to>Births_by_PCTILE</to>
+				</connector>
+				<connector uid="422" angle="30.5792">
+					<from>
+						<alias uid="407"/>
+					</from>
+					<to>total_deaths_by_PCTILE</to>
+				</connector>
 				<alias font_style="italic" uid="330" x="1114.67" y="1688.83" width="18" height="18">
 					<of>relative_GDP_per_person</of>
 				</alias>
@@ -1606,8 +1991,121 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				<alias font_style="italic" uid="388" x="1634.5" y="1011.17" width="18" height="18">
 					<of>Population</of>
 				</alias>
+				<alias font_style="italic" uid="392" x="1266" y="164" width="18" height="18">
+					<of>Population</of>
+				</alias>
+				<alias font_style="italic" label_angle="123.341" uid="393" x="1212.33" y="237.417" width="113.333" height="39.1667">
+					<of>Aged_0_years</of>
+				</alias>
+				<alias font_style="italic" uid="394" x="1192.33" y="316.667" width="153.333" height="36.6667">
+					<of>Aged_1_to_20_years</of>
+				</alias>
+				<alias font_style="italic" uid="395" x="1189.67" y="397.667" width="146.667" height="36.6667">
+					<of>Aged_20_to_40_years</of>
+				</alias>
+				<alias font_style="italic" uid="396" x="1189.25" y="479.833" width="137.5" height="38.3333">
+					<of>Aged_40_to_60_years</of>
+				</alias>
+				<alias font_style="italic" uid="397" x="1178.58" y="555.833" width="140.833" height="38.3333">
+					<of>Aged_60_to_80_years</of>
+				</alias>
+				<alias font_style="italic" uid="398" x="1173.92" y="643.667" width="144.167" height="36.6667">
+					<of>Aged_Over_80_years</of>
+				</alias>
+				<alias font_style="italic" uid="399" x="1693" y="153" width="18" height="18">
+					<of>deaths_0_years</of>
+				</alias>
+				<alias background="white" font_style="italic" uid="400" x="1693" y="230" width="18" height="18">
+					<of>deaths_1_to_20_years</of>
+				</alias>
+				<alias background="white" font_style="italic" uid="401" x="1693" y="311" width="18" height="18">
+					<of>deaths_20_to_40_years</of>
+				</alias>
+				<alias background="white" font_style="italic" uid="402" x="1693" y="384" width="18" height="18">
+					<of>deaths_40_to_60_years</of>
+				</alias>
+				<alias background="white" font_style="italic" uid="403" x="1689" y="455" width="18" height="18">
+					<of>deaths_60_to_80_years</of>
+				</alias>
+				<alias font_style="italic" uid="404" x="1693" y="533" width="18" height="18">
+					<of>deaths_Over_80_years</of>
+				</alias>
+				<alias font_style="italic" uid="405" x="2080" y="150" width="18" height="18">
+					<of>fertility</of>
+				</alias>
+				<alias font_style="italic" uid="406" x="2074" y="233" width="18" height="18">
+					<of>Births</of>
+				</alias>
+				<alias font_style="italic" uid="407" x="2080" y="302" width="18" height="18">
+					<of>total_deaths</of>
+				</alias>
 			</view>
 		</views>
 	</model>
+	<macro name="PCTILE5">
+		<eqn>out</eqn>
+		<parm>in</parm>
+		<variables>
+			<aux name="in" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="out" access="output">
+				<eqn>IF in = 1 THEN 0
+ELSE IF in = 2 THEN 25
+ELSE IF in = 3 THEN 50
+ELSE IF in = 4 THEN 75
+ELSE IF in = 5 THEN 100
+ELSE 0</eqn>
+				<units>dmnl</units>
+			</aux>
+		</variables>
+		<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
+					<shape type="rectangle" width="45" height="35"/>
+				</stock>
+				<flow color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
+					<shape type="circle" radius="18"/>
+				</flow>
+				<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="11pt" label_side="bottom"/>
+				<module color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
+					<shape type="rectangle" width="67" height="55"/>
+				</module>
+				<aux color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
+					<shape type="circle" radius="18"/>
+				</aux>
+				<group color="red" background="white" font_color="red" font_size="11pt"/>
+				<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="18pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="14pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="12pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1"/>
+						<isee:series_style color="fuchsia" thickness="1"/>
+						<isee:series_style color="#008F44" thickness="1"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1"/>
+						<isee:series_style color="#0CA0FF" thickness="1"/>
+						<isee:series_style color="lime" thickness="1"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1"/>
+						<isee:series_style color="#F586FF" thickness="1"/>
+						<isee:series_style color="black" thickness="1"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<aux font_weight="bold" x="192" y="278" name="in"/>
+			<aux x="279" y="278" name="out"/>
+			<connector uid="1" angle="9.16235">
+				<from>in</from>
+				<to>out</to>
+			</connector>
+		</view>
+	</macro>
 </xmile>
 
