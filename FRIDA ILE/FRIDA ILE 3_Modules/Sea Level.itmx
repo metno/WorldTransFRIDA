@@ -3,9 +3,9 @@
 	<header>
 		<smile version="1.0" namespace="std, isee" uses_arrays="1"/>
 		<name>Sea Level</name>
-		<uuid>02b3c660-904a-4807-a5db-6ee1992e9f0e</uuid>
+		<uuid>643eb335-6f33-4fad-86db-c00593fce9f9</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.5.1" isee:build_number="3169" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.6" isee:build_number="3236" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -21,7 +21,7 @@
 			<elem name="P75"/>
 			<elem name="High"/>
 		</dim>
-		<dim name="Run" size="47"/>
+		<dim name="Run" size="34"/>
 	</dimensions>
 	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Basic Prev-Next Blue Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="false">
 		<isee:ignored_words>
@@ -382,28 +382,6 @@ N = -k1T1 + (1-epsilon)*k3*(T2-T3)</doc>
 				<eqn>-(C1[selected_climate_case[Run]]*dT1 +C2[selected_climate_case[Run]]*dT2
 +C3[selected_climate_case[Run]]*dT3)</eqn>
 				<units>W/metre^2</units>
-			</aux>
-			<stock name="SLR from LWS">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>0</eqn>
-				<inflow>yearly_LWS_change</inflow>
-				<units>metre</units>
-			</stock>
-			<flow name="yearly LWS change">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>IF TIME&gt;startyear_LWS THEN
- fixed_annual_rate_of_LWS_depletion
-ELSE
-0</eqn>
-				<units>metre/Year</units>
-			</flow>
-			<aux name="fixed annual rate of LWS depletion">
-				<eqn>0.0003</eqn>
-				<units>metre/year</units>
 			</aux>
 			<aux name="seconds per year">
 				<eqn>31557600</eqn>
@@ -816,10 +794,6 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<eqn>1</eqn>
 				<units>1/metre</units>
 			</aux>
-			<aux name="startyear LWS">
-				<eqn>2000</eqn>
-				<units>year</units>
-			</aux>
 			<stock name="global SLR simple">
 				<dimensions>
 					<dim name="Run"/>
@@ -913,6 +887,32 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
+			<aux name="Population Mp" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="SLR from LWS">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(Population_Mp*LWS_per_capita+LWS_with_no_people)/millimetre_to_metre</eqn>
+				<units>metre</units>
+			</aux>
+			<aux name="LWS per capita">
+				<eqn>0.00454881166977024</eqn>
+				<units>millimetre/Mp</units>
+			</aux>
+			<aux name="LWS with no people">
+				<eqn>-26.4661992747091</eqn>
+				<units>millimetre</units>
+			</aux>
+			<aux name="millimetre to metre">
+				<eqn>1000</eqn>
+				<units>millimetre/metre</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -960,7 +960,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="10.8333" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_y="700" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1019,7 +1019,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 						<pt x="248.425" y="609"/>
 					</pts>
 				</flow>
-				<aux label_side="bottom" x="550.286" y="115.111" width="18" height="18" name="T anomaly for SLR"/>
+				<aux label_side="bottom" x="559.286" y="124.111" name="T anomaly for SLR"/>
 				<connector uid="128" angle="153.199">
 					<from>SLR_from_mountain_glaciers</from>
 					<to>yearly_MG_mass_loss</to>
@@ -1090,24 +1090,8 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					<from>SLR_thermosteric</from>
 					<to>global_SLR</to>
 				</connector>
-				<stock label_side="bottom" x="287.452" y="907.944" name="SLR from LWS"/>
-				<flow x="197.517" y="908.667" name="yearly LWS change">
-					<pts>
-						<pt x="118.083" y="908.667"/>
-						<pt x="264.952" y="908.667"/>
-					</pts>
-				</flow>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="left" x="191.518" y="845.333" name="fixed annual rate of LWS depletion"/>
-				<connector uid="141" angle="275.411">
-					<from>fixed_annual_rate_of_LWS_depletion</from>
-					<to>yearly_LWS_change</to>
-				</connector>
-				<connector uid="142" angle="60.8404">
-					<from>SLR_from_LWS</from>
-					<to>global_SLR</to>
-				</connector>
 				<aux label_side="left" x="118.646" y="205.194" name="seconds per year"/>
-				<aux label_side="right" x="219.898" y="243.417" width="18" height="18" name="yearly ocean\nenergy input"/>
+				<aux label_side="right" x="228.898" y="252.417" name="yearly ocean\nenergy input"/>
 				<connector uid="143" angle="205.97">
 					<from>yearly_ocean_energy_input</from>
 					<to>yearly_thermosteric_sea_level_change</to>
@@ -1692,7 +1676,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					<from>global_SLR</from>
 					<to>AntIS_dSL</to>
 				</connector>
-				<aux x="2034.34" y="783.268" width="18" height="18" name="UNIT per year"/>
+				<aux x="2043.34" y="792.268" name="UNIT per year"/>
 				<aux label_side="left" label_angle="135" x="926.343" y="702.208" name="AntIS initial volume"/>
 				<connector uid="277" angle="219.542">
 					<from>
@@ -1743,7 +1727,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					<from>AntIS_max_contribution_to_SLR</from>
 					<to>SLR_from_Antarctica_Ice_Sheet</to>
 				</connector>
-				<aux x="2034.34" y="730.503" width="18" height="18" name="UNIT per m"/>
+				<aux x="2043.34" y="739.503" name="UNIT per m"/>
 				<connector uid="292" angle="173.66">
 					<from>
 						<alias uid="293"/>
@@ -1786,14 +1770,19 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					</from>
 					<to>AntIS_fac1</to>
 				</connector>
-				<stacked_container uid="306" x="1256.89" y="281.962" width="844.177" height="442.642">
-					<graph axis_title_font_size="16pt" axis_label_font_size="16pt" width="844.177" height="442.642" type="time_series" isee:points_only="true" show_grid="false" isee:tick_type="inside" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="5" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true"/>
+				<stacked_container uid="306" x="1240.22" y="190.514" width="844.177" height="442.642">
+					<graph axis_title_font_size="16pt" axis_label_font_size="16pt" width="844.177" height="442.642" type="time_series" show_grid="false" isee:tick_type="inside" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="5" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="global_SLR[1]"/>
+						</plot>
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="global_SLR[1]"/>
+						</plot>
+						<plot color="fuchsia" pen_style="dotted" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
+							<entity name="global_SLR[1]"/>
+						</plot>
+					</graph>
 				</stacked_container>
-				<aux label_side="right" label_angle="45" x="225.75" y="845.333" name="startyear LWS"/>
-				<connector uid="307" angle="217.032">
-					<from>startyear_LWS</from>
-					<to>yearly_LWS_change</to>
-				</connector>
 				<text_box font_size="18pt" uid="308" x="2421.72" y="125.083" width="329.31" height="22.5">Alternative: Rahmstorf (2007) simple model</text_box>
 				<stock x="2479.75" y="262.893" name="global SLR simple"/>
 				<flow x="2568" y="261.75" name="Annual change of global SLR">
@@ -1813,7 +1802,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					</from>
 					<to>Annual_change_of_global_SLR</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="top" x="550.286" y="48.111" width="18" height="18" name="Surface Temperature Anomaly"/>
+				<aux font_style="italic" font_weight="bold" label_side="top" x="559.286" y="57.111" name="Surface Temperature Anomaly"/>
 				<connector uid="312" angle="269.997">
 					<from>Surface_Temperature_Anomaly</from>
 					<to>T_anomaly_for_SLR</to>
@@ -1884,10 +1873,42 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					</from>
 					<to>Annual_change_of_global_SLR_by_PCTILE</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="52.6667" y="66" width="18" height="18" name="selected climate case"/>
+				<aux font_style="italic" font_weight="bold" x="61.6667" y="75" name="selected climate case"/>
 				<connector uid="345" angle="344.055">
 					<from>selected_climate_case</from>
 					<to>net_downward_radiative_flux</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="93.3333" y="906.667" name="Population Mp"/>
+				<aux x="236.786" y="948.333" name="SLR from LWS"/>
+				<connector uid="348" angle="320.332">
+					<from>Population_Mp</from>
+					<to>SLR_from_LWS</to>
+				</connector>
+				<aux x="178.684" y="868.321" name="LWS per capita"/>
+				<aux x="178.351" y="1008.33" name="LWS with no people"/>
+				<connector uid="349" angle="10.6336">
+					<from>LWS_with_no_people</from>
+					<to>SLR_from_LWS</to>
+				</connector>
+				<connector uid="350" angle="319.532">
+					<from>LWS_per_capita</from>
+					<to>SLR_from_LWS</to>
+				</connector>
+				<aux x="281.667" y="872.833" name="millimetre to metre"/>
+				<connector uid="351" angle="240.945">
+					<from>millimetre_to_metre</from>
+					<to>SLR_from_LWS</to>
+				</connector>
+				<stacked_container uid="352" x="642.125" y="1265.58" minimized="true">
+					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="SLR_from_LWS[1]"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<connector uid="353" angle="24.3044">
+					<from>SLR_from_LWS</from>
+					<to>global_SLR</to>
 				</connector>
 				<alias font_style="italic" label_side="top" uid="151" x="202.833" y="527.167" width="18" height="18">
 					<of>T_anomaly_for_SLR</of>
