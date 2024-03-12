@@ -5,7 +5,7 @@
 		<name>Energy</name>
 		<uuid>1ce42919-b116-4c1c-a487-83c4df48992b</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.5.1" isee:build_number="3169" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.6" isee:build_number="3236" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="1.5" isee:run_prefix="Run" isee:simulation_delay="0.125" isee:restore_on_start="false" isee:save_interval="2" method="Euler" time_units="Months" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
 		<start>0</start>
@@ -716,7 +716,6 @@ With the time series of total renewable energy capcity we can calculate the entr
 				<outflow>Depreciation_of_Fuel_Extraction_Capital</outflow>
 				<outflow>Decomisioning_of_fossil_fuel_extraction_capital</outflow>
 				<outflow>Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA</outflow>
-				<non_negative/>
 				<units>$</units>
 			</stock>
 			<stock name="Fossil Energy Capital">
@@ -875,7 +874,8 @@ Calibration from FRIDA 0.1 or from MIND</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>MAX(0, 
+				<eqn>adaptive_change_in_investments*
+(MAX(0, 
 Investment_in_fuel_extraction_in_1980
 +RAMP(&quot;Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020&quot;[1], 1980, 1990)
 +RAMP(&quot;Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020&quot;[2], 1990, 2000)
@@ -890,14 +890,15 @@ Investment_in_fuel_extraction_in_1980
 +RAMP(&quot;Change_in_investments_in_fuel_extraction_per_decade_2020-2100&quot;[7], 2080, 2090)
 +RAMP(&quot;Change_in_investments_in_fuel_extraction_per_decade_2020-2100&quot;[8], 2090, 2100)
 +RAMP(&quot;Change_in_investments_in_fuel_extraction_per_decade_2020-2100&quot;[9], 2100)
-) + Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA</eqn>
+) + Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA)</eqn>
 				<units>$/Year</units>
 			</aux>
 			<aux name="Investments in\nFossil Energy Capital">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>MAX(0, 
+				<eqn>adaptive_change_in_investments*(
+MAX(0, 
 Investment_share_in_fossil_energy_production_in_1980
 +RAMP(&quot;Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020&quot;[1], 1980, 1990)
 +RAMP(&quot;Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020&quot;[2], 1990, 2000)
@@ -912,14 +913,15 @@ Investment_share_in_fossil_energy_production_in_1980
 +RAMP(&quot;Change_in_investments_in_fossil_energy_production_per_decade_2020-2100&quot;[7], 2080, 2090)
 +RAMP(&quot;Change_in_investments_in_fossil_energy_production_per_decade_2020-2100&quot;[8], 2090, 2100)
 +RAMP(&quot;Change_in_investments_in_fossil_energy_production_per_decade_2020-2100&quot;[9], 2100)
-)+Secondary_Fossil_Energy_Capital_Damaged_due_to_STA</eqn>
+)+Secondary_Fossil_Energy_Capital_Damaged_due_to_STA)</eqn>
 				<units>$/Year</units>
 			</aux>
 			<aux name="Investments in\nSolar and Wind\nEnergy Capacity">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>MAX(0, 
+				<eqn>adaptive_change_in_investments*(
+MAX(0, 
 Investments_in_wind_and_solar_energy_production_in_1980
 +RAMP(&quot;Change_in_investments_in_wind_and_solar_energy_production_per_decade_1980_-_2020&quot;[1], 1980, 1990)
 +RAMP(&quot;Change_in_investments_in_wind_and_solar_energy_production_per_decade_1980_-_2020&quot;[2], 1990, 2000)
@@ -934,7 +936,7 @@ Investments_in_wind_and_solar_energy_production_in_1980
 +RAMP(&quot;Change_in_investments_in_solar_and_wind_capacity_per_decade_2020-2100&quot;[7], 2080, 2090)
 +RAMP(&quot;Change_in_investments_in_solar_and_wind_capacity_per_decade_2020-2100&quot;[8], 2090, 2100)
 +RAMP(&quot;Change_in_investments_in_solar_and_wind_capacity_per_decade_2020-2100&quot;[9], 2100)
-)+replacement_cost_of_Solar_and_Wind_Energy_Capital_Damaged_due_to_STA[Run]</eqn>
+)+replacement_cost_of_Solar_and_Wind_Energy_Capital_Damaged_due_to_STA[Run])</eqn>
 				<units>$/Year</units>
 			</aux>
 			<aux name="depreciation rate of\nhydropower capital">
@@ -982,7 +984,8 @@ IRENA 2012  Renewable Energy Technologies: Cost Analysis Series Volume 1: Power 
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>MAX(0, 
+				<eqn>adaptive_change_in_investments*(
+MAX(0, 
 Investments_in_hydropower_energy_production_in_1980
 +RAMP(&quot;Change_in_investments_in_hydropower_energy_production_per_decade_1980_-_2020&quot;[1], 1980, 1990)
 +RAMP(&quot;Change_in_investments_in_hydropower_energy_production_per_decade_1980_-_2020&quot;[2], 1990, 2000)
@@ -997,7 +1000,7 @@ Investments_in_hydropower_energy_production_in_1980
 +RAMP(&quot;Change_in_investments_in_hydropower_production_per_decade_2020-2100&quot;[7], 2080, 2090)
 +RAMP(&quot;Change_in_investments_in_hydropower_production_per_decade_2020-2100&quot;[8], 2090, 2100)
 +RAMP(&quot;Change_in_investments_in_hydropower_production_per_decade_2020-2100&quot;[9], 2100)
-)+replacement_cost_of_Hydropower_Energy_Capital_Damaged_due_to_STA</eqn>
+)+replacement_cost_of_Hydropower_Energy_Capital_Damaged_due_to_STA)</eqn>
 				<units>$/Year</units>
 			</aux>
 			<aux name="Wind and Solar Energy Output">
@@ -1146,7 +1149,8 @@ coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>MAX(0, 
+				<eqn>adaptive_change_in_investments*(
+MAX(0, 
 Investments_in_nuclear_energy_production_in_1980
 +RAMP(&quot;Change_in_investments_in_nuclear_energy_production_per_decade_1980_-_2020&quot;[1], 1980, 1990)
 +RAMP(&quot;Change_in_investments_in_nuclear_energy_production_per_decade_1980_-_2020&quot;[2], 1990, 2000)
@@ -1161,7 +1165,7 @@ Investments_in_nuclear_energy_production_in_1980
 +RAMP(&quot;Change_in_investments_in_nuclear_energy_production_per_decade_2020-2100&quot;[7], 2080, 2090)
 +RAMP(&quot;Change_in_investments_in_nuclear_energy_production_per_decade_2020-2100&quot;[8], 2090, 2100)
 +RAMP(&quot;Change_in_investments_in_nuclear_energy_production_per_decade_2020-2100&quot;[9], 2100)
-)+replacement_cost_of_Nuclear_Energy_Capital_Damaged_due_to_STA</eqn>
+)+replacement_cost_of_Nuclear_Energy_Capital_Damaged_due_to_STA)</eqn>
 				<units>$/Year</units>
 			</aux>
 			<aux name="share of GDP invested\nin nuclear power">
@@ -1223,7 +1227,8 @@ World Bank  2020 Minerals for climate action: The mineral intensity of the clean
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>MAX(0, 
+				<eqn>adaptive_change_in_investments*(
+MAX(0, 
 Investments_in_other_energy_production_in_1980
 +RAMP(&quot;Change_in_investments_in_other_energy_production_per_decade_1980_-_2020&quot;[1], 1980, 1990)
 +RAMP(&quot;Change_in_investments_in_other_energy_production_per_decade_1980_-_2020&quot;[2], 1990, 2000)
@@ -1238,7 +1243,7 @@ Investments_in_other_energy_production_in_1980
 +RAMP(&quot;Change_in_investments_in_other_energy_production_per_decade_2020-2100&quot;[7], 2080, 2090)
 +RAMP(&quot;Change_in_investments_in_other_energy_production_per_decade_2020-2100&quot;[8], 2090, 2100)
 +RAMP(&quot;Change_in_investments_in_other_energy_production_per_decade_2020-2100&quot;[9], 2100)
-)+replacement_cost_of_Other_Energy_Capital_Damaged_due_to_STA</eqn>
+)+replacement_cost_of_Other_Energy_Capital_Damaged_due_to_STA)</eqn>
 				<units>$/Year</units>
 			</aux>
 			<aux name="share of GDP invested\nin other power">
@@ -1960,8 +1965,8 @@ ELSE
 				</element>
 				<units>$/Year^2</units>
 			</aux>
-			<aux name="Greenness of Policy" access="output" isee:autocreated="true">
-				<eqn>0.5</eqn>
+			<aux name="Greenness of Policy">
+				<eqn>0.24</eqn>
 				<range min="0" max="1"/>
 				<units>dmnl</units>
 			</aux>
@@ -2496,42 +2501,6 @@ ELSE
 				</element>
 				<units>$/Year^2</units>
 			</aux>
-			<aux name="forecasted energy demand">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>FORCST(demand_for_energy, trending_time, forcasting_horizion)</eqn>
-				<units>TWh/Year</units>
-			</aux>
-			<aux name="forcasting horizion">
-				<eqn>1</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="trending time">
-				<eqn>5</eqn>
-				<units>years</units>
-			</aux>
-			<aux name="actual investment">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>World_GDP*share_of_GDP_invested_in_Energy</eqn>
-				<units>$/Year</units>
-			</aux>
-			<aux name="calculated investment">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>forecasted_energy_demand*Per_Unit_replacement_cost_of_Energy_Supply</eqn>
-				<units>$/Year</units>
-			</aux>
-			<aux name="Per Unit replacement cost of Energy Supply">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>actual_investment/Total_Energy_Output</eqn>
-				<units>$/(TWh)</units>
-			</aux>
 			<aux name="Renewable Energy Output by PCTILE">
 				<dimensions>
 					<dim name="PCTILE"/>
@@ -2761,7 +2730,7 @@ ELSE
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>0.05 {0.01 to 0.1}</eqn>
+				<eqn>0.00713869179990239 {0.01 to 0.1}</eqn>
 				<range min="0" max="2"/>
 				<units>1/deg C</units>
 			</aux>
@@ -2861,6 +2830,27 @@ ELSE
 				<eqn>Other_Energy_Capital_Damaged_due_to_STA*Other_Installation_Costs/kW_to_GW</eqn>
 				<units>$/Year</units>
 			</aux>
+			<aux name="adaptive change in investments">
+				<eqn>IF use_adaptive_energy_controls=1 AND TIME &gt;= 2020 THEN
+IF Energy_Balance[1] &gt; 1 THEN
+adaptive_energy_investments_proportionality*(1-Energy_Balance[1])+1
+ELSE
+1/(adaptive_energy_investments_proportionality*(Energy_Balance[1]-1)+1)
+ {adaptive_energy_investments_proportionality*(Energy_Balance[1]-1)+1}
+ELSE
+1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="adaptive energy investments proportionality">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="use adaptive energy controls">
+				<eqn>1</eqn>
+				<format precision="1"/>
+				<range min="0" max="1"/>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -2910,7 +2900,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="12" isee:page_rows="7" isee:scroll_y="1182.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="12" isee:page_rows="7" isee:scroll_y="857.143" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3200,7 +3190,7 @@ ELSE
 					<from>Fossil_Extraction_Accumulated_Knowledge</from>
 					<to>Fossil_Fuel_Extraction_Productivity</to>
 				</connector>
-				<stock x="747.12" y="998.4" width="45" height="35" name="Fossil Fuel Extraction Capital"/>
+				<stock x="769.62" y="1015.9" name="Fossil Fuel Extraction Capital"/>
 				<connector uid="163" angle="19.4006">
 					<from>Fossil_Fuel_Extraction_Capital</from>
 					<to>Depreciation_of_Fuel_Extraction_Capital</to>
@@ -3209,7 +3199,7 @@ ELSE
 					<from>Fossil_Fuel_Extraction_Capital</from>
 					<to>Fossil_Energy_Extraction</to>
 				</connector>
-				<stock x="1412.71" y="997.15" width="45" height="35" name="Fossil Energy Capital"/>
+				<stock x="1435.21" y="1014.65" name="Fossil Energy Capital"/>
 				<connector uid="165" angle="23.0731">
 					<from>Fossil_Energy_Capital</from>
 					<to>Depreciation_of_Fossil_Energy_Capital</to>
@@ -3253,7 +3243,7 @@ ELSE
 				<aux background="lime" font_style="italic" font_weight="bold" label_side="top" x="1966.14" y="2046.92" name="Population"/>
 				<aux background="lime" font_style="italic" font_weight="bold" label_side="top" x="1399.42" y="1946.67" name="GDP per person"/>
 				<aux background="white" label_side="bottom" x="1854.5" y="1957.92" name="climate adjusted per person use of\nenergy"/>
-				<aux background="#FFAAFF" label_side="left" label_angle="225" x="2030.57" y="1912.83" width="18" height="18" name="demand for energy"/>
+				<aux background="#FFAAFF" label_side="left" label_angle="225" x="2039.57" y="1921.83" name="demand for energy"/>
 				<aux background="white" label_side="right" x="1731.67" y="1916.38" name="effect of surface temperature\nanomaly on per\nperson use of energy"/>
 				<aux background="white" label_side="top" x="1677.17" y="1832.21" name="sensitivity of\nper person\nuse of energy to surface\ntemperature anomaly"/>
 				<connector uid="247" angle="302.924">
@@ -3429,7 +3419,7 @@ The stock is the currently employed capital.</text_box>
 						</plot>
 					</graph>
 				</stacked_container>
-				<stacked_container uid="383" x="6220.06" y="1942.74" width="350" height="250">
+				<stacked_container uid="383" x="6395.06" y="2067.74">
 					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Wind_and_Solar_Energy_Capacity[1]"/>
@@ -3506,7 +3496,7 @@ The stock is the currently employed capital.</text_box>
 						</plot>
 					</graph>
 				</stacked_container>
-				<stacked_container uid="395" x="6945.89" y="1941.07" width="350" height="250">
+				<stacked_container uid="395" x="7120.89" y="2066.07">
 					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Hydropower_Energy_Capacity[1]"/>
@@ -3713,7 +3703,7 @@ The stock is the currently employed capital.</text_box>
 						</plot>
 					</graph>
 				</stacked_container>
-				<stacked_container uid="494" x="7340.89" y="1942.74" width="350" height="250">
+				<stacked_container uid="494" x="7515.89" y="2067.74">
 					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Other_Energy_Capacity[1]"/>
@@ -3737,7 +3727,7 @@ The stock is the currently employed capital.</text_box>
 						</plot>
 					</graph>
 				</stacked_container>
-				<stacked_container uid="500" x="7723.39" y="1800.24" width="350" height="250">
+				<stacked_container uid="500" x="7898.39" y="1925.24">
 					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Nuclear_Energy_Capacity[1]"/>
@@ -3754,7 +3744,7 @@ The stock is the currently employed capital.</text_box>
 					</graph>
 				</stacked_container>
 				<text_box font_size="36pt" uid="504" x="7787.77" y="367.57" width="256.25" height="79.25">Nuclear Energy Investment</text_box>
-				<stacked_container uid="506" x="6971.72" y="822.583" width="350" height="250">
+				<stacked_container uid="506" x="7146.72" y="947.583">
 					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Investments_in_Hydropower_Energy_Capcity[1]"/>
@@ -3773,17 +3763,17 @@ The stock is the currently employed capital.</text_box>
 					<from>productivity_per_extractionknowledge</from>
 					<to>Fossil_Fuel_Extraction_Productivity</to>
 				</connector>
-				<aux x="1234.03" y="497.661" width="18" height="18" name="Investment share in fossil\nenergy production in 1980"/>
+				<aux x="1243.03" y="506.661" name="Investment share in fossil\nenergy production in 1980"/>
 				<aux x="1243.03" y="558.904" name="Change in investments in\nfossil energy production\nper decade 1980 - 2020"/>
-				<aux x="1809.25" y="499.583" width="18" height="18" name="Investments in wind and solar\nenergy production in 1980"/>
+				<aux x="1818.25" y="508.583" name="Investments in wind and solar\nenergy production in 1980"/>
 				<aux x="1814.92" y="557.875" name="Change in investments\nin wind and solar energy production\nper decade 1980 - 2020"/>
 				<connector uid="518" angle="340.589">
 					<from>Investments_in_wind_and_solar_energy_production_in_1980</from>
 					<to>Investments_in_Solar_and_Wind_Energy_Capacity</to>
 				</connector>
-				<aux x="2401.33" y="499.583" width="18" height="18" name="Investments in hydropower\nenergy production in 1980"/>
+				<aux x="2410.33" y="508.583" name="Investments in hydropower\nenergy production in 1980"/>
 				<aux x="2410.33" y="557.875" name="Change in investments\nin hydropower energy production\nper decade 1980 - 2020"/>
-				<aux x="2866.13" y="497.083" width="18" height="18" name="Investments in other\nenergy production in 1980"/>
+				<aux x="2875.13" y="506.083" name="Investments in other\nenergy production in 1980"/>
 				<aux x="2875.13" y="555.375" name="Change in investments\nin other energy production\nper decade 1980 - 2020"/>
 				<aux x="3398.46" y="502.333" name="Investments in nuclear\nenergy production in 1980"/>
 				<aux x="3398.46" y="551.625" name="Change in investments\nin nuclear energy production\nper decade 1980 - 2020"/>
@@ -4009,7 +3999,7 @@ Surface Temperature Anomaly</text_box>
 					<to>Renewable_Energy_Output</to>
 				</connector>
 				<aux x="2861.29" y="895.666" name="Initial Other Installation Costs"/>
-				<aux x="2848.13" y="1018.6" width="18" height="18" name="Floor of Other Installation Costs"/>
+				<aux x="2857.13" y="1027.6" name="Floor of Other Installation Costs"/>
 				<connector uid="632" angle="307.809">
 					<from>Initial_Other_Installation_Costs</from>
 					<to>Other_Installation_Costs</to>
@@ -4523,7 +4513,7 @@ Energy Balance</text_box>
 					<to>Decomisioning_of_fossil_fuel_extraction_capital</to>
 				</connector>
 				<stacked_container uid="783" x="1794" y="2616.07">
-					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="false" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="false" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="false" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Energy_Balance[1]"/>
 						</plot>
@@ -4562,52 +4552,6 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 				<connector uid="790" angle="351.956">
 					<from>&quot;WORST_Change_in_investments_in_nuclear_energy_production_per_decade_2020-2100&quot;</from>
 					<to>&quot;Change_in_investments_in_nuclear_energy_production_per_decade_2020-2100&quot;</to>
-				</connector>
-				<aux x="2090.7" y="2043.75" name="forecasted energy demand"/>
-				<connector uid="791" angle="277.182">
-					<from>demand_for_energy</from>
-					<to>forecasted_energy_demand</to>
-				</connector>
-				<aux x="1984.14" y="2147.5" name="forcasting horizion"/>
-				<aux x="2122.5" y="2168.75" name="trending time"/>
-				<connector uid="792" angle="105.255">
-					<from>trending_time</from>
-					<to>forecasted_energy_demand</to>
-				</connector>
-				<connector uid="793" angle="54.0367">
-					<from>forcasting_horizion</from>
-					<to>forecasted_energy_demand</to>
-				</connector>
-				<aux x="2285" y="2091.75" name="actual investment"/>
-				<connector uid="794" angle="157.751">
-					<from>
-						<alias uid="795"/>
-					</from>
-					<to>actual_investment</to>
-				</connector>
-				<connector uid="796" angle="186.34">
-					<from>
-						<alias uid="797"/>
-					</from>
-					<to>actual_investment</to>
-				</connector>
-				<aux x="2247.5" y="2186.75" name="calculated investment"/>
-				<aux x="2188.75" y="1998.75" name="Per Unit replacement cost of Energy Supply"/>
-				<connector uid="798" angle="296.902">
-					<from>Total_Energy_Output</from>
-					<to>Per_Unit_replacement_cost_of_Energy_Supply</to>
-				</connector>
-				<connector uid="799" angle="122.208">
-					<from>actual_investment</from>
-					<to>Per_Unit_replacement_cost_of_Energy_Supply</to>
-				</connector>
-				<connector uid="800" angle="285.945">
-					<from>Per_Unit_replacement_cost_of_Energy_Supply</from>
-					<to>calculated_investment</to>
-				</connector>
-				<connector uid="801" angle="316.99">
-					<from>forecasted_energy_demand</from>
-					<to>calculated_investment</to>
 				</connector>
 				<aux x="3216.05" y="72.5" name="Renewable Energy Output by PCTILE"/>
 				<connector uid="805" angle="29.7449">
@@ -5168,6 +5112,77 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 					</from>
 					<to>Solar_and_Wind_Energy_Capital_Damaged_due_to_STA</to>
 				</connector>
+				<aux x="456.334" y="560.833" name="adaptive change in investments"/>
+				<aux x="456.334" y="419.262" name="adaptive energy investments proportionality"/>
+				<connector uid="939" angle="270">
+					<from>adaptive_energy_investments_proportionality</from>
+					<to>adaptive_change_in_investments</to>
+				</connector>
+				<connector uid="940" angle="90">
+					<from>
+						<alias uid="941"/>
+					</from>
+					<to>adaptive_change_in_investments</to>
+				</connector>
+				<aux x="456.334" y="364.286" name="use adaptive energy controls"/>
+				<connector uid="942" angle="270">
+					<from>use_adaptive_energy_controls</from>
+					<to>adaptive_change_in_investments</to>
+				</connector>
+				<connector uid="945" angle="180">
+					<from>
+						<alias uid="946"/>
+					</from>
+					<to>Investments_in_Solar_and_Wind_Energy_Capacity</to>
+				</connector>
+				<stacked_container uid="955" x="26.4286" y="351.116" width="344.286" height="196.896">
+					<graph width="344.286" height="196.896" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="adaptive_change_in_investments"/>
+						</plot>
+						<plot color="fuchsia" pen_style="dotted" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="Energy_Balance_Target"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<stacked_container uid="957" x="198.571" y="695.203">
+					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="false" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Energy_Balance[*]"/>
+						</plot>
+						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="Energy_Balance_Target"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<connector uid="958" angle="351.198">
+					<from>adaptive_change_in_investments</from>
+					<to>Investments_in_Fossil_Fuel_Extraction_Capital</to>
+				</connector>
+				<connector uid="959" angle="178.059">
+					<from>
+						<alias uid="944"/>
+					</from>
+					<to>Investments_in_Fossil_Energy_Capital</to>
+				</connector>
+				<connector uid="960" angle="179.802">
+					<from>
+						<alias uid="948"/>
+					</from>
+					<to>Investments_in_Hydropower_Energy_Capcity</to>
+				</connector>
+				<connector uid="961" angle="171.483">
+					<from>
+						<alias uid="950"/>
+					</from>
+					<to>Investments_in_Other_Capacity</to>
+				</connector>
+				<connector uid="962" angle="177.069">
+					<from>
+						<alias uid="952"/>
+					</from>
+					<to>Investments_in_Nuclear_Capacity</to>
+				</connector>
 				<alias font_style="italic" uid="545" x="1880.38" y="966.963" width="18" height="18">
 					<of>kW_to_GW</of>
 				</alias>
@@ -5225,12 +5240,6 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 				<alias color="blue" background="white" font_style="italic" uid="782" x="893.5" y="2798.5" width="18" height="18">
 					<shape type="circle" radius="18"/>
 					<of>Greenness_of_Policy</of>
-				</alias>
-				<alias font_style="italic" uid="797" x="2402.25" y="2064.75" width="18" height="18">
-					<of>share_of_GDP_invested_in_Energy</of>
-				</alias>
-				<alias font_style="italic" uid="795" x="2416" y="2168.5" width="18" height="18">
-					<of>World_GDP</of>
 				</alias>
 				<alias background="#FFAAFF" font_style="italic" uid="804" x="3064.13" y="63.5" width="18" height="18">
 					<of>Renewable_Energy_Output</of>
@@ -5354,6 +5363,32 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 				</alias>
 				<alias background="#FFAAFF" font_style="italic" uid="910" x="1900.17" y="798.5" width="18" height="18">
 					<of>&quot;Installation_Cost_of_S&amp;W_capacity&quot;</of>
+				</alias>
+				<alias color="blue" background="#FFAA00" font_style="italic" uid="941" x="447.334" y="603.024" width="18" height="18">
+					<of>Energy_Balance</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="944" x="1438.74" y="549.81" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>adaptive_change_in_investments</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="946" x="2052.31" y="548.875" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>adaptive_change_in_investments</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="948" x="2646.95" y="541.119" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>adaptive_change_in_investments</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="950" x="3084.98" y="546.375" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>adaptive_change_in_investments</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="952" x="3614.88" y="542.625" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>adaptive_change_in_investments</of>
+				</alias>
+				<alias font_style="italic" uid="963" x="2183.86" y="1659.57" width="18" height="18">
+					<of>Greenness_of_Policy</of>
 				</alias>
 			</view>
 		</views>

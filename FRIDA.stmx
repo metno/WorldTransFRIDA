@@ -5,7 +5,7 @@
 		<name>FRIDA</name>
 		<uuid>eed773d1-f4f7-4725-8d05-452b96d4f2dc</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.5.1" isee:build_number="3169" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.6" isee:build_number="3236" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -52,38 +52,38 @@
 		<import enabled="false" frequency="on_demand" isee:overwrite="true" resource="r../Data/uncertainity_parameters.csv"/>
 	</data>
 	<isee:sensi_specs_list active_index="1">
-		<isee:sensi_specs name="Greenes of Policy" method="grid">
-			<isee:variable starting_value="0" ending_value="1" type="incremental" min="0" max="1" seed="12345" name="Energy.Greenness_of_Policy" num_samples="3"/>
-		</isee:sensi_specs>
-		<isee:sensi_specs name="Calibration Uncertainity" method="sobol_sequence" runs="20000">
+		<isee:sensi_specs name="Calibration Uncertainity" method="sobol_sequence" runs="1000">
 			<isee:variable type="uniform" min="0.45" max="0.65" seed="12345" name="Economy.elasticity_of_failure_rate_to_STA[1]" num_samples="5"/>
 			<isee:variable type="uniform" min="-0.06" max="-0.01" name="Food_and_land_use.sensitivity_of_surface_temperature_anomaly_on_average_crop_yield[1]" num_samples="5"/>
-			<isee:variable type="uniform" min="0" max="0.3" name="Population.sensitivity_of_mortality_to_surface_temperature_anomaly[1]" num_samples="5"/>
+			<isee:variable type="uniform" min="0" max="0.3" name="Population.Slope_of_Population_Damage_Function[1]" num_samples="5"/>
 			<isee:variable type="uniform" min="-1.85" max="-1.45" name="Economy.sensitivity_of_effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth[1]" num_samples="5"/>
 			<isee:variable type="uniform" min="0.8" max="1.2" name="Economy.sensitivity_of_effect_of_energy_supply_demand_balance_on_investment_growth[1]" num_samples="5"/>
 			<isee:variable type="uniform" min="3.25" max="3.75" name="Economy.sensitivity_of_effect_of_crop_balance_on_investment_growth[1]" num_samples="5"/>
-			<isee:variable type="uniform" min="0.15" max="0.25" name="Energy.Renewable_Energy_Learning_Rate[1]" num_samples="5"/>
-			<isee:variable type="uniform" min="0.2" max="0.6" name="Energy.learning_elasticity_of_the_resource_sector[1]" num_samples="5"/>
-			<isee:variable type="uniform" min="200" max="300" name="Energy.maximum_increase_of_capital_coefficient_in_fossil_resource_sector[1]" num_samples="5"/>
-			<isee:variable type="uniform" min="0.2" max="0.6" name="Energy.stepping_on_toes_parameter_in_renewable_energy_sector[1]" num_samples="5"/>
-			<isee:variable type="uniform" min="6.9030114296374e-7" max="0.00000207090342889122" name='Energy."Slope_of_Hydropwer_Instllation_Costs_wrt._Capacity"' num_samples="5"/>
-			<isee:variable type="uniform" min="350000000000" max="1050000000000" name="Energy.Slope_of_cost_curve[1]" num_samples="5"/>
-			<isee:variable type="uniform" min="171.7957732112" max="515.3873196336" name="Energy.Slope_of_Nuclear_Installation_Costs[1]" num_samples="5"/>
-			<isee:variable type="uniform" min="-574.413368556927" max="-191.471122852309" name="Energy.Slope_of_Other_Installation_Costs[1]" num_samples="5"/>
-			<isee:variable type="uniform" min="3" max="5" name="Energy.Exponent_of_cost_curve[1]" num_samples="5"/>
-			<isee:variable type="uniform" min="0.0250608240646467" max="0.0751824721939401" name="Energy.Energy_per_Carbon[1]" num_samples="5"/>
-			<isee:variable type="uniform" min="0.15" max="0.45" name="Energy.Elasticity_of_Substitution_in_Fossil_Energy_Output[1]" num_samples="5"/>
 			<isee:variable type="adhoc" name="Temperature.selected_climate_case[1]">1,2,3,4,5,6,7,8,9,10,11</isee:variable>
 			<isee:variable type="uniform" min="0.01" max="0.1" name="Energy.Slope_of_Capital_Damage_Function[1]" num_samples="5"/>
-			<isee:threshold payoff="Full Payoff" val="1.725e25"/>
+			<isee:threshold payoff="Full Payoff" val="1.85e25"/>
+		</isee:sensi_specs>
+		<isee:sensi_specs name="SSPs Greenness of Policy" method="grid">
+			<isee:variable type="adhoc" name="Energy.Greenness_of_Policy">.95,0.55,0.05</isee:variable>
 		</isee:sensi_specs>
 	</isee:sensi_specs_list>
-	<isee:optimizer_specs_list active_index="3">
+	<isee:optimizer_specs_list active_index="0">
+		<isee:optimizer_specs name="Simple Full Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
+			<isee:parameter name="Economy.normal_bank_investment_growth_target" min="0.01" max="0.05" scaling="100"/>
+			<isee:parameter name="Economy.elasticity_of_failure_rate_to_STA[1]" min="0.001" max="0.8" scaling="10"/>
+			<isee:parameter name="Food_and_land_use.sensitivity_of_surface_temperature_anomaly_on_average_crop_yield[1]" min="-0.08" max="-0.01" scaling="10"/>
+			<isee:parameter name="Population.Slope_of_Population_Damage_Function[1]" min="0.01" max="0.3" scaling="100"/>
+			<isee:parameter name="Economy.sensitivity_of_effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth[1]" min="-4" max="-0.1" scaling="10"/>
+			<isee:parameter name="Economy.sensitivity_of_effect_of_energy_supply_demand_balance_on_investment_growth[1]" min="0.1" max="4" scaling="10"/>
+			<isee:parameter name="Economy.sensitivity_of_effect_of_crop_balance_on_investment_growth[1]" min="0.1" max="4" scaling="10"/>
+			<isee:parameter name="Energy.Slope_of_Capital_Damage_Function[1]" min="0" max="0.1" scaling="1000"/>
+			<isee:payoff name="Full Payoff" action="min"/>
+		</isee:optimizer_specs>
 		<isee:optimizer_specs name="Population Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
-			<isee:parameter name="Population.sensitivity_of_mortality_to_surface_temperature_anomaly[1]" min="0" max="1" scaling="100"/>
-			<isee:parameter name="Population.normal_fertility" min="3.5" max="5"/>
-			<isee:parameter name="Population.sensitivity_of_fertility_to_GDP_per_person_alpha" min="0" max="2" scaling="100"/>
-			<isee:parameter name="Population.sensitivity_of_fertility_to_GDP_per_person_gamma" min="-2" max="0" scaling="100"/>
+			<isee:parameter name="Population.Slope_of_Population_Damage_Function[1]" min="0" max="1" scaling="100"/>
+			<isee:parameter name="Population.initial_fertility" min="3.5" max="5"/>
+			<isee:parameter name="Population.sensitivity_of_fertility_to_GDP_per_person_beta" min="0" max="2" scaling="100"/>
+			<isee:parameter name="Population.sensitivity_of_fertility_to_GDP_per_person_alpha" min="-2" max="0" scaling="100"/>
 			<isee:parameter name="Population.infant_mortality_alpha" min="0" max="2" scaling="100000"/>
 			<isee:parameter name="Population.infant_mortality_gamma" min="-2" max="0" scaling="100000"/>
 			<isee:parameter name='Population."1_to_20_mortality_alpha"' min="0" max="3"/>
@@ -224,36 +224,36 @@
 	</isee:optimizer_specs_list>
 	<isee:payoff_specs_list>
 		<isee:payoff_specs name="Economic Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Economy.GDP[1]" weight="3.94628e-8">
+			<isee:payoff_element name="Economy.GDP[1]" weight="1.7566e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Economy.private_consumption[1]" weight="2.43148e-7">
+			<isee:payoff_element name="Economy.private_consumption[1]" weight="0.00000116928">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Economy.investment[1]" weight="2.73811e-7">
+			<isee:payoff_element name="Economy.investment[1]" weight="0.00000106209">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Economy.government_spending[1]" weight="0.00000136927">
+			<isee:payoff_element name="Economy.government_spending[1]" weight="0.0000108898">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Population Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Population.Population[1]" weight="0.000811293" compare_name="Population.Population[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.Aged_0_years[1]" weight="0.0212038" compare_name="Population.Aged_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.Aged_1_to_20_years[1]" weight="0.000319767" compare_name="Population.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.Aged_20_to_40_years[1]" weight="0.00168401" compare_name="Population.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.Aged_40_to_60_years[1]" weight="0.00495577" compare_name="Population.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.Aged_60_to_80_years[1]" weight="0.0068469" compare_name="Population.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.Aged_Over_80_years[1]" weight="0.0257939" compare_name="Population.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.fertility[1]" weight="57.1387" compare_name="Population.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.deaths_0_years[1]" weight="4.07577" compare_name="Population.deaths_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.deaths_1_to_20_years[1]" weight="5.43783" compare_name="Population.deaths_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.deaths_20_to_40_years[1]" weight="18.2331" compare_name="Population.deaths_20_to_40_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.deaths_40_to_60_years[1]" weight="6.1576" compare_name="Population.deaths_40_to_60_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.deaths_60_to_80_years[1]" weight="0.885692" compare_name="Population.deaths_60_to_80_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.deaths_Over_80_years[1]" weight="2.15994" compare_name="Population.deaths_Over_80_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.Births[1]" weight="0.0198943" compare_name="Population.Births[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Population.total_deaths[1]" weight="0.199161" compare_name="Population.total_deaths[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Population[1]" weight="0.00200798" compare_name="Population.Population[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_0_years[1]" weight="0.0591812" compare_name="Population.Aged_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_1_to_20_years[1]" weight="0.000911931" compare_name="Population.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_20_to_40_years[1]" weight="0.00335418" compare_name="Population.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_40_to_60_years[1]" weight="0.00775022" compare_name="Population.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_60_to_80_years[1]" weight="0.0119148" compare_name="Population.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Aged_Over_80_years[1]" weight="0.280349" compare_name="Population.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.fertility[1]" weight="149.265" compare_name="Population.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_0_years[1]" weight="3.97427" compare_name="Population.deaths_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_1_to_20_years[1]" weight="4.52054" compare_name="Population.deaths_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_20_to_40_years[1]" weight="10.1648" compare_name="Population.deaths_20_to_40_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_40_to_60_years[1]" weight="6.20689" compare_name="Population.deaths_40_to_60_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_60_to_80_years[1]" weight="0.621211" compare_name="Population.deaths_60_to_80_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.deaths_Over_80_years[1]" weight="3.70153" compare_name="Population.deaths_Over_80_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.Births[1]" weight="0.0566252" compare_name="Population.Births[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Population.total_deaths[1]" weight="0.191542" compare_name="Population.total_deaths[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Food and Land Use Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
 			<isee:payoff_element name="Food_and_land_use.crop_production[1]" weight="0.0000292873" compare_name="Food_and_land_use.crop_production[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
@@ -295,250 +295,250 @@
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Full Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Economy.GDP[1]" weight="1">
+			<isee:payoff_element name="Economy.GDP[1]" weight="1.69934e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Economy.government_spending[1]" weight="1">
+			<isee:payoff_element name="Economy.government_spending[1]" weight="0.0000108186">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Economy.investment[1]" weight="1">
+			<isee:payoff_element name="Economy.investment[1]" weight="0.00000108331">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Economy.private_consumption[1]" weight="1">
+			<isee:payoff_element name="Economy.private_consumption[1]" weight="0.0000012955">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Economy.N2O_emissions[1]" weight="1">
+			<isee:payoff_element name="Economy.N2O_emissions[1]" weight="0.0000318522">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Economy.CO2_emissions[1]" weight="1">
+			<isee:payoff_element name="Economy.CO2_emissions[1]" weight="0.000581322">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Economy.CH4_emissions[1]" weight="1">
+			<isee:payoff_element name="Economy.CH4_emissions[1]" weight="0.630988">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.GDP_per_person[1]" weight="1">
+			<isee:payoff_element name="Population.GDP_per_person[1]" weight="3.10564">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.Aged_0_years[1]" weight="1">
+			<isee:payoff_element name="Population.Aged_0_years[1]" weight="0.0613256">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.Aged_1_to_20_years[1]" weight="1">
+			<isee:payoff_element name="Population.Aged_1_to_20_years[1]" weight="0.000736329">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.Aged_20_to_40_years[1]" weight="1">
+			<isee:payoff_element name="Population.Aged_20_to_40_years[1]" weight="0.00187983">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.Aged_40_to_60_years[1]" weight="1">
+			<isee:payoff_element name="Population.Aged_40_to_60_years[1]" weight="0.58682">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.Aged_60_to_80_years[1]" weight="1">
+			<isee:payoff_element name="Population.Aged_60_to_80_years[1]" weight="0.00708614">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.Aged_Over_80_years[1]" weight="1">
+			<isee:payoff_element name="Population.Aged_Over_80_years[1]" weight="0.00579372">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.deaths_0_years[1]" weight="1">
+			<isee:payoff_element name="Population.deaths_0_years[1]" weight="5.14019">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.deaths_1_to_20_years[1]" weight="1">
+			<isee:payoff_element name="Population.deaths_1_to_20_years[1]" weight="5.53229">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.deaths_20_to_40_years[1]" weight="1">
+			<isee:payoff_element name="Population.deaths_20_to_40_years[1]" weight="8.32359">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.deaths_40_to_60_years[1]" weight="1">
+			<isee:payoff_element name="Population.deaths_40_to_60_years[1]" weight="1.9573">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.deaths_60_to_80_years[1]" weight="1">
+			<isee:payoff_element name="Population.deaths_60_to_80_years[1]" weight="0.196561">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.deaths_Over_80_years[1]" weight="1">
+			<isee:payoff_element name="Population.deaths_Over_80_years[1]" weight="4.17196">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.Population[1]" weight="1">
+			<isee:payoff_element name="Population.Population[1]" weight="0.000279642">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.fertility[1]" weight="1">
+			<isee:payoff_element name="Population.fertility[1]" weight="148.645">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.Births[1]" weight="1">
+			<isee:payoff_element name="Population.Births[1]" weight="0.0578348">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Population.total_deaths[1]" weight="1">
+			<isee:payoff_element name="Population.total_deaths[1]" weight="0.0823102">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Temperature.Surface_Temperature_Anomaly[1]" weight="1">
+			<isee:payoff_element name="Temperature.Surface_Temperature_Anomaly[1]" weight="135.301">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Temperature.CO2_ERF[1]" weight="1">
+			<isee:payoff_element name="Temperature.CO2_ERF[1]" weight="8057.28">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Temperature.CH4_ERF[1]" weight="1">
+			<isee:payoff_element name="Temperature.CH4_ERF[1]" weight="1608.1">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Temperature.N2O_ERF[1]" weight="1">
+			<isee:payoff_element name="Temperature.N2O_ERF[1]" weight="9443.02">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Temperature.Total_CH4_Emissions[1]" weight="1">
+			<isee:payoff_element name="Temperature.Total_CH4_Emissions[1]" weight="0.0146461">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Temperature.Total_CO2_Emissions[1]" weight="1">
+			<isee:payoff_element name="Temperature.Total_CO2_Emissions[1]" weight="5.13124e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Temperature.CO2_Concentration[1]" weight="1">
+			<isee:payoff_element name="Temperature.CO2_Concentration[1]" weight="0.517229">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Temperature.Total_N2O_Emissions[1]" weight="1">
+			<isee:payoff_element name="Temperature.Total_N2O_Emissions[1]" weight="0.0000138355">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Temperature.N2O_Concentration[1]" weight="1">
+			<isee:payoff_element name="Temperature.N2O_Concentration[1]" weight="0.405709">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Temperature.CH4_Concentration[1]" weight="1">
+			<isee:payoff_element name="Temperature.CH4_Concentration[1]" weight="0.000235364">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Temperature.Total_SO2_emissions[1]" weight="1">
+			<isee:payoff_element name="Temperature.Total_SO2_emissions[1]" weight="0.0400143">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.N2O_emissions[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.N2O_emissions[1]" weight="0.0000178865">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.CO2_emissions[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.CO2_emissions[1]" weight="8.04067e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.CH4_Emissions[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.CH4_Emissions[1]" weight="0.0361937">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.SO2_Emissions[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.SO2_Emissions[1]" weight="11.573">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.Forest_Land[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.Forest_Land[1]" weight="0.00821883">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.crop_production[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.crop_production[1]" weight="0.0000124962">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.Cropland[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.Cropland[1]" weight="0.00385192">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.total_water_withdrawal[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.total_water_withdrawal[1]" weight="1.09855e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.livestock_production[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.livestock_production[1]" weight="6.46182e-8">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.fraction_of_water_withdrawal_for_agriculture[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.fraction_of_water_withdrawal_for_agriculture[1]" weight="878193000">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.fraction_of_crops_for_livestock[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.fraction_of_crops_for_livestock[1]" weight="1438330">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.available_water_supply[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.available_water_supply[1]" weight="1.33908e-25">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.man_made_fertilizer_use[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.man_made_fertilizer_use[1]" weight="0.0522557">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.manure_fertilizer_use[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.manure_fertilizer_use[1]" weight="1.14743">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.fertilizer_use[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.fertilizer_use[1]" weight="0.0409367">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_and_land_use.soil_carbon_loss_cropland[1]" weight="1">
+			<isee:payoff_element name="Food_and_land_use.soil_carbon_loss_cropland[1]" weight="2.42993">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Secondary_Fossil_Energy_Output[1]" weight="1">
+			<isee:payoff_element name="Energy.Secondary_Fossil_Energy_Output[1]" weight="0.00000117834">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Renewable_Energy_Output[1]" weight="1">
+			<isee:payoff_element name="Energy.Renewable_Energy_Output[1]" weight="0.000208747">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Wind_and_Solar_Energy_Output[1]" weight="1">
+			<isee:payoff_element name="Energy.Wind_and_Solar_Energy_Output[1]" weight="0.00108829">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Hydropower_Energy_Output[1]" weight="1">
+			<isee:payoff_element name="Energy.Hydropower_Energy_Output[1]" weight="0.000241219">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Nuclear_Energy_Output[1]" weight="1">
+			<isee:payoff_element name="Energy.Nuclear_Energy_Output[1]" weight="0.000190236">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Other_Energy_Output[1]" weight="1">
+			<isee:payoff_element name="Energy.Other_Energy_Output[1]" weight="0.00083991">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Total_Energy_Output[1]" weight="1">
+			<isee:payoff_element name="Energy.Total_Energy_Output[1]" weight="9.22699e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Total_Renewable_Energy_Capacity[1]" weight="1">
+			<isee:payoff_element name="Energy.Total_Renewable_Energy_Capacity[1]" weight="0.000283585">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Wind_and_Solar_Energy_Capacity[1]" weight="1">
+			<isee:payoff_element name="Energy.Wind_and_Solar_Energy_Capacity[1]" weight="0.00308787">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Hydropower_Energy_Capacity[1]" weight="1">
+			<isee:payoff_element name="Energy.Hydropower_Energy_Capacity[1]" weight="0.00703251">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Other_Energy_Capacity[1]" weight="1">
+			<isee:payoff_element name="Energy.Other_Energy_Capacity[1]" weight="0.0142592">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Nuclear_Energy_Capacity[1]" weight="1">
+			<isee:payoff_element name="Energy.Nuclear_Energy_Capacity[1]" weight="0.0145314">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 			<isee:payoff_element name='Energy."Primary_Fossil_Energy_(FUEL)"' weight="1">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.demand_for_energy[1]" weight="1">
+			<isee:payoff_element name="Energy.demand_for_energy[1]" weight="1.81491e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="1">
+			<isee:payoff_element name="Energy.Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="6.0752e-23">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Investments_in_Fossil_Energy_Capital[1]" weight="1">
+			<isee:payoff_element name="Energy.Investments_in_Fossil_Energy_Capital[1]" weight="3.80124e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Investments_in_Solar_and_Wind_Energy_Capacity[1]" weight="1">
+			<isee:payoff_element name="Energy.Investments_in_Solar_and_Wind_Energy_Capacity[1]" weight="4.67683e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Investments_in_Renewables[1]" weight="1">
+			<isee:payoff_element name="Energy.Investments_in_Renewables[1]" weight="7.85881e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Investments_in_Hydropower_Energy_Capcity[1]" weight="1">
+			<isee:payoff_element name="Energy.Investments_in_Hydropower_Energy_Capcity[1]" weight="4.39813e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Investments_in_Nuclear_Capacity[1]" weight="1">
+			<isee:payoff_element name="Energy.Investments_in_Nuclear_Capacity[1]" weight="1.74274e-19">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Investments_in_Other_Capacity[1]" weight="1">
+			<isee:payoff_element name="Energy.Investments_in_Other_Capacity[1]" weight="1.49566e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 			<isee:payoff_element name='Energy."Installation_Cost_of_S&amp;W_capacity"' weight="1">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.share_of_GDP_invested_in_fuel_extraction[1]" weight="1">
+			<isee:payoff_element name="Energy.share_of_GDP_invested_in_fuel_extraction[1]" weight="239144">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 			<isee:payoff_element name='Energy."share_of_GDP_invested_in_Energy_w/o_fuel"' weight="1">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.CO2_emissions[1]" weight="1">
+			<isee:payoff_element name="Energy.CO2_emissions[1]" weight="0.00000304686">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.CH4_emissions[1]" weight="1">
+			<isee:payoff_element name="Energy.CH4_emissions[1]" weight="0.0379357">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.N2O_emissions[1]" weight="1">
+			<isee:payoff_element name="Energy.N2O_emissions[1]" weight="0.0000242769">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.SO2_emissions[1]" weight="1">
+			<isee:payoff_element name="Energy.SO2_emissions[1]" weight="0.0489785">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="1">
+			<isee:payoff_element name="Energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="31527.9">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Hydropower_Installation_Costs[1]" weight="1">
+			<isee:payoff_element name="Energy.Hydropower_Installation_Costs[1]" weight="0.0000248077">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy.Nuclear_Installation_Costs[1]" weight="1">
+			<isee:payoff_element name="Energy.Nuclear_Installation_Costs[1]" weight="0.00000947693">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
@@ -1025,7 +1025,7 @@ mountain glaciers  (metre} + Sea_Level.Annual_change_of_global_SLR_by_PCTILE[PCT
 				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
 				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
 				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
-				<numeric_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
 				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
 				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
 				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
@@ -1040,7 +1040,7 @@ mountain glaciers  (metre} + Sea_Level.Annual_change_of_global_SLR_by_PCTILE[PCT
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_y="60" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_y="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1116,7 +1116,7 @@ mountain glaciers  (metre} + Sea_Level.Annual_change_of_global_SLR_by_PCTILE[PCT
 					<to>Society</to>
 				</connector>
 				<stacked_container uid="58" x="66.25" y="463" width="595" height="484">
-					<graph font_size="14pt" axis_title_font_size="14pt" axis_label_font_size="12pt" width="595" height="484" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+					<graph font_size="14pt" axis_title_font_size="14pt" axis_label_font_size="12pt" width="595" height="484" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" to="2100" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="#1EC75A" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Calibrated_Variables"/>
 						</plot>
@@ -1143,6 +1143,32 @@ mountain glaciers  (metre} + Sea_Level.Annual_change_of_global_SLR_by_PCTILE[PCT
 				<isee:placeholder x="1498.5" y="485.5" name="Variables for Sea Level"/>
 				<isee:placeholder x="1333.83" y="479.5" name="Variables for Food and Land Use"/>
 				<isee:placeholder x="1498.5" y="573" name="Important variables of all sectors"/>
+				<stacked_container uid="62" x="688" y="530" width="601" height="292">
+					<table orientation="horizontal" interval="1" report_balances="beginning" report_flows="instantaneous" width="601" height="292" comparative="true">
+						<item type="time"/>
+						<item title="CO2 ERF (wm2)">
+							<entity name="Temperature.CO2_ERF[1]"/>
+						</item>
+						<item title="Forest Land (Million Ha)">
+							<entity name="Food_and_land_use.Forest_Land[1]"/>
+						</item>
+						<item title="Fossil Energy Output (ZJ/Year)">
+							<entity name='Energy."Primary_Fossil_Energy_(FUEL)"[1]'/>
+						</item>
+						<item title="GDP per person ($Billion/MillionPeople/Year)">
+							<entity name="Population.GDP_per_person[1]"/>
+						</item>
+						<item title="Population (Million People)">
+							<entity name="Population.Population[1]"/>
+						</item>
+						<item title="Renewable Energy Output TWH/year">
+							<entity name="Energy.Renewable_Energy_Output[1]"/>
+						</item>
+						<item title="Surface Temp Anomaly DegreeC">
+							<entity name="Temperature.Surface_Temperature_Anomaly[1]"/>
+						</item>
+					</table>
+				</stacked_container>
 			</view>
 			<view isee:template_view="template:1" isee:name="Landing Page without image" isee:original_design="Deluxe Prev-Next Blue Green Pastel" background="white" page_width="1066" page_height="600" home_view="true" type="interface">
 				<style>
@@ -1166,7 +1192,7 @@ Lorem ipsum dolor sit amet</text_box>
 					</style>
 					<isee:shape background="#F7F7F7" border_width="thin" border_style="none" transparent_background="false" x="0" y="0" width="1066" height="600" kind="rectangle"/>
 					<graphics_frame z_index="2" fill="none" x="12.4806" y="16.9825" width="166" height="34">
-						<image width="121" height="20" size_to_parent="false" isee:transparency="0" isee:fixed_aspect_ratio="true">C:/Program Files/isee systems/Stella Architect/designs/Deluxe Prev-Next Blue Green Pastel_Graphics/Your logo dark.png</image>
+						<image width="121" height="20" size_to_parent="false" isee:transparency="0" isee:fixed_aspect_ratio="true">/Applications/Stella Architect.app/Contents/Resources/designs/Deluxe Prev-Next Blue Green Pastel_Graphics/Your logo dark.png</image>
 					</graphics_frame>
 				</view>
 			</isee:templates>
@@ -1269,7 +1295,7 @@ Lorem ipsum dolor sit amet</text_box>
 				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
 				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
 				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
-				<numeric_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
 				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
 				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
 				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
@@ -1410,7 +1436,7 @@ Lorem ipsum dolor sit amet</text_box>
 				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
 				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
 				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
-				<numeric_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
 				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
 				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
 				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
