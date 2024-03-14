@@ -762,7 +762,7 @@ Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saifu
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn> 1+sensitivity_of_per_person_use_of_energy_to_surface_temperature_anomaly*(Surface_Temperature_Anomaly/INIT(Surface_Temperature_Anomaly)-1)</eqn>
+				<eqn> 1+switch_only_economy_energy_damage*switch_for_climate_damage*sensitivity_of_per_person_use_of_energy_to_surface_temperature_anomaly*(Surface_Temperature_Anomaly/INIT(Surface_Temperature_Anomaly)-1)</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="sensitivity of\nper person\nuse of energy to surface\ntemperature anomaly">
@@ -1915,8 +1915,8 @@ ELSE
 				</element>
 				<units>$/Year^2</units>
 			</aux>
-			<aux name="Greenness of Policy">
-				<eqn>0.24 {1.0 0.24}</eqn>
+			<aux name="Greenness of Policy" access="output" isee:autocreated="true">
+				<eqn>.35 {1.0 0.35}</eqn>
 				<range min="0" max="1"/>
 				<units>dmnl</units>
 			</aux>
@@ -2690,7 +2690,7 @@ ELSE
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SWITCH_for_climate_damages_on_energy_capital*
+				<eqn>switch_for_climate_damage*switch_only_economy_energy_damage*
 ((Slope_of_Capital_Damage_Function*Surface_Temperature_Anomaly)^Exponent_of_Capital_Damage_Function)/time_for_STA_to_impact_energy_capital</eqn>
 				<units>1/year</units>
 			</aux>
@@ -2702,12 +2702,6 @@ ELSE
 				<non_negative/>
 				<units>$/Year</units>
 			</flow>
-			<aux name="SWITCH for climate damages on energy capital">
-				<eqn>1</eqn>
-				<format precision="1"/>
-				<range min="0" max="1"/>
-				<units>dmnl</units>
-			</aux>
 			<flow name="Secondary Fossil Energy\nCapital Damaged due to STA">
 				<dimensions>
 					<dim name="Run"/>
@@ -2803,6 +2797,14 @@ ELSE
 				<range min="0" max="1"/>
 				<units>dmnl</units>
 			</aux>
+			<aux name="switch for climate damage" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="switch only economy energy damage" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -2852,7 +2854,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="192.857" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="1513.57" isee:scroll_y="1279.29" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4894,11 +4896,6 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 					<from>Fossil_Fuel_Extraction_Capital</from>
 					<to>Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA</to>
 				</connector>
-				<aux x="208.75" y="1738.75" name="SWITCH for climate damages on energy capital"/>
-				<connector uid="885" angle="35.8377">
-					<from>SWITCH_for_climate_damages_on_energy_capital</from>
-					<to>damage_rate_of_energy_capital_from_STA</to>
-				</connector>
 				<flow label_side="right" x="1436.12" y="913.45" name="Secondary Fossil Energy\nCapital Damaged due to STA">
 					<pts>
 						<pt x="1436.12" y="997.15"/>
@@ -5135,6 +5132,28 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 					</from>
 					<to>Investments_in_Nuclear_Capacity</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" x="1745.71" y="1727.83" name="switch for climate damage"/>
+				<connector uid="964" angle="265.74">
+					<from>switch_for_climate_damage</from>
+					<to>effect_of_surface_temperature_anomaly_on_per_person_use_of_energy</to>
+				</connector>
+				<connector uid="965" angle="48.7314">
+					<from>
+						<alias uid="966"/>
+					</from>
+					<to>damage_rate_of_energy_capital_from_STA</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1955" y="1810.71" name="switch only economy energy damage"/>
+				<connector uid="971" angle="199.179">
+					<from>switch_only_economy_energy_damage</from>
+					<to>effect_of_surface_temperature_anomaly_on_per_person_use_of_energy</to>
+				</connector>
+				<connector uid="972" angle="123.977">
+					<from>
+						<alias uid="973"/>
+					</from>
+					<to>damage_rate_of_energy_capital_from_STA</to>
+				</connector>
 				<alias font_style="italic" uid="545" x="1880.38" y="966.963" width="18" height="18">
 					<of>kW_to_GW</of>
 				</alias>
@@ -5341,6 +5360,12 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 				</alias>
 				<alias font_style="italic" uid="963" x="2183.86" y="1659.57" width="18" height="18">
 					<of>Greenness_of_Policy</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="966" x="288.143" y="1928.86" width="18" height="18">
+					<of>switch_for_climate_damage</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="973" x="459.571" y="1931" width="18" height="18">
+					<of>switch_only_economy_energy_damage</of>
 				</alias>
 			</view>
 		</views>
