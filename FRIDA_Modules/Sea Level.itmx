@@ -5,7 +5,7 @@
 		<name>Sea Level</name>
 		<uuid>643eb335-6f33-4fad-86db-c00593fce9f9</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.5.1" isee:build_number="3169" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.6" isee:build_number="3247" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -23,7 +23,7 @@
 		</dim>
 		<dim name="Run" size="1"/>
 	</dimensions>
-	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true">
+	<isee:prefs saved_runs="50" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true">
 		<isee:ignored_words>
 			<isee:ignored_word>WolrdTrans</isee:ignored_word>
 			<isee:ignored_word>WorldTrans</isee:ignored_word>
@@ -254,7 +254,7 @@ Fettweis et al. (2013): &quot;Estimating the Greenland ice sheet surface mass ba
 				</dimensions>
 				<eqn>IF T_anomaly_for_SLR &lt;= 0 THEN 0
 ELSE 
-nu_GrIS_SMB *dmnl_to_Kelvin * (xi_GrIS_SMB*(Kelvin_to_dmnl*T_anomaly_for_SLR) + (1 - xi_GrIS_SMB) * (Kelvin_to_dmnl * T_anomaly_for_SLR)^phi_GrIS_SMB) * (1.0 - SLR_from_GrIS_SMB/maximum_GrIS_volume)</eqn>
+nu_GrIS_SMB *dmnl_to_Kelvin * (xi_GrIS_SMB*(Kelvin_to_dmnl*T_anomaly_for_SLR) + (1 - xi_GrIS_SMB) * (Kelvin_to_dmnl * T_anomaly_for_SLR)^phi_GrIS_SMB) * SQRT(1.0 - SLR_from_GrIS_SMB/maximum_GrIS_volume)</eqn>
 				<non_negative/>
 				<units>metre/Year</units>
 			</flow>
@@ -794,25 +794,6 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<eqn>1</eqn>
 				<units>1/metre</units>
 			</aux>
-			<stock name="global SLR simple">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>0</eqn>
-				<inflow>Annual_change_of_global_SLR</inflow>
-				<units>metre</units>
-			</stock>
-			<flow name="Annual change of global SLR">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>rate_of_SLR_per_Kelvin*T_anomaly_for_SLR</eqn>
-				<units>metre/Year</units>
-			</flow>
-			<aux name="rate of SLR per Kelvin">
-				<eqn>0.0034</eqn>
-				<units>metre/year/K</units>
-			</aux>
 			<aux name="Surface Temperature Anomaly" access="input">
 				<dimensions>
 					<dim name="Run"/>
@@ -837,13 +818,6 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				</dimensions>
 				<eqn>PERCENTILE(AntIS_Volume, PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
 				<units>metre^3</units>
-			</aux>
-			<aux name="global SLR simple by PCTILE">
-				<dimensions>
-					<dim name="PCTILE"/>
-				</dimensions>
-				<eqn>PERCENTILE(global_SLR_simple, PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
-				<units>metre</units>
 			</aux>
 			<aux name="SLR from GrIS SMB by PCTILE">
 				<dimensions>
@@ -872,13 +846,6 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				</dimensions>
 				<eqn>PERCENTILE(SLR_from_mountain_glaciers, PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
 				<units>metre</units>
-			</aux>
-			<aux name="Annual change of global SLR by PCTILE">
-				<dimensions>
-					<dim name="PCTILE"/>
-				</dimensions>
-				<eqn>PERCENTILE(Annual_change_of_global_SLR, PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
-				<units>metre/year</units>
 			</aux>
 			<aux name="selected climate case" access="input">
 				<dimensions>
@@ -960,7 +927,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_y="700" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="4" isee:page_rows="3" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1019,7 +986,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 						<pt x="248.425" y="609"/>
 					</pts>
 				</flow>
-				<aux label_side="bottom" x="550.286" y="115.111" width="18" height="18" name="T anomaly for SLR"/>
+				<aux label_side="bottom" x="559.286" y="124.111" name="T anomaly for SLR"/>
 				<connector uid="128" angle="153.199">
 					<from>SLR_from_mountain_glaciers</from>
 					<to>yearly_MG_mass_loss</to>
@@ -1091,7 +1058,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					<to>global_SLR</to>
 				</connector>
 				<aux label_side="left" x="118.646" y="205.194" name="seconds per year"/>
-				<aux label_side="right" x="219.898" y="243.417" width="18" height="18" name="yearly ocean\nenergy input"/>
+				<aux label_side="right" x="228.898" y="252.417" name="yearly ocean\nenergy input"/>
 				<connector uid="143" angle="205.97">
 					<from>yearly_ocean_energy_input</from>
 					<to>yearly_thermosteric_sea_level_change</to>
@@ -1676,7 +1643,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					<from>global_SLR</from>
 					<to>AntIS_dSL</to>
 				</connector>
-				<aux x="2034.34" y="783.268" width="18" height="18" name="UNIT per year"/>
+				<aux x="2043.34" y="792.268" name="UNIT per year"/>
 				<aux label_side="left" label_angle="135" x="926.343" y="702.208" name="AntIS initial volume"/>
 				<connector uid="277" angle="219.542">
 					<from>
@@ -1727,7 +1694,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					<from>AntIS_max_contribution_to_SLR</from>
 					<to>SLR_from_Antarctica_Ice_Sheet</to>
 				</connector>
-				<aux x="2034.34" y="730.503" width="18" height="18" name="UNIT per m"/>
+				<aux x="2043.34" y="739.503" name="UNIT per m"/>
 				<connector uid="292" angle="173.66">
 					<from>
 						<alias uid="293"/>
@@ -1770,39 +1737,14 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					</from>
 					<to>AntIS_fac1</to>
 				</connector>
-				<stacked_container uid="306" x="1240.22" y="190.514" width="844.177" height="442.642">
-					<graph axis_title_font_size="16pt" axis_label_font_size="16pt" width="844.177" height="442.642" type="time_series" show_grid="false" isee:tick_type="inside" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="5" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="global_SLR[1]"/>
-						</plot>
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
-							<entity name="global_SLR[1]"/>
-						</plot>
-						<plot color="fuchsia" pen_style="dotted" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
-							<entity name="global_SLR[1]"/>
+				<stacked_container uid="306" x="1979.39" y="94.1133" width="844.177" height="442.642">
+					<graph axis_title_font_size="16pt" axis_label_font_size="16pt" width="844.177" height="442.642" comparative="true" type="time_series" show_grid="false" isee:tick_type="inside" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="5" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="global_SLR[*]"/>
 						</plot>
 					</graph>
 				</stacked_container>
-				<text_box font_size="18pt" uid="308" x="2421.72" y="125.083" width="329.31" height="22.5">Alternative: Rahmstorf (2007) simple model</text_box>
-				<stock x="2479.75" y="262.893" name="global SLR simple"/>
-				<flow x="2568" y="261.75" name="Annual change of global SLR">
-					<pts>
-						<pt x="2645.75" y="261.75"/>
-						<pt x="2502.25" y="261.75"/>
-					</pts>
-				</flow>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="left" label_angle="135" x="2533.25" y="189.75" name="rate of SLR per Kelvin"/>
-				<connector uid="309" angle="298.496">
-					<from>rate_of_SLR_per_Kelvin</from>
-					<to>Annual_change_of_global_SLR</to>
-				</connector>
-				<connector uid="310" angle="212.762">
-					<from>
-						<alias uid="311"/>
-					</from>
-					<to>Annual_change_of_global_SLR</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="top" x="550.286" y="48.111" width="18" height="18" name="Surface Temperature Anomaly"/>
+				<aux font_style="italic" font_weight="bold" label_side="top" x="559.286" y="57.111" name="Surface Temperature Anomaly"/>
 				<connector uid="312" angle="269.997">
 					<from>Surface_Temperature_Anomaly</from>
 					<to>T_anomaly_for_SLR</to>
@@ -1819,12 +1761,10 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				</connector>
 				<aux x="1408" y="24" name="AntIS Radius by PCTILE"/>
 				<aux x="1402.17" y="101.167" name="AntIS Volume by PCTILE"/>
-				<aux x="1414" y="162.667" name="global SLR simple by PCTILE"/>
 				<aux x="1420.17" y="234.139" name="SLR from GrIS SMB by PCTILE"/>
 				<aux x="1594.83" y="38.5" name="GrIS SID volume by PCTILE"/>
 				<aux x="1604.95" y="101.167" name="SLR thermosteric by PCTILE"/>
 				<aux x="1604.95" y="177.127" name="SLR from\nmountain glaciers by PCTILE"/>
-				<aux x="1844.33" y="38.5" name="Annual change of global SLR by PCTILE"/>
 				<connector uid="337" angle="20.18">
 					<from>
 						<alias uid="328"/>
@@ -1836,12 +1776,6 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 						<alias uid="329"/>
 					</from>
 					<to>AntIS_Volume_by_PCTILE</to>
-				</connector>
-				<connector uid="339" angle="32.9343">
-					<from>
-						<alias uid="330"/>
-					</from>
-					<to>global_SLR_simple_by_PCTILE</to>
 				</connector>
 				<connector uid="340" angle="12.7207">
 					<from>
@@ -1867,13 +1801,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					</from>
 					<to>SLR_from_mountain_glaciers_by_PCTILE</to>
 				</connector>
-				<connector uid="344" angle="17.0014">
-					<from>
-						<alias uid="335"/>
-					</from>
-					<to>Annual_change_of_global_SLR_by_PCTILE</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="52.6667" y="66" width="18" height="18" name="selected climate case"/>
+				<aux font_style="italic" font_weight="bold" x="61.6667" y="75" name="selected climate case"/>
 				<connector uid="345" angle="344.055">
 					<from>selected_climate_case</from>
 					<to>net_downward_radiative_flux</to>
@@ -2013,17 +1941,11 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<alias font_style="italic" uid="305" x="1485.42" y="1085.08" width="18" height="18">
 					<of>UNIT_per_m</of>
 				</alias>
-				<alias font_style="italic" label_side="right" label_angle="45" uid="311" x="2615.75" y="200.083" width="18" height="18">
-					<of>T_anomaly_for_SLR</of>
-				</alias>
 				<alias font_style="italic" uid="328" x="1287.99" y="25.833" width="45" height="35">
 					<of>AntIS_Radius</of>
 				</alias>
 				<alias font_style="italic" uid="329" x="1295.17" y="92.583" width="45" height="35">
 					<of>AntIS_Volume</of>
-				</alias>
-				<alias font_style="italic" uid="330" x="1295.17" y="159.627" width="45" height="35">
-					<of>global_SLR_simple</of>
 				</alias>
 				<alias font_style="italic" label_side="top" uid="331" x="1479.5" y="25.833" width="45" height="35">
 					<of>GrIS_SID_volume</of>
@@ -2036,9 +1958,6 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				</alias>
 				<alias font_style="italic" uid="334" x="1479.5" y="90.944" width="45" height="35">
 					<of>SLR_thermosteric</of>
-				</alias>
-				<alias font_style="italic" uid="335" x="1710.5" y="22.4329" width="18" height="18">
-					<of>Annual_change_of_global_SLR</of>
 				</alias>
 			</view>
 		</views>
