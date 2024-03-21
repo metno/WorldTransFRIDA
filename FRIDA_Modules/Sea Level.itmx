@@ -228,9 +228,11 @@
 	<model name="Sea_Level">
 		<variables>
 			<aux name="global SLR">
-				<doc>Li et al. (2020): &quot;Optimal temperature overshoot profile found by limiting global sea level rise as a lower-cost climate target&quot;, Science Advances, 6, eaaw9490
+				<doc>${Calibrated,Output}
+Total global sea-level rise with reference to 1993.
 
-Implemented here as sea-level rise since 1750</doc>
+For a python version of the code and all references see: https://github.com/lnnrtrmm/sea-level-rise
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -259,6 +261,12 @@ nu_GrIS_SMB *dmnl_to_Kelvin * (xi_GrIS_SMB*(Kelvin_to_dmnl*T_anomaly_for_SLR) + 
 				<units>metre/Year</units>
 			</flow>
 			<aux name="SLR from\nAntarctic Ice Sheet">
+				<doc>${Calibrated,Output}
+Based on the BRICKv0.3 implementation (Wong et al., 2017), using the DAIS model (Shaffer, 2014).
+
+Shaffer, G.: Formulation, calibration and validation of the DAIS model (version 1), a simple Antarctic ice sheet model sensitive to variations of sea level and ocean subsurface temperature, Geosci.Model Dev., 7, 1803–1818, https://doi.org/10.5194/gmd-7-1803-2014, 2014.
+
+Wong, T. E., Bakker, A. M. R., Ruckert, K., Applegate, P., Slangen, A. B. A., and Keller, K.: BRICK v0.2, a simple, accessible, and transparent model framework for climate and regional sea-level projections, Geosci. Model Dev., 10, 2741–2760, https://doi.org/10.5194/gmd-10-2741-2017, 2017</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -266,6 +274,15 @@ nu_GrIS_SMB *dmnl_to_Kelvin * (xi_GrIS_SMB*(Kelvin_to_dmnl*T_anomaly_for_SLR) + 
 				<units>metre</units>
 			</aux>
 			<stock name="SLR from\nmountain glaciers">
+				<doc>${Calibrated,Output}
+The uncertainty of the temperature input will lead to uncertainties in this component that already cover the given IPCC uncertainty range for this SLR component. Hence none of the input parameters is a calibration parameter.
+
+
+Li et al. (2020): &quot;Optimal temperature overshoot profile found by limiting global sea level rise as a lower-cost climate target&quot;, Science Advances, 6, eaaw9490
+
+Perrette et al. (2013): &quot;A scaling approach to project regional sea level rise and its uncertainties&quot;, Earth System Dynamics, 4, 11-29
+
+Wigley and Raper (2005): &quot;Extended scenarios for glacier melt due to anthropogenic forcing&quot;, Geophys. Res. Lett. 32, L05704</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -274,7 +291,10 @@ nu_GrIS_SMB *dmnl_to_Kelvin * (xi_GrIS_SMB*(Kelvin_to_dmnl*T_anomaly_for_SLR) + 
 				<units>metre</units>
 			</stock>
 			<flow name="yearly MG\nmass loss">
-				<doc>Li et al. (2020): &quot;Optimal temperature overshoot profile found by limiting global sea level rise as a lower-cost climate target&quot;, Science Advances, 6, eaaw9490
+				<doc>The uncertainty of the temperature input will lead to uncertainties in this component that already cover the given IPCC uncertainty range for this SLR component. Hence none of the input parameters is a calibration parameter.
+
+
+Li et al. (2020): &quot;Optimal temperature overshoot profile found by limiting global sea level rise as a lower-cost climate target&quot;, Science Advances, 6, eaaw9490
 
 Perrette et al. (2013): &quot;A scaling approach to project regional sea level rise and its uncertainties&quot;, Earth System Dynamics, 4, 11-29
 
@@ -283,7 +303,7 @@ Wigley and Raper (2005): &quot;Extended scenarios for glacier melt due to anthro
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>IF TIME &gt; 1850 THEN
-MG_Tdep_rate * T_anomaly_for_SLR * (1 - SLR_from_mountain_glaciers/MG_max_sea_leve_rise)^MG_exponent
+MG_Tdep_rate * (dmnl_to_Kelvin *(Kelvin_to_dmnl * T_anomaly_for_SLR)^MG_temperature_nonlinearity) * (1 - SLR_from_mountain_glaciers/MG_max_sea_leve_rise)^MG_volume_nonlinearity
 ELSE
 0</eqn>
 				<units>metre/Year</units>
@@ -297,14 +317,20 @@ ELSE
 				<units>K</units>
 			</aux>
 			<aux name="MG Tdep rate">
+				<doc>${Assumption}
+</doc>
 				<eqn>0.0008</eqn>
 				<units>metre/year/K</units>
 			</aux>
 			<aux name="MG max sea leve rise">
+				<doc>${Assumption}
+</doc>
 				<eqn>0.41</eqn>
 				<units>metre</units>
 			</aux>
-			<aux name="MG exponent">
+			<aux name="MG volume\nnonlinearity">
+				<doc>${Assumption}
+</doc>
 				<eqn>1.646</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -316,6 +342,8 @@ ELSE
 				<units>metre/Year</units>
 			</flow>
 			<stock name="SLR thermosteric">
+				<doc>${Calibrated,Output}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -366,10 +394,12 @@ ELSE
 				<units>W*year/metre^2/K</units>
 			</aux>
 			<aux name="energy input to SLR conversion factor">
-				<doc>Kuhlbrodt, T., and Gregory, J. M. (2012), Ocean heat uptake and its consequences for the magnitude of sea level rise and climate change, Geophys. Res. Lett., 39, L18608, doi:10.1029/2012GL052952.
+				<doc>${Calibration Parameter}
+Kuhlbrodt, T., and Gregory, J. M. (2012), Ocean heat uptake and its consequences for the magnitude of sea level rise and climate change, Geophys. Res. Lett., 39, L18608, doi:10.1029/2012GL052952.
 
 Meyssignac et al. (2019): Measuring Global Ocean Heat Content to Estimate the Earth Energy Imbalance. Front. Mar. Sci. 6:432. doi: 10.3389/fmars.2019.00432</doc>
-				<eqn>0.11</eqn>
+				<eqn>0.105</eqn>
+				<range min="0.09" max="0.12"/>
 				<units>metre / YJ</units>
 			</aux>
 			<aux name="net downward\nradiative flux">
@@ -384,6 +414,8 @@ N = -k1T1 + (1-epsilon)*k3*(T2-T3)</doc>
 				<units>W/metre^2</units>
 			</aux>
 			<aux name="seconds per year">
+				<doc>${}
+</doc>
 				<eqn>31557600</eqn>
 				<units>s/year</units>
 			</aux>
@@ -395,6 +427,8 @@ N = -k1T1 + (1-epsilon)*k3*(T2-T3)</doc>
 				<units>YJ/year</units>
 			</aux>
 			<aux name="earth surface area">
+				<doc>${}
+</doc>
 				<eqn>510072000000000</eqn>
 				<units>metre * metre</units>
 			</aux>
@@ -407,7 +441,8 @@ N = -k1T1 + (1-epsilon)*k3*(T2-T3)</doc>
 				<units>YJ / J</units>
 			</aux>
 			<aux name="SLR from\nGreenland Ice Sheet">
-				<doc>Based on MAGICC6 model, reference:
+				<doc>${Calibrated,Output}
+Based on MAGICC6 model, reference:
 
 Nauels et al. (2017): &quot;Synthesizing long-term sea level rise projections – the MAGICC sea level model v2.0&quot; in Geosci. Model Dev., 10, 2495–2524, https://doi.org/10.5194/gmd-10-2495-2017</doc>
 				<dimensions>
@@ -417,18 +452,26 @@ Nauels et al. (2017): &quot;Synthesizing long-term sea level rise projections �
 				<units>metre</units>
 			</aux>
 			<aux name="nu GrIS SMB">
-				<eqn>0.0001148</eqn>
+				<doc>${}
+</doc>
+				<eqn>nu_GrIS_SMB_default * GrIS_parameter_scale_factor</eqn>
 				<units>metre/K/Year</units>
 			</aux>
 			<aux name="phi GrIS SMB">
+				<doc>${Assumption}
+</doc>
 				<eqn>2.0169</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="maximum GrIS volume">
+				<doc>${Assumption}
+</doc>
 				<eqn>7.36</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="xi GrIS SMB">
+				<doc>${Assumption}
+</doc>
 				<eqn>0</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -448,6 +491,8 @@ Nauels et al. (2017): &quot;Synthesizing long-term sea level rise projections �
 				<units>metre</units>
 			</aux>
 			<aux name="s GrIS SID">
+				<doc>${Assumption}
+</doc>
 				<eqn>5</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -460,7 +505,9 @@ Nauels et al. (2017): &quot;Synthesizing long-term sea level rise projections �
 				<units>metre</units>
 			</stock>
 			<aux name="GrIS outlet max">
-				<eqn>0.05363</eqn>
+				<doc>${}
+</doc>
+				<eqn>GrIS_outlet_max_default * GrIS_parameter_scale_factor</eqn>
 				<units>metre</units>
 			</aux>
 			<flow name="yearly reduction\nof outlet">
@@ -474,10 +521,14 @@ rho_GrIS_SID * GrIS_SID_volume * EXP(epsilon_GrIS_SID*T_anomaly_for_SLR)</eqn>
 				<units>metre/Year</units>
 			</flow>
 			<aux name="rho GrIS SID">
-				<eqn>0.0007933</eqn>
+				<doc>${}
+</doc>
+				<eqn>rho_GrIS_SID_default * GrIS_parameter_scale_factor</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="epsilon GrIS SID">
+				<doc>${Assumption}
+</doc>
 				<eqn>0.4722</eqn>
 				<units>1/K</units>
 			</aux>
@@ -494,14 +545,20 @@ rho_GrIS_SID * GrIS_SID_volume * EXP(epsilon_GrIS_SID*T_anomaly_for_SLR)</eqn>
 				<units>kg / m^3</units>
 			</aux>
 			<aux name="T freezing seawater">
+				<doc>${Assumption}
+</doc>
 				<eqn>-1.8</eqn>
 				<units>Celsius</units>
 			</aux>
 			<aux name="reference AntIS radius">
+				<doc>${Assumption}
+</doc>
 				<eqn>1864000</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="modern AntOcean\nsubsurface T">
+				<doc>${Assumption}
+</doc>
 				<eqn>0.72</eqn>
 				<units>Celsius</units>
 			</aux>
@@ -520,10 +577,14 @@ rho_GrIS_SID * GrIS_SID_volume * EXP(epsilon_GrIS_SID*T_anomaly_for_SLR)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="T to TAnt c1">
+				<doc>${Assumption}
+</doc>
 				<eqn>14.279</eqn>
 				<units>K</units>
 			</aux>
 			<aux name="T to TAnt c2">
+				<doc>${Assumption}
+</doc>
 				<eqn>0.774</eqn>
 				<units>K/Celsius</units>
 			</aux>
@@ -545,19 +606,27 @@ rho_GrIS_SID * GrIS_SID_volume * EXP(epsilon_GrIS_SID*T_anomaly_for_SLR)</eqn>
 (1.0 + EXP( -T_anomaly_for_SLR+(T_freezing_seawater-AntOcean_T_conversion_param_b) / AntOcean_T_conversion_param_a))</eqn>
 				<units>Celsius</units>
 			</aux>
-			<aux name="AntOcean T conversion param a">
-				<eqn>0.3</eqn>
+			<aux name="AntOcean T\nconversion param a">
+				<doc>${Assumption}
+</doc>
+				<eqn>0.2 + AntOcean_T_calibration*AntOcean_calibration_conversion</eqn>
 				<units>Celsius / K</units>
 			</aux>
 			<aux name="AntOcean T conversion param b">
-				<eqn>0.5</eqn>
+				<doc>${Assumption}
+</doc>
+				<eqn>0.4 + AntOcean_T_calibration</eqn>
 				<units>Celsius</units>
 			</aux>
 			<aux name="AntIS param h0">
+				<doc>${Assumption}
+</doc>
 				<eqn>1700</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="AntIS param mu">
+				<doc>${Assumption}
+</doc>
 				<eqn>8.7</eqn>
 				<units>metre</units>
 			</aux>
@@ -566,22 +635,28 @@ rho_GrIS_SID * GrIS_SID_volume * EXP(epsilon_GrIS_SID*T_anomaly_for_SLR)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="AntIS param P0">
-				<doc>P0 is the (ice equivalent) precipitation at 0 ◦C
+				<doc>${Assumption}
+P0 is the (ice equivalent) precipitation at 0 ◦C
 
 Shaffer (2014)</doc>
 				<eqn>0.35</eqn>
 				<units>metre/year</units>
 			</aux>
 			<aux name="AntIS param gamma">
+				<doc>${Assumption}
+</doc>
 				<eqn>2</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="AntIS param alpha">
+				<doc>${Assumption}
+</doc>
 				<eqn>0.35</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="AntIS param kappa">
-				<doc>κ is chosen assuming a relationship
+				<doc>${Assumption}
+κ is chosen assuming a relationship
 between columnar water content (that increases exponentially with temperature) and precipitation
 
 Shaffer (2014)</doc>
@@ -589,18 +664,26 @@ Shaffer (2014)</doc>
 				<units>1/Celsius</units>
 			</aux>
 			<aux name="AntIS param f0">
+				<doc>${Assumption}
+</doc>
 				<eqn>1.2</eqn>
 				<units>metre/year</units>
 			</aux>
 			<aux name="AntIS param c">
+				<doc>${Assumption}
+</doc>
 				<eqn>95</eqn>
 				<units>metre/Celsius</units>
 			</aux>
 			<aux name="AntIS param b0">
+				<doc>${Assumption}
+</doc>
 				<eqn>775</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="AntIS param slope">
+				<doc>${Assumption}
+</doc>
 				<eqn>0.0006</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -759,14 +842,14 @@ ELSE
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(AntIS_Btot-AntIS_F+AntIS_ISO)/AntIS_fac</eqn>
+				<eqn>(AntIS_Btot-AntIS_F+AntIS_ISO-AntIS_disintegration_volume_through_MICI)/AntIS_fac</eqn>
 				<units>metre/Year</units>
 			</flow>
 			<flow name="yearly change in\nAntIS Volume">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>AntIS_Btot-AntIS_F+AntIS_ISO</eqn>
+				<eqn>AntIS_Btot-AntIS_F+AntIS_ISO-AntIS_disintegration_volume_through_MICI</eqn>
 				<units>metre^3/Year</units>
 			</flow>
 			<aux name="UNIT per year">
@@ -774,19 +857,14 @@ ELSE
 				<units>1/year</units>
 			</aux>
 			<aux name="AntIS initial volume">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>IF reference_AntIS_radius &gt; AntIS_param_b0/AntIS_param_slope THEN
-
-PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT_per_m * (reference_AntIS_radius*UNIT_per_m)^2.5/UNIT_per_m^2 - (1.0/3.0)*AntIS_param_slope*reference_AntIS_radius^3) - PI*AntIS_epsilon2 * ( (2.0/3.0) * AntIS_param_slope * (reference_AntIS_radius^3-(AntIS_param_b0/AntIS_param_slope)^3) - AntIS_param_b0 * (reference_AntIS_radius^2 - (AntIS_param_b0/AntIS_param_slope)^2))
-
-ELSE
-
-PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT_per_m * (reference_AntIS_radius*UNIT_per_m)^2.5/UNIT_per_m^2 - (1.0/3.0)*AntIS_param_slope*reference_AntIS_radius^3)</eqn>
+				<doc>${Assumption}
+</doc>
+				<eqn>2.4791721932922064e+16</eqn>
 				<units>metre^3</units>
 			</aux>
 			<aux name="AntIS max\ncontribution to SLR">
+				<doc>${Assumption}
+</doc>
 				<eqn>57</eqn>
 				<units>metre</units>
 			</aux>
@@ -805,35 +883,9 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<eqn>1</eqn>
 				<units>K/deg C</units>
 			</aux>
-			<aux name="AntIS Radius by PCTILE">
-				<dimensions>
-					<dim name="PCTILE"/>
-				</dimensions>
-				<eqn>PERCENTILE(AntIS_Radius, PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
-				<units>metre</units>
-			</aux>
-			<aux name="AntIS Volume by PCTILE">
-				<dimensions>
-					<dim name="PCTILE"/>
-				</dimensions>
-				<eqn>PERCENTILE(AntIS_Volume, PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
-				<units>metre^3</units>
-			</aux>
-			<aux name="SLR from GrIS SMB by PCTILE">
-				<dimensions>
-					<dim name="PCTILE"/>
-				</dimensions>
-				<eqn>PERCENTILE(SLR_from_GrIS_SMB, PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
-				<units>metre</units>
-			</aux>
-			<aux name="GrIS SID volume by PCTILE">
-				<dimensions>
-					<dim name="PCTILE"/>
-				</dimensions>
-				<eqn>PERCENTILE(GrIS_SID_volume, PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
-				<units>metre</units>
-			</aux>
 			<aux name="SLR thermosteric by PCTILE">
+				<doc>${Output}
+</doc>
 				<dimensions>
 					<dim name="PCTILE"/>
 				</dimensions>
@@ -841,6 +893,8 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<units>metre</units>
 			</aux>
 			<aux name="SLR from\nmountain glaciers by PCTILE">
+				<doc>${Output}
+</doc>
 				<dimensions>
 					<dim name="PCTILE"/>
 				</dimensions>
@@ -862,6 +916,8 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<units>Mp</units>
 			</aux>
 			<aux name="SLR from LWS">
+				<doc>${Calibrated,Output}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -881,20 +937,124 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<units>millimetre/metre</units>
 			</aux>
 			<aux name="initial SLR from GrIS">
-				<eqn>-0.0038</eqn>
+				<eqn>-0.0028</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="inital SLR from AntIS">
-				<eqn>-0.00086</eqn>
+				<eqn>0.0</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="initial SLR from MG">
-				<eqn>-0.00491</eqn>
+				<eqn>-0.0035</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="initial thermosteric SLR">
-				<eqn>-0.00818</eqn>
+				<eqn>-0.008</eqn>
 				<units>metre</units>
+			</aux>
+			<aux name="MG temperature\nnonlinearity">
+				<doc>${Assumption}
+</doc>
+				<eqn>1.5</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="GrIS parameter scale factor">
+				<doc>${Calibration Parameter}
+This is a calibration parameter that leads to changes in rho, nu and GIS_outlet_max, because all these parameters can be  calibrated (see Nauels et al. (2017)</doc>
+				<eqn>0.85</eqn>
+				<range min="0.7" max="1"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="AntOcean T calibration">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.04</eqn>
+				<range min="0.02" max="0.07"/>
+				<units>Celsius</units>
+			</aux>
+			<aux name="AntOcean calibration\nconversion">
+				<doc>${Assumption}
+</doc>
+				<eqn>3.0</eqn>
+				<units>1/K</units>
+			</aux>
+			<aux name="Include MICI behaviour">
+				<eqn>0</eqn>
+				<range min="0" max="1"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="AntIS disintegration volume\nthrough MICI">
+				<eqn>IF Antarctic_air_temperature[1] &gt; AntIS_MICI_critical_Tant THEN
+Include_MICI_behaviour * AntIS_MICI_disintegration_rate * AntIS_initial_volume / AntIS_max_contribution_to_SLR ELSE 0</eqn>
+				<units>metre^3/year</units>
+			</aux>
+			<aux name="AntIS MICI\ndisintegration rate">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.0093</eqn>
+				<range min="0.0045" max="0.017"/>
+				<units>metre/year</units>
+			</aux>
+			<aux name="AntIS MICI critical Tant">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>-15.0</eqn>
+				<range min="-16" max="-14.6"/>
+				<units>Celsius</units>
+			</aux>
+			<aux name="SLR from Greenland\nIce Sheet by PCTILE">
+				<doc>${Output}
+</doc>
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(SLR_from_Greenland_Ice_Sheet, PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
+				<units>metre</units>
+			</aux>
+			<aux name="SLR from Antarctic\nIce Sheet by PCTILE">
+				<doc>${Output}
+</doc>
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(SLR_from_Antarctic_Ice_Sheet, PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
+				<units>metre</units>
+			</aux>
+			<aux name="global SLR by PCTILE">
+				<doc>${Output}
+</doc>
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(global_SLR, PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
+				<units>metre</units>
+			</aux>
+			<aux name="SLR from LWS by PCTILE">
+				<doc>${Output}
+</doc>
+				<dimensions>
+					<dim name="PCTILE"/>
+				</dimensions>
+				<eqn>PERCENTILE(SLR_from_LWS, PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
+				<units>metre</units>
+			</aux>
+			<aux name="GrIS outlet max default">
+				<doc>${Assumption}
+</doc>
+				<eqn>0.05363</eqn>
+				<units>metre</units>
+			</aux>
+			<aux name="rho GrIS SID default">
+				<doc>${Assumption}
+</doc>
+				<eqn>0.0007933</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="nu GrIS SMB default">
+				<doc>${Assumption}
+</doc>
+				<eqn>0.0001148</eqn>
+				<units>metre/K/Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -943,7 +1103,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="4" isee:page_rows="4" zoom="40" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="2473.33" isee:scroll_y="47.2222" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1011,19 +1171,19 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					<from>SLR_from_mountain_glaciers</from>
 					<to>global_SLR</to>
 				</connector>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="left" x="98.361" y="538.611" name="MG Tdep rate"/>
-				<aux label_side="left" x="98.361" y="501.111" name="MG max sea leve rise"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="left" label_angle="135" x="98.361" y="576.974" name="MG exponent"/>
-				<connector uid="130" angle="348.608">
+				<aux color="blue" label_side="left" x="88.986" y="538.611" name="MG Tdep rate"/>
+				<aux label_side="right" label_angle="45" x="161.838" y="526.736" name="MG max sea leve rise"/>
+				<aux color="blue" label_side="left" label_angle="135" x="98.361" y="576.974" name="MG volume\nnonlinearity"/>
+				<connector uid="130" angle="351.422">
 					<from>MG_Tdep_rate</from>
 					<to>yearly_MG_mass_loss</to>
 				</connector>
-				<connector uid="131" angle="330.603">
+				<connector uid="131" angle="286.661">
 					<from>MG_max_sea_leve_rise</from>
 					<to>yearly_MG_mass_loss</to>
 				</connector>
-				<connector uid="132" angle="32.206">
-					<from>MG_exponent</from>
+				<connector uid="132" angle="14.9055">
+					<from>MG_volume_nonlinearity</from>
 					<to>yearly_MG_mass_loss</to>
 				</connector>
 				<flow x="192.898" y="310.75" name="yearly thermosteric\nsea level change">
@@ -1039,7 +1199,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<aux label_side="right" x="281.202" y="66.959" name="C1"/>
 				<aux label_side="right" x="281.202" y="90.889" name="C2"/>
 				<aux label_side="right" x="281.202" y="115.974" name="C3"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="left" x="156.897" y="273.724" name="energy input to SLR conversion factor"/>
+				<aux color="#55AAFF" font_color="#55AAFF" label_side="left" x="161.838" y="273.724" name="energy input to SLR conversion factor"/>
 				<aux label_side="left" label_angle="135" x="210.898" y="143.974" name="net downward\nradiative flux"/>
 				<connector uid="133" angle="0.882559">
 					<from>energy_input_to_SLR_conversion_factor</from>
@@ -1117,8 +1277,8 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					<from>SLR_from_Greenland_Ice_Sheet</from>
 					<to>global_SLR</to>
 				</connector>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="left" x="967.11" y="117.111" name="nu GrIS SMB"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1073.78" y="75.444" name="phi GrIS SMB"/>
+				<aux color="blue" label_side="left" x="967.11" y="117.111" name="nu GrIS SMB"/>
+				<aux color="blue" label_side="right" x="1073.78" y="75.444" name="phi GrIS SMB"/>
 				<aux label_side="left" x="967.11" y="151.778" name="maximum GrIS volume"/>
 				<connector uid="154" angle="28.3428">
 					<from>SLR_from_GrIS_SMB</from>
@@ -1142,7 +1302,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					</from>
 					<to>yearly_SLR_from_GrIS_SMB</to>
 				</connector>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1073.78" y="108.444" name="xi GrIS SMB"/>
+				<aux color="blue" label_side="right" x="1073.78" y="108.444" name="xi GrIS SMB"/>
 				<connector uid="160" angle="215.755">
 					<from>xi_GrIS_SMB</from>
 					<to>yearly_SLR_from_GrIS_SMB</to>
@@ -1162,14 +1322,14 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					<from>SLR_from_GrIS_SID</from>
 					<to>SLR_from_Greenland_Ice_Sheet</to>
 				</connector>
-				<aux x="870.84" y="373.25" name="s GrIS SID"/>
-				<connector uid="164" angle="84.4937">
+				<aux x="839.34" y="355.25" name="s GrIS SID"/>
+				<connector uid="164" angle="48.3995">
 					<from>s_GrIS_SID</from>
 					<to>SLR_from_GrIS_SID</to>
 				</connector>
 				<stock x="998.61" y="340.75" name="GrIS SID volume"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="top" x="926.63" y="284.514" name="GrIS outlet max"/>
-				<connector uid="165" angle="204.342">
+				<aux color="blue" label_side="right" x="922.88" y="373.25" name="GrIS outlet max"/>
+				<connector uid="165" angle="127.626">
 					<from>GrIS_outlet_max</from>
 					<to>SLR_from_GrIS_SID</to>
 				</connector>
@@ -1189,13 +1349,13 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					</from>
 					<to>yearly_reduction_of_outlet</to>
 				</connector>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1104.98" y="403.875" name="rho GrIS SID"/>
-				<connector uid="168" angle="119.645">
+				<aux color="blue" label_side="right" x="1082.84" y="402.446" name="rho GrIS SID"/>
+				<connector uid="168" angle="102.588">
 					<from>rho_GrIS_SID</from>
 					<to>yearly_reduction_of_outlet</to>
 				</connector>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1104.98" y="442" name="epsilon GrIS SID"/>
-				<connector uid="169" angle="109.535">
+				<aux color="blue" label_side="right" x="1132.12" y="373.25" name="epsilon GrIS SID"/>
+				<connector uid="169" angle="152.735">
 					<from>epsilon_GrIS_SID</from>
 					<to>yearly_reduction_of_outlet</to>
 				</connector>
@@ -1211,8 +1371,8 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<aux label_side="left" x="1389.02" y="857.285" name="modern AntOcean\nsubsurface T"/>
 				<aux x="1877.05" y="790.476" name="AntIS epsilon1"/>
 				<aux x="1877.05" y="843.018" name="AntIS epsilon2"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1664.37" y="1205.25" name="T to TAnt c1"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1664.37" y="1167.44" name="T to TAnt c2"/>
+				<aux color="blue" label_side="right" x="1664.37" y="1205.25" name="T to TAnt c1"/>
+				<aux color="blue" label_side="right" x="1664.37" y="1167.44" name="T to TAnt c2"/>
 				<aux label_side="top" x="1601.85" y="1131.68" name="Antarctic air temperature"/>
 				<connector uid="171" angle="130.359">
 					<from>T_to_TAnt_c1</from>
@@ -1233,8 +1393,8 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					<from>T_freezing_seawater</from>
 					<to>Antarctic_subsurface_ocean_temperature</to>
 				</connector>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1778.35" y="917.101" name="AntOcean T conversion param a"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1778.35" y="945.625" name="AntOcean T conversion param b"/>
+				<aux color="blue" label_side="left" label_angle="135" x="1778.35" y="917.101" name="AntOcean T\nconversion param a"/>
+				<aux color="blue" label_side="right" x="1822.52" y="945.625" name="AntOcean T conversion param b"/>
 				<connector uid="176" angle="203.665">
 					<from>AntOcean_T_conversion_param_a</from>
 					<to>Antarctic_subsurface_ocean_temperature</to>
@@ -1269,17 +1429,17 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					<from>density_ice</from>
 					<to>AntIS_epsilon2</to>
 				</connector>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" label_angle="45" x="1390.02" y="1404.68" name="AntIS param h0"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1744.23" y="742.416" name="AntIS param mu"/>
-				<aux color="#55AAFF" font_color="#55AAFF" x="1121.35" y="1393.87" name="AntIS param nu"/>
-				<aux color="#55AAFF" font_color="#55AAFF" x="1336.4" y="1413.68" width="13.8333" height="13.8333" name="AntIS param P0"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1477.23" y="796.166" name="AntIS param gamma"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1477.23" y="828.762" name="AntIS param alpha"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="bottom" x="1256.65" y="1404.68" name="AntIS param kappa"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1476.42" y="857.285" name="AntIS param f0"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1379.67" y="1370.51" name="AntIS param c"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1744.23" y="805.279" name="AntIS param b0"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1744.23" y="772.75" name="AntIS param slope"/>
+				<aux color="blue" label_side="right" label_angle="45" x="1390.02" y="1404.68" name="AntIS param h0"/>
+				<aux color="blue" label_side="right" x="1744.23" y="742.416" name="AntIS param mu"/>
+				<aux color="blue" x="1121.35" y="1393.87" name="AntIS param nu"/>
+				<aux color="blue" x="1336.4" y="1413.68" width="13.8333" height="13.8333" name="AntIS param P0"/>
+				<aux color="blue" label_side="right" x="1477.23" y="796.166" name="AntIS param gamma"/>
+				<aux color="blue" label_side="right" x="1477.23" y="828.762" name="AntIS param alpha"/>
+				<aux color="blue" label_side="bottom" x="1256.65" y="1404.68" name="AntIS param kappa"/>
+				<aux color="blue" label_side="right" x="1476.42" y="857.285" name="AntIS param f0"/>
+				<aux color="blue" label_side="right" x="1379.67" y="1370.51" name="AntIS param c"/>
+				<aux color="blue" label_side="right" x="1744.23" y="805.279" name="AntIS param b0"/>
+				<aux color="blue" label_side="right" x="1744.23" y="772.75" name="AntIS param slope"/>
 				<aux label_side="right" label_angle="45" x="1291.65" y="1295.25" name="AntIS hr"/>
 				<connector uid="185" angle="240.679">
 					<from>Antarctic_air_temperature</from>
@@ -1660,26 +1820,8 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					<to>AntIS_dSL</to>
 				</connector>
 				<aux x="2043.34" y="792.268" name="UNIT per year"/>
-				<aux label_side="left" label_angle="135" x="926.343" y="702.208" name="AntIS initial volume"/>
-				<connector uid="277" angle="219.542">
-					<from>
-						<alias uid="278"/>
-					</from>
-					<to>AntIS_initial_volume</to>
-				</connector>
-				<connector uid="279" angle="180">
-					<from>
-						<alias uid="280"/>
-					</from>
-					<to>AntIS_initial_volume</to>
-				</connector>
-				<connector uid="281" angle="138.778">
-					<from>
-						<alias uid="282"/>
-					</from>
-					<to>AntIS_initial_volume</to>
-				</connector>
-				<connector uid="283" angle="179.248">
+				<aux label_side="left" label_angle="135" x="940.88" y="689.583" name="AntIS initial volume"/>
+				<connector uid="283" angle="182.828">
 					<from>AntIS_initial_volume</from>
 					<to>SLR_from_Antarctic_Ice_Sheet</to>
 				</connector>
@@ -1687,36 +1829,12 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					<from>AntIS_Volume</from>
 					<to>SLR_from_Antarctic_Ice_Sheet</to>
 				</connector>
-				<connector uid="285" angle="270">
-					<from>
-						<alias uid="286"/>
-					</from>
-					<to>AntIS_initial_volume</to>
-				</connector>
-				<connector uid="287" angle="28.0412">
-					<from>
-						<alias uid="288"/>
-					</from>
-					<to>AntIS_initial_volume</to>
-				</connector>
-				<connector uid="289" angle="83.4592">
-					<from>
-						<alias uid="290"/>
-					</from>
-					<to>AntIS_initial_volume</to>
-				</connector>
 				<aux label_side="top" x="811.553" y="665.875" name="AntIS max\ncontribution to SLR"/>
 				<connector uid="291" angle="204.101">
 					<from>AntIS_max_contribution_to_SLR</from>
 					<to>SLR_from_Antarctic_Ice_Sheet</to>
 				</connector>
 				<aux x="2043.34" y="739.503" name="UNIT per m"/>
-				<connector uid="292" angle="173.66">
-					<from>
-						<alias uid="293"/>
-					</from>
-					<to>AntIS_initial_volume</to>
-				</connector>
 				<connector uid="294" angle="95.7733">
 					<from>
 						<alias uid="295"/>
@@ -1762,42 +1880,14 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<text_box font_weight="bold" text_decoration="underline" font_size="14pt" uid="314" x="35.3693" y="449.54" width="279.271" height="20">Sea-level rise from mountain glaciers</text_box>
 				<text_box font_weight="bold" text_decoration="underline" font_size="14pt" uid="315" x="56.3693" y="777.25" width="287.057" height="20">Sea-level rise from land water storage</text_box>
 				<text_box font_weight="bold" text_decoration="underline" font_size="14pt" uid="316" x="749.569" y="574.73" width="285.969" height="20">Sea-level rise from Antarctic ice sheet</text_box>
-				<text_box font_weight="bold" text_decoration="underline" font_size="14pt" uid="317" x="860.941" y="21.4329" width="311.937" height="20">Sea-level rise from Greenland ice sheet</text_box>
+				<text_box font_weight="bold" text_decoration="underline" font_size="14pt" uid="317" x="842.641" y="14" width="311.937" height="20">Sea-level rise from Greenland ice sheet</text_box>
 				<aux label_side="right" label_angle="315" x="610" y="84.959" name="UNIT Celsius\nto Kelvin"/>
 				<connector uid="318" angle="212.6">
 					<from>UNIT_Celsius_to_Kelvin</from>
 					<to>T_anomaly_for_SLR</to>
 				</connector>
-				<aux x="1408" y="24" name="AntIS Radius by PCTILE"/>
-				<aux x="1402.17" y="101.167" name="AntIS Volume by PCTILE"/>
-				<aux x="1420.17" y="234.139" name="SLR from GrIS SMB by PCTILE"/>
-				<aux x="1594.83" y="38.5" name="GrIS SID volume by PCTILE"/>
-				<aux x="1604.95" y="101.167" name="SLR thermosteric by PCTILE"/>
-				<aux x="1604.95" y="177.127" name="SLR from\nmountain glaciers by PCTILE"/>
-				<connector uid="337" angle="20.18">
-					<from>
-						<alias uid="328"/>
-					</from>
-					<to>AntIS_Radius_by_PCTILE</to>
-				</connector>
-				<connector uid="338" angle="19.2435">
-					<from>
-						<alias uid="329"/>
-					</from>
-					<to>AntIS_Volume_by_PCTILE</to>
-				</connector>
-				<connector uid="340" angle="12.7207">
-					<from>
-						<alias uid="332"/>
-					</from>
-					<to>SLR_from_GrIS_SMB_by_PCTILE</to>
-				</connector>
-				<connector uid="341" angle="22.473">
-					<from>
-						<alias uid="331"/>
-					</from>
-					<to>GrIS_SID_volume_by_PCTILE</to>
-				</connector>
+				<aux x="1387.37" y="151.256" name="SLR thermosteric by PCTILE"/>
+				<aux x="1387.37" y="230.073" name="SLR from\nmountain glaciers by PCTILE"/>
 				<connector uid="342" angle="17.9906">
 					<from>
 						<alias uid="334"/>
@@ -1815,13 +1905,13 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 					<from>selected_climate_case</from>
 					<to>net_downward_radiative_flux</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="93.3333" y="906.667" name="Population Mp"/>
+				<aux font_style="italic" font_weight="bold" label_side="bottom" x="93.3333" y="906.667" name="Population Mp"/>
 				<aux x="236.786" y="948.333" name="SLR from LWS"/>
 				<connector uid="348" angle="320.332">
 					<from>Population_Mp</from>
 					<to>SLR_from_LWS</to>
 				</connector>
-				<aux x="178.684" y="868.321" name="LWS per capita"/>
+				<aux label_side="left" label_angle="135" x="178.684" y="868.321" name="LWS per capita"/>
 				<aux x="178.351" y="1008.33" name="LWS with no people"/>
 				<connector uid="349" angle="10.6336">
 					<from>LWS_with_no_people</from>
@@ -1875,8 +1965,8 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 						</plot>
 					</graph>
 				</stacked_container>
-				<stacked_container uid="365" x="2573.23" y="327.75" width="394.464" height="217.321">
-					<graph width="394.464" height="217.321" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+				<stacked_container uid="365" x="2570.8" y="322.125" width="390.987" height="220.571">
+					<graph width="390.987" height="220.571" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name="global_SLR[1]"/>
 						</plot>
@@ -1894,7 +1984,135 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				</connector>
 				<aux x="246.898" y="684.208" name="initial SLR from MG"/>
 				<aux x="286.295" y="367.25" name="initial thermosteric SLR"/>
-				<alias font_style="italic" label_side="top" uid="151" x="202.833" y="527.167" width="18" height="18">
+				<aux label_side="left" label_angle="135" x="111.333" y="508.736" name="MG temperature\nnonlinearity"/>
+				<connector uid="368" angle="322.329">
+					<from>MG_temperature_nonlinearity</from>
+					<to>yearly_MG_mass_loss</to>
+				</connector>
+				<aux color="#55AAFF" font_color="#55AAFF" label_side="left" x="980" y="66.959" name="GrIS parameter scale factor"/>
+				<connector uid="369" angle="255.586">
+					<from>GrIS_parameter_scale_factor</from>
+					<to>nu_GrIS_SMB</to>
+				</connector>
+				<connector uid="370" angle="145.84">
+					<from>
+						<alias uid="371"/>
+					</from>
+					<to>GrIS_outlet_max</to>
+				</connector>
+				<connector uid="372" angle="6.27261">
+					<from>
+						<alias uid="371"/>
+					</from>
+					<to>rho_GrIS_SID</to>
+				</connector>
+				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="1836.18" y="905.66" name="AntOcean T calibration"/>
+				<connector uid="373" angle="191.19">
+					<from>AntOcean_T_calibration</from>
+					<to>AntOcean_T_conversion_param_a</to>
+				</connector>
+				<connector uid="374" angle="251.121">
+					<from>AntOcean_T_calibration</from>
+					<to>AntOcean_T_conversion_param_b</to>
+				</connector>
+				<aux label_side="left" label_angle="135" x="1802.56" y="869.66" name="AntOcean calibration\nconversion"/>
+				<connector uid="375" angle="296.266">
+					<from>AntOcean_calibration_conversion</from>
+					<to>AntOcean_T_conversion_param_a</to>
+				</connector>
+				<text_box font_weight="bold" text_decoration="underline" font_size="14pt" uid="376" x="1182.41" y="494.159" width="226.885" height="27.1429">Marine Ice Cliff Instability?</text_box>
+				<aux label_side="right" x="1310.86" y="534.143" name="Include MICI behaviour"/>
+				<aux label_side="right" label_angle="315" x="1205" y="713.494" name="AntIS disintegration volume\nthrough MICI"/>
+				<aux color="#55AAFF" font_color="#55AAFF" x="1287.14" y="665.875" name="AntIS MICI\ndisintegration rate"/>
+				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" label_angle="45" x="1232.86" y="647.875" name="AntIS MICI critical Tant"/>
+				<connector uid="377" angle="241.653">
+					<from>AntIS_MICI_critical_Tant</from>
+					<to>AntIS_disintegration_volume_through_MICI</to>
+				</connector>
+				<connector uid="378" angle="210.101">
+					<from>AntIS_MICI_disintegration_rate</from>
+					<to>AntIS_disintegration_volume_through_MICI</to>
+				</connector>
+				<connector uid="379" angle="10.8833">
+					<from>AntIS_initial_volume</from>
+					<to>AntIS_disintegration_volume_through_MICI</to>
+				</connector>
+				<connector uid="380" angle="270">
+					<from>AntIS_disintegration_volume_through_MICI</from>
+					<to>yearly_change_in_AntIS_Radius</to>
+				</connector>
+				<connector uid="381" angle="180.145">
+					<from>AntIS_disintegration_volume_through_MICI</from>
+					<to>yearly_change_in_AntIS_Volume</to>
+				</connector>
+				<connector uid="382" angle="152.76">
+					<from>Antarctic_air_temperature</from>
+					<to>AntIS_disintegration_volume_through_MICI</to>
+				</connector>
+				<connector uid="383" angle="15.2541">
+					<from>AntIS_max_contribution_to_SLR</from>
+					<to>AntIS_disintegration_volume_through_MICI</to>
+				</connector>
+				<connector uid="384" angle="210.801">
+					<from>Include_MICI_behaviour</from>
+					<to>AntIS_disintegration_volume_through_MICI</to>
+				</connector>
+				<aux x="1596.56" y="163.571" name="SLR from Greenland\nIce Sheet by PCTILE"/>
+				<connector uid="387" angle="20.556">
+					<from>
+						<alias uid="388"/>
+					</from>
+					<to>SLR_from_Greenland_Ice_Sheet_by_PCTILE</to>
+				</connector>
+				<aux x="1592.99" y="74.821" name="SLR from Antarctic\nIce Sheet by PCTILE"/>
+				<connector uid="390" angle="20.7941">
+					<from>
+						<alias uid="389"/>
+					</from>
+					<to>SLR_from_Antarctic_Ice_Sheet_by_PCTILE</to>
+				</connector>
+				<aux label_side="bottom" x="1387.37" y="79.7143" name="global SLR by PCTILE"/>
+				<connector uid="392" angle="20.7921">
+					<from>
+						<alias uid="391"/>
+					</from>
+					<to>global_SLR_by_PCTILE</to>
+				</connector>
+				<aux x="1592.99" y="242.679" name="SLR from LWS by PCTILE"/>
+				<connector uid="394" angle="19.179">
+					<from>
+						<alias uid="393"/>
+					</from>
+					<to>SLR_from_LWS_by_PCTILE</to>
+				</connector>
+				<connector uid="395" angle="67.8878">
+					<from>
+						<alias uid="396"/>
+					</from>
+					<to>yearly_MG_mass_loss</to>
+				</connector>
+				<connector uid="397" angle="37.9377">
+					<from>
+						<alias uid="398"/>
+					</from>
+					<to>yearly_MG_mass_loss</to>
+				</connector>
+				<aux x="888.201" y="391.25" name="GrIS outlet max default"/>
+				<connector uid="399" angle="27.4317">
+					<from>GrIS_outlet_max_default</from>
+					<to>GrIS_outlet_max</to>
+				</connector>
+				<aux label_side="right" x="1091.78" y="438.179" name="rho GrIS SID default"/>
+				<connector uid="400" angle="104.051">
+					<from>rho_GrIS_SID_default</from>
+					<to>rho_GrIS_SID</to>
+				</connector>
+				<aux label_side="left" x="940.88" y="95.1134" name="nu GrIS SMB default"/>
+				<connector uid="401" angle="319.974">
+					<from>nu_GrIS_SMB_default</from>
+					<to>nu_GrIS_SMB</to>
+				</connector>
+				<alias font_style="italic" label_side="top" uid="151" x="209.786" y="547.611" width="18" height="18">
 					<of>T_anomaly_for_SLR</of>
 				</alias>
 				<alias font_style="italic" label_side="right" label_angle="315" uid="159" x="1095.98" y="243.139" width="18" height="18">
@@ -1956,29 +2174,7 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<alias font_style="italic" uid="274" x="607.834" y="1300.08" width="18" height="18">
 					<of>AntIS_epsilon2</of>
 				</alias>
-				<alias font_style="italic" label_side="right" uid="280" x="954.443" y="693.208" width="18" height="18">
-					<of>AntIS_epsilon1</of>
-				</alias>
-				<alias font_style="italic" label_side="right" uid="282" x="954.443" y="725.708" width="18" height="18">
-					<of>AntIS_epsilon2</of>
-				</alias>
-				<alias font_style="italic" label_side="right" label_angle="45" uid="278" x="954.443" y="662.583" width="18" height="18">
-					<of>AntIS_param_mu</of>
-				</alias>
-				<alias font_style="italic" label_side="top" uid="286" x="917.343" y="653.208" width="18" height="18">
-					<of>AntIS_param_slope</of>
-				</alias>
-				<alias font_style="italic" label_side="left" label_angle="225" uid="288" x="883.553" y="711.208" width="18" height="18">
-					<of>AntIS_param_b0</of>
-				</alias>
-				<alias font_style="italic" uid="290" x="912.833" y="732.583" width="18" height="18">
-					<of>reference_AntIS_radius</of>
-				</alias>
 				<alias color="blue" background="white" font_style="italic" uid="295" x="1186" y="1406.2" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>UNIT_per_m</of>
-				</alias>
-				<alias color="blue" background="white" font_style="italic" uid="293" x="1057" y="673.416" width="18" height="18">
 					<shape type="circle" radius="18"/>
 					<of>UNIT_per_m</of>
 				</alias>
@@ -1997,23 +2193,32 @@ PI * (1.0 + AntIS_epsilon1) * ((8.0/15.0) * SQRT(AntIS_param_mu*UNIT_per_m)/UNIT
 				<alias font_style="italic" uid="305" x="1485.42" y="1085.08" width="18" height="18">
 					<of>UNIT_per_m</of>
 				</alias>
-				<alias font_style="italic" uid="328" x="1287.99" y="25.833" width="45" height="35">
-					<of>AntIS_Radius</of>
-				</alias>
-				<alias font_style="italic" uid="329" x="1295.17" y="92.583" width="45" height="35">
-					<of>AntIS_Volume</of>
-				</alias>
-				<alias font_style="italic" label_side="top" uid="331" x="1479.5" y="25.833" width="45" height="35">
-					<of>GrIS_SID_volume</of>
-				</alias>
-				<alias font_style="italic" uid="332" x="1292" y="222.583" width="45" height="35">
-					<of>SLR_from_GrIS_SMB</of>
-				</alias>
-				<alias font_style="italic" uid="333" x="1488.34" y="171.667" width="45" height="35">
+				<alias font_style="italic" uid="333" x="1270.76" y="224.613" width="45" height="35">
 					<of>SLR_from_mountain_glaciers</of>
 				</alias>
-				<alias font_style="italic" uid="334" x="1479.5" y="90.944" width="45" height="35">
+				<alias font_style="italic" uid="334" x="1270.76" y="138.488" width="45" height="35">
 					<of>SLR_thermosteric</of>
+				</alias>
+				<alias color="#55AAFF" font_style="italic" font_color="#55AAFF" uid="371" x="971" y="404.75" width="18" height="18">
+					<of>GrIS_parameter_scale_factor</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="388" x="1487.85" y="151.714" width="23" height="23">
+					<of>SLR_from_Greenland_Ice_Sheet</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="389" x="1486.06" y="61.179" width="27.2857" height="27.2857">
+					<of>SLR_from_Antarctic_Ice_Sheet</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="391" x="1275.06" y="61.5179" width="36.3929" height="36.3929">
+					<of>global_SLR</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="393" x="1488.2" y="227.964" width="23" height="23">
+					<of>SLR_from_LWS</of>
+				</alias>
+				<alias font_style="italic" uid="396" x="107.361" y="651.714" width="18" height="18">
+					<of>Kelvin_to_dmnl</of>
+				</alias>
+				<alias font_style="italic" label_side="left" label_angle="225" uid="398" x="89.361" y="638.875" width="18" height="18">
+					<of>dmnl_to_Kelvin</of>
 				</alias>
 			</view>
 		</views>
