@@ -310,11 +310,11 @@
 				<eqn>PERCENTILE(GDP_1,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
 				<units>b$/year</units>
 			</aux>
-			<aux name="government spending by PCTILE">
+			<aux name="government consumption by PCTILE">
 				<dimensions>
 					<dim name="PCTILE"/>
 				</dimensions>
-				<eqn>PERCENTILE(government_spending,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
+				<eqn>PERCENTILE(government_consumption,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="investment by PCTILE">
@@ -364,21 +364,29 @@
 				<connect2 to="Population.GDP" from="GDP.GDP"/>
 				<connect to="Finance.GDP_growth_rate" from="GDP.GDP_growth_rate"/>
 				<connect2 to="Finance.GDP_growth_rate" from="GDP.GDP_growth_rate"/>
-				<connect to="GDP.Bank_Investment" from="Circular_Flow.Bank_Investment"/>
-				<connect2 to="GDP.Bank_Investment" from="Circular_Flow.Bank_Investment"/>
-				<connect to="GDP.government_spending" from="Government.government_spending"/>
-				<connect2 to="GDP.government_spending" from="Government.government_spending"/>
+				<connect to="GDP.government_spending" from="Government.government_consumption"/>
+				<connect2 to="GDP.government_spending" from="Government.government_consumption"/>
+				<connect to="GDP.Investment_1" from="Finance.total_investment"/>
+				<connect2 to="GDP.Investment_1" from="Finance.total_investment"/>
 				<connect to="GDP.private_consumption" from="Circular_Flow.private_consumption"/>
 				<connect2 to="GDP.private_consumption" from="Circular_Flow.private_consumption"/>
 			</module>
 			<module name="Government" isee:label="">
 				<format scale_by="auto"/>
-				<connect to="Circular_Flow.government_spending_1" from="Government.government_spending"/>
-				<connect2 to="Circular_Flow.government_spending_1" from="Government.government_spending"/>
-				<connect to="GDP.government_spending" from="Government.government_spending"/>
-				<connect2 to="GDP.government_spending" from="Government.government_spending"/>
-				<connect to="Finance.government_taking_up_debt" from="Government.government_taking_up_debt"/>
-				<connect2 to="Finance.government_taking_up_debt" from="Government.government_taking_up_debt"/>
+				<connect to="Circular_Flow.government_spending_1" from="Government.government_consumption"/>
+				<connect2 to="Circular_Flow.government_spending_1" from="Government.government_consumption"/>
+				<connect to="Economy.government_consumption" from="Government.government_consumption"/>
+				<connect2 to="government_consumption" from="Government.government_consumption"/>
+				<connect to="GDP.government_spending" from="Government.government_consumption"/>
+				<connect2 to="GDP.government_spending" from="Government.government_consumption"/>
+				<connect to="Finance.Government_Debt" from="Government.Government_Debt"/>
+				<connect2 to="Finance.Government_Debt" from="Government.Government_Debt"/>
+				<connect to="Circular_Flow.transfers" from="Government.government_transfers"/>
+				<connect2 to="Circular_Flow.transfers" from="Government.government_transfers"/>
+				<connect to="Finance.initial_government_debt" from="Government.initial_government_debt"/>
+				<connect2 to="Finance.initial_government_debt" from="Government.initial_government_debt"/>
+				<connect to="Finance.public_investment" from="Government.public_investment"/>
+				<connect2 to="Finance.public_investment" from="Government.public_investment"/>
 				<connect to="Government.GDP" from="GDP.GDP"/>
 				<connect2 to="Government.GDP" from="GDP.GDP"/>
 				<connect to="Government.profit_tax" from="Circular_Flow.profit_tax"/>
@@ -388,12 +396,8 @@
 			</module>
 			<module name="Circular Flow" isee:label="">
 				<format scale_by="auto"/>
-				<connect to="GDP.Bank_Investment" from="Circular_Flow.Bank_Investment"/>
-				<connect2 to="GDP.Bank_Investment" from="Circular_Flow.Bank_Investment"/>
 				<connect to="Finance.Firms_Checking_Accounts_1" from="Circular_Flow.Firms_Checking_Accounts"/>
 				<connect2 to="Finance.Firms_Checking_Accounts_1" from="Circular_Flow.Firms_Checking_Accounts"/>
-				<connect to="Economy.government_spending" from="Circular_Flow.government_spending"/>
-				<connect2 to="government_spending" from="Circular_Flow.government_spending"/>
 				<connect to="Finance.owner_savings" from="Circular_Flow.owner_savings"/>
 				<connect2 to="Finance.owner_savings" from="Circular_Flow.owner_savings"/>
 				<connect to="Economy.private_consumption" from="Circular_Flow.private_consumption"/>
@@ -410,10 +414,12 @@
 				<connect2 to="Finance.Worker_Savings" from="Circular_Flow.Worker_Savings"/>
 				<connect to="Circular_Flow.Bank_Investment" from="Finance.Bank_Investment"/>
 				<connect2 to="Circular_Flow.Bank_Investment" from="Finance.Bank_Investment"/>
-				<connect to="Circular_Flow.government_spending_1" from="Government.government_spending"/>
-				<connect2 to="Circular_Flow.government_spending_1" from="Government.government_spending"/>
+				<connect to="Circular_Flow.government_spending_1" from="Government.government_consumption"/>
+				<connect2 to="Circular_Flow.government_spending_1" from="Government.government_consumption"/>
 				<connect to="Circular_Flow.net_bank_assets_1" from="Finance.net_bank_assets"/>
 				<connect2 to="Circular_Flow.net_bank_assets_1" from="Finance.net_bank_assets"/>
+				<connect to="Circular_Flow.public_investment" from="Finance.public_investment"/>
+				<connect2 to="Circular_Flow.public_investment" from="Finance.public_investment"/>
 				<connect to="Circular_Flow.risky_interest" from="Finance.risky_interest"/>
 				<connect2 to="Circular_Flow.risky_interest" from="Finance.risky_interest"/>
 				<connect to="Circular_Flow.risky_bank_assets_1" from="Finance.risky_bank_assets"/>
@@ -426,15 +432,17 @@
 				<connect2 to="Circular_Flow.safe_interest_2" from="Finance.safe_interest"/>
 				<connect to="Circular_Flow.safe_bank_assets_1" from="Finance.safe_bank_assets"/>
 				<connect2 to="Circular_Flow.safe_bank_assets_1" from="Finance.safe_bank_assets"/>
+				<connect to="Circular_Flow.transfers" from="Government.government_transfers"/>
+				<connect2 to="Circular_Flow.transfers" from="Government.government_transfers"/>
 			</module>
 			<module name="Finance" isee:label="">
 				<format scale_by="auto"/>
 				<connect to="Circular_Flow.Bank_Investment" from="Finance.Bank_Investment"/>
 				<connect2 to="Circular_Flow.Bank_Investment" from="Finance.Bank_Investment"/>
-				<connect to="Economy.Investment_1" from="Finance.Investment"/>
-				<connect2 to="Investment_1" from="Finance.Investment"/>
 				<connect to="Circular_Flow.net_bank_assets_1" from="Finance.net_bank_assets"/>
 				<connect2 to="Circular_Flow.net_bank_assets_1" from="Finance.net_bank_assets"/>
+				<connect to="Circular_Flow.public_investment" from="Finance.public_investment"/>
+				<connect2 to="Circular_Flow.public_investment" from="Finance.public_investment"/>
 				<connect to="Circular_Flow.risky_interest" from="Finance.risky_interest"/>
 				<connect2 to="Circular_Flow.risky_interest" from="Finance.risky_interest"/>
 				<connect to="Circular_Flow.risky_bank_assets_1" from="Finance.risky_bank_assets"/>
@@ -449,6 +457,10 @@
 				<connect2 to="Circular_Flow.safe_bank_assets_1" from="Finance.safe_bank_assets"/>
 				<connect to=".switch_only_economy_energy_damage_1" from="Finance.switch_only_economy_energy_damage_1"/>
 				<connect2 to=".switch_only_economy_energy_damage_1" from="Finance.switch_only_economy_energy_damage_1"/>
+				<connect to="Economy.Investment_1" from="Finance.total_investment"/>
+				<connect2 to="Investment_1" from="Finance.total_investment"/>
+				<connect to="GDP.Investment_1" from="Finance.total_investment"/>
+				<connect2 to="GDP.Investment_1" from="Finance.total_investment"/>
 				<connect to="Finance.crop_balance_1" from="Food_and_land_use.crop_balance"/>
 				<connect2 to="Finance.crop_balance_1" from="Food_and_land_use.crop_balance"/>
 				<connect to="Finance.Energy_Balance" from="Energy.Energy_Balance"/>
@@ -457,12 +469,16 @@
 				<connect2 to="Finance.Firms_Checking_Accounts_1" from="Circular_Flow.Firms_Checking_Accounts"/>
 				<connect to="Finance.GDP_growth_rate" from="GDP.GDP_growth_rate"/>
 				<connect2 to="Finance.GDP_growth_rate" from="GDP.GDP_growth_rate"/>
-				<connect to="Finance.government_taking_up_debt" from="Government.government_taking_up_debt"/>
-				<connect2 to="Finance.government_taking_up_debt" from="Government.government_taking_up_debt"/>
+				<connect to="Finance.Government_Debt" from="Government.Government_Debt"/>
+				<connect2 to="Finance.Government_Debt" from="Government.Government_Debt"/>
+				<connect to="Finance.initial_government_debt" from="Government.initial_government_debt"/>
+				<connect2 to="Finance.initial_government_debt" from="Government.initial_government_debt"/>
 				<connect to="Finance.owner_savings" from="Circular_Flow.owner_savings"/>
 				<connect2 to="Finance.owner_savings" from="Circular_Flow.owner_savings"/>
 				<connect to="Finance.private_investment" from="Circular_Flow.private_investment"/>
 				<connect2 to="Finance.private_investment" from="Circular_Flow.private_investment"/>
+				<connect to="Finance.public_investment" from="Government.public_investment"/>
+				<connect2 to="Finance.public_investment" from="Government.public_investment"/>
 				<connect to="Finance.share_of_GDP_invested_in_Energy_1" from="Energy.share_of_GDP_invested_in_Energy"/>
 				<connect2 to="Finance.share_of_GDP_invested_in_Energy_1" from="Energy.share_of_GDP_invested_in_Energy"/>
 				<connect to="Finance.Surface_Temperature_Anomaly_1" from="Temperature.Surface_Temperature_Anomaly"/>
@@ -481,13 +497,6 @@
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/year</units>
 			</aux>
-			<aux name="government spending" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/year</units>
-			</aux>
 			<aux name="private consumption" access="input">
 				<dimensions>
 					<dim name="Run"/>
@@ -496,6 +505,13 @@
 				<units>b$/year</units>
 			</aux>
 			<aux name="Investment 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="government\nconsumption" access="input">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -549,7 +565,7 @@
 				<isee:iframe color="black" border_style="solid" text_align="left" border_width="thin" background="white" vertical_text_align="top" font_size="12pt"/>
 				<isee:financial_table color="black" header_text_decoration="none" header_font_weight="bold" hide_border="false" font_size="12pt" first_column_width="250" background="#E0E0E0" text_align="right" header_text_border_style="none" auto_fit="true" header_text_border_color="black" other_column_width="100" header_font_size="14pt" header_text_border_width="thin" header_font_style="normal" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_text_padding="2"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" zoom="60" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_y="30" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -694,7 +710,7 @@
 				</connector>
 				<aux background="white" font_style="italic" font_weight="bold" label_side="top" x="494" y="923.76" name="GDP Per Capita"/>
 				<aux x="1168.75" y="108.75" name="GDP by PCTILE"/>
-				<aux x="1168.75" y="173.76" name="government spending by PCTILE"/>
+				<aux x="1168.75" y="173.76" name="government consumption by PCTILE"/>
 				<aux x="1168.75" y="263.75" name="investment by PCTILE"/>
 				<aux x="1173.75" y="333.68" name="private consumption by PCTILE"/>
 				<aux x="1173.75" y="400" name="N2O emissions by PCTILE"/>
@@ -767,15 +783,6 @@
 					<from>GDP_1</from>
 					<to>GDP_by_PCTILE</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1020.75" y="173.76" name="government spending"/>
-				<connector uid="272" color="#EBEBEB" font_color="#EBEBEB" angle="35.1085" isee:autocreated="true">
-					<from>Circular_Flow</from>
-					<to>government_spending</to>
-				</connector>
-				<connector uid="273" angle="25">
-					<from>government_spending</from>
-					<to>government_spending_by_PCTILE</to>
-				</connector>
 				<aux font_style="italic" font_weight="bold" x="1020.75" y="333.68" name="private consumption"/>
 				<connector uid="276" color="#EBEBEB" font_color="#EBEBEB" angle="317.823" isee:autocreated="true">
 					<from>Circular_Flow</from>
@@ -797,6 +804,15 @@
 				<connector uid="280" angle="22.775">
 					<from>Investment_1</from>
 					<to>investment_by_PCTILE</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1020.75" y="173.76" name="government\nconsumption"/>
+				<connector uid="282" color="#EBEBEB" font_color="#EBEBEB" angle="34.3972" isee:autocreated="true">
+					<from>Government</from>
+					<to>government_consumption</to>
+				</connector>
+				<connector uid="283" angle="16.9797">
+					<from>government_consumption</from>
+					<to>government_consumption_by_PCTILE</to>
 				</connector>
 				<alias font_style="italic" uid="247" x="1011.75" y="391" width="18" height="18">
 					<of>N2O_emissions</of>
@@ -872,7 +888,7 @@
 				<units>b$</units>
 			</aux>
 			<aux name="desired savings\nas multiple of\nprofits">
-				<eqn>12.3309767913574</eqn>
+				<eqn>12.6358604220512</eqn>
 				<units>Years</units>
 			</aux>
 			<aux name="target owner\nconsumption">
@@ -906,7 +922,7 @@
 				<units>b$/year</units>
 			</aux>
 			<aux name="time to change\nconsumption habits">
-				<eqn>1.07692131948061</eqn>
+				<eqn>1</eqn>
 				<units>year</units>
 			</aux>
 			<aux name="owner savings\ngoal shortfall">
@@ -925,11 +941,11 @@
 				<units>b$</units>
 			</aux>
 			<aux name="time to consider desired savings">
-				<eqn>9.86694815657103</eqn>
+				<eqn>4.87881742712912</eqn>
 				<units>Years</units>
 			</aux>
 			<aux name="time to reach\nsavings goal">
-				<eqn>1.53461044520401</eqn>
+				<eqn>2.07624365140694</eqn>
 				<units>year</units>
 			</aux>
 			<aux name="annual\nowner savings\nto reach goal">
@@ -940,7 +956,7 @@
 				<units>b$/year</units>
 			</aux>
 			<aux name="minimum\npercentage of profits\nto consumption">
-				<eqn>0.141325077493313</eqn>
+				<eqn>0.141821200189589</eqn>
 				<units>dmnl</units>
 			</aux>
 			<stock name="Worker\nSavings" access="output" isee:autocreated="true">
@@ -951,6 +967,7 @@
 				<inflow>wages</inflow>
 				<inflow>worker_savings_interest</inflow>
 				<inflow>bank_wages</inflow>
+				<inflow>transfers</inflow>
 				<outflow>worker_consumption</outflow>
 				<outflow>wage_tax</outflow>
 				<units>b$</units>
@@ -978,7 +995,7 @@
 				<units>b$/year</units>
 			</flow>
 			<aux name="minimum\npercentage of wages\nto consumption">
-				<eqn>0.196070975997813</eqn>
+				<eqn>0.204855996217949</eqn>
 				<units>dmnl</units>
 			</aux>
 			<stock name="adjusted worker\nconsumption">
@@ -1041,7 +1058,7 @@
 				<units>b$</units>
 			</aux>
 			<aux name="desired savings\nas multiple of\nwages">
-				<eqn>1.43461942499138</eqn>
+				<eqn>2.28987737569738</eqn>
 				<units>Years</units>
 			</aux>
 			<flow name="firms paying\ninterest">
@@ -1116,11 +1133,11 @@
 				<units>b$/year</units>
 			</flow>
 			<aux name="wage tax rate">
-				<eqn>0.218793271884144</eqn>
+				<eqn>0.207046736409404</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="profit tax rate">
-				<eqn>0.351677134264636</eqn>
+				<eqn>0.336464056344044</eqn>
 				<units>dmnl</units>
 			</aux>
 			<flow name="profit tax" access="output" isee:autocreated="true">
@@ -1162,7 +1179,7 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>government_spending_1</eqn>
+				<eqn>government_spending_1+public_investment</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
@@ -1214,6 +1231,9 @@
 				<units>b$/year</units>
 			</stock>
 			<aux name="net bank\nassets 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$</units>
 			</aux>
@@ -1225,6 +1245,19 @@
 				<isee:summing/>
 				<units>b$/year</units>
 			</aux>
+			<aux name="public investment" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<flow name="transfers" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<units>b$/year</units>
+			</flow>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -1274,7 +1307,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="503.571" isee:scroll_y="250" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="133" isee:scroll_y="348" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1341,8 +1374,8 @@
 					<to>&quot;non-bank_profits&quot;</to>
 				</connector>
 				<aux x="457.891" y="328.79" name="indicated desired\nowner savings goal"/>
-				<aux x="465.251" y="284.17" name="desired savings\nas multiple of\nprofits"/>
-				<connector uid="3" angle="260.633">
+				<aux x="405.251" y="240.17" name="desired savings\nas multiple of\nprofits"/>
+				<connector uid="3" angle="300.71">
 					<from>desired_savings_as_multiple_of_profits</from>
 					<to>indicated_desired_owner_savings_goal</to>
 				</connector>
@@ -1593,7 +1626,7 @@
 					<from>bank_profits</from>
 					<to>indicated_desired_owner_savings_goal</to>
 				</connector>
-				<aux x="217.666" y="685.83" name="bank profit\npayment\npercentage"/>
+				<aux x="189" y="738.83" name="bank profit\npayment\npercentage"/>
 				<flow x="1129.78" y="520.45" name="bank wages">
 					<pts>
 						<pt x="1178.5" y="520.45"/>
@@ -1605,12 +1638,12 @@
 					<from>cost_rate</from>
 					<to>bank_wages</to>
 				</connector>
-				<connector uid="53" angle="52.5136">
+				<connector uid="53" angle="60.0997">
 					<from>bank_profit_payment_percentage</from>
 					<to>bank_profit_payment</to>
 				</connector>
-				<aux x="257.164" y="634.33" name="bank profit\npayment"/>
-				<connector uid="57" angle="45.9079">
+				<aux label_side="top" x="215.164" y="693.33" name="bank profit\npayment"/>
+				<connector uid="57" angle="48.3851">
 					<from>bank_profit_payment</from>
 					<to>bank_profits</to>
 				</connector>
@@ -1706,8 +1739,8 @@
 					<from>safe_interest_1</from>
 					<to>owner_savings_interest</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="789" y="712" name="risky\ninterest"/>
-				<connector uid="73" angle="87.7974">
+				<aux font_style="italic" font_weight="bold" x="793" y="717.33" name="risky\ninterest"/>
+				<connector uid="73" angle="99.0841">
 					<from>risky_interest</from>
 					<to>firms_paying_interest</to>
 				</connector>
@@ -1727,12 +1760,23 @@
 					<from>Bank_Investment</from>
 					<to>private_investment</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="left" x="194" y="652.33" name="net bank\nassets 1"/>
-				<connector uid="76" angle="15.9061">
+				<aux font_style="italic" font_weight="bold" label_side="left" x="160" y="705.33" name="net bank\nassets 1"/>
+				<connector uid="76" angle="12.2725">
 					<from>net_bank_assets_1</from>
 					<to>bank_profit_payment</to>
 				</connector>
 				<aux x="1460" y="489.95" name="private consumption"/>
+				<aux font_style="italic" font_weight="bold" x="658.173" y="438.571" name="public investment"/>
+				<connector uid="77" angle="270">
+					<from>public_investment</from>
+					<to>government_spending</to>
+				</connector>
+				<flow font_style="italic" font_weight="bold" label_side="top" x="1133.74" y="490" name="transfers">
+					<pts>
+						<pt x="1186.43" y="490"/>
+						<pt x="1081.06" y="490"/>
+					</pts>
+				</flow>
 				<alias uid="26" x="1135.33" y="734.83" width="18" height="18">
 					<of>time_to_change_consumption_habits</of>
 				</alias>
@@ -1747,15 +1791,6 @@
 	</model>
 	<model name="Finance">
 		<variables>
-			<aux name="total bank\nassets">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Good_Loans
-+Bad_Loans
-+ Safe_Loans</eqn>
-				<units>b$</units>
-			</aux>
 			<aux name="risky\ninterest" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
@@ -1846,13 +1881,12 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>initial_safe_loans</eqn>
+				<eqn>Initial_safe_assets-initial_government_debt</eqn>
 				<inflow>loans_turning_safe</inflow>
-				<inflow>government_investment</inflow>
 				<units>b$</units>
 			</stock>
 			<aux name="loan maturation time">
-				<eqn>24.3547957591492</eqn>
+				<eqn>24.6284123566807</eqn>
 				<units>Years</units>
 			</aux>
 			<flow name="change in bank\ninvestment">
@@ -1886,7 +1920,7 @@
 				<units>Per Year</units>
 			</flow>
 			<aux name="max change in lending\nstandards">
-				<eqn>0.363365595224379</eqn>
+				<eqn>0.358055820686225</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="indicated lending\nstandards">
@@ -1897,11 +1931,11 @@
 				<units>dmnl</units>
 			</aux>
 			<aux name="time to change\nlending standards">
-				<eqn>0.773846967672617</eqn>
+				<eqn>0.821412892436984</eqn>
 				<units>year</units>
 			</aux>
 			<aux name="normal\nbank investment\ngrowth target">
-				<eqn>0.0393077172346917</eqn>
+				<eqn>0.0392351770483715</eqn>
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="bank investment\ngrowth rate">
@@ -1932,7 +1966,7 @@
 				<units>b$/year</units>
 			</aux>
 			<aux name="reporting\ndelay">
-				<eqn>0.25</eqn>
+				<eqn>0.250738326227611</eqn>
 				<units>year</units>
 			</aux>
 			<aux name="Total Loans" isee:derived_units="true">
@@ -1954,11 +1988,11 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>MAX(0, climate_adjusted_failure_rate+(max_change_in_failure_rate*effect_of_lending_standards_on_failure_rate))</eqn>
+				<eqn>MAX(0, climate_adjusted_failure_rate+(max_change_in_failure_rate*effect_of_lending_standards_on_failure_rate*effect_of_investment_to_gdp_ratio_on_failure_rate))</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="normal failure rate">
-				<eqn>0.040300451982982</eqn>
+				<eqn>0.0314102493134167</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of lending\nstandards on failure\nrate">
@@ -1993,7 +2027,7 @@ effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="max change in\nbank investment\ngrowth target">
-				<eqn>0.0199999007481346</eqn>
+				<eqn>0.0238153730688977</eqn>
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="effect of gdp growth\non bank investment">
@@ -2028,7 +2062,7 @@ effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</
 				<units>dmnl</units>
 			</aux>
 			<aux name="bank expectation\nformation time">
-				<eqn>3.63682246844647</eqn>
+				<eqn>7.83483724574661</eqn>
 				<units>years</units>
 			</aux>
 			<aux name="initial recent\nGDP growth rate">
@@ -2039,13 +2073,6 @@ effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</
 				<eqn>39.508388875</eqn>
 				<units>b$/year</units>
 			</aux>
-			<flow name="government investment">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>government_taking_up_debt</eqn>
-				<units>b$/year</units>
-			</flow>
 			<aux name="indicated risk premium">
 				<dimensions>
 					<dim name="Run"/>
@@ -2061,11 +2088,11 @@ effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</
 				<units>dmnl</units>
 			</aux>
 			<aux name="elasticity of bankruptcy\nrate on risk premium">
-				<eqn>1.04712946485827</eqn>
+				<eqn>1.06382181896825</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial risk premium">
-				<eqn>0.021637409819139</eqn>
+				<eqn>0.0284314509912506</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="climate adjusted\nfailure rate">
@@ -2103,8 +2130,9 @@ effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</
 				<eqn>236.0675827915</eqn>
 				<units>b$</units>
 			</aux>
-			<aux name="initial safe loans">
-				<eqn>73959.043422</eqn>
+			<aux name="Initial safe assets">
+				<eqn>66700
+{73959,043422}</eqn>
 				<units>b$</units>
 			</aux>
 			<aux name="energy and food adjusted\nbank investment\ngrowth target">
@@ -2190,114 +2218,41 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<eqn>Safe_Loans</eqn>
 				<units>b$</units>
 			</aux>
-			<aux name="Safe loans converted">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Safe_Loans*dollar_per_billion_dollars</eqn>
-				<units>Dollar</units>
-			</aux>
-			<aux name="Good loans converted">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Good_Loans*dollar_per_billion_dollars</eqn>
-				<units>Dollar</units>
-			</aux>
-			<aux name="Bad loans converted">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Bad_Loans*dollar_per_billion_dollars</eqn>
-				<units>Dollar</units>
-			</aux>
-			<aux name="dollar per billion dollars">
-				<eqn>1e9</eqn>
-				<units>$/B$</units>
-			</aux>
 			<aux name="safe\ninterest" access="output" isee:autocreated="true">
 				<doc>${Calibration}
 </doc>
-				<eqn>0.019646651376472</eqn>
+				<eqn>0.0149828077326221</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="Bank\nAssets" isee:derived_units="true">
-				<eqn>SUM(Bad_Loans[*]) + SUM(Good_Loans[*]) + SUM(Safe_Loans[*])</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>SUM(Bad_Loans[*]) + SUM(Good_Loans[*]) + SUM(Government_Debt[*]) + SUM(Safe_Loans[*])</eqn>
 				<isee:summing/>
 				<units>b$</units>
 			</aux>
 			<aux name="Bank\nLiabilities">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>SUM(Firms_Checking_Accounts_1[*]) + SUM(owner_savings[*]) + SUM(Worker_Savings[*])</eqn>
 				<isee:summing/>
 				<units>b$</units>
 			</aux>
 			<aux name="net bank\nassets" access="output">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Bank_Assets-Bank_Liabilities</eqn>
 				<units>b$</units>
 			</aux>
 			<aux name="assets/\nliabilities">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Bank_Assets/Bank_Liabilities</eqn>
 				<units>dmnl</units>
-			</aux>
-			<aux name="net bank assets converted">
-				<eqn>dollar_per_billion_dollars*net_bank_assets</eqn>
-				<units>Dollar</units>
-			</aux>
-			<aux name="bank liabilities converted">
-				<eqn>Bank_Liabilities*dollar_per_billion_dollars</eqn>
-				<units>Dollar</units>
-			</aux>
-			<aux name="bank assets converted">
-				<eqn>Bank_Assets*dollar_per_billion_dollars</eqn>
-				<units>Dollar</units>
-			</aux>
-			<aux name="net private assets">
-				<eqn>-net_bank_assets_converted</eqn>
-				<units>Dollar</units>
-			</aux>
-			<aux name="Total Bank\nLiabilities">
-				<eqn>Firms_Checking_Accounts_1[1]+owner_savings[1]+Worker_Savings[1]</eqn>
-				<units>b$</units>
-			</aux>
-			<aux name="Firms checking accounts converted">
-				<eqn>dollar_per_billion_dollars*Firms_Checking_Accounts_1[1]</eqn>
-				<units>Dollar</units>
-			</aux>
-			<aux name="Owner\nsavings\nconverted">
-				<eqn>dollar_per_billion_dollars*owner_savings[1]</eqn>
-				<units>Dollar</units>
-			</aux>
-			<aux name="Worker savings\nconverted">
-				<eqn>Worker_Savings[1]*dollar_per_billion_dollars</eqn>
-				<units>Dollar</units>
-			</aux>
-			<stock name="Firms\nChecking\nAccounts 1" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$</units>
-			</stock>
-			<stock name="owner\nsavings" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$</units>
-			</stock>
-			<stock name="Worker\nSavings" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$</units>
-			</stock>
-			<aux name="government\ntaking up debt" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/year</units>
 			</aux>
 			<aux name="GDP growth rate" access="input">
 				<dimensions>
@@ -2349,13 +2304,81 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="Investment" access="output" isee:autocreated="true">
+			<aux name="total investment" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SUM(private_investment[*]) + SUM(government_investment[*])</eqn>
+				<eqn>SUM(private_investment[*]) + public_investment</eqn>
 				<isee:summing/>
 				<units>b$/year</units>
+			</aux>
+			<aux name="public investment" access="output" throughput="true" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="Investment growth rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>TREND(Bank_Investment, 1, initial_investment_growth_rate)</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="ratio of investment\nto GDP growth">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Investment_growth_rate/GDP_growth_rate</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of investment to\ngdp ratio on failure rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>1+sensitivity_of_failure_rate_to_investment_to_gdp_ratio*(ratio_of_investment_to_GDP_growth/INIT(ratio_of_investment_to_GDP_growth)-1)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sensitivity of failure rate to\ninvestment to gdp ratio">
+				<eqn>0.497178905091953</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="initial investment growth rate">
+				<eqn>0.09</eqn>
+				<units>1/year</units>
+			</aux>
+			<stock name="Government\nDebt" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>B$</units>
+			</stock>
+			<stock name="Worker\nSavings" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$</units>
+			</stock>
+			<stock name="owner\nsavings" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$</units>
+			</stock>
+			<stock name="Firms\nChecking\nAccounts 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$</units>
+			</stock>
+			<aux name="initial government debt" access="input">
+				<eqn>29286.762206</eqn>
+				<units>B$</units>
 			</aux>
 		</variables>
 		<views>
@@ -2406,7 +2429,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="306.25" isee:scroll_y="167.5" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="262" isee:scroll_y="558" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2445,7 +2468,6 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<aux x="1005.42" y="592.92" name="total bank\nassets"/>
 				<aux x="992.795" y="172" name="risky\ninterest"/>
 				<aux x="1005.42" y="689.5" name="bankruptcy\nrate"/>
 				<aux x="982.845" y="321.54" name="renegotiation time"/>
@@ -2501,24 +2523,12 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>Good_Loans</from>
 					<to>loans_turning_safe</to>
 				</connector>
-				<connector uid="7" angle="353.15">
-					<from>Good_Loans</from>
-					<to>total_bank_assets</to>
-				</connector>
 				<stock x="835.127" y="647.21" name="Bad\nLoans"/>
 				<connector uid="8" angle="48.7659">
 					<from>Bad_Loans</from>
 					<to>defaults</to>
 				</connector>
-				<connector uid="9" angle="55.3783">
-					<from>Bad_Loans</from>
-					<to>total_bank_assets</to>
-				</connector>
 				<stock x="973.917" y="384.81" name="Safe\nLoans"/>
-				<connector uid="10" angle="301.696">
-					<from>Safe_Loans</from>
-					<to>total_bank_assets</to>
-				</connector>
 				<connector uid="11" angle="318.476">
 					<from>Bank_Investment</from>
 					<to>bad_investments</to>
@@ -2696,20 +2706,14 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>initial_perceived_defaults</from>
 					<to>perceived_defaults</to>
 				</connector>
-				<flow x="1044.71" y="386.429" name="government investment">
-					<pts>
-						<pt x="1105" y="386.429"/>
-						<pt x="996.417" y="386.429"/>
-					</pts>
-				</flow>
 				<aux x="1152.4" y="353.92" name="indicated risk premium"/>
 				<aux label_side="right" x="1114.43" y="641" name="effect of bankruptcy\nrate on risk premium"/>
 				<connector uid="46" angle="6.78136">
 					<from>bankruptcy_rate</from>
 					<to>effect_of_bankruptcy_rate_on_risk_premium</to>
 				</connector>
-				<aux x="1196.57" y="734.57" name="elasticity of bankruptcy\nrate on risk premium"/>
-				<connector uid="47" angle="131.278">
+				<aux x="1167.63" y="701.047" name="elasticity of bankruptcy\nrate on risk premium"/>
+				<connector uid="47" angle="131.54">
 					<from>elasticity_of_bankruptcy_rate_on_risk_premium</from>
 					<to>effect_of_bankruptcy_rate_on_risk_premium</to>
 				</connector>
@@ -2744,7 +2748,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<aux x="524.998" y="298.86" name="initial bank investment"/>
 				<aux x="834.167" y="298.86" name="initial good loans"/>
 				<aux x="838.714" y="729.96" name="initial bad loans"/>
-				<aux x="936.845" y="229.06" name="initial safe loans"/>
+				<aux x="834.167" y="101" name="Initial safe assets"/>
 				<connector uid="55" angle="180">
 					<from>initial_recent_GDP_growth_rate</from>
 					<to>recent_GDP_growth_rate</to>
@@ -2823,40 +2827,6 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					</from>
 					<to>safe_bank_assets</to>
 				</connector>
-				<aux label_side="top" x="1536.92" y="564.273" name="Safe loans converted"/>
-				<aux label_side="top" x="1536.92" y="630.047" name="Good loans converted"/>
-				<aux x="1536.92" y="674.547" name="Bad loans converted"/>
-				<connector uid="78" angle="0.63737">
-					<from>
-						<alias uid="75"/>
-					</from>
-					<to>Bad_loans_converted</to>
-				</connector>
-				<connector uid="79" angle="0.320396">
-					<from>
-						<alias uid="73"/>
-					</from>
-					<to>Good_loans_converted</to>
-				</connector>
-				<connector uid="80" angle="13.8879">
-					<from>
-						<alias uid="77"/>
-					</from>
-					<to>Safe_loans_converted</to>
-				</connector>
-				<aux label_side="left" x="1440.41" y="599.619" name="dollar per billion dollars"/>
-				<connector uid="81" angle="20.1148">
-					<from>dollar_per_billion_dollars</from>
-					<to>Safe_loans_converted</to>
-				</connector>
-				<connector uid="82" angle="342.501">
-					<from>dollar_per_billion_dollars</from>
-					<to>Good_loans_converted</to>
-				</connector>
-				<connector uid="83" angle="316.645">
-					<from>dollar_per_billion_dollars</from>
-					<to>Bad_loans_converted</to>
-				</connector>
 				<connector uid="84" angle="121.43">
 					<from>
 						<alias uid="85"/>
@@ -2868,10 +2838,10 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>safe_interest</from>
 					<to>risky_interest</to>
 				</connector>
-				<aux x="1346.08" y="852.33" name="Bank\nAssets"/>
-				<aux label_side="bottom" x="1407.41" y="852.33" name="Bank\nLiabilities"/>
-				<aux x="1402.41" y="790.75" name="net bank\nassets"/>
-				<aux x="1345.33" y="790.75" name="assets/\nliabilities"/>
+				<aux x="1347.08" y="820.33" name="Bank\nAssets"/>
+				<aux label_side="bottom" x="1408.41" y="820.33" name="Bank\nLiabilities"/>
+				<aux x="1403.41" y="758.75" name="net bank\nassets"/>
+				<aux x="1346.33" y="758.75" name="assets/\nliabilities"/>
 				<connector uid="87" angle="90.6978">
 					<from>Bank_Assets</from>
 					<to>&quot;assets/_liabilities&quot;</to>
@@ -2887,98 +2857,6 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<connector uid="90" angle="94.642">
 					<from>Bank_Liabilities</from>
 					<to>net_bank_assets</to>
-				</connector>
-				<aux label_side="top" x="1487" y="790.75" name="net bank assets converted"/>
-				<connector uid="91" angle="90">
-					<from>
-						<alias uid="92"/>
-					</from>
-					<to>net_bank_assets_converted</to>
-				</connector>
-				<connector uid="93" angle="0">
-					<from>net_bank_assets</from>
-					<to>net_bank_assets_converted</to>
-				</connector>
-				<aux label_side="right" x="1407.41" y="915.25" name="bank liabilities converted"/>
-				<aux label_side="right" x="1407.41" y="961.262" name="bank assets converted"/>
-				<connector uid="94" angle="199.844">
-					<from>Bank_Liabilities</from>
-					<to>bank_liabilities_converted</to>
-				</connector>
-				<connector uid="95" angle="268.186">
-					<from>Bank_Assets</from>
-					<to>bank_assets_converted</to>
-				</connector>
-				<connector uid="96" angle="214.628">
-					<from>
-						<alias uid="92"/>
-					</from>
-					<to>bank_liabilities_converted</to>
-				</connector>
-				<connector uid="97" angle="236.157">
-					<from>
-						<alias uid="92"/>
-					</from>
-					<to>bank_assets_converted</to>
-				</connector>
-				<aux x="1556.17" y="813.997" name="net private assets"/>
-				<connector uid="98" angle="341.423">
-					<from>net_bank_assets_converted</from>
-					<to>net_private_assets</to>
-				</connector>
-				<aux label_side="right" label_angle="315" x="1470.92" y="354.383" name="Total Bank\nLiabilities"/>
-				<aux x="1385.41" y="405.123" name="Firms checking accounts converted"/>
-				<aux x="1473.16" y="423.123" name="Owner\nsavings\nconverted"/>
-				<aux x="1555.67" y="405.123" name="Worker savings\nconverted"/>
-				<connector uid="99" angle="327.003">
-					<from>
-						<alias uid="100"/>
-					</from>
-					<to>Firms_checking_accounts_converted</to>
-				</connector>
-				<connector uid="101" angle="338.372">
-					<from>
-						<alias uid="100"/>
-					</from>
-					<to>Owner_savings_converted</to>
-				</connector>
-				<connector uid="102" angle="349.674">
-					<from>
-						<alias uid="100"/>
-					</from>
-					<to>Worker_savings_converted</to>
-				</connector>
-				<stock font_style="italic" font_weight="bold" label_side="top" x="1382.17" y="301.5" name="Firms\nChecking\nAccounts 1"/>
-				<stock font_style="italic" font_weight="bold" x="1471.91" y="275.34" name="owner\nsavings"/>
-				<stock font_style="italic" font_weight="bold" x="1555.67" y="304.5" name="Worker\nSavings"/>
-				<connector uid="103" angle="329.211">
-					<from>Firms_Checking_Accounts_1</from>
-					<to>Total_Bank_Liabilities</to>
-				</connector>
-				<connector uid="104" angle="269.282">
-					<from>owner_savings</from>
-					<to>Total_Bank_Liabilities</to>
-				</connector>
-				<connector uid="105" angle="210.481">
-					<from>Worker_Savings</from>
-					<to>Total_Bank_Liabilities</to>
-				</connector>
-				<connector uid="106" angle="271.791">
-					<from>Firms_Checking_Accounts_1</from>
-					<to>Firms_checking_accounts_converted</to>
-				</connector>
-				<connector uid="107" angle="246.403">
-					<from>owner_savings</from>
-					<to>Owner_savings_converted</to>
-				</connector>
-				<connector uid="108" angle="270">
-					<from>Worker_Savings</from>
-					<to>Worker_savings_converted</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="1081" y="446" name="government\ntaking up debt"/>
-				<connector uid="109" angle="121.35">
-					<from>government_taking_up_debt</from>
-					<to>government_investment</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="972.845" y="950" name="GDP growth rate"/>
 				<connector uid="110" angle="270">
@@ -3025,7 +2903,48 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<to>effect_of_STA_on_failure_rate</to>
 				</connector>
 				<text_box uid="128" x="1305.83" y="1165" width="260" height="58">Have a look at this https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/component/e2ee1eb1-en for that</text_box>
-				<aux x="1451.16" y="1114.57" name="Investment"/>
+				<aux x="1448.16" y="1102.57" name="total investment"/>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="1372.5" y="1107.5" name="public investment"/>
+				<aux x="165.998" y="476.63" name="Investment growth rate"/>
+				<aux label_side="left" x="383.709" y="491.67" name="ratio of investment\nto GDP growth"/>
+				<connector uid="129" angle="11.8776">
+					<from>
+						<alias uid="130"/>
+					</from>
+					<to>ratio_of_investment_to_GDP_growth</to>
+				</connector>
+				<connector uid="131" angle="356.048">
+					<from>Investment_growth_rate</from>
+					<to>ratio_of_investment_to_GDP_growth</to>
+				</connector>
+				<aux x="459.141" y="494.63" name="effect of investment to\ngdp ratio on failure rate"/>
+				<connector uid="132" angle="357.753">
+					<from>ratio_of_investment_to_GDP_growth</from>
+					<to>effect_of_investment_to_gdp_ratio_on_failure_rate</to>
+				</connector>
+				<aux x="383.709" y="545.04" name="sensitivity of failure rate to\ninvestment to gdp ratio"/>
+				<connector uid="133" angle="33.7542">
+					<from>sensitivity_of_failure_rate_to_investment_to_gdp_ratio</from>
+					<to>effect_of_investment_to_gdp_ratio_on_failure_rate</to>
+				</connector>
+				<aux x="71" y="433.21" name="initial investment growth rate"/>
+				<connector uid="134" angle="335.437">
+					<from>initial_investment_growth_rate</from>
+					<to>Investment_growth_rate</to>
+				</connector>
+				<connector uid="135" angle="145.625">
+					<from>Bank_Investment</from>
+					<to>Investment_growth_rate</to>
+				</connector>
+				<connector uid="136" angle="344.943">
+					<from>effect_of_investment_to_gdp_ratio_on_failure_rate</from>
+					<to>failure_rate</to>
+				</connector>
+				<stock font_style="italic" font_weight="bold" x="1509.66" y="860.42" name="Government\nDebt"/>
+				<stock font_style="italic" font_weight="bold" x="1482.66" y="956.5" name="Worker\nSavings"/>
+				<stock font_style="italic" font_weight="bold" label_side="bottom" x="1407.91" y="956.5" name="owner\nsavings"/>
+				<stock font_style="italic" font_weight="bold" label_side="top" x="1333.17" y="956.5" name="Firms\nChecking\nAccounts 1"/>
+				<aux font_style="italic" font_weight="bold" x="722" y="101" name="initial government debt"/>
 				<alias uid="32" x="933.417" y="586.88" width="18" height="18">
 					<of>loan_maturation_time</of>
 				</alias>
@@ -3041,14 +2960,11 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<alias font_style="italic" uid="85" x="1046" y="744" width="18" height="18">
 					<of>risky_bank_assets</of>
 				</alias>
-				<alias font_style="italic" label_side="bottom" uid="92" x="1478" y="843.33" width="18" height="18">
-					<of>dollar_per_billion_dollars</of>
+				<alias font_style="italic" uid="130" x="156.998" y="528.46" width="18" height="18">
+					<of>GDP_growth_rate</of>
 				</alias>
-				<alias font_style="italic" label_side="top" uid="100" x="1310" y="353" width="18" height="18">
-					<of>dollar_per_billion_dollars</of>
-				</alias>
-				<alias font_style="italic" label_side="top" uid="115" x="1490" y="1061.57" width="18" height="18">
-					<of>government_investment</of>
+				<alias font_style="italic" font_weight="bold" label_side="center" uid="140" x="1354.33" y="493.333" width="45" height="35">
+					<of>Government_Debt</of>
 				</alias>
 			</view>
 		</views>
@@ -3063,7 +2979,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>private_consumption + Bank_Investment + government_spending</eqn>
+				<eqn>private_consumption + Investment_1 + government_spending</eqn>
 				<format scale_by="auto"/>
 				<units>b$/year</units>
 			</aux>
@@ -3127,13 +3043,13 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/year</units>
 			</aux>
-			<stock name="Bank\nInvestment" access="input">
+			<aux name="Investment 1" access="input">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/year</units>
-			</stock>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -3183,7 +3099,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:scroll_x="102" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3292,9 +3208,9 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>private_consumption</from>
 					<to>consumption_share_of_GDP</to>
 				</connector>
-				<stock font_style="italic" font_weight="bold" x="173" y="179" name="Bank\nInvestment"/>
-				<connector uid="26" angle="330.324">
-					<from>Bank_Investment</from>
+				<aux font_style="italic" font_weight="bold" label_side="top" x="191" y="180" name="Investment 1"/>
+				<connector uid="27" angle="326.554">
+					<from>Investment_1</from>
 					<to>GDP</to>
 				</connector>
 				<alias font_style="italic" label_side="top" uid="25" x="735" y="66" width="18" height="18">
@@ -3330,7 +3246,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<eqn>public_expenditure-total_public_tax_income</eqn>
 				<units>b$/year</units>
 			</flow>
-			<stock name="Government\nDebt">
+			<stock name="Government\nDebt" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -3349,7 +3265,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>public_expenditure-government_interest_payments</eqn>
+				<eqn>public_expenditure-government_interest_payments-public_investment</eqn>
 				<units>b$/Years</units>
 			</aux>
 			<aux name="debt to\nGDP ratio">
@@ -3380,22 +3296,21 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 government_interest_payments</eqn>
 				<units>b$/year</units>
 			</aux>
-			<aux name="public\nconsumption\nrate">
-				<eqn>0.534847556978288</eqn>
+			<aux name="public\nconsumption to transfers\nratio">
+				<eqn>0.701545700676984</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="initial government debt">
+			<aux name="initial government debt" access="output" isee:autocreated="true">
 				<eqn>29286.762206</eqn>
 				<units>B$</units>
 			</aux>
-			<flow name="government\nspending" access="output">
+			<aux name="government\nconsumption" access="output">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>public_expenditure_for_consumption_and_transfers*public_consumption_rate</eqn>
-				<non_negative/>
+				<eqn>public_expenditure_for_consumption_and_transfers*public_consumption_to_transfers_ratio</eqn>
 				<units>b$/year</units>
-			</flow>
+			</aux>
 			<aux name="profit tax" access="input">
 				<dimensions>
 					<dim name="Run"/>
@@ -3427,7 +3342,7 @@ government_interest_payments</eqn>
 			<aux name="GDP\nperception time">
 				<doc>${Calibration}
 </doc>
-				<eqn>2.25712111959432</eqn>
+				<eqn>2.17730464701823</eqn>
 				<units>Years</units>
 			</aux>
 			<aux name="GDP" access="input">
@@ -3435,6 +3350,26 @@ government_interest_payments</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="government\ntransfers" access="output">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>public_expenditure_for_consumption_and_transfers[1]*(1-public_consumption_to_transfers_ratio)</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="investment share of\npublic expenditure">
+				<doc>${Assumption,Calibration Parameter}
+https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/component/e2ee1eb1-en</doc>
+				<eqn>0.118323065818825</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="public investment" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>public_expenditure[1]*investment_share_of_public_expenditure</eqn>
 				<units>b$/year</units>
 			</aux>
 		</variables>
@@ -3486,7 +3421,7 @@ government_interest_payments</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3543,7 +3478,7 @@ government_interest_payments</eqn>
 					<from>Government_Debt</from>
 					<to>government_interest_payments</to>
 				</connector>
-				<aux label_side="top" x="166" y="340.2" name="public expenditure\nfor consumption\nand transfers"/>
+				<aux label_side="right" x="201" y="340.2" name="public expenditure\nfor consumption\nand transfers"/>
 				<aux x="636.13" y="397.2" name="debt to\nGDP ratio"/>
 				<connector uid="3" angle="288.026">
 					<from>Government_Debt</from>
@@ -3558,11 +3493,11 @@ government_interest_payments</eqn>
 					<from>effect_of_debt_to_GDP_ratio_on_government_spending</from>
 					<to>proportion_of_taxes_to_public_spending</to>
 				</connector>
-				<connector uid="6" angle="148.656">
+				<connector uid="6" angle="144.555">
 					<from>government_interest_payments</from>
 					<to>public_expenditure_for_consumption_and_transfers</to>
 				</connector>
-				<aux label_side="left" x="402.39" y="176.025" name="public\nexpenditure"/>
+				<aux label_side="top" x="402.39" y="176.025" name="public\nexpenditure"/>
 				<connector uid="7" angle="180">
 					<from>total_public_tax_income</from>
 					<to>public_expenditure</to>
@@ -3575,7 +3510,7 @@ government_interest_payments</eqn>
 					<from>government_interest_payments</from>
 					<to>public_expenditure</to>
 				</connector>
-				<connector uid="10" angle="214.78">
+				<connector uid="10" angle="219.187">
 					<from>public_expenditure</from>
 					<to>public_expenditure_for_consumption_and_transfers</to>
 				</connector>
@@ -3583,26 +3518,21 @@ government_interest_payments</eqn>
 					<from>public_expenditure</from>
 					<to>government_taking_up_debt</to>
 				</connector>
-				<aux x="148" y="390.2" name="public\nconsumption\nrate"/>
+				<aux label_side="left" x="145.14" y="340.2" name="public\nconsumption to transfers\nratio"/>
 				<connector uid="12" angle="187.168">
 					<from>safe_interest</from>
 					<to>government_interest_payments</to>
 				</connector>
 				<aux label_side="right" x="36.14" y="35.29" name="initial government debt"/>
 				<aux label_side="right" x="487.91" y="477.83" name="safe\ninterest"/>
-				<flow label_side="bottom" x="54.14" y="340.2" name="government\nspending">
-					<pts>
-						<pt x="54.14" y="285.75"/>
-						<pt x="54.14" y="403.65"/>
-					</pts>
-				</flow>
-				<connector uid="14" angle="151.955">
-					<from>public_consumption_rate</from>
-					<to>government_spending</to>
+				<aux label_side="left" label_angle="135" x="145.14" y="268.2" name="government\nconsumption"/>
+				<connector uid="14" angle="90">
+					<from>public_consumption_to_transfers_ratio</from>
+					<to>government_consumption</to>
 				</connector>
-				<connector uid="13" angle="180">
+				<connector uid="13" angle="127.806">
 					<from>public_expenditure_for_consumption_and_transfers</from>
-					<to>government_spending</to>
+					<to>government_consumption</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" label_side="left" label_angle="225" x="327" y="52" name="profit tax"/>
 				<aux font_style="italic" font_weight="bold" x="327" y="97" name="wage tax"/>
@@ -3633,6 +3563,29 @@ government_interest_payments</eqn>
 				<connector uid="23" angle="285.395">
 					<from>GDP</from>
 					<to>perceived_GDP</to>
+				</connector>
+				<aux label_side="left" label_angle="225" x="145.14" y="417.42" name="government\ntransfers"/>
+				<connector uid="24" angle="270">
+					<from>public_consumption_to_transfers_ratio</from>
+					<to>government_transfers</to>
+				</connector>
+				<connector uid="25" angle="234.118">
+					<from>public_expenditure_for_consumption_and_transfers</from>
+					<to>government_transfers</to>
+				</connector>
+				<aux label_side="left" x="200" y="119.025" name="investment share of\npublic expenditure"/>
+				<aux label_side="left" x="200" y="176.025" name="public investment"/>
+				<connector uid="27" angle="180">
+					<from>public_expenditure</from>
+					<to>public_investment</to>
+				</connector>
+				<connector uid="28" angle="270">
+					<from>investment_share_of_public_expenditure</from>
+					<to>public_investment</to>
+				</connector>
+				<connector uid="29" angle="273.182">
+					<from>public_investment</from>
+					<to>public_expenditure_for_consumption_and_transfers</to>
 				</connector>
 			</view>
 		</views>
