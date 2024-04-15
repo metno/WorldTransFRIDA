@@ -612,6 +612,8 @@ coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
 				<connect2 to="share_of_GDP_invested_in_fuel_extraction" from="energy_investments.share_of_GDP_invested_in_fuel_extraction"/>
 				<connect to="Energy.share_of_GDP_invested_in_Energy" from="energy_investments.share_of_GDP_invested_in_Energy"/>
 				<connect2 to="share_of_GDP_invested_in_Energy" from="energy_investments.share_of_GDP_invested_in_Energy"/>
+				<connect to="energy_investments.Cumulative_Relative_Energy_Supply_Missmatch" from="energy_supply_vs_demand.Cumulative_Relative_Energy_Supply_Missmatch"/>
+				<connect2 to="energy_investments.Cumulative_Relative_Energy_Supply_Missmatch" from="energy_supply_vs_demand.Cumulative_Relative_Energy_Supply_Missmatch"/>
 				<connect to="energy_investments.Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA" from="fossil_energy.Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA"/>
 				<connect2 to="energy_investments.Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA" from="fossil_energy.Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA"/>
 				<connect to="energy_investments.GDP" from="GDP.GDP"/>
@@ -706,6 +708,8 @@ coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
 			</module>
 			<module name="energy supply vs\ndemand" isee:label="">
 				<format scale_by="auto"/>
+				<connect to="energy_investments.Cumulative_Relative_Energy_Supply_Missmatch" from="energy_supply_vs_demand.Cumulative_Relative_Energy_Supply_Missmatch"/>
+				<connect2 to="energy_investments.Cumulative_Relative_Energy_Supply_Missmatch" from="energy_supply_vs_demand.Cumulative_Relative_Energy_Supply_Missmatch"/>
 				<connect to="Finance.Energy_Balance" from="energy_supply_vs_demand.Energy_Balance"/>
 				<connect2 to="Finance.Energy_Balance" from="energy_supply_vs_demand.Energy_Balance"/>
 				<connect to="energy_investments.Relative_Energy_Supply_Missmatch" from="energy_supply_vs_demand.Relative_Energy_Supply_Missmatch"/>
@@ -956,7 +960,7 @@ coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="12" isee:page_rows="7" isee:scroll_y="150" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="600" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2119,10 +2123,11 @@ https://ourworldindata.org/grapher/fossil-fuel-primary-energy?tab=chart&amp;coun
 				<range min="0" max="1"/>
 				<units>dmnl</units>
 			</aux>
-			<aux name="adaptive energy investments proportionality" access="output" isee:autocreated="true">
+			<aux name="adaptive energy\ninvestments proportional factor" access="output" isee:autocreated="true">
 				<doc>${Calibration Parameter}
-</doc>
-				<eqn>-10</eqn>
+The larger the P factor is, the stronger the controller reacts to differences between the set point value and the actual value (0 relative supply demand missmatch).
+Negative values of P causes compensation of differences, positive values would cause amplification of differences.</doc>
+				<eqn>-2.02652664958277</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="adaptive change in investments">
@@ -2130,7 +2135,10 @@ https://ourworldindata.org/grapher/fossil-fuel-primary-energy?tab=chart&amp;coun
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>IF use_adaptive_energy_controls=1 AND TIME &gt;= 2020 THEN
-adaptive_energy_investments_proportionality*Relative_Energy_Supply_Missmatch
+adaptive_energy_investments_proportional_factor*
+Relative_Energy_Supply_Missmatch +
+adaptive_energy_investments_integrating_factor * Cumulative_Relative_Energy_Supply_Missmatch +
+adaptive_energy_investments_differntiating_factor * Differentiating_Relative_Energy_Supply_Missmatch
 ELSE
 1</eqn>
 				<units>dmnl</units>
@@ -3359,6 +3367,32 @@ All_Energy_Investments*EXP(-Social_Discount_Rate*(TIME-Policy_Start_Year_1))</eq
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>dmnl</units>
 			</aux>
+			<aux name="adaptive energy\ninvestments integrating factor">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>-2.02652664958277*0.0304306272985086</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="adaptive energy\ninvestments differntiating factor">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>-2.02652664958277*5.20298062953917</eqn>
+				<units>Year</units>
+			</aux>
+			<stock name="Cumulative Relative Energy Supply Missmatch" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0</eqn>
+				<units>dmnl</units>
+			</stock>
+			<aux name="Differentiating Relative Energy Supply Missmatch">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>DERIVN(Relative_Energy_Supply_Missmatch, 1)</eqn>
+				<units>Per Year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -3450,10 +3484,10 @@ All_Energy_Investments*EXP(-Social_Discount_Rate*(TIME-Policy_Start_Year_1))</eq
 				<text_box uid="100" x="480.086" y="1053.33" width="260" height="37.98">Related to transformation of fossil fuels into usable energy (electricity, heat, movement,...)</text_box>
 				<text_box uid="101" x="187.334" y="1030.61" width="260" height="46.7757">Related to exploration and extraction of fossil fuels.
 The stock is the currently employed capital.</text_box>
-				<aux x="161.751" y="120.453" name="use adaptive energy controls"/>
-				<aux x="92.584" y="181.262" name="adaptive energy investments proportionality"/>
-				<aux x="92.584" y="322.833" name="adaptive change in investments"/>
-				<connector uid="102" angle="251.131">
+				<aux x="309.667" y="81.286" name="use adaptive energy controls"/>
+				<aux x="191.251" y="178.762" name="adaptive energy\ninvestments proportional factor"/>
+				<aux x="253.417" y="344.5" name="adaptive change in investments"/>
+				<connector uid="102" angle="257.937">
 					<from>use_adaptive_energy_controls</from>
 					<to>adaptive_change_in_investments</to>
 				</connector>
@@ -3631,7 +3665,7 @@ The stock is the currently employed capital.</text_box>
 					<to>Investments_in_Fossil_Energy_Capital</to>
 				</connector>
 				<aux background="#FFAAFF" x="345.667" y="779.875" name="Investments in Fossil\nFuel Extraction Capital"/>
-				<connector uid="137" angle="298.975">
+				<connector uid="137" angle="281.963">
 					<from>adaptive_change_in_investments</from>
 					<to>Investments_in_Fossil_Fuel_Extraction_Capital</to>
 				</connector>
@@ -3986,15 +4020,45 @@ The stock is the currently employed capital.</text_box>
 					<from>share_of_GDP_invested_in_fossil_energy</from>
 					<to>&quot;share_of_GDP_invested_in_Energy_w/o_fuel&quot;</to>
 				</connector>
-				<connector uid="228" angle="274.026">
-					<from>adaptive_energy_investments_proportionality</from>
+				<connector uid="228" angle="290.561">
+					<from>adaptive_energy_investments_proportional_factor</from>
 					<to>adaptive_change_in_investments</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="92.584" y="393.333" name="Relative Energy Supply Missmatch"/>
-				<connector uid="233" angle="82.1883">
+				<aux font_style="italic" font_weight="bold" x="185.417" y="249.667" name="Relative Energy Supply Missmatch"/>
+				<connector uid="233" angle="305.642">
 					<from>Relative_Energy_Supply_Missmatch</from>
 					<to>adaptive_change_in_investments</to>
 				</connector>
+				<aux x="492.667" y="183.762" name="adaptive energy\ninvestments integrating factor"/>
+				<aux x="327.667" y="178.762" name="adaptive energy\ninvestments differntiating factor"/>
+				<stock font_style="italic" font_weight="bold" label_side="bottom" x="492.667" y="244.667" name="Cumulative Relative Energy Supply Missmatch"/>
+				<connector uid="234" angle="202.65">
+					<from>Cumulative_Relative_Energy_Supply_Missmatch</from>
+					<to>adaptive_change_in_investments</to>
+				</connector>
+				<connector uid="235" angle="213.895">
+					<from>adaptive_energy_investments_integrating_factor</from>
+					<to>adaptive_change_in_investments</to>
+				</connector>
+				<aux x="326" y="249.667" name="Differentiating Relative Energy Supply Missmatch"/>
+				<connector uid="236" angle="359.372">
+					<from>Relative_Energy_Supply_Missmatch</from>
+					<to>Differentiating_Relative_Energy_Supply_Missmatch</to>
+				</connector>
+				<connector uid="237" angle="255.847">
+					<from>adaptive_energy_investments_differntiating_factor</from>
+					<to>adaptive_change_in_investments</to>
+				</connector>
+				<connector uid="238" angle="225.4">
+					<from>Differentiating_Relative_Energy_Supply_Missmatch</from>
+					<to>adaptive_change_in_investments</to>
+				</connector>
+				<text_box uid="239" x="431.08" y="52.286" width="260" height="58">This is a PID controler
+https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller</text_box>
+				<text_box uid="240" x="115.833" y="107.595" width="260" height="29.6667">PID factors. Negative values dampen deviations, positive values amplify</text_box>
+				<text_box uid="241" x="86.6667" y="149.762" width="131.667" height="15">Proportional control</text_box>
+				<text_box uid="242" x="272.703" y="142.262" width="145.928" height="20">differentiating, smoothes </text_box>
+				<text_box uid="243" x="436.036" y="130.429" width="145.928" height="32.8333">integrating, responds to continuing deviations</text_box>
 				<alias color="blue" background="white" font_style="italic" uid="142" x="2338.96" y="755.208" width="18" height="18">
 					<shape type="circle" radius="18"/>
 					<of>adaptive_change_in_investments</of>
@@ -7281,6 +7345,21 @@ Wind_and_Solar_Energy_Capacity * gWh_to_TWh</eqn>
 				<eqn>Energy_Supply_Missmatch/Total_Energy_Output</eqn>
 				<units>dmnl</units>
 			</aux>
+			<stock name="Cumulative Relative Energy Supply Missmatch" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0</eqn>
+				<inflow>Acc_Cum_Rel_En_Sup_Missmatch</inflow>
+				<units>dmnl</units>
+			</stock>
+			<flow name="Acc Cum Rel En Sup Missmatch">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Relative_Energy_Supply_Missmatch/DT</eqn>
+				<units>Per Year</units>
+			</flow>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -7406,14 +7485,25 @@ Wind_and_Solar_Energy_Capacity * gWh_to_TWh</eqn>
 					<from>Total_Energy_Output</from>
 					<to>Energy_Supply_Missmatch</to>
 				</connector>
-				<aux x="202.75" y="91.3333" name="Relative Energy\nSupply Missmatch"/>
+				<aux x="202.75" y="95.3333" name="Relative Energy\nSupply Missmatch"/>
 				<connector uid="10" angle="90">
 					<from>Energy_Supply_Missmatch</from>
 					<to>Relative_Energy_Supply_Missmatch</to>
 				</connector>
-				<connector uid="11" angle="215.821">
+				<connector uid="11" angle="217.739">
 					<from>Total_Energy_Output</from>
 					<to>Relative_Energy_Supply_Missmatch</to>
+				</connector>
+				<stock label_side="top" x="55.6667" y="95.3333" name="Cumulative Relative Energy Supply Missmatch"/>
+				<flow x="106.75" y="101" name="Acc Cum Rel En Sup Missmatch">
+					<pts>
+						<pt x="147.333" y="101"/>
+						<pt x="78.1667" y="101"/>
+					</pts>
+				</flow>
+				<connector uid="12" angle="181.121">
+					<from>Relative_Energy_Supply_Missmatch</from>
+					<to>Acc_Cum_Rel_En_Sup_Missmatch</to>
 				</connector>
 			</view>
 		</views>
