@@ -7,7 +7,7 @@
 		<vendor>isee systems, inc.</vendor>
 		<product version="3.6.1" isee:build_number="3275" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
 	</header>
-	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
+	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
 		<stop>2100</stop>
 		<dt reciprocal="true">8</dt>
@@ -80,7 +80,7 @@
 			<isee:variable type="uniform" min="0" max="0.3" name="Freshwater.sensitivity_of_surface_temperature_anomaly_on_water_used_per_Mtcrop[1]" num_samples="5"/>
 		</isee:sensi_specs>
 	</isee:sensi_specs_list>
-	<isee:optimizer_specs_list active_index="1">
+	<isee:optimizer_specs_list active_index="5">
 		<isee:optimizer_specs name="Population Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
 			<isee:parameter name="Population.Slope_of_Population_Damage_Function[1]" min="0" max="1" scaling="100"/>
 			<isee:parameter name="Population.initial_fertility" min="3.5" max="5"/>
@@ -100,7 +100,7 @@
 			<isee:parameter name="Population.Over_80_mortality_gamma" min="-3" max="0"/>
 			<isee:payoff name="Population Payoff" action="min"/>
 		</isee:optimizer_specs>
-		<isee:optimizer_specs name="Food and Land Use Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
+		<isee:optimizer_specs name="Food and Land Use Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" init_step="10" maxiter="1000000">
 			<isee:parameter name="Food_Demand.elasticity_of_crop_demand_for_direct_consumption_to_GDP_per_person" min="0" max="0.5" scaling="1000"/>
 			<isee:parameter name="Food_Demand.elasticity_of_livestock_demand_to_GDP_per_person" min="0" max="0.5" scaling="1000"/>
 			<isee:parameter name="Food_Demand.elasticity_of_crops_required_for_livestock_to_livestock_yield" min="0" max="1" scaling="1000"/>
@@ -193,6 +193,42 @@
 			<isee:parameter name="Finance.sensitivity_of_failure_rate_to_investment_to_gdp_ratio" min="0.1" max="1" scaling="100"/>
 			<isee:payoff name="Economic Payoff" action="min"/>
 		</isee:optimizer_specs>
+		<isee:optimizer_specs name="Energy Fossil Fuels Optimization" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
+			<isee:parameter name="energy_investments_coal.Investment_in_fuel_extraction_in_1980" min="70000000000" max="300000000000" scaling="1e-10"/>
+			<isee:parameter name='energy_investments_coal."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[*]' min="-10000000000" max="10000000000" scaling="1e-9"/>
+			<isee:parameter name="energy_investments_coal.Investment_in_fossil_energy_production_in_1980" min="20000000000" max="100000000000" scaling="1e-9"/>
+			<isee:parameter name='energy_investments_coal."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[*]' min="-10000000000" max="10000000000" scaling="1e-8"/>
+			<isee:parameter name="energy_investments_oil.Investment_in_fuel_extraction_in_1980" min="50000000000" max="300000000000" scaling="1e-9"/>
+			<isee:parameter name='energy_investments_oil."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[*]' min="-10000000000" max="10000000000" scaling="1e-9"/>
+			<isee:parameter name="energy_investments_oil.Investment_in_fossil_energy_production_in_1980" min="20000000000" max="100000000000" scaling="1e-9"/>
+			<isee:parameter name='energy_investments_oil."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[*]' min="-10000000000" max="10000000000" scaling="1e-8"/>
+			<isee:parameter name="energy_investments_gas.Investment_in_fuel_extraction_in_1980" min="50000000000" max="300000000000" scaling="1e-9"/>
+			<isee:parameter name='energy_investments_gas."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[*]' min="-10000000000" max="10000000000" scaling="1e-9"/>
+			<isee:parameter name="energy_investments_gas.Investment_in_fossil_energy_production_in_1980" min="20000000000" max="100000000000" scaling="1e-9"/>
+			<isee:parameter name='energy_investments_gas."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[*]' min="-10000000000" max="10000000000" scaling="1e-8"/>
+			<isee:parameter name="fossil_energy_coal.Resource_base" min="0" max="5000" scaling="0.1"/>
+			<isee:parameter name="fossil_energy_coal.Primary_Fossil_Energy_Scaling_Parameter" min="0.1" max="2" scaling="100"/>
+			<isee:parameter name="fossil_energy_coal.Total_Factor_Productivity_Fossil_Energy" min="0.1" max="0.6" scaling="1000"/>
+			<isee:parameter name="fossil_energy_oil.Resource_base" min="0" max="5000" scaling="0.1"/>
+			<isee:parameter name="fossil_energy_oil.Primary_Fossil_Energy_Scaling_Parameter" min="0.1" max="2" scaling="100"/>
+			<isee:parameter name="fossil_energy_oil.Total_Factor_Productivity_Fossil_Energy" min="0.1" max="0.6" scaling="1000"/>
+			<isee:parameter name="fossil_energy_gas.Resource_base" min="0" max="5000" scaling="0.1"/>
+			<isee:parameter name="fossil_energy_gas.Primary_Fossil_Energy_Scaling_Parameter" min="0.1" max="2" scaling="100"/>
+			<isee:parameter name="fossil_energy_gas.Total_Factor_Productivity_Fossil_Energy" min="0.1" max="0.6" scaling="1000"/>
+			<isee:parameter name="fossil_energy_coal.Energy_per_Carbon" min="0.01" max="0.9" scaling="10"/>
+			<isee:parameter name="fossil_energy_oil.Energy_per_Carbon" min="0.01" max="0.9" scaling="10"/>
+			<isee:parameter name="fossil_energy_gas.Energy_per_Carbon" min="0.01" max="0.9" scaling="10"/>
+			<isee:parameter name="fossil_energy_coal.initial_fossil_fuel_extraction_capital" min="100000000000" max="1000000000000" scaling="1e-10"/>
+			<isee:parameter name="fossil_energy_coal.initial_fossil_energy_capital" min="100000000000" max="1000000000000" scaling="1e-10"/>
+			<isee:parameter name="fossil_energy_gas.Energy_per_Carbon" min="0.01" max="0.9" scaling="10"/>
+			<isee:parameter name="fossil_energy_coal.initial_fossil_fuel_extraction_capital" min="100000000000" max="1000000000000" scaling="1e-10"/>
+			<isee:parameter name="fossil_energy_coal.initial_fossil_energy_capital" min="100000000000" max="1000000000000" scaling="1e-10"/>
+			<isee:parameter name="fossil_energy_oil.initial_fossil_fuel_extraction_capital" min="100000000000" max="7000000000000" scaling="1e-11"/>
+			<isee:parameter name="fossil_energy_oil.initial_fossil_energy_capital" min="100000000000" max="1000000000000" scaling="1e-10"/>
+			<isee:parameter name="fossil_energy_gas.initial_fossil_fuel_extraction_capital" min="100000000000" max="7000000000000" scaling="1e-11"/>
+			<isee:parameter name="fossil_energy_gas.initial_fossil_energy_capital" min="100000000000" max="7000000000000" scaling="1e-11"/>
+			<isee:payoff name="Energy Fossil Fuels Payoff" action="min"/>
+		</isee:optimizer_specs>
 	</isee:optimizer_specs_list>
 	<isee:payoff_specs_list>
 		<isee:payoff_specs name="Population Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="-1">
@@ -263,11 +299,11 @@
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
-		<isee:payoff_specs name="Energy Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="-1">
+		<isee:payoff_specs name="Energy Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="">
 			<isee:payoff_element name="renewable_energy.Renewable_Energy_Output[1]" weight="0.0000670601">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="solar_and_wind_energy.Wind_and_Solar_Energy_Output[1]" weight="0.000926665">
+			<isee:payoff_element name="wind_and_solar_energy.Wind_and_Solar_Energy_Output[1]" weight="0.000926665">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 			<isee:payoff_element name="hydropower_energy.Hydropower_Energy_Output[1]" weight="0.000187397">
@@ -285,7 +321,7 @@
 			<isee:payoff_element name="renewable_energy.Total_Renewable_Energy_Capacity[1]" weight="0.000214361">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="solar_and_wind_energy.Wind_and_Solar_Energy_Capacity[1]" weight="0.00273264">
+			<isee:payoff_element name="wind_and_solar_energy.Wind_and_Solar_Energy_Capacity[1]" weight="0.00273264">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 			<isee:payoff_element name="hydropower_energy.Hydropower_Energy_Capacity[1]" weight="0.00628243">
@@ -315,7 +351,7 @@
 			<isee:payoff_element name="energy_investments.Investments_in_Other_Capacity[1]" weight="3.72719e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name='solar_and_wind_energy."Installation_Cost_of_S&amp;W_capacity"' weight="1">
+			<isee:payoff_element name='wind_and_solar_energy."Installation_Cost_of_S&amp;W_capacity"' weight="1">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 			<isee:payoff_element name="energy_investments.share_of_GDP_invested_in_fuel_extraction[1]" weight="346403">
@@ -478,7 +514,7 @@
 			<isee:payoff_element name="renewable_energy.Renewable_Energy_Output[1]" weight="0.000208747">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="solar_and_wind_energy.Wind_and_Solar_Energy_Output[1]" weight="0.00108829">
+			<isee:payoff_element name="wind_and_solar_energy.Wind_and_Solar_Energy_Output[1]" weight="0.00108829">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 			<isee:payoff_element name="hydropower_energy.Hydropower_Energy_Output[1]" weight="0.000241219">
@@ -496,7 +532,7 @@
 			<isee:payoff_element name="renewable_energy.Total_Renewable_Energy_Capacity[1]" weight="0.000283585">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="solar_and_wind_energy.Wind_and_Solar_Energy_Capacity[1]" weight="0.00308787">
+			<isee:payoff_element name="wind_and_solar_energy.Wind_and_Solar_Energy_Capacity[1]" weight="0.00308787">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 			<isee:payoff_element name="hydropower_energy.Hydropower_Energy_Capacity[1]" weight="0.00703251">
@@ -526,7 +562,7 @@
 			<isee:payoff_element name="energy_investments.Investments_in_Other_Capacity[1]" weight="1.49566e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name='solar_and_wind_energy."Installation_Cost_of_S&amp;W_capacity"' weight="1">
+			<isee:payoff_element name='wind_and_solar_energy."Installation_Cost_of_S&amp;W_capacity"' weight="1">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 			<isee:payoff_element name="energy_investments.share_of_GDP_invested_in_fuel_extraction[1]" weight="239144">
@@ -536,6 +572,62 @@
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 			<isee:payoff_element name="Energy.CO2_emissions[1]" weight="0.00000304686">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+		</isee:payoff_specs>
+		<isee:payoff_specs name="Energy Fossil Fuels Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
+			<isee:payoff_element name="energy_investments.Investments_in_Fossil_Energy_Capital[1]" weight="3.6536e-21">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="energy_investments.Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="2.31971e-23">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="energy_investments.Investments_in_Fossil_Energy_Capital_oil_and_gas[1]" weight="6.32182e-21">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="energy_investments_coal.Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="1.70409e-21">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="energy_investments_coal.Investments_in_Fossil_Energy_Capital[1]" weight="3.111e-20">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="energy_investments_oil.Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="6.21758e-23">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="energy_investments_gas.Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="1.85638e-22">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="48359.1">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="fossil_energy_coal.Primary_Fossil_Energy_FUEL[1]" weight="7938.52">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="fossil_energy_coal.Secondary_Fossil_Energy_Output[1]" weight="0.00000139362">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="fossil_energy_oil.Primary_Fossil_Energy_FUEL[1]" weight="15692.9">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="fossil_energy_oil.Secondary_Fossil_Energy_Output[1]" weight="9.89919e-7">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="fossil_energy_gas.Primary_Fossil_Energy_FUEL[1]" weight="19905.8">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="fossil_energy_gas.Secondary_Fossil_Energy_Output[1]" weight="0.00000233368">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="Energy.CO2_emissions[1]" weight="2.34188e-7">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="fossil_energy_coal.Fossil_Energy_Extraction[1]" weight="1.24467">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="fossil_energy_oil.Fossil_Energy_Extraction[1]" weight="7.83647">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="fossil_energy_gas.Fossil_Energy_Extraction[1]" weight="13.3582">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
@@ -710,6 +802,8 @@
 				<connect2 to="Finance.share_of_GDP_invested_in_Energy_1" from="Energy.share_of_GDP_invested_in_Energy"/>
 				<connect to="Emissions.SO2_emissions" from="Energy.SO2_emissions"/>
 				<connect2 to="Emissions.SO2_emissions" from="Energy.SO2_emissions"/>
+				<connect to="Energy.SWITCH_couple_energy_and_economy" from="Finance.SWITCH_couple_energy_and_economy"/>
+				<connect2 to="Energy.SWITCH_couple_energy_and_economy" from="Finance.SWITCH_couple_energy_and_economy"/>
 				<connect to="energy_demand.GDP_per_person" from="Population.GDP_per_person"/>
 				<connect2 to="energy_demand.GDP_per_person" from="Population.GDP_per_person"/>
 				<connect to="energy_demand.Policy_Start_Year" from="Society.Policy_Start_Year"/>
@@ -749,6 +843,8 @@
 				<connect2 to="Economy.Population_Mp" from="Population.Population"/>
 				<connect to="energy_demand.Surface_Temperature_Anomaly_1" from="Finance.Surface_Temperature_Anomaly_1"/>
 				<connect2 to="energy_demand.Surface_Temperature_Anomaly_1" from="Finance.Surface_Temperature_Anomaly_1"/>
+				<connect to="Energy.SWITCH_couple_energy_and_economy" from="Finance.SWITCH_couple_energy_and_economy"/>
+				<connect2 to="Energy.SWITCH_couple_energy_and_economy" from="Finance.SWITCH_couple_energy_and_economy"/>
 				<connect to="energy_demand.switch_for_all_climate_damage" from="Finance.switch_for_all_climate_damage"/>
 				<connect2 to="energy_demand.switch_for_all_climate_damage" from="Finance.switch_for_all_climate_damage"/>
 				<connect to=".switch_only_economy_energy_damage_1" from="Finance.switch_only_economy_energy_damage_1"/>
@@ -857,7 +953,7 @@
 				<connect2 to="Population.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
 			</module>
 			<isee:placeholder name="Calibrated Variables">
-				<eqn>GDP.GDP[1] + Government.government_consumption[1] + Finance.total_investment[1] + Circular_Flow.private_consumption[1] + Economy.N2O_emissions[1] + Economy.CO2_emissions[1] + Economy.CH4_emissions[1] + Population.GDP_per_person[1] + Population.Aged_0_years[1] + Population.Aged_1_to_20_years[1] + Population.Aged_20_to_40_years[1] + Population.Aged_40_to_60_years[1] + Population.Aged_60_to_80_years[1] + Population.Aged_Over_80_years[1] + Population.deaths_0_years[1] + Population.deaths_1_to_20_years[1] + Population.deaths_20_to_40_years[1] + Population.deaths_40_to_60_years[1] + Population.deaths_60_to_80_years[1] + Population.deaths_Over_80_years[1] + Population.Population[1] + Population.fertility[1] + Population.Births[1] + Population.total_deaths[1] + Energy_Balance_Model.Surface_Temperature_Anomaly[1] + CO2_Forcing.CO2_Effective_Radiative_Forcing[1] + CH4_Forcing.CH4_Effective_Radiative_Forcing[1] + N2O_Forcing.N2O_Effective_Radiative_Forcing[1] + Emissions.Total_CH4_Emissions[1] + Emissions.Total_CO2_Emissions[1] + CO2_Forcing.Atmospheric_CO2_Concentration[1] + Emissions.Total_N2O_Emissions[1] + N2O_Forcing.Atmospheric_N2O_Concentration[1] + CH4_Forcing.Atmospheric_CH4_Concentration[1] + Emissions.Total_SO2_Emissions[1] + Food_and_land_use.N2O_emissions[1] + Food_and_land_use.CO2_emissions[1] + Food_and_land_use.CH4_Emissions[1] + Food_and_land_use.SO2_Emissions[1] + Land_Use.Forest_Land[1] + Crop.crop_production[1] + Land_Use.Cropland[1] + Freshwater.total_water_withdrawal[1] + Livestock.livestock_production[1] + Freshwater.fraction_of_water_withdrawal_for_agriculture[1] + Food_Demand.fraction_of_crops_for_livestock[1] + Freshwater.available_water_supply[1] + Land_Nutrients.man_made_fertilizer_use[1] + Land_Nutrients.manure_fertilizer_use[1] + Land_Nutrients.fertilizer_use[1] + Soil.soil_carbon_loss_cropland[1] + fossil_energy_coal.Secondary_Fossil_Energy_Output[1] + renewable_energy.Renewable_Energy_Output[1] + solar_and_wind_energy.Wind_and_Solar_Energy_Output[1] + hydropower_energy.Hydropower_Energy_Output[1] + nuclear_energy.Nuclear_Energy_Output[1] + other_energy.Other_Energy_Output[1] + energy_supply.Total_Energy_Output[1] + renewable_energy.Total_Renewable_Energy_Capacity[1] + solar_and_wind_energy.Wind_and_Solar_Energy_Capacity[1] + hydropower_energy.Hydropower_Energy_Capacity[1] + other_energy.Other_Energy_Capacity[1] + nuclear_energy.Nuclear_Energy_Capacity[1] + fossil_energy_coal.Primary_Fossil_Energy_FUEL[1] + energy_demand.demand_for_energy[1] + &quot;energy_investments,_coal&quot;.Investments_in_Fossil_Fuel_Extraction_Capital[1] + &quot;energy_investments,_coal&quot;.Investments_in_Fossil_Energy_Capital[1] + energy_investments.Investments_in_Solar_and_Wind_Energy_Capacity[1] + energy_investments.Investments_in_Renewables[1] + energy_investments.Investments_in_Hydropower_Energy_Capcity[1] + energy_investments.Investments_in_Nuclear_Capacity[1] + energy_investments.Investments_in_Other_Capacity[1] + solar_and_wind_energy.&quot;Installation_Cost_of_S&amp;W_capacity&quot;[1] + energy_investments.share_of_GDP_invested_in_fuel_extraction[1] + energy_investments.&quot;share_of_GDP_invested_in_Energy_w/o_fuel&quot;[1] + Energy.CO2_emissions[1] + fossil_energy_coal.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1] + Sea_Level.SLR_thermosteric[1] + Sea_Level.SLR_from_mountain_glaciers[1] + Sea_Level.SLR_from_Greenland_Ice_Sheet[1] + Sea_Level.SLR_from_Antarctic_Ice_Sheet[1] + Sea_Level.SLR_from_LWS[1] + Sea_Level.global_SLR[1]</eqn>
+				<eqn>GDP.GDP[1] + Government.government_consumption[1] + Finance.total_investment[1] + Circular_Flow.private_consumption[1] + Economy.N2O_emissions[1] + Economy.CO2_emissions[1] + Economy.CH4_emissions[1] + Population.GDP_per_person[1] + Population.Aged_0_years[1] + Population.Aged_1_to_20_years[1] + Population.Aged_20_to_40_years[1] + Population.Aged_40_to_60_years[1] + Population.Aged_60_to_80_years[1] + Population.Aged_Over_80_years[1] + Population.deaths_0_years[1] + Population.deaths_1_to_20_years[1] + Population.deaths_20_to_40_years[1] + Population.deaths_40_to_60_years[1] + Population.deaths_60_to_80_years[1] + Population.deaths_Over_80_years[1] + Population.Population[1] + Population.fertility[1] + Population.Births[1] + Population.total_deaths[1] + Energy_Balance_Model.Surface_Temperature_Anomaly[1] + CO2_Forcing.CO2_Effective_Radiative_Forcing[1] + CH4_Forcing.CH4_Effective_Radiative_Forcing[1] + N2O_Forcing.N2O_Effective_Radiative_Forcing[1] + Emissions.Total_CH4_Emissions[1] + Emissions.Total_CO2_Emissions[1] + CO2_Forcing.Atmospheric_CO2_Concentration[1] + Emissions.Total_N2O_Emissions[1] + N2O_Forcing.Atmospheric_N2O_Concentration[1] + CH4_Forcing.Atmospheric_CH4_Concentration[1] + Emissions.Total_SO2_Emissions[1] + Food_and_land_use.N2O_emissions[1] + Food_and_land_use.CO2_emissions[1] + Food_and_land_use.CH4_Emissions[1] + Food_and_land_use.SO2_Emissions[1] + Land_Use.Forest_Land[1] + Crop.crop_production[1] + Land_Use.Cropland[1] + Freshwater.total_water_withdrawal[1] + Livestock.livestock_production[1] + Freshwater.fraction_of_water_withdrawal_for_agriculture[1] + Food_Demand.fraction_of_crops_for_livestock[1] + Freshwater.available_water_supply[1] + Land_Nutrients.man_made_fertilizer_use[1] + Land_Nutrients.manure_fertilizer_use[1] + Land_Nutrients.fertilizer_use[1] + Soil.soil_carbon_loss_cropland[1] + fossil_energy_coal.Secondary_Fossil_Energy_Output[1] + renewable_energy.Renewable_Energy_Output[1] + wind_and_solar_energy.Wind_and_Solar_Energy_Output[1] + hydropower_energy.Hydropower_Energy_Output[1] + nuclear_energy.Nuclear_Energy_Output[1] + other_energy.Other_Energy_Output[1] + energy_supply.Total_Energy_Output[1] + renewable_energy.Total_Renewable_Energy_Capacity[1] + wind_and_solar_energy.Wind_and_Solar_Energy_Capacity[1] + hydropower_energy.Hydropower_Energy_Capacity[1] + other_energy.Other_Energy_Capacity[1] + nuclear_energy.Nuclear_Energy_Capacity[1] + fossil_energy_coal.Primary_Fossil_Energy_FUEL[1] + energy_demand.demand_for_energy[1] + energy_investments_coal.Investments_in_Fossil_Fuel_Extraction_Capital[1] + energy_investments_coal.Investments_in_Fossil_Energy_Capital[1] + energy_investments.Investments_in_Solar_and_Wind_Energy_Capacity[1] + energy_investments.Investments_in_Renewables[1] + energy_investments.Investments_in_Hydropower_Energy_Capcity[1] + energy_investments.Investments_in_Nuclear_Capacity[1] + energy_investments.Investments_in_Other_Capacity[1] + wind_and_solar_energy.&quot;Installation_Cost_of_S&amp;W_capacity&quot;[1] + energy_investments.share_of_GDP_invested_in_fuel_extraction[1] + energy_investments.&quot;share_of_GDP_invested_in_Energy_w/o_fuel&quot;[1] + Energy.CO2_emissions[1] + fossil_energy_coal.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1] + Sea_Level.SLR_thermosteric[1] + Sea_Level.SLR_from_mountain_glaciers[1] + Sea_Level.SLR_from_Greenland_Ice_Sheet[1] + Sea_Level.SLR_from_Antarctic_Ice_Sheet[1] + Sea_Level.SLR_from_LWS[1] + Sea_Level.global_SLR[1]</eqn>
 			</isee:placeholder>
 			<isee:placeholder name="Variables for Energy">
 				<dimensions>
@@ -1498,6 +1594,56 @@ Lorem ipsum dolor sit amet</text_box>
 			</view>
 		</views>
 	</model>
+	<isee:controls>
+		<isee:control priority="interactive" name='energy_investments_coal."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[1]' value="-1928015871.13173"/>
+		<isee:control priority="interactive" name='energy_investments_coal."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[2]' value="459415287.208619"/>
+		<isee:control priority="interactive" name='energy_investments_coal."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[3]' value="9030449012.2721"/>
+		<isee:control priority="interactive" name='energy_investments_coal."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[4]' value="-4246106828.94971"/>
+		<isee:control priority="interactive" name='energy_investments_coal."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[1]' value="-10000000000"/>
+		<isee:control priority="interactive" name='energy_investments_coal."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[2]' value="8379982734.16039"/>
+		<isee:control priority="interactive" name='energy_investments_coal."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[3]' value="1117569809.04512"/>
+		<isee:control priority="interactive" name='energy_investments_coal."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[4]' value="-5563629407.54142"/>
+		<isee:control priority="interactive" name="energy_investments_coal.Investment_in_fossil_energy_production_in_1980" value="20000000000"/>
+		<isee:control priority="interactive" name="energy_investments_coal.Investment_in_fuel_extraction_in_1980" value="151673961406.201"/>
+		<isee:control priority="interactive" name='energy_investments_gas."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[1]' value="-1991818729.11805"/>
+		<isee:control priority="interactive" name='energy_investments_gas."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[2]' value="1312619188.99677"/>
+		<isee:control priority="interactive" name='energy_investments_gas."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[3]' value="1151541408.83276"/>
+		<isee:control priority="interactive" name='energy_investments_gas."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[4]' value="3873106137.60105"/>
+		<isee:control priority="interactive" name='energy_investments_gas."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[1]' value="5083059780.41233"/>
+		<isee:control priority="interactive" name='energy_investments_gas."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[2]' value="2821841745.90822"/>
+		<isee:control priority="interactive" name='energy_investments_gas."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[3]' value="8256195990.43071"/>
+		<isee:control priority="interactive" name='energy_investments_gas."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[4]' value="-1188328613.35742"/>
+		<isee:control priority="interactive" name="energy_investments_gas.Investment_in_fossil_energy_production_in_1980" value="20000000000"/>
+		<isee:control priority="interactive" name="energy_investments_gas.Investment_in_fuel_extraction_in_1980" value="192086968446.106"/>
+		<isee:control priority="interactive" name='energy_investments_oil."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[1]' value="-598978814.174959"/>
+		<isee:control priority="interactive" name='energy_investments_oil."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[2]' value="2323548368.36805"/>
+		<isee:control priority="interactive" name='energy_investments_oil."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[3]' value="5037052165.7492"/>
+		<isee:control priority="interactive" name='energy_investments_oil."Change_in_investments_in_fossil_energy_production_per_decade_1980_-_2020"[4]' value="-9990000000"/>
+		<isee:control priority="interactive" name='energy_investments_oil."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[1]' value="10000000000"/>
+		<isee:control priority="interactive" name='energy_investments_oil."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[2]' value="10000000000"/>
+		<isee:control priority="interactive" name='energy_investments_oil."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[3]' value="10000000000"/>
+		<isee:control priority="interactive" name='energy_investments_oil."Change_in_investments_in_fuel_extraction_per_decade_1980_-_2020"[4]' value="-9900000000"/>
+		<isee:control priority="interactive" name="energy_investments_oil.Investment_in_fossil_energy_production_in_1980" value="20000000000"/>
+		<isee:control priority="interactive" name="energy_investments_oil.Investment_in_fuel_extraction_in_1980" value="300000000000"/>
+		<isee:control priority="interactive" name="fossil_energy_coal.Energy_per_Carbon" value="0.134869110965356"/>
+		<isee:control priority="interactive" name="fossil_energy_coal.Primary_Fossil_Energy_Scaling_Parameter" value="1.32895761418844"/>
+		<isee:control priority="interactive" name="fossil_energy_coal.Resource_base" value="4222.15936174718"/>
+		<isee:control priority="interactive" name="fossil_energy_coal.Total_Factor_Productivity_Fossil_Energy" value="0.22317546964054"/>
+		<isee:control priority="interactive" name="fossil_energy_coal.initial_fossil_energy_capital" value="165305580305.385"/>
+		<isee:control priority="interactive" name="fossil_energy_coal.initial_fossil_fuel_extraction_capital" value="1000000000000"/>
+		<isee:control priority="interactive" name="fossil_energy_gas.Energy_per_Carbon" value="0.0440098105093842"/>
+		<isee:control priority="interactive" name="fossil_energy_gas.Primary_Fossil_Energy_Scaling_Parameter" value="1.47827645491492"/>
+		<isee:control priority="interactive" name="fossil_energy_gas.Resource_base" value="4987.55345502748"/>
+		<isee:control priority="interactive" name="fossil_energy_gas.Total_Factor_Productivity_Fossil_Energy" value="0.208086352590143"/>
+		<isee:control priority="interactive" name="fossil_energy_gas.initial_fossil_energy_capital" value="100000000000"/>
+		<isee:control priority="interactive" name="fossil_energy_gas.initial_fossil_fuel_extraction_capital" value="2323139430851.89"/>
+		<isee:control priority="interactive" name="fossil_energy_oil.Energy_per_Carbon" value="0.0387531993201486"/>
+		<isee:control priority="interactive" name="fossil_energy_oil.Primary_Fossil_Energy_Scaling_Parameter" value="1.89819160849282"/>
+		<isee:control priority="interactive" name="fossil_energy_oil.Resource_base" value="770.041688464163"/>
+		<isee:control priority="interactive" name="fossil_energy_oil.Total_Factor_Productivity_Fossil_Energy" value="0.160919959508868"/>
+		<isee:control priority="interactive" name="fossil_energy_oil.initial_fossil_energy_capital" value="315552930935.109"/>
+		<isee:control priority="interactive" name="fossil_energy_oil.initial_fossil_fuel_extraction_capital" value="6819364455072.92"/>
+	</isee:controls>
 	<macro name="PCTILE5">
 		<eqn>out</eqn>
 		<parm>in</parm>
