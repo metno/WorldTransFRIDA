@@ -5,7 +5,7 @@
 		<name>Energy</name>
 		<uuid>1ce42919-b116-4c1c-a487-83c4df48992b</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.6.1" isee:build_number="3275" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
+		<product version="3.6.1" isee:build_number="3282" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="1.5" isee:run_prefix="Run" isee:simulation_delay="0.125" isee:restore_on_start="false" isee:save_interval="2" method="Euler" time_units="Months" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
 		<start>0</start>
@@ -202,128 +202,21 @@
 		<unit name="euros per year per person">
 			<eqn>EUR/(person-year)</eqn>
 		</unit>
+		<unit name="G">
+			<eqn>Giga</eqn>
+		</unit>
+		<unit name="GtCO2">
+			<eqn>Giga*tCO2</eqn>
+		</unit>
+		<unit name="GtCH4">
+			<eqn>Giga*tCH4</eqn>
+		</unit>
+		<unit name="GtN2O">
+			<eqn>Giga*tN2O</eqn>
+		</unit>
 	</model_units>
 	<model name="Energy">
 		<variables>
-			<aux name="SO2 emissions" access="output">
-				<doc>${Calibrated,Output}
-This depends on the sulphur content of the burnt fuels, depends on the fuel mix
-Calibration from FRIDA 0.1 or from MIND</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Fossil_Energy_Extraction*coupling_factor_of_fossil_fuels_and_SO2_emissions</eqn>
-				<units>MtSO2/Year</units>
-			</aux>
-			<aux name="CO2 emissions" access="output">
-				<doc>${Calibrated,Output}
-Calibration from FRIDA 0.1 , but in principle should be equal to extracted carbon</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Fossil_Energy_Extraction*GtC_to_MtCO2</eqn>
-				<units>MtCO2/Year</units>
-			</aux>
-			<aux name="Initial Fossil Energy\nSulfur Intensity">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>27.2983745475282</eqn>
-				<units>MtSO2/GtC</units>
-			</aux>
-			<aux name="CH4 emissions" access="output">
-				<doc>${Calibrated,Output}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Fossil_Energy_Extraction
-*
-coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
-				<units>MtCH4/year</units>
-			</aux>
-			<aux name="N2O emissions" access="output">
-				<doc>${Calibrated,Output}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Fossil_Energy_Extraction*coupling_factor_of_fossil_fuels_and_N2O_emissions_1</eqn>
-				<units>ktN2O/year</units>
-			</aux>
-			<aux name="desulphurisation rate of energy related emissions">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>-0.0234438694082764</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="coupling factor of fossil fuels\nand SO2 emissions">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Initial_Fossil_Energy_Sulfur_Intensity * EXP(desulphurisation_rate_of_energy_related_emissions*(TIME-STARTTIME))</eqn>
-				<units>MtSO2/GtC</units>
-			</aux>
-			<aux name="Initial Fossil Energy\nN2O Intensity">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>188.927672377629</eqn>
-				<units>ktN2O/GtC</units>
-			</aux>
-			<aux name="rate of\nchange in energy\nrelated N2O emissions">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>-0.020714089531214</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="coupling factor of fossil fuels\nand N2O emissions 1">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Initial_Fossil_Energy_N2O_Intensity * EXP(rate_of_change_in_energy_related_N2O_emissions*(TIME-STARTTIME))</eqn>
-				<units>ktN2O/GtC</units>
-			</aux>
-			<aux name="Initial Fossil Energy\nCH4 Intensity">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>21.8665700308221</eqn>
-				<units>MtCH4/GtC</units>
-			</aux>
-			<aux name="rate of\nchange in energy\nrelated CH4 emissions">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>-0.00628672238203886</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="coupling factor of fossil fuels\nand CH4 emissions">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Initial_Fossil_Energy_CH4_Intensity * EXP(rate_of_change_in_energy_related_CH4_emissions*(TIME-STARTTIME))</eqn>
-				<units>MtCH4/GtC</units>
-			</aux>
-			<aux name="GtC to MtCO2">
-				<doc>${Assumption}
-</doc>
-				<eqn>3670</eqn>
-				<units>MtCO2/GTC</units>
-			</aux>
-			<stock name="Cumulative CO2 emissions">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>0</eqn>
-				<inflow>Accumulating_CO2_Emissions</inflow>
-				<non_negative/>
-				<units>MtCO2</units>
-			</stock>
-			<flow name="Accumulating CO2 Emissions">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>CO2_emissions</eqn>
-				<non_negative/>
-				<units>MtCO2/Year</units>
-			</flow>
 			<aux name="Energy Balance Target">
 				<eqn>1</eqn>
 				<units>dmnl</units>
@@ -475,27 +368,6 @@ coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
 				<eqn>PERCENTILE(share_of_GDP_invested_in_fuel_extraction,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="CO2 emissions by PCTILE">
-				<dimensions>
-					<dim name="PCTILE"/>
-				</dimensions>
-				<eqn>PERCENTILE(CO2_emissions,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
-				<units>MtCO2/Year</units>
-			</aux>
-			<aux name="N2O emissions by PCTILE">
-				<dimensions>
-					<dim name="PCTILE"/>
-				</dimensions>
-				<eqn>PERCENTILE(N2O_emissions,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
-				<units>KtN2O/Year</units>
-			</aux>
-			<aux name="SO2 emissions by PCTILE">
-				<dimensions>
-					<dim name="PCTILE"/>
-				</dimensions>
-				<eqn>PERCENTILE(SO2_emissions,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
-				<units>MtSO2/Year</units>
-			</aux>
 			<aux name="conversion efficiency\nof fossil fuels to\nsecondary fossil energy by PCTILE">
 				<dimensions>
 					<dim name="PCTILE"/>
@@ -545,13 +417,6 @@ coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
 				<eqn>PERCENTILE(Total_Renewable_Energy_Capacity,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
 				<units>GW</units>
 			</aux>
-			<aux name="CH4 emissions by PCTILE">
-				<dimensions>
-					<dim name="PCTILE"/>
-				</dimensions>
-				<eqn>PERCENTILE(CH4_emissions,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
-				<units>MtCH4/Year</units>
-			</aux>
 			<module name="energy demand" isee:label="">
 				<format scale_by="auto"/>
 				<connect to="energy_supply_vs_demand.demand_for_energy" from="energy_demand.demand_for_energy"/>
@@ -571,13 +436,6 @@ coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
 				<connect to="energy_demand.switch_only_economy_energy_damage" from="Society.switch_only_economy_energy_damage"/>
 				<connect2 to="energy_demand.switch_only_economy_energy_damage" from="Society.switch_only_economy_energy_damage"/>
 			</module>
-			<aux name="Fossil Energy Extraction" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>gtC/Year</units>
-			</aux>
 			<module name="energy investments" isee:label="">
 				<format scale_by="auto"/>
 				<connect to="Energy.Investments_in_Fossil_Energy_Capital" from="energy_investments.Investments_in_Fossil_Energy_Capital"/>
@@ -606,8 +464,8 @@ coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
 				<connect2 to="fossil_energy.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Investments_in_Fossil_Fuel_Extraction_Capital"/>
 				<connect to="Energy.Investments_in_Renewables" from="energy_investments.Investments_in_Renewables"/>
 				<connect2 to="Investments_in_Renewables" from="energy_investments.Investments_in_Renewables"/>
-				<connect to='Energy."share_of_GDP_invested_in_Energy_w/o_fuel"' from='energy_investments."share_of_GDP_invested_in_Energy_w/o_fuel"'/>
-				<connect2 to='"share_of_GDP_invested_in_Energy_w/o_fuel"' from='energy_investments."share_of_GDP_invested_in_Energy_w/o_fuel"'/>
+				<connect to='Energy."share_of_GDP_invested_in_Energy_w/o_fuel"' from="energy_investments.share_of_GDP_invested_in_Energy_without_fuel"/>
+				<connect2 to='"share_of_GDP_invested_in_Energy_w/o_fuel"' from="energy_investments.share_of_GDP_invested_in_Energy_without_fuel"/>
 				<connect to="Energy.share_of_GDP_invested_in_fuel_extraction" from="energy_investments.share_of_GDP_invested_in_fuel_extraction"/>
 				<connect2 to="share_of_GDP_invested_in_fuel_extraction" from="energy_investments.share_of_GDP_invested_in_fuel_extraction"/>
 				<connect to="Energy.share_of_GDP_invested_in_Energy" from="energy_investments.share_of_GDP_invested_in_Energy"/>
@@ -651,12 +509,12 @@ coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
 				<connect2 to="Damages.switch_only_economy_energy_damage" from="Society.switch_only_economy_energy_damage"/>
 				<connect to="Energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy" from="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy"/>
 				<connect2 to="conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy" from="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy"/>
-				<connect to="Energy.Fossil_Energy_Extraction" from="fossil_energy.Fossil_Energy_Extraction"/>
-				<connect2 to="Fossil_Energy_Extraction" from="fossil_energy.Fossil_Energy_Extraction"/>
+				<connect to="Emissions.Fossil_Energy_Extraction" from="fossil_energy.Fossil_Energy_Extraction"/>
+				<connect2 to="Emissions.Fossil_Energy_Extraction" from="fossil_energy.Fossil_Energy_Extraction"/>
 				<connect to="energy_investments.Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA" from="fossil_energy.Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA"/>
 				<connect2 to="energy_investments.Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA" from="fossil_energy.Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA"/>
-				<connect to='Energy."Primary_Fossil_Energy_(FUEL)"' from='fossil_energy."Primary_Fossil_Energy_(FUEL)"'/>
-				<connect2 to='"Primary_Fossil_Energy_(FUEL)"' from='fossil_energy."Primary_Fossil_Energy_(FUEL)"'/>
+				<connect to='Energy."Primary_Fossil_Energy_(FUEL)"' from="fossil_energy.Primary_Fossil_Energy_FUEL"/>
+				<connect2 to='"Primary_Fossil_Energy_(FUEL)"' from="fossil_energy.Primary_Fossil_Energy_FUEL"/>
 				<connect to="energy_investments.Secondary_Fossil_Energy_Capital_Damaged_due_to_STA" from="fossil_energy.Secondary_Fossil_Energy_Capital_Damaged_due_to_STA"/>
 				<connect2 to="energy_investments.Secondary_Fossil_Energy_Capital_Damaged_due_to_STA" from="fossil_energy.Secondary_Fossil_Energy_Capital_Damaged_due_to_STA"/>
 				<connect to="Energy.Secondary_Fossil_Energy_Output" from="fossil_energy.Secondary_Fossil_Energy_Output"/>
@@ -695,8 +553,8 @@ coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
 				<connect2 to="energy_investments.replacement_cost_of_Other_Energy_Capital_Damaged_due_to_STA" from="other_energy.replacement_cost_of_Other_Energy_Capital_Damaged_due_to_STA"/>
 				<connect to="other_energy.Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
 				<connect2 to="other_energy.Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
-				<connect to='Energy."Installation_Cost_of_S&amp;W_capacity"' from='solar_and_wind_energy."Installation_Cost_of_S&amp;W_capacity"'/>
-				<connect2 to='"Installation_Cost_of_S&amp;W_capacity"' from='solar_and_wind_energy."Installation_Cost_of_S&amp;W_capacity"'/>
+				<connect to='Energy."Installation_Cost_of_S&amp;W_capacity"' from="solar_and_wind_energy.Installation_Cost_of_Solar_and_Wind_capacity"/>
+				<connect2 to='"Installation_Cost_of_S&amp;W_capacity"' from="solar_and_wind_energy.Installation_Cost_of_Solar_and_Wind_capacity"/>
 				<connect to="energy_investments.replacement_cost_of_Solar_and_Wind_Energy_Capital_Damaged_due_to_STA" from="solar_and_wind_energy.replacement_cost_of_Solar_and_Wind_Energy_Capital_Damaged_due_to_STA"/>
 				<connect2 to="energy_investments.replacement_cost_of_Solar_and_Wind_Energy_Capital_Damaged_due_to_STA" from="solar_and_wind_energy.replacement_cost_of_Solar_and_Wind_Energy_Capital_Damaged_due_to_STA"/>
 				<connect to="Energy.Wind_and_Solar_Energy_Capacity" from="solar_and_wind_energy.Wind_and_Solar_Energy_Capacity"/>
@@ -960,7 +818,7 @@ coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="400" isee:scroll_y="150" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="1552.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1015,9 +873,6 @@ coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
 				<text_box uid="140" x="267.907" y="22.143" width="260" height="27.065">TODO: See Energy Dev Board in mattermost
 
 </text_box>
-				<aux background="#FFAA00" x="693.857" y="761.688" name="SO2 emissions"/>
-				<aux color="blue" background="#FFAA00" x="697.94" y="463.318" name="CO2 emissions"/>
-				<text_box uid="277" x="369.093" y="364.778" width="260" height="74.714">emissions connected to extraction comes from the assumption that everything extracted is burnt and ends up as emissions. Alternatively from a process persp. it should be linked to secondary fossil energy creation</text_box>
 				<stacked_container uid="382" x="6398.4" y="2422.73">
 					<graph width="350" height="250" comparative="true" type="time_series" isee:points_only="true" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true"/>
 				</stacked_container>
@@ -1068,84 +923,16 @@ coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
 				</stacked_container>
 				<text_box uid="400" x="5902.17" y="483.333" width="260" height="58">difference here most likely an accounting issue, that the data counts more types of investments in energy production than we have included in the model . e.g. grids</text_box>
 				<stacked_container uid="401" x="4815.42" y="1479.28">
-					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="CO2_emissions[1]"/>
-						</plot>
-					</graph>
+					<graph width="350" height="250" comparative="true" type="time_series" isee:points_only="true" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true"/>
 				</stacked_container>
 				<stacked_container uid="402" x="4815.42" y="1824.41">
-					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="SO2_emissions[1]"/>
-						</plot>
-					</graph>
+					<graph width="350" height="250" comparative="true" type="time_series" isee:points_only="true" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true"/>
 				</stacked_container>
-				<aux x="418.69" y="749.2" name="Initial Fossil Energy\nSulfur Intensity"/>
-				<aux background="#FFAA00" x="697.94" y="539.948" name="CH4 emissions"/>
-				<aux background="#FFAA00" x="697.607" y="653.448" name="N2O emissions"/>
-				<aux x="481.19" y="795.508" name="desulphurisation rate of energy related emissions"/>
-				<aux x="571.44" y="760.708" name="coupling factor of fossil fuels\nand SO2 emissions"/>
-				<connector uid="409" angle="355.691">
-					<from>Initial_Fossil_Energy_Sulfur_Intensity</from>
-					<to>coupling_factor_of_fossil_fuels_and_SO2_emissions</to>
-				</connector>
-				<connector uid="410" angle="21.0846">
-					<from>desulphurisation_rate_of_energy_related_emissions</from>
-					<to>coupling_factor_of_fossil_fuels_and_SO2_emissions</to>
-				</connector>
-				<connector uid="411" angle="359.543">
-					<from>coupling_factor_of_fossil_fuels_and_SO2_emissions</from>
-					<to>SO2_emissions</to>
-				</connector>
-				<aux x="418.69" y="633.698" name="Initial Fossil Energy\nN2O Intensity"/>
-				<aux x="481.19" y="680.988" name="rate of\nchange in energy\nrelated N2O emissions"/>
-				<aux x="575.19" y="652.408" name="coupling factor of fossil fuels\nand N2O emissions 1"/>
-				<connector uid="415" angle="353.182">
-					<from>Initial_Fossil_Energy_N2O_Intensity</from>
-					<to>coupling_factor_of_fossil_fuels_and_N2O_emissions_1</to>
-				</connector>
-				<connector uid="416" angle="16.9096">
-					<from>rate_of_change_in_energy_related_N2O_emissions</from>
-					<to>coupling_factor_of_fossil_fuels_and_N2O_emissions_1</to>
-				</connector>
-				<aux x="418.69" y="527.868" name="Initial Fossil Energy\nCH4 Intensity"/>
-				<aux x="481.19" y="557.948" name="rate of\nchange in energy\nrelated CH4 emissions"/>
-				<aux x="575.19" y="539.948" name="coupling factor of fossil fuels\nand CH4 emissions"/>
-				<connector uid="417" angle="355.584">
-					<from>Initial_Fossil_Energy_CH4_Intensity</from>
-					<to>coupling_factor_of_fossil_fuels_and_CH4_emissions</to>
-				</connector>
-				<connector uid="418" angle="10.8403">
-					<from>rate_of_change_in_energy_related_CH4_emissions</from>
-					<to>coupling_factor_of_fossil_fuels_and_CH4_emissions</to>
-				</connector>
-				<connector uid="419" angle="359.515">
-					<from>coupling_factor_of_fossil_fuels_and_N2O_emissions_1</from>
-					<to>N2O_emissions</to>
-				</connector>
-				<connector uid="420" angle="2.67491">
-					<from>coupling_factor_of_fossil_fuels_and_CH4_emissions</from>
-					<to>CH4_emissions</to>
-				</connector>
-				<aux color="black" font_color="black" x="575.19" y="463.318" name="GtC to MtCO2"/>
-				<connector uid="421" angle="0">
-					<from>GtC_to_MtCO2</from>
-					<to>CO2_emissions</to>
-				</connector>
 				<stacked_container uid="422" x="4815.42" y="2144.08">
-					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="N2O_emissions[1]"/>
-						</plot>
-					</graph>
+					<graph width="350" height="250" comparative="true" type="time_series" isee:points_only="true" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true"/>
 				</stacked_container>
 				<stacked_container uid="423" x="4815.42" y="2470.33">
-					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="CH4_emissions[1]"/>
-						</plot>
-					</graph>
+					<graph width="350" height="250" comparative="true" type="time_series" isee:points_only="true" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true"/>
 				</stacked_container>
 				<text_box font_size="36pt" uid="424" x="4736.25" y="598.072" width="260" height="79.25">Investment Shares of GDP</text_box>
 				<text_box font_size="36pt" uid="425" x="4717.5" y="886.822" width="260" height="79.25">Investment Amounts USD</text_box>
@@ -1220,17 +1007,6 @@ SO2 Emissions
 N2O Emissions
 CH4 Emissions
 Energy Balance</text_box>
-				<stock x="743.524" y="407.738" name="Cumulative CO2 emissions"/>
-				<flow x="693.399" y="404.405" name="Accumulating CO2 Emissions">
-					<pts>
-						<pt x="665.773" y="404.405"/>
-						<pt x="721.024" y="404.405"/>
-					</pts>
-				</flow>
-				<connector uid="641" angle="94.4081">
-					<from>CO2_emissions</from>
-					<to>Accumulating_CO2_Emissions</to>
-				</connector>
 				<stacked_container uid="704" x="662" y="1318.57">
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
@@ -1274,41 +1050,13 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 				<aux x="2341.88" y="294.792" name="Investments in\nOther Capacity by PCTILE"/>
 				<aux x="2344.38" y="451.542" name="Installation Cost\nof S&amp;W capacity by PCTILE"/>
 				<aux x="2345.63" y="618.917" name="share of GDP invested\nin fuel extraction by PCTILE"/>
-				<aux x="2581.39" y="23.7917" name="CO2 emissions by PCTILE"/>
-				<aux x="2582.65" y="123.292" name="N2O emissions by PCTILE"/>
-				<aux x="2579.52" y="188.917" name="SO2 emissions by PCTILE"/>
 				<aux x="2349.38" y="508.125" name="conversion efficiency\nof fossil fuels to\nsecondary fossil energy by PCTILE"/>
 				<aux x="2090.01" y="32.5417" name="Primary Fossil\nEnergy (FUEL) by PCTILE"/>
-				<connector uid="852" angle="17.7745">
-					<from>
-						<alias uid="826"/>
-					</from>
-					<to>CO2_emissions_by_PCTILE</to>
-				</connector>
-				<connector uid="853" angle="25.6022">
-					<from>
-						<alias uid="827"/>
-					</from>
-					<to>N2O_emissions_by_PCTILE</to>
-				</connector>
-				<connector uid="854" angle="18.6323">
-					<from>
-						<alias uid="828"/>
-					</from>
-					<to>SO2_emissions_by_PCTILE</to>
-				</connector>
 				<aux x="2098.13" y="421.042" name="Renewable Energy\nOutput Share by PCTILE"/>
 				<aux x="2345.63" y="677.917" name="share of GDP invested\nin Energy w/o fuel by PCTILE"/>
 				<aux x="2090.01" y="83.1667" name="Secondary Fossil Energy\nOutput by PCTILE"/>
 				<aux x="2345.63" y="729.167" name="share of GDP invested\nin Energy by PCTILE"/>
 				<aux x="2100.01" y="487.542" name="Total Renewable Energy Capacity by PCTILE"/>
-				<aux x="2595.39" y="69.7917" name="CH4 emissions by PCTILE"/>
-				<connector uid="867" angle="25.7407">
-					<from>
-						<alias uid="868"/>
-					</from>
-					<to>CH4_emissions_by_PCTILE</to>
-				</connector>
 				<stacked_container uid="869" x="6035.18" y="683.792">
 					<graph width="350" height="250" comparative="true" type="time_series" isee:points_only="true" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true"/>
 				</stacked_container>
@@ -1347,33 +1095,12 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 					<graph width="350" height="348.5" type="area" isee:sum_stacked_legend="true" isee:stacked_show_hover_values="true" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:stacked_area_max="1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true"/>
 				</stacked_container>
 				<stacked_container uid="876" x="1269.25" y="2033.57" width="415" height="328.333">
-					<graph width="415" height="328.333" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="CO2_emissions[1]"/>
-						</plot>
-					</graph>
+					<graph width="415" height="328.333" comparative="true" type="time_series" isee:points_only="true" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true"/>
 				</stacked_container>
 				<stacked_container uid="877" x="1269.25" y="1660.17" width="415" height="346.84">
 					<graph width="415" height="346.84" type="time_series" isee:points_only="true" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true"/>
 				</stacked_container>
 				<module x="1087.88" y="750.615" name="energy demand"/>
-				<aux font_style="italic" font_weight="bold" x="824.643" y="584.905" name="Fossil Energy Extraction"/>
-				<connector uid="1011" angle="136.18">
-					<from>Fossil_Energy_Extraction</from>
-					<to>CO2_emissions</to>
-				</connector>
-				<connector uid="1012" angle="160.464">
-					<from>Fossil_Energy_Extraction</from>
-					<to>CH4_emissions</to>
-				</connector>
-				<connector uid="1013" angle="208.35">
-					<from>Fossil_Energy_Extraction</from>
-					<to>N2O_emissions</to>
-				</connector>
-				<connector uid="1014" angle="233.506">
-					<from>Fossil_Energy_Extraction</from>
-					<to>SO2_emissions</to>
-				</connector>
 				<module x="1087.88" y="400" name="energy investments"/>
 				<text_box border_color="aqua" border_width="thick" border_style="solid" uid="1103" x="538.707" y="18.4997" width="260" height="20.7778">Entries in cyan require more data</text_box>
 				<text_box border_color="#FFAAFF" border_width="thick" border_style="solid" uid="1104" x="538.707" y="44.912" width="260" height="23.5556">Pink nodes have data provided</text_box>
@@ -1408,10 +1135,6 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 				<connector uid="1174" isee:thickness="2" angle="139.945">
 					<from>energy_supply_vs_demand</from>
 					<to>energy_investments</to>
-				</connector>
-				<connector uid="1175" angle="179.565">
-					<from>energy_supply</from>
-					<to>Fossil_Energy_Extraction</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1508.13" y="505.625" name="Primary Fossil Energy (FUEL)"/>
 				<connector uid="1177" angle="10.9465" isee:autocreated="true">
@@ -1701,18 +1424,6 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 				<alias color="blue" background="white" font_style="italic" uid="782" x="138.5" y="1501" width="18" height="18">
 					<shape type="circle" radius="18"/>
 					<of>Greenness_of_Policy</of>
-				</alias>
-				<alias color="blue" background="#FFAA00" font_style="italic" uid="826" x="2455.71" y="23.5417" width="18" height="18">
-					<of>CO2_emissions</of>
-				</alias>
-				<alias background="#FFAA00" font_style="italic" uid="827" x="2463.09" y="119.542" width="18" height="18">
-					<of>N2O_emissions</of>
-				</alias>
-				<alias background="#FFAA00" font_style="italic" uid="828" x="2467.34" y="179.917" width="18" height="18">
-					<of>SO2_emissions</of>
-				</alias>
-				<alias background="#FFAA00" font_style="italic" uid="868" x="2461.21" y="68.9167" width="18" height="18">
-					<of>CH4_emissions</of>
 				</alias>
 				<alias font_style="italic" font_weight="bold" uid="1179" x="1967.88" y="23.5417" width="18" height="18">
 					<of>&quot;Primary_Fossil_Energy_(FUEL)&quot;</of>
@@ -3193,7 +2904,7 @@ share_of_GDP_invested_in_solar_and_wind</eqn>
 				<eqn>share_of_GDP_invested_in_Fossil_Energy_and_Fuel+share_of_GDP_invested_in_Renewable_Energy+share_of_GDP_invested_in_nuclear_power</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="share of GDP invested\nin Energy w/o fuel" access="output" isee:autocreated="true">
+			<aux name="share of GDP invested\nin Energy without fuel" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -3444,7 +3155,7 @@ All_Energy_Investments*EXP(-Social_Discount_Rate*(TIME-Policy_Start_Year_1))</eq
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="4" isee:page_rows="3" isee:scroll_y="300" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="1106.43" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3797,10 +3508,10 @@ The stock is the currently employed capital.</text_box>
 					<from>share_of_GDP_invested_in_Renewable_Energy</from>
 					<to>share_of_GDP_invested_in_Energy</to>
 				</connector>
-				<aux x="1567.33" y="151.488" name="share of GDP invested\nin Energy w/o fuel"/>
+				<aux x="1567.33" y="151.488" name="share of GDP invested\nin Energy without fuel"/>
 				<connector uid="176" angle="241.019">
 					<from>share_of_GDP_invested_in_Energy</from>
-					<to>&quot;share_of_GDP_invested_in_Energy_w/o_fuel&quot;</to>
+					<to>share_of_GDP_invested_in_Energy_without_fuel</to>
 				</connector>
 				<aux color="blue" background="lime" font_style="italic" font_weight="bold" x="1079.17" y="54.6065" name="GDP"/>
 				<connector uid="177" angle="215.928">
@@ -4020,7 +3731,7 @@ The stock is the currently employed capital.</text_box>
 				</connector>
 				<connector uid="227" angle="25.4445">
 					<from>share_of_GDP_invested_in_fossil_energy</from>
-					<to>&quot;share_of_GDP_invested_in_Energy_w/o_fuel&quot;</to>
+					<to>share_of_GDP_invested_in_Energy_without_fuel</to>
 				</connector>
 				<connector uid="228" angle="290.561">
 					<from>adaptive_energy_investments_proportional_factor</from>
@@ -4158,8 +3869,8 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="other_energy.damage_rate_of_energy_capital_from_STA" from="Damages.damage_rate_of_energy_capital_from_STA"/>
 				<connect to="other_energy.Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
 				<connect2 to="other_energy.Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
-				<connect to='Energy."Installation_Cost_of_S&amp;W_capacity"' from='solar_and_wind_energy."Installation_Cost_of_S&amp;W_capacity"'/>
-				<connect2 to='Energy."Installation_Cost_of_S&amp;W_capacity"' from='solar_and_wind_energy."Installation_Cost_of_S&amp;W_capacity"'/>
+				<connect to='Energy."Installation_Cost_of_S&amp;W_capacity"' from="solar_and_wind_energy.Installation_Cost_of_Solar_and_Wind_capacity"/>
+				<connect2 to='Energy."Installation_Cost_of_S&amp;W_capacity"' from="solar_and_wind_energy.Installation_Cost_of_Solar_and_Wind_capacity"/>
 				<connect to="energy_investments.replacement_cost_of_Solar_and_Wind_Energy_Capital_Damaged_due_to_STA" from="solar_and_wind_energy.replacement_cost_of_Solar_and_Wind_Energy_Capital_Damaged_due_to_STA"/>
 				<connect2 to="energy_investments.replacement_cost_of_Solar_and_Wind_Energy_Capital_Damaged_due_to_STA" from="solar_and_wind_energy.replacement_cost_of_Solar_and_Wind_Energy_Capital_Damaged_due_to_STA"/>
 				<connect to="Energy.Wind_and_Solar_Energy_Capacity" from="solar_and_wind_energy.Wind_and_Solar_Energy_Capacity"/>
@@ -4210,14 +3921,14 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy" from="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy"/>
 				<connect to="Energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy" from="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy"/>
 				<connect2 to="Energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy" from="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy"/>
-				<connect to="Energy.Fossil_Energy_Extraction" from="fossil_energy.Fossil_Energy_Extraction"/>
-				<connect2 to="Energy.Fossil_Energy_Extraction" from="fossil_energy.Fossil_Energy_Extraction"/>
+				<connect to="Emissions.Fossil_Energy_Extraction" from="fossil_energy.Fossil_Energy_Extraction"/>
+				<connect2 to="Emissions.Fossil_Energy_Extraction" from="fossil_energy.Fossil_Energy_Extraction"/>
 				<connect to="energy_investments.Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA" from="fossil_energy.Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA"/>
 				<connect2 to="energy_investments.Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA" from="fossil_energy.Fossil_Fuel_Extraction_Capital_Damaged_due_to_STA"/>
-				<connect to='energy_supply."Primary_Fossil_Energy_(FUEL)"' from='fossil_energy."Primary_Fossil_Energy_(FUEL)"'/>
-				<connect2 to='"Primary_Fossil_Energy_(FUEL)"' from='fossil_energy."Primary_Fossil_Energy_(FUEL)"'/>
-				<connect to='Energy."Primary_Fossil_Energy_(FUEL)"' from='fossil_energy."Primary_Fossil_Energy_(FUEL)"'/>
-				<connect2 to='Energy."Primary_Fossil_Energy_(FUEL)"' from='fossil_energy."Primary_Fossil_Energy_(FUEL)"'/>
+				<connect to='energy_supply."Primary_Fossil_Energy_(FUEL)"' from="fossil_energy.Primary_Fossil_Energy_FUEL"/>
+				<connect2 to='"Primary_Fossil_Energy_(FUEL)"' from="fossil_energy.Primary_Fossil_Energy_FUEL"/>
+				<connect to='Energy."Primary_Fossil_Energy_(FUEL)"' from="fossil_energy.Primary_Fossil_Energy_FUEL"/>
+				<connect2 to='Energy."Primary_Fossil_Energy_(FUEL)"' from="fossil_energy.Primary_Fossil_Energy_FUEL"/>
 				<connect to="energy_investments.Secondary_Fossil_Energy_Capital_Damaged_due_to_STA" from="fossil_energy.Secondary_Fossil_Energy_Capital_Damaged_due_to_STA"/>
 				<connect2 to="energy_investments.Secondary_Fossil_Energy_Capital_Damaged_due_to_STA" from="fossil_energy.Secondary_Fossil_Energy_Capital_Damaged_due_to_STA"/>
 				<connect to="energy_supply.Secondary_Fossil_Energy_Output" from="fossil_energy.Secondary_Fossil_Energy_Output"/>
@@ -4762,7 +4473,7 @@ Calibrate to energy provision from fossil sources</doc>
 				<eqn>zJ_to_TWh*
 (Total_Factor_Productivity_Fossil_Energy*(
 share_of_primary_energy_in_fossil_energy*
-(Primary_Fossil_Energy_Scaling_Parameter*&quot;Primary_Fossil_Energy_(FUEL)&quot;)^
+(Primary_Fossil_Energy_Scaling_Parameter*Primary_Fossil_Energy_FUEL)^
 (Substitution_Parameter_in_Fossil_Energy_Output)
 +
 (1-share_of_primary_energy_in_fossil_energy) *
@@ -4806,7 +4517,7 @@ value in MIND 0.5</doc>
 				<non_negative/>
 				<units>gtC/Year</units>
 			</flow>
-			<aux name="Primary Fossil Energy (FUEL)" access="output" isee:autocreated="true">
+			<aux name="Primary Fossil Energy FUEL" access="output" isee:autocreated="true">
 				<doc>${Calibrated}
 This is extracted usable fuels in the current period.
 Data for calibration would be total fossil energy production:
@@ -5069,7 +4780,7 @@ MIND Code: 1</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Secondary_Fossil_Energy_Output/(&quot;Primary_Fossil_Energy_(FUEL)&quot;*zJ_to_TWh)</eqn>
+				<eqn>Secondary_Fossil_Energy_Output/(Primary_Fossil_Energy_FUEL*zJ_to_TWh)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Elasticity of Substitution\nin Fossil Energy Output">
@@ -5245,7 +4956,7 @@ Depreciation_of_Fuel_Extraction_Capital
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="3" isee:page_rows="3" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="307" isee:scroll_y="155" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -5295,18 +5006,18 @@ Depreciation_of_Fuel_Extraction_Capital
 						<pt x="738.89" y="753.627"/>
 					</pts>
 				</flow>
-				<aux background="#FFAAFF" x="952.33" y="621.067" name="Primary Fossil Energy (FUEL)"/>
+				<aux background="#FFAAFF" x="952.33" y="621.067" name="Primary Fossil Energy FUEL"/>
 				<aux x="952.33" y="680.657" name="Energy per Carbon"/>
 				<connector uid="1" angle="47.1157">
 					<from>Fossil_Energy_Extraction</from>
-					<to>&quot;Primary_Fossil_Energy_(FUEL)&quot;</to>
+					<to>Primary_Fossil_Energy_FUEL</to>
 				</connector>
 				<connector uid="2" angle="90">
 					<from>Energy_per_Carbon</from>
-					<to>&quot;Primary_Fossil_Energy_(FUEL)&quot;</to>
+					<to>Primary_Fossil_Energy_FUEL</to>
 				</connector>
 				<connector uid="3" angle="342.271">
-					<from>&quot;Primary_Fossil_Energy_(FUEL)&quot;</from>
+					<from>Primary_Fossil_Energy_FUEL</from>
 					<to>Secondary_Fossil_Energy_Output</to>
 				</connector>
 				<connector uid="4" angle="110.522">
@@ -5469,7 +5180,7 @@ Depreciation_of_Fuel_Extraction_Capital
 				</connector>
 				<aux background="#FFAAFF" x="1077.49" y="743.397" name="conversion efficiency\nof fossil fuels to\nsecondary fossil energy"/>
 				<connector uid="34" angle="315.655">
-					<from>&quot;Primary_Fossil_Energy_(FUEL)&quot;</from>
+					<from>Primary_Fossil_Energy_FUEL</from>
 					<to>conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy</to>
 				</connector>
 				<connector uid="35" angle="174.821">
@@ -5922,10 +5633,10 @@ Calibrate to energy provision from renewable sources</doc>
 			</aux>
 			<module name="solar and wind energy" isee:label="">
 				<format scale_by="auto"/>
-				<connect to='Energy."Installation_Cost_of_S&amp;W_capacity"' from='solar_and_wind_energy."Installation_Cost_of_S&amp;W_capacity"'/>
-				<connect2 to='Energy."Installation_Cost_of_S&amp;W_capacity"' from='solar_and_wind_energy."Installation_Cost_of_S&amp;W_capacity"'/>
-				<connect to='renewable_energy."Installation_Cost_of_S&amp;W_capacity"' from='solar_and_wind_energy."Installation_Cost_of_S&amp;W_capacity"'/>
-				<connect2 to='"Installation_Cost_of_S&amp;W_capacity"' from='solar_and_wind_energy."Installation_Cost_of_S&amp;W_capacity"'/>
+				<connect to='Energy."Installation_Cost_of_S&amp;W_capacity"' from="solar_and_wind_energy.Installation_Cost_of_Solar_and_Wind_capacity"/>
+				<connect2 to='Energy."Installation_Cost_of_S&amp;W_capacity"' from="solar_and_wind_energy.Installation_Cost_of_Solar_and_Wind_capacity"/>
+				<connect to='renewable_energy."Installation_Cost_of_S&amp;W_capacity"' from="solar_and_wind_energy.Installation_Cost_of_Solar_and_Wind_capacity"/>
+				<connect2 to='"Installation_Cost_of_S&amp;W_capacity"' from="solar_and_wind_energy.Installation_Cost_of_Solar_and_Wind_capacity"/>
 				<connect to="energy_investments.replacement_cost_of_Solar_and_Wind_Energy_Capital_Damaged_due_to_STA" from="solar_and_wind_energy.replacement_cost_of_Solar_and_Wind_Energy_Capital_Damaged_due_to_STA"/>
 				<connect2 to="energy_investments.replacement_cost_of_Solar_and_Wind_Energy_Capital_Damaged_due_to_STA" from="solar_and_wind_energy.replacement_cost_of_Solar_and_Wind_Energy_Capital_Damaged_due_to_STA"/>
 				<connect to="Energy.Wind_and_Solar_Energy_Capacity" from="solar_and_wind_energy.Wind_and_Solar_Energy_Capacity"/>
@@ -6798,7 +6509,7 @@ Default 5% rate</doc>
 				<eqn>IF(Renewable_Age_Group=1)THEN 
 kW_to_GW *
 Investments_in_Solar_and_Wind_Energy_Capacity[Run] /
-(&quot;Installation_Cost_of_S&amp;W_capacity&quot;[Run])
+(Installation_Cost_of_Solar_and_Wind_capacity[Run])
 ELSE 0</eqn>
 				<non_negative/>
 				<units>gW/Year</units>
@@ -6863,7 +6574,7 @@ Calibrate to time series of ren cap</doc>
 				<eqn>5</eqn>
 				<units>year</units>
 			</aux>
-			<aux name="Installation Cost\nof S&amp;W capacity" access="output" isee:autocreated="true">
+			<aux name="Installation Cost\nof Solar and Wind capacity" access="output" isee:autocreated="true">
 				<doc>${Calibrated}
 </doc>
 				<dimensions>
@@ -7023,7 +6734,7 @@ Wind_and_Solar_Energy_Capacity * gWh_to_TWh</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SUM(Solar_and_Wind_Energy_Capital_Damaged_due_to_STA[Run,1:2])*&quot;Installation_Cost_of_S&amp;W_capacity&quot;/kW_to_GW {we don&apos;t replace destroyed capital that is more then 10 years old}</eqn>
+				<eqn>SUM(Solar_and_Wind_Energy_Capital_Damaged_due_to_STA[Run,1:2])*Installation_Cost_of_Solar_and_Wind_capacity/kW_to_GW {we don&apos;t replace destroyed capital that is more then 10 years old}</eqn>
 				<units>$/Year</units>
 			</aux>
 			<aux name="damage rate of energy\ncapital from STA" access="input">
@@ -7089,7 +6800,7 @@ Wind_and_Solar_Energy_Capacity * gWh_to_TWh</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="576" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="248" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -7159,12 +6870,12 @@ Wind_and_Solar_Energy_Capacity * gWh_to_TWh</eqn>
 				</connector>
 				<aux label_angle="258.411" x="672.64" y="563.363" name="Renewable Energy Capacity Decay Fractions"/>
 				<aux label_side="left" label_angle="225" x="543.21" y="523.823" name="Renewable Energy Capacity\nVintage Duration"/>
-				<aux background="#FFAAFF" x="208.22" y="714.293" name="Installation Cost\nof S&amp;W capacity"/>
+				<aux background="#FFAAFF" x="208.22" y="714.293" name="Installation Cost\nof Solar and Wind capacity"/>
 				<aux color="black" font_color="black" x="300.25" y="689.403" name="Renewable Energy\nLearning Rate"/>
 				<aux color="black" font_color="black" x="208.22" y="770.023" name="Renewable Energy\nFloor Costs"/>
 				<connector uid="3" angle="90">
 					<from>Renewable_Energy_Floor_Costs</from>
-					<to>&quot;Installation_Cost_of_S&amp;W_capacity&quot;</to>
+					<to>Installation_Cost_of_Solar_and_Wind_capacity</to>
 				</connector>
 				<aux background="white" x="352.86" y="763.223" name="Initial Renewable Energy Installation Costs"/>
 				<stock x="398.84" y="622.323" name="Cumulative Renewable Energy\nCapacity Construction"/>
@@ -7180,7 +6891,7 @@ Wind_and_Solar_Energy_Capacity * gWh_to_TWh</eqn>
 				</connector>
 				<aux background="white" label_side="bottom" x="581.42" y="529.113" name="Initial Installed\nRenewable Energy Capacity"/>
 				<connector uid="5" angle="87.3958">
-					<from>&quot;Installation_Cost_of_S&amp;W_capacity&quot;</from>
+					<from>Installation_Cost_of_Solar_and_Wind_capacity</from>
 					<to>Renewable_Energy_Capacity_Construction</to>
 				</connector>
 				<aux color="black" font_color="black" x="822" y="559.923" name="gWh to TWh"/>
@@ -7214,7 +6925,7 @@ Wind_and_Solar_Energy_Capacity * gWh_to_TWh</eqn>
 				</connector>
 				<connector uid="12" angle="171.411">
 					<from>Renewable_Energy_Reducible_Installation_Cost_component</from>
-					<to>&quot;Installation_Cost_of_S&amp;W_capacity&quot;</to>
+					<to>Installation_Cost_of_Solar_and_Wind_capacity</to>
 				</connector>
 				<aux x="501.26" y="600.253" name="Perceived cumulative ren energy\ncapacity construction"/>
 				<aux x="609.38" y="625.413" name="time to perceive\nchanges in construction"/>
@@ -7298,7 +7009,7 @@ Wind_and_Solar_Energy_Capacity * gWh_to_TWh</eqn>
 				</connector>
 				<text_box uid="30" x="936.667" y="500.113" width="260" height="58">storage goes here will increase the statistical full load hours</text_box>
 				<alias background="#FFAAFF" font_style="italic" uid="25" x="402.67" y="219.333" width="18" height="18">
-					<of>&quot;Installation_Cost_of_S&amp;W_capacity&quot;</of>
+					<of>Installation_Cost_of_Solar_and_Wind_capacity</of>
 				</alias>
 			</view>
 		</views>
