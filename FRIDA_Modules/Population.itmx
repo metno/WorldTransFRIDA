@@ -995,7 +995,7 @@ Eberlein RL, Thompson JP. 2013. Precise modeling of aging populations. System Dy
 			<aux name="initial\nfertility">
 				<doc>${Calibration Parameter}
 Calibration Parameter: fertility</doc>
-				<eqn>3.92121031659814</eqn>
+				<eqn>3.84960412746669</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="relative GDP per person">
@@ -1005,16 +1005,10 @@ Calibration Parameter: fertility</doc>
 				<eqn>GDP_per_person/GDP_per_person_in_1980</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="sensitivity of fertility\nto GDP per person\nbeta">
+			<aux name="sensitivity of fertility\nto inverse\nGDP per person">
 				<doc>${Calibration Parameter}
 Calibration Parameter: fertility</doc>
-				<eqn>0.560037000807267</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="sensitivity of fertility\nto GDP per person\nalpha">
-				<doc>${Calibration Parameter}
-Calibration Parameter: fertility</doc>
-				<eqn>-0.0350160473695705</eqn>
+				<eqn>-0.791239930180236</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="infant mortality\nalpha">
@@ -1319,6 +1313,8 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				<units>Per Year</units>
 			</flow>
 			<aux name="time to change\nfertility">
+				<doc>${Calibration Parameter}
+</doc>
 				<eqn>22.4691536348316</eqn>
 				<units>years</units>
 			</aux>
@@ -1326,17 +1322,21 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>sensitivity_of_fertility_to_GDP_per_person_alpha*LN(relative_GDP_per_person)+sensitivity_of_fertility_to_GDP_per_person_beta</eqn>
+				<eqn>sensitivity_of_fertility_to_inverse_GDP_per_person/relative_GDP_per_person
+{sensitivity_of_fertility_to_GDP_per_person_alpha*LN(relative_GDP_per_person)}{+sensitivity_of_fertility_to_GDP_per_person_beta}</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="indicated fertility">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>initial_fertility*effect_of_GDP_on_change_in_fertility</eqn>
+				<eqn>{initial_fertility*effect_of_GDP_on_change_in_fertility*effect_of_literacy_on_change_in_fertility}
+initial_fertility+effect_of_GDP_on_change_in_fertility+effect_of_literacy_on_change_in_fertility</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Exponent of Capital Damage Function">
+				<doc>${Calibration Parameter}
+</doc>
 				<eqn>2</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -1357,6 +1357,46 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 			</aux>
 			<aux name="switch for climate damage" access="input">
 				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="female population\nliteracy percentage">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{MIN(100, 
+sensitivity_of_alphabetisation_to_GDP_per_person_alpha*LN(relative_GDP_per_person)+sensitivity_of_alphabetisation_to_GDP_per_person_beta)}
+
+{LOGISTICBOUND(
+female_population_literacy_percentage_in_1980, 
+100, 
+relative_GDP_per_person, 
+relative_GDP_per_person_with_greatest_increase_in_female_literacy_rate, Speed_of_GDP_affecting_female_population_literacy_percentage, 
+INIT(relative_GDP_per_person), 
+relative_gdp_per_person_at_which_full_literacy_is_achieved)}
+
+100-(100/(effect_of_GDP_on_female_population_literacy_percentage_constant+effect_of_GDP_on_female_population_literacy_percentage_scale_factor*relative_GDP_per_person))</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sensitivity of fertility\nto literacy">
+				<doc>${Calibration Parameter}
+Calibration Parameter: fertility</doc>
+				<eqn>-0.0182836436933889</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of literacy\non change in fertility">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>sensitivity_of_fertility_to_literacy*female_population_literacy_percentage
+{+sensitivity_of_fertility_to_literacy_beta}</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of GDP on female population\nliteracy percentage\nconstant">
+				<eqn>0.60927010029869</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of GDP on female population\nliteracy percentage scale factor">
+				<eqn>1.87312151697185</eqn>
 				<units>dmnl</units>
 			</aux>
 		</variables>
@@ -1660,8 +1700,7 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 					<from>GDP_per_person</from>
 					<to>relative_GDP_per_person</to>
 				</connector>
-				<aux x="632.5" y="2303.33" name="sensitivity of fertility\nto GDP per person\nbeta"/>
-				<aux x="442.5" y="2208.84" name="sensitivity of fertility\nto GDP per person\nalpha"/>
+				<aux x="550.167" y="2244.67" name="sensitivity of fertility\nto inverse\nGDP per person"/>
 				<aux x="773.5" y="1615.34" name="infant mortality\nalpha"/>
 				<aux x="685.5" y="1600.67" name="infant mortality\ngamma"/>
 				<aux label_side="left" x="791.5" y="1488.67" name="effect of GDP per person\non infant mortality"/>
@@ -2038,20 +2077,12 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 					<from>effect_of_GDP_on_change_in_fertility</from>
 					<to>indicated_fertility</to>
 				</connector>
-				<connector uid="435" angle="202.427">
-					<from>initial_fertility</from>
-					<to>indicated_fertility</to>
-				</connector>
 				<connector uid="436" angle="138.292">
 					<from>fertility</from>
 					<to>change_in_fertility</to>
 				</connector>
-				<connector uid="437" angle="110.912">
-					<from>sensitivity_of_fertility_to_GDP_per_person_beta</from>
-					<to>effect_of_GDP_on_change_in_fertility</to>
-				</connector>
-				<connector uid="438" angle="12.0518">
-					<from>sensitivity_of_fertility_to_GDP_per_person_alpha</from>
+				<connector uid="438" angle="53.8859">
+					<from>sensitivity_of_fertility_to_inverse_GDP_per_person</from>
 					<to>effect_of_GDP_on_change_in_fertility</to>
 				</connector>
 				<aux x="1327.5" y="1887" name="Exponent of Capital Damage Function"/>
@@ -2078,6 +2109,39 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				<connector uid="443" angle="18.4349">
 					<from>switch_for_climate_damage</from>
 					<to>effect_of_surface_temperature_anomaly_on_mortality</to>
+				</connector>
+				<aux label_side="right" label_angle="315" x="477.667" y="2436.67" name="female population\nliteracy percentage"/>
+				<connector uid="455" angle="231.481">
+					<from>relative_GDP_per_person</from>
+					<to>female_population_literacy_percentage</to>
+				</connector>
+				<aux x="176.667" y="2183.84" name="sensitivity of fertility\nto literacy"/>
+				<aux label_side="right" label_angle="315" x="335.167" y="2150" name="effect of literacy\non change in fertility"/>
+				<connector uid="457" angle="12.0518">
+					<from>sensitivity_of_fertility_to_literacy</from>
+					<to>effect_of_literacy_on_change_in_fertility</to>
+				</connector>
+				<connector uid="458" angle="143.549">
+					<from>female_population_literacy_percentage</from>
+					<to>effect_of_literacy_on_change_in_fertility</to>
+				</connector>
+				<connector uid="459" angle="91.7624">
+					<from>effect_of_literacy_on_change_in_fertility</from>
+					<to>indicated_fertility</to>
+				</connector>
+				<connector uid="435" angle="202.427">
+					<from>initial_fertility</from>
+					<to>indicated_fertility</to>
+				</connector>
+				<aux x="703" y="2520.5" name="effect of GDP on female population\nliteracy percentage\nconstant"/>
+				<aux x="532.167" y="2568.16" name="effect of GDP on female population\nliteracy percentage scale factor"/>
+				<connector uid="464" angle="131.468">
+					<from>effect_of_GDP_on_female_population_literacy_percentage_constant</from>
+					<to>female_population_literacy_percentage</to>
+				</connector>
+				<connector uid="465" angle="66.4851">
+					<from>effect_of_GDP_on_female_population_literacy_percentage_scale_factor</from>
+					<to>female_population_literacy_percentage</to>
 				</connector>
 				<alias font_style="italic" uid="330" x="1114.67" y="1688.83" width="18" height="18">
 					<of>relative_GDP_per_person</of>
