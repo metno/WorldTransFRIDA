@@ -319,6 +319,8 @@
 				<connect2 to="N2O_Forcing.Surface_Temperature" from="Energy_Balance_Model.Surface_Temperature"/>
 				<connect to="Ozone_Forcing.Surface_Temperature" from="Energy_Balance_Model.Surface_Temperature"/>
 				<connect2 to="Ozone_Forcing.Surface_Temperature" from="Energy_Balance_Model.Surface_Temperature"/>
+				<connect to="Emissions.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Emissions.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Sea_Level.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Sea_Level.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Temperature.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
@@ -461,6 +463,8 @@
 				<connect2 to="Emissions.Recovering_Forest" from="Land_Use.Recovering_Forest"/>
 				<connect to="Emissions.soil_carbon_emissions_GtC" from="Soil.soil_carbon_emissions_GtC"/>
 				<connect2 to="Emissions.soil_carbon_emissions_GtC" from="Soil.soil_carbon_emissions_GtC"/>
+				<connect to="Emissions.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Emissions.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Emissions.UNIT_GtC_to_GtCO2" from="Climate_Units.UNIT_GtC_to_GtCO2"/>
 				<connect2 to="Emissions.UNIT_GtC_to_GtCO2" from="Climate_Units.UNIT_GtC_to_GtCO2"/>
 				<connect to="Emissions.UNIT_ktN2O_to_MtN2O" from="Climate_Units.UNIT_ktN2O_to_MtN2O"/>
@@ -885,6 +889,10 @@
 				</connector>
 				<connector uid="644" isee:thickness="2" angle="30.4233" isee:autocreated="true">
 					<from>Climate_Units</from>
+					<to>Emissions</to>
+				</connector>
+				<connector uid="645" isee:thickness="2" angle="115" isee:autocreated="true">
+					<from>Energy_Balance_Model</from>
 					<to>Emissions</to>
 				</connector>
 			</view>
@@ -1474,7 +1482,7 @@ Calibration Parameter: CO2 from energy and industry</doc>
 </doc>
 				<eqn>10</eqn>
 				<range min="5" max="15"/>
-				<units>k$/p/year</units>
+				<units>b$/Mp/year</units>
 			</aux>
 			<aux name="CH4 emissions from Other">
 				<doc>${Calibrated}
@@ -1561,6 +1569,57 @@ Calibration Parameter: CO2 from energy and industry</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/Mp/year</units>
 			</aux>
+			<aux name="HFC134a emissions">
+				<doc>${Calibrated}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>HFC134a_emissions_per_person*Population</eqn>
+				<units>kt/year</units>
+			</aux>
+			<aux name="max HFC134a per person">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>2.77716259485095</eqn>
+				<range min="0" max="3"/>
+				<units>kt/mp/year</units>
+			</aux>
+			<aux name="sensitivity of HFC134a per person to GDP per capita">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.0618580567150865</eqn>
+				<range min="0" max="0.2"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="HFC134a emissions per person">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>max_HFC134a_per_person*(1-EXP(-(GDP_per_person/baseline_GDP_per_person)*sensitivity_of_HFC134a_per_person_to_GDP_per_capita*effect_of_STA_on_HFC134a_emissions_per_person))</eqn>
+				<units>kt/mp/year</units>
+			</aux>
+			<aux name="Surface Temperature Anomaly" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>deg C</units>
+			</aux>
+			<aux name="effect of STA on\nHFC134a emissions per\nperson">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>1+sensitivity_of_effect_of_STA_on_HFC134a_emissions_per_person*(Surface_Temperature_Anomaly/INIT(Surface_Temperature_Anomaly) - 1)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sensitivity of effect of STA on\nHFC134a emissions per\nperson">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.793519544396327</eqn>
+				<range min="0" max="2"/>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -1610,7 +1669,7 @@ Calibration Parameter: CO2 from energy and industry</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="4" isee:scroll_x="546.667" isee:scroll_y="448.333" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="4" isee:scroll_x="601.667" isee:scroll_y="247.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1957,8 +2016,8 @@ Calibration Parameter: CO2 from energy and industry</doc>
 					<from>max_non_fossil_CO2_per_person</from>
 					<to>Non_fossil_CO2_per_person</to>
 				</connector>
-				<aux label_side="left" x="899.667" y="723.093" name="baseline GDP per person"/>
-				<connector uid="89" angle="37.7108">
+				<aux label_side="bottom" x="841.167" y="718.926" name="baseline GDP per person"/>
+				<connector uid="89" angle="30.0516">
 					<from>baseline_GDP_per_person</from>
 					<to>Non_fossil_CO2_per_person</to>
 				</connector>
@@ -1969,7 +2028,7 @@ Calibration Parameter: CO2 from energy and industry</doc>
 					<from>max_non_fossil_CH4_per_person</from>
 					<to>Non_fossil_CH4_per_person</to>
 				</connector>
-				<connector uid="92" angle="2.93421">
+				<connector uid="92" angle="1.23155">
 					<from>baseline_GDP_per_person</from>
 					<to>Non_fossil_CH4_per_person</to>
 				</connector>
@@ -1984,7 +2043,7 @@ Calibration Parameter: CO2 from energy and industry</doc>
 					<from>max_non_fossil_N2O_per_person</from>
 					<to>Non_fossil_N2O_per_person</to>
 				</connector>
-				<connector uid="97" angle="316.166">
+				<connector uid="97" angle="323.059">
 					<from>baseline_GDP_per_person</from>
 					<to>Non_fossil_N2O_per_person</to>
 				</connector>
@@ -2055,6 +2114,49 @@ Calibration Parameter: CO2 from energy and industry</doc>
 				<connector uid="116" angle="306.027">
 					<from>GDP_per_person</from>
 					<to>Non_fossil_N2O_per_person</to>
+				</connector>
+				<aux x="1260.12" y="439" name="HFC134a emissions"/>
+				<aux x="989.167" y="316.667" name="max HFC134a per person"/>
+				<aux x="1167.45" y="295.333" name="sensitivity of HFC134a per person to GDP per capita"/>
+				<aux x="1094.95" y="398.167" name="HFC134a emissions per person"/>
+				<connector uid="127" angle="322.388">
+					<from>max_HFC134a_per_person</from>
+					<to>HFC134a_emissions_per_person</to>
+				</connector>
+				<connector uid="128" angle="234.815">
+					<from>sensitivity_of_HFC134a_per_person_to_GDP_per_capita</from>
+					<to>HFC134a_emissions_per_person</to>
+				</connector>
+				<connector uid="129" angle="45.0016">
+					<from>GDP_per_person</from>
+					<to>HFC134a_emissions_per_person</to>
+				</connector>
+				<connector uid="130" angle="51.6492">
+					<from>baseline_GDP_per_person</from>
+					<to>HFC134a_emissions_per_person</to>
+				</connector>
+				<connector uid="131" angle="346.114">
+					<from>HFC134a_emissions_per_person</from>
+					<to>HFC134a_emissions</to>
+				</connector>
+				<connector uid="132" angle="108.585">
+					<from>Population</from>
+					<to>HFC134a_emissions</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="777.5" y="353.333" name="Surface Temperature Anomaly"/>
+				<aux x="939.167" y="385" name="effect of STA on\nHFC134a emissions per\nperson"/>
+				<connector uid="133" angle="348.917">
+					<from>Surface_Temperature_Anomaly</from>
+					<to>effect_of_STA_on_HFC134a_emissions_per_person</to>
+				</connector>
+				<connector uid="134" angle="355.169">
+					<from>effect_of_STA_on_HFC134a_emissions_per_person</from>
+					<to>HFC134a_emissions_per_person</to>
+				</connector>
+				<aux x="809.95" y="439" name="sensitivity of effect of STA on\nHFC134a emissions per\nperson"/>
+				<connector uid="135" angle="19.6428">
+					<from>sensitivity_of_effect_of_STA_on_HFC134a_emissions_per_person</from>
+					<to>effect_of_STA_on_HFC134a_emissions_per_person</to>
 				</connector>
 				<alias color="blue" background="#FFAA00" font_style="italic" uid="30" x="32.6667" y="39.3333" width="18" height="18">
 					<of>CO2_emissions_from_Energy</of>
