@@ -5,7 +5,7 @@
 		<name>Food and land use</name>
 		<uuid>09e9ebb6-3bb1-46b6-965e-b8dc1913938a</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.6" isee:build_number="3247" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.6.1" isee:build_number="3282" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -46,11 +46,6 @@
 			<eqn/>
 			<alias>ha</alias>
 			<alias>hectare</alias>
-		</unit>
-		<unit name="Kilograms">
-			<eqn/>
-			<alias>kg</alias>
-			<alias>kilogram</alias>
 		</unit>
 		<unit name="Years">
 			<eqn/>
@@ -139,11 +134,6 @@
 			<eqn>kW</eqn>
 			<alias>kilowatt</alias>
 		</unit>
-		<unit name="Dollar">
-			<eqn>$</eqn>
-			<alias>Dollars</alias>
-			<alias>$s</alias>
-		</unit>
 		<unit name="Hour">
 			<eqn/>
 			<alias>Hours</alias>
@@ -221,6 +211,11 @@
 		<unit name="GtN2O">
 			<eqn>Giga*tN2O</eqn>
 		</unit>
+		<unit name="Dollar">
+			<eqn>$</eqn>
+			<alias>Dollars</alias>
+			<alias>$s</alias>
+		</unit>
 	</model_units>
 	<model name="Food_and_land_use">
 		<variables>
@@ -252,10 +247,7 @@
 				<units>dmnl</units>
 			</aux>
 			<isee:placeholder name="calibration data">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Land_Use.Forest_Land + Land_Use.Cropland + Crop.crop_production + Livestock.livestock_production + Freshwater.total_water_withdrawal + Land_Nutrients.fertilizer_use + Land_Nutrients.manure_fertilizer_use + Land_Nutrients.man_made_fertilizer_use + Crop.crop_balance + Livestock.livestock_balance + Freshwater.fraction_of_water_withdrawal_for_agriculture + Food_Demand.fraction_of_crops_for_livestock + Freshwater.available_water_supply + Soil.soil_carbon_loss_cropland</eqn>
+				<eqn>Land_Use.Forest_Land[1] + Land_Use.Cropland[1] + Crop.crop_production[1] + Livestock.livestock_production[1] + Freshwater.total_water_withdrawal[1] + Land_Nutrients.fertilizer_use[1] + Land_Nutrients.manure_fertilizer_use[1] + Land_Nutrients.man_made_fertilizer_use[1] + Crop.crop_balance[1] + Livestock.livestock_balance[1] + Freshwater.fraction_of_water_withdrawal_for_agriculture[1] + Food_Demand.fraction_of_crops_for_livestock[1] + Freshwater.available_water_supply[1] + Soil.soil_carbon_loss_cropland[1] + Freshwater.irrigated_cropland[1]</eqn>
 			</isee:placeholder>
 			<aux name="Forest Land by PCTILE">
 				<dimensions>
@@ -269,7 +261,7 @@
 					<dim name="PCTILE"/>
 				</dimensions>
 				<eqn>PERCENTILE(crop_production,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
-				<units>Mtcrop/year</units>
+				<units>PCal/year</units>
 			</aux>
 			<aux name="Cropland by PCTILE">
 				<dimensions>
@@ -290,7 +282,7 @@
 					<dim name="PCTILE"/>
 				</dimensions>
 				<eqn>PERCENTILE(production,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
-				<units>MKg/Year</units>
+				<units>PCal/Year</units>
 			</aux>
 			<aux name="fraction of water\nwithdrawal for\nagriculture by PCTILE">
 				<dimensions>
@@ -406,6 +398,8 @@
 				<connect2 to="Crop.Cropland" from="Land_Use.Cropland"/>
 				<connect to="Food_and_land_use.Cropland" from="Land_Use.Cropland"/>
 				<connect2 to="Cropland" from="Land_Use.Cropland"/>
+				<connect to="Freshwater.Cropland" from="Land_Use.Cropland"/>
+				<connect2 to="Freshwater.Cropland" from="Land_Use.Cropland"/>
 				<connect to="Food_and_land_use.Forest_Land" from="Land_Use.Forest_Land"/>
 				<connect2 to="Forest_Land" from="Land_Use.Forest_Land"/>
 				<connect to="Food_and_land_use.Grassland" from="Land_Use.Grassland"/>
@@ -420,12 +414,10 @@
 				<connect2 to="Emissions.Recovering_Forest" from="Land_Use.Recovering_Forest"/>
 				<connect to="Food_and_land_use.Recovering_Forest" from="Land_Use.Recovering_Forest"/>
 				<connect2 to="Recovering_Forest" from="Land_Use.Recovering_Forest"/>
-				<connect to="Land_Use.average_crop_yield" from="Crop.average_crop_yield"/>
-				<connect2 to="Land_Use.average_crop_yield" from="Crop.average_crop_yield"/>
-				<connect to="Land_Use.average_crop_yield_in_1980" from="Crop.average_crop_yield_in_1980"/>
-				<connect2 to="Land_Use.average_crop_yield_in_1980" from="Crop.average_crop_yield_in_1980"/>
 				<connect to="Land_Use.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
 				<connect2 to="Land_Use.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
+				<connect to="Land_Use.crop_yield" from="Crop.crop_yield"/>
+				<connect2 to="Land_Use.crop_yield" from="Crop.crop_yield"/>
 				<connect to="Land_Use.livestock_balance_with_reserves" from="Livestock.livestock_balance_with_reserves"/>
 				<connect2 to="Land_Use.livestock_balance_with_reserves" from="Livestock.livestock_balance_with_reserves"/>
 				<connect to="Land_Use.Livestock_Yield" from="Livestock.Livestock_Yield"/>
@@ -441,16 +433,14 @@
 			</stock>
 			<module name="Land Nutrients" isee:label="">
 				<format scale_by="auto"/>
+				<connect to="Crop.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
+				<connect2 to="Crop.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
 				<connect to="Food_and_land_use.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
 				<connect2 to="fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
-				<connect to="Crop.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
-				<connect2 to="Crop.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
 				<connect to="Emissions.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
 				<connect2 to="Emissions.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
 				<connect to="Food_and_land_use.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
 				<connect2 to="man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
-				<connect to="Crop.manure_fertilizer_use_1" from="Land_Nutrients.manure_fertilizer_use"/>
-				<connect2 to="Crop.manure_fertilizer_use_1" from="Land_Nutrients.manure_fertilizer_use"/>
 				<connect to="Food_and_land_use.manure_fertilizer_use" from="Land_Nutrients.manure_fertilizer_use"/>
 				<connect2 to="manure_fertilizer_use" from="Land_Nutrients.manure_fertilizer_use"/>
 				<connect to="Land_Nutrients.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
@@ -462,20 +452,24 @@
 				<format scale_by="auto"/>
 				<connect to="Land_Use_Forcing.agricultural_water_withdrawal" from="Freshwater.agricultural_water_withdrawal"/>
 				<connect2 to="Land_Use_Forcing.agricultural_water_withdrawal" from="Freshwater.agricultural_water_withdrawal"/>
-				<connect to="Crop.available_water_supply" from="Freshwater.available_water_supply"/>
-				<connect2 to="Crop.available_water_supply" from="Freshwater.available_water_supply"/>
 				<connect to="Food_and_land_use.available_water_supply" from="Freshwater.available_water_supply"/>
 				<connect2 to="available_water_supply" from="Freshwater.available_water_supply"/>
+				<connect to="Crop.fraction_of_cropland_irrigated" from="Freshwater.fraction_of_cropland_irrigated"/>
+				<connect2 to="Crop.fraction_of_cropland_irrigated" from="Freshwater.fraction_of_cropland_irrigated"/>
 				<connect to="Food_and_land_use.fraction_of_water_withdrawal_for_agriculture" from="Freshwater.fraction_of_water_withdrawal_for_agriculture"/>
 				<connect2 to="fraction_of_water_withdrawal_for_agriculture" from="Freshwater.fraction_of_water_withdrawal_for_agriculture"/>
-				<connect to="Crop.switch_for_climate_damage" from="Freshwater.switch_for_climate_damage"/>
-				<connect2 to="Crop.switch_for_climate_damage" from="Freshwater.switch_for_climate_damage"/>
+				<connect to="Finance.technological_water_discovery" from="Freshwater.technological_water_discovery"/>
+				<connect2 to="Finance.technological_water_discovery" from="Freshwater.technological_water_discovery"/>
 				<connect to="Food_and_land_use.total_water_withdrawal" from="Freshwater.total_water_withdrawal"/>
 				<connect2 to="total_water_withdrawal" from="Freshwater.total_water_withdrawal"/>
 				<connect to="Freshwater.crop_production_1" from="Crop.crop_production"/>
 				<connect2 to="Freshwater.crop_production_1" from="Crop.crop_production"/>
+				<connect to="Freshwater.Cropland" from="Land_Use.Cropland"/>
+				<connect2 to="Freshwater.Cropland" from="Land_Use.Cropland"/>
 				<connect to="Freshwater.GDP_per_person" from="Population.GDP_per_person"/>
 				<connect2 to="Freshwater.GDP_per_person" from="Population.GDP_per_person"/>
+				<connect to="Freshwater.GDP_per_person_1" from="Population.GDP_per_person"/>
+				<connect2 to="Freshwater.GDP_per_person_1" from="Population.GDP_per_person"/>
 				<connect to="Freshwater.Population_1" from="Population.Population"/>
 				<connect2 to="Freshwater.Population_1" from="Population.Population"/>
 				<connect to="Freshwater.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
@@ -513,10 +507,6 @@
 			</aux>
 			<module name="Crop" isee:label="">
 				<format scale_by="auto"/>
-				<connect to="Land_Use.average_crop_yield" from="Crop.average_crop_yield"/>
-				<connect2 to="Land_Use.average_crop_yield" from="Crop.average_crop_yield"/>
-				<connect to="Land_Use.average_crop_yield_in_1980" from="Crop.average_crop_yield_in_1980"/>
-				<connect2 to="Land_Use.average_crop_yield_in_1980" from="Crop.average_crop_yield_in_1980"/>
 				<connect to="Finance.crop_balance_1" from="Crop.crop_balance"/>
 				<connect2 to="Finance.crop_balance_1" from="Crop.crop_balance"/>
 				<connect to="Land_Nutrients.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
@@ -529,24 +519,22 @@
 				<connect2 to="Freshwater.crop_production_1" from="Crop.crop_production"/>
 				<connect to="Soil.crop_residue_litter" from="Crop.crop_residue_litter"/>
 				<connect2 to="Soil.crop_residue_litter" from="Crop.crop_residue_litter"/>
+				<connect to="Land_Use.crop_yield" from="Crop.crop_yield"/>
+				<connect2 to="Land_Use.crop_yield" from="Crop.crop_yield"/>
 				<connect to="Crop.Atmospheric_CO2_Concentration" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
 				<connect2 to="Crop.Atmospheric_CO2_Concentration" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
-				<connect to="Crop.available_water_supply" from="Freshwater.available_water_supply"/>
-				<connect2 to="Crop.available_water_supply" from="Freshwater.available_water_supply"/>
 				<connect to="Crop.crop_demand_1" from="Food_Demand.crop_demand"/>
 				<connect2 to="Crop.crop_demand_1" from="Food_Demand.crop_demand"/>
 				<connect to="Crop.Cropland" from="Land_Use.Cropland"/>
 				<connect2 to="Crop.Cropland" from="Land_Use.Cropland"/>
-				<connect to="Crop.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
-				<connect2 to="Crop.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
-				<connect to="Crop.manure_fertilizer_use_1" from="Land_Nutrients.manure_fertilizer_use"/>
-				<connect2 to="Crop.manure_fertilizer_use_1" from="Land_Nutrients.manure_fertilizer_use"/>
+				<connect to="Crop.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
+				<connect2 to="Crop.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
+				<connect to="Crop.fraction_of_cropland_irrigated" from="Freshwater.fraction_of_cropland_irrigated"/>
+				<connect2 to="Crop.fraction_of_cropland_irrigated" from="Freshwater.fraction_of_cropland_irrigated"/>
 				<connect to="Crop.soil_carbon_cropland" from="Soil.soil_carbon_cropland"/>
 				<connect2 to="Crop.soil_carbon_cropland" from="Soil.soil_carbon_cropland"/>
-				<connect to="Crop.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
-				<connect2 to="Crop.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
-				<connect to="Crop.switch_for_climate_damage" from="Freshwater.switch_for_climate_damage"/>
-				<connect2 to="Crop.switch_for_climate_damage" from="Freshwater.switch_for_climate_damage"/>
+				<connect to="Crop.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Crop.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 			</module>
 			<aux name="man made fertilizer use" access="input">
 				<dimensions>
@@ -567,14 +555,14 @@
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>Mtcrop/year</units>
+				<units>PCal/year</units>
 			</aux>
 			<aux name="production" access="input">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>MKg/Year</units>
+				<units>PCal/Year</units>
 			</aux>
 			<aux name="Forest Land" access="input">
 				<dimensions>
@@ -678,7 +666,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="5" isee:page_rows="6" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="6" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -758,7 +746,7 @@
 					<from>albedo_recovering_forest</from>
 					<to>Albedo</to>
 				</connector>
-				<isee:placeholder x="1768.33" y="503.75" name="calibration data"/>
+				<isee:placeholder x="1797.33" y="504.75" name="calibration data"/>
 				<aux x="2047.51" y="74.458" name="Forest Land by PCTILE"/>
 				<aux x="2047.51" y="132.5" name="crop production by PCTILE"/>
 				<aux x="2051.51" y="192.833" name="Cropland by PCTILE"/>
@@ -955,6 +943,10 @@
 					<from>Crop</from>
 					<to>Land_Nutrients</to>
 				</connector>
+				<connector uid="1012" isee:thickness="2" angle="46.6069" isee:autocreated="true">
+					<from>Land_Use</from>
+					<to>Freshwater</to>
+				</connector>
 				<alias font_style="italic" label_side="center" uid="789" x="1862.5" y="193.333" width="85.8333" height="41.6667">
 					<of>Cropland</of>
 				</alias>
@@ -968,7 +960,7 @@
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>crop_production/crop_demand_1</eqn>
-				<units>1</units>
+				<units>dmnl</units>
 			</aux>
 			<aux name="crop balance\nwith reserves" access="output">
 				<dimensions>
@@ -977,122 +969,20 @@
 				<eqn>crop_balance/(1+desired_crop_reserve_capacity)</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="Surface Temperature Anomaly" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>deg C</units>
-			</aux>
-			<aux name="elasticity of crop yield\nto manure fertilizer use">
-				<doc>${Calibration Parameter}
-Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>0.565959725346284</eqn>
-				<range min="0.01" max="1.5"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="effect of manure fertilizer use\non crop yield">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(manure_fertilizer_use_1/INIT(manure_fertilizer_use_1))^elasticity_of_crop_yield_to_manure_fertilizer_use</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="switch for climate damage" access="input">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
 			<aux name="harvest index">
 				<eqn>0.55</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="crop residue production" access="output">
+			<aux name="crop residue production">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>crop_production*(1/harvest_index)*(1-harvest_index)*UNIT_GtC_per_Mtcrop</eqn>
+				<eqn>crop_production*(1/harvest_index)*(1-harvest_index)*UNIT_GtC_per_PCal</eqn>
 				<units>GtC/Year</units>
 			</aux>
-			<aux name="UNIT GtC per Mtcrop">
-				<eqn>0.001</eqn>
-				<units>GtC/Mtcrop</units>
-			</aux>
-			<aux name="rate of change\nin man made\nfertilizer\nproductivity">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.0010589044199156</eqn>
-				<range min="0.00001" max="0.1"/>
-				<units>1/year</units>
-			</aux>
-			<aux name="man made\nfertilizer productivity\nindex">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>1+LN((TIME-STARTTIME) *rate_of_change_in_man_made_fertilizer_productivity+1)</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="elasticity of\ncrop yield\nto soil carbon">
-				<doc>${Calibration Parameter}
-Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>0.823646906084397</eqn>
-				<range min="0" max="1"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="effect of soil carbon\non crop yield">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(soil_carbon_cropland/INIT(soil_carbon_cropland))^elasticity_of_crop_yield_to_soil_carbon</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="sensitivity of\ncrop yield to irrigation\nwater available">
-				<doc>${Calibration Parameter}
-Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>0.217454739036799</eqn>
-				<range min="0" max="1"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="effect of irrigation\non crop yield">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>1+sensitivity_of_crop_yield_to_irrigation_water_available*((available_water_supply/INIT(available_water_supply))-1)</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="effect of man made\nfertilizer use\non crop yield">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>((man_made_fertilizer_use*man_made_fertilizer_productivity_index)/INIT(man_made_fertilizer_use))^elasticity_of_crop_yield_to_man_made_fertilizer_use</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="elasticity of crop yield\nto man made fertilizer use">
-				<doc>${Calibration Parameter}
-Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>1.57501305294411</eqn>
-				<range min="0" max="5"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="average crop yield in\n1980" access="output">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>3.63351723695947</eqn>
-				<range min="2" max="5"/>
-				<units>tcrop/(ha*year)</units>
-			</aux>
-			<aux name="net effect of climate on crop\nyield">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>effect_of_surface_temperature_anomaly_on_average_crop_yield*effect_of_CO2_concentration_on_average_crop_yield</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="CO2 concentration 1980">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>INIT(Atmospheric_CO2_Concentration)</eqn>
-				<units>ppm</units>
+			<aux name="UNIT GtC per PCal">
+				<eqn>0.001756582675</eqn>
+				<units>GtC/PCal</units>
 			</aux>
 			<aux name="crop production" access="output">
 				<doc>${Calibrated}
@@ -1101,56 +991,8 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>average_crop_yield*Cropland</eqn>
-				<units>Mtcrop/year</units>
-			</aux>
-			<aux name="effect of CO2 concentration on\naverage crop yield">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>( 1+switch_for_climate_damage*sensitivity_of_CO2_concentration_on_average_crop_yield*(Atmospheric_CO2_Concentration/CO2_concentration_1980-1))</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="sensitivity of CO2 concentration on\naverage crop yield">
-				<doc>${Calibration Parameter}
-Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>0.0615569374267138</eqn>
-				<range min="0" max="1"/>
-				<units>1</units>
-			</aux>
-			<aux name="effect of surface temperature\nanomaly on average crop yield">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(1 + switch_for_climate_damage*sensitivity_of_surface_temperature_anomaly_on_average_crop_yield * (Surface_Temperature_Anomaly/INIT(Surface_Temperature_Anomaly)-1))</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="sensitivity of surface temperature\nanomaly on average crop yield">
-				<doc>${Calibration Parameter}
-Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<element subscript="1">
-					<eqn>-0.0595206790265611</eqn>
-				</element>
-				<range min="-1" max="0"/>
-				<units>1</units>
-			</aux>
-			<aux name="average crop yield" access="output">
-				<doc>the Average Crop Yield is also negatively impacted by the STA (from IPCC AR6 WGI, Chapter 12 (Ranasinghe et al., 2021))
-
-Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saiful Islam AKM, Rahimi M, Carrascal DR, Sillmann J. 2021. Climate Change Information for Regional Impact and for Risk Assessment. In Climate Change 2021: The Physical Science Basis. Contribution of Working Group I to the Sixth Assessment Report of the Intergovernmental Panel on Climate Change. Cambridge University Press, Cambridge, United Kingdom and New York, NY, USA, pp. 1767–1926, doi: 10.1017/9781009157896.014.
-
-
-the Average Crop Yield is bolstered slightly in comparison by the increasing concentration of CO2 in the atmosphere due to plantlife respiring CO2 (Kimball et al. 1983). 
-
-Kimball BA, Idso SB. 1983. Increasing atmospheric CO2: effects on crop yield, water use and climate. Agricultural water management 7(1-3): 55-72.</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>average_crop_yield_in_1980*effect_of_man_made_fertilizer_use_on_crop_yield*effect_of_manure_fertilizer_use_on_crop_yield*net_effect_of_climate_on_crop_yield*effect_of_irrigation_on_crop_yield*effect_of_soil_carbon_on_crop_yield</eqn>
-				<units>tcrop/(ha*year)</units>
+				<eqn>crop_yield*Cropland</eqn>
+				<units>PCal/year</units>
 			</aux>
 			<aux name="crop residue litter" access="output">
 				<dimensions>
@@ -1163,26 +1005,12 @@ Kimball BA, Idso SB. 1983. Increasing atmospheric CO2: effects on crop yield, wa
 				<eqn>0.44</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="man made fertilizer use" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>MtN/year</units>
-			</aux>
-			<aux name="manure fertilizer use 1" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>MtN/year</units>
-			</aux>
 			<aux name="crop demand 1" access="input">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>Mtcrop/year</units>
+				<units>PCal/year</units>
 			</aux>
 			<aux name="desired crop reserve capacity">
 				<eqn>0.05</eqn>
@@ -1195,6 +1023,160 @@ Kimball BA, Idso SB. 1983. Increasing atmospheric CO2: effects on crop yield, wa
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>Mha</units>
 			</stock>
+			<aux name="fraction of cropland\nirrigated" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="CO2 crop yield parameter">
+				<doc>${Calibration Parameter,Yield}
+</doc>
+				<eqn>0.000528942276758028</eqn>
+				<range min="0.0001" max="0.01"/>
+				<units>1/ppm</units>
+			</aux>
+			<aux name="effect of CO2 on\ncrop yield">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(Atmospheric_CO2_Concentration - INIT(Atmospheric_CO2_Concentration))*CO2_crop_yield_parameter</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="change in crop yield from CO2">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>initial_crop_yield*effect_of_CO2_on_crop_yield</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<aux name="change in crop yield from STA">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>initial_crop_yield*effect_of_STA_on_crop_yield</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<aux name="effect of STA on\ncrop yield">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(Surface_Temperature_Anomaly-INIT(Surface_Temperature_Anomaly))*STA_crop_yield_parameter</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="STA crop yield parameter">
+				<doc>${Calibration Parameter,Yield}
+</doc>
+				<eqn>0.499391124602685</eqn>
+				<range min="-1" max="1"/>
+				<units>1/deg C</units>
+			</aux>
+			<aux name="change in crop yield\nfrom STA squared">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<aux name="effect of STA squared on\ncrop yield">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>((Surface_Temperature_Anomaly-INIT(Surface_Temperature_Anomaly))^2)*STA_squared_crop_yield_parameter</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="STA squared crop yield parameter">
+				<doc>${Calibration Parameter,Yield}
+</doc>
+				<eqn>-0.358938618558643</eqn>
+				<range min="-5" max="-0.01"/>
+				<units>1/(deg C^2)</units>
+			</aux>
+			<aux name="change in crop yield\nfrom fertilizer use">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>initial_crop_yield*effect_of_fertilizer_use_on_crop_yield</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<aux name="effect of fertilizer use\non crop yield">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(fertilizer_use-INIT(fertilizer_use))*fertilizer_use_crop_yield_parameter</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="fertilizer use crop yield parameter">
+				<doc>${Calibration Parameter,Yield}
+</doc>
+				<eqn>0.0107378176333823</eqn>
+				<range min="0.00001" max="0.1"/>
+				<units>1/MtN*year</units>
+			</aux>
+			<aux name="change in crop yield\nfrom soil carbon">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>initial_crop_yield*effect_of_soil_carbon_on_crop_yield</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<aux name="effect of soil carbon\non crop yield">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(soil_carbon_cropland-INIT(soil_carbon_cropland))*soil_carbon_crop_yield_parameter</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="soil carbon crop yield parameter">
+				<doc>${Calibration Parameter,Yield}
+</doc>
+				<eqn>0.0172031144238155</eqn>
+				<range min="1e-8" max="0.02"/>
+				<units>1/GtC</units>
+			</aux>
+			<aux name="initial crop yield">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>2.04712609854251</eqn>
+				<range min="1" max="3"/>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<aux name="effect of irrigation\non crop yield">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(fraction_of_cropland_irrigated-INIT(fraction_of_cropland_irrigated))*irrigation_crop_yield_parameter</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="irrigation crop yield parameter">
+				<doc>${Yield}
+</doc>
+				<eqn>9.61428449583297</eqn>
+				<range min="1" max="100"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="change in\ncrop yield from irrigation">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>initial_crop_yield*effect_of_irrigation_on_crop_yield</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<stock name="fertilizer use" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>MtN/year</units>
+			</stock>
+			<aux name="combined change in crop yield\nfrom STA">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>change_in_crop_yield_from_STA+change_in_crop_yield_from_STA_squared</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
 			<aux name="soil carbon cropland" access="input">
 				<dimensions>
 					<dim name="Run"/>
@@ -1202,19 +1184,26 @@ Kimball BA, Idso SB. 1983. Increasing atmospheric CO2: effects on crop yield, wa
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>GtC</units>
 			</aux>
-			<stock name="available\nwater supply" access="input">
+			<aux name="Surface Temperature Anomaly" access="input">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>m^3</units>
-			</stock>
+				<units>deg C</units>
+			</aux>
 			<aux name="Atmospheric CO2 Concentration" access="input">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>ppm</units>
+			</aux>
+			<aux name="crop yield" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>initial_crop_yield + change_in_crop_yield_from_CO2+change_in_crop_yield_from_STA+change_in_crop_yield_from_STA_squared+change_in_crop_yield_from_fertilizer_use+change_in_crop_yield_from_soil_carbon+change_in_crop_yield_from_irrigation</eqn>
+				<units>PCal/(Mha*year)</units>
 			</aux>
 		</variables>
 		<views>
@@ -1265,7 +1254,7 @@ Kimball BA, Idso SB. 1983. Increasing atmospheric CO2: effects on crop yield, wa
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="303.75" isee:scroll_y="406.25" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="1175.71" isee:scroll_y="1239.29" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1304,125 +1293,25 @@ Kimball BA, Idso SB. 1983. Increasing atmospheric CO2: effects on crop yield, wa
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<aux label_side="bottom" x="1249.25" y="389.709" name="crop balance"/>
-				<aux label_side="bottom" x="1420.33" y="384" name="crop balance\nwith reserves"/>
-				<aux font_style="italic" font_weight="bold" x="556.417" y="1315.25" name="Surface Temperature Anomaly"/>
-				<aux label_side="bottom" x="470.583" y="534.837" name="elasticity of crop yield\nto manure fertilizer use"/>
-				<aux x="615.333" y="537.007" name="effect of manure fertilizer use\non crop yield"/>
-				<aux font_style="italic" font_weight="bold" x="588.917" y="1166.5" name="switch for climate damage"/>
-				<aux x="1278.67" y="923.837" name="harvest index"/>
-				<aux x="1380.25" y="1027.84" name="crop residue production"/>
-				<aux label_side="bottom" x="1508.75" y="941.837" name="UNIT GtC per Mtcrop"/>
-				<aux background="white" label_side="right" x="929" y="430.001" name="rate of change\nin man made\nfertilizer\nproductivity"/>
-				<aux label_side="right" label_angle="315" x="901.833" y="484.457" name="man made\nfertilizer productivity\nindex"/>
-				<aux label_side="bottom" x="1127.75" y="1256.67" name="elasticity of\ncrop yield\nto soil carbon"/>
-				<aux x="1193.75" y="1149.92" name="effect of soil carbon\non crop yield"/>
-				<aux label_side="bottom" x="553.667" y="703.503" name="sensitivity of\ncrop yield to irrigation\nwater available"/>
-				<aux x="813.917" y="809.753" name="effect of irrigation\non crop yield"/>
-				<aux x="828.583" y="511.837" name="effect of man made\nfertilizer use\non crop yield"/>
-				<aux label_side="bottom" x="846.583" y="375.334" name="elasticity of crop yield\nto man made fertilizer use"/>
-				<aux x="1365.42" y="635.337" name="average crop yield in\n1980"/>
-				<aux x="742.917" y="1044.75" name="net effect of climate on crop\nyield"/>
-				<aux background="white" x="1043.92" y="1315" name="CO2 concentration 1980"/>
-				<aux label_side="right" x="1073.33" y="528.167" name="crop production"/>
-				<aux background="white" label_side="bottom" x="879.167" y="1287" name="effect of CO2 concentration on\naverage crop yield"/>
-				<aux x="946.417" y="1139.5" name="sensitivity of CO2 concentration on\naverage crop yield"/>
-				<aux background="white" label_side="bottom" x="699.917" y="1254.75" name="effect of surface temperature\nanomaly on average crop yield"/>
-				<aux x="760.917" y="1354.5" name="sensitivity of surface temperature\nanomaly on average crop yield"/>
-				<aux label_side="top" x="1091.33" y="740.997" name="average crop yield"/>
-				<connector uid="4" angle="336.802">
-					<from>effect_of_manure_fertilizer_use_on_crop_yield</from>
-					<to>average_crop_yield</to>
-				</connector>
-				<connector uid="5" angle="359.141">
-					<from>elasticity_of_crop_yield_to_manure_fertilizer_use</from>
-					<to>effect_of_manure_fertilizer_use_on_crop_yield</to>
-				</connector>
-				<connector uid="6" angle="22.5206">
-					<from>Surface_Temperature_Anomaly</from>
-					<to>effect_of_surface_temperature_anomaly_on_average_crop_yield</to>
-				</connector>
-				<connector uid="7" angle="11.7683">
-					<from>switch_for_climate_damage</from>
-					<to>effect_of_CO2_concentration_on_average_crop_yield</to>
-				</connector>
-				<connector uid="8" angle="321.199">
-					<from>switch_for_climate_damage</from>
-					<to>effect_of_surface_temperature_anomaly_on_average_crop_yield</to>
-				</connector>
-				<connector uid="9" angle="333.812">
+				<aux label_side="bottom" x="1597.25" y="1011.71" name="crop balance"/>
+				<aux label_side="bottom" x="1648.33" y="931" name="crop balance\nwith reserves"/>
+				<aux x="1770.67" y="1193.84" name="harvest index"/>
+				<aux x="1717.25" y="1095.67" name="crop residue production"/>
+				<aux label_side="bottom" x="1667.75" y="1170.84" name="UNIT GtC per PCal"/>
+				<aux label_side="bottom" x="1572.33" y="1128.17" name="crop production"/>
+				<connector uid="9" angle="12.639">
 					<from>crop_production</from>
 					<to>crop_residue_production</to>
 				</connector>
-				<connector uid="10" angle="314.327">
+				<connector uid="10" angle="118.554">
 					<from>harvest_index</from>
 					<to>crop_residue_production</to>
 				</connector>
-				<connector uid="11" angle="213.793">
-					<from>UNIT_GtC_per_Mtcrop</from>
+				<connector uid="11" angle="56.6338">
+					<from>UNIT_GtC_per_PCal</from>
 					<to>crop_residue_production</to>
 				</connector>
-				<connector uid="12" angle="200.492">
-					<from>man_made_fertilizer_productivity_index</from>
-					<to>effect_of_man_made_fertilizer_use_on_crop_yield</to>
-				</connector>
-				<connector uid="13" angle="243.487">
-					<from>rate_of_change_in_man_made_fertilizer_productivity</from>
-					<to>man_made_fertilizer_productivity_index</to>
-				</connector>
-				<connector uid="14" angle="104.061">
-					<from>effect_of_soil_carbon_on_crop_yield</from>
-					<to>average_crop_yield</to>
-				</connector>
-				<connector uid="15" angle="58.2729">
-					<from>elasticity_of_crop_yield_to_soil_carbon</from>
-					<to>effect_of_soil_carbon_on_crop_yield</to>
-				</connector>
-				<connector uid="16" angle="13.9201">
-					<from>effect_of_irrigation_on_crop_yield</from>
-					<to>average_crop_yield</to>
-				</connector>
-				<connector uid="17" angle="337.792">
-					<from>sensitivity_of_crop_yield_to_irrigation_water_available</from>
-					<to>effect_of_irrigation_on_crop_yield</to>
-				</connector>
-				<connector uid="18" angle="41.0823">
-					<from>net_effect_of_climate_on_crop_yield</from>
-					<to>average_crop_yield</to>
-				</connector>
-				<connector uid="19" angle="262.488">
-					<from>elasticity_of_crop_yield_to_man_made_fertilizer_use</from>
-					<to>effect_of_man_made_fertilizer_use_on_crop_yield</to>
-				</connector>
-				<connector uid="20" angle="106.858">
-					<from>average_crop_yield</from>
-					<to>crop_production</to>
-				</connector>
-				<connector uid="21" angle="318.906">
-					<from>effect_of_man_made_fertilizer_use_on_crop_yield</from>
-					<to>average_crop_yield</to>
-				</connector>
-				<connector uid="22" angle="201.083">
-					<from>average_crop_yield_in_1980</from>
-					<to>average_crop_yield</to>
-				</connector>
-				<connector uid="23" angle="121.705">
-					<from>sensitivity_of_surface_temperature_anomaly_on_average_crop_yield</from>
-					<to>effect_of_surface_temperature_anomaly_on_average_crop_yield</to>
-				</connector>
-				<connector uid="24" angle="78.4813">
-					<from>effect_of_surface_temperature_anomaly_on_average_crop_yield</from>
-					<to>net_effect_of_climate_on_crop_yield</to>
-				</connector>
-				<connector uid="25" angle="245.629">
-					<from>sensitivity_of_CO2_concentration_on_average_crop_yield</from>
-					<to>effect_of_CO2_concentration_on_average_crop_yield</to>
-				</connector>
-				<connector uid="28" angle="93.3019">
-					<from>effect_of_CO2_concentration_on_average_crop_yield</from>
-					<to>net_effect_of_climate_on_crop_yield</to>
-				</connector>
-				<connector uid="29" angle="1.91123">
+				<connector uid="29" angle="57.6706">
 					<from>crop_balance</from>
 					<to>crop_balance_with_reserves</to>
 				</connector>
@@ -1430,64 +1319,247 @@ Kimball BA, Idso SB. 1983. Increasing atmospheric CO2: effects on crop yield, wa
 					<from>crop_production</from>
 					<to>crop_balance</to>
 				</connector>
-				<connector uid="31" angle="170.354">
-					<from>CO2_concentration_1980</from>
-					<to>effect_of_CO2_concentration_on_average_crop_yield</to>
-				</connector>
-				<aux x="1446.33" y="1208.67" name="crop residue litter"/>
-				<aux label_side="top" x="1380.25" y="1146.26" name="crop residue on field fraction"/>
-				<connector uid="32" angle="316.636">
+				<aux x="1889.33" y="1077.67" name="crop residue litter"/>
+				<aux label_side="bottom" x="1904.25" y="1187.17" name="crop residue on field fraction"/>
+				<connector uid="32" angle="97.7593">
 					<from>crop_residue_on_field_fraction</from>
 					<to>crop_residue_litter</to>
 				</connector>
-				<connector uid="33" angle="323.973">
+				<connector uid="33" angle="5.97157">
 					<from>crop_residue_production</from>
 					<to>crop_residue_litter</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="675" y="435.667" name="man made fertilizer use"/>
-				<connector uid="40" angle="336.801">
-					<from>man_made_fertilizer_use</from>
-					<to>effect_of_man_made_fertilizer_use_on_crop_yield</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="563" y="331.667" name="manure fertilizer use 1"/>
-				<connector uid="41" angle="221.634">
-					<from>manure_fertilizer_use_1</from>
-					<to>effect_of_manure_fertilizer_use_on_crop_yield</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="1041" y="207.667" name="crop demand 1"/>
-				<connector uid="42" angle="358.025">
+				<aux font_style="italic" font_weight="bold" x="1490" y="964.667" name="crop demand 1"/>
+				<connector uid="42" angle="336.317">
 					<from>crop_demand_1</from>
 					<to>crop_balance</to>
 				</connector>
-				<aux x="1271" y="160.667" name="desired crop reserve capacity"/>
-				<connector uid="43" angle="298.443">
+				<aux x="1529" y="871.667" name="desired crop reserve capacity"/>
+				<connector uid="43" angle="333.563">
 					<from>desired_crop_reserve_capacity</from>
 					<to>crop_balance_with_reserves</to>
 				</connector>
-				<stock font_style="italic" font_weight="bold" x="1329" y="529.667" name="Cropland"/>
-				<connector uid="44" angle="170.074">
+				<stock font_style="italic" font_weight="bold" x="1458.5" y="1107.34" name="Cropland"/>
+				<connector uid="44" angle="349.63">
 					<from>Cropland</from>
 					<to>crop_production</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1274" y="1264.67" name="soil carbon cropland"/>
-				<connector uid="45" angle="113.962">
+				<aux font_style="italic" font_weight="bold" x="1221.86" y="1553.5" name="fraction of cropland\nirrigated"/>
+				<aux x="1827" y="1843.75" name="CO2 crop yield parameter"/>
+				<aux x="1705" y="1829" name="effect of CO2 on\ncrop yield"/>
+				<connector uid="78" angle="173.106">
+					<from>CO2_crop_yield_parameter</from>
+					<to>effect_of_CO2_on_crop_yield</to>
+				</connector>
+				<aux x="1613" y="1669" name="change in crop yield from CO2"/>
+				<connector uid="82" angle="119.899">
+					<from>effect_of_CO2_on_crop_yield</from>
+					<to>change_in_crop_yield_from_CO2</to>
+				</connector>
+				<aux x="1471" y="1728" name="change in crop yield from STA"/>
+				<aux x="1408.42" y="1992" name="effect of STA on\ncrop yield"/>
+				<aux x="1326.57" y="2083.86" name="STA crop yield parameter"/>
+				<connector uid="87" angle="48.2976">
+					<from>STA_crop_yield_parameter</from>
+					<to>effect_of_STA_on_crop_yield</to>
+				</connector>
+				<connector uid="88" angle="76.6644">
+					<from>effect_of_STA_on_crop_yield</from>
+					<to>change_in_crop_yield_from_STA</to>
+				</connector>
+				<aux x="1560.14" y="1766.43" name="change in crop yield\nfrom STA squared"/>
+				<aux x="1560.14" y="1984.57" name="effect of STA squared on\ncrop yield"/>
+				<aux x="1653.25" y="2083.86" name="STA squared crop yield parameter"/>
+				<connector uid="92" angle="133.161">
+					<from>STA_squared_crop_yield_parameter</from>
+					<to>effect_of_STA_squared_on_crop_yield</to>
+				</connector>
+				<connector uid="93" angle="90">
+					<from>effect_of_STA_squared_on_crop_yield</from>
+					<to>change_in_crop_yield_from_STA_squared</to>
+				</connector>
+				<aux label_side="bottom" x="1760" y="1658.43" name="change in crop yield\nfrom fertilizer use"/>
+				<aux x="1874" y="1681.43" name="effect of fertilizer use\non crop yield"/>
+				<aux x="1977" y="1784.43" name="fertilizer use crop yield parameter"/>
+				<connector uid="96" angle="135">
+					<from>fertilizer_use_crop_yield_parameter</from>
+					<to>effect_of_fertilizer_use_on_crop_yield</to>
+				</connector>
+				<connector uid="98" angle="173.354">
+					<from>effect_of_fertilizer_use_on_crop_yield</from>
+					<to>change_in_crop_yield_from_fertilizer_use</to>
+				</connector>
+				<aux x="1471" y="1316.7" name="change in crop yield\nfrom soil carbon"/>
+				<aux x="1365" y="1306.03" name="effect of soil carbon\non crop yield"/>
+				<aux x="1232.43" y="1211.84" name="soil carbon crop yield parameter"/>
+				<connector uid="101" angle="324.606">
+					<from>soil_carbon_crop_yield_parameter</from>
+					<to>effect_of_soil_carbon_on_crop_yield</to>
+				</connector>
+				<connector uid="104" angle="354.254">
+					<from>effect_of_soil_carbon_on_crop_yield</from>
+					<to>change_in_crop_yield_from_soil_carbon</to>
+				</connector>
+				<aux x="1705" y="1270.03" name="initial crop yield"/>
+				<connector uid="120" angle="39.8525">
+					<from>
+						<alias uid="146"/>
+					</from>
+					<to>change_in_crop_yield_from_soil_carbon</to>
+				</connector>
+				<connector uid="122" angle="139.232">
+					<from>
+						<alias uid="147"/>
+					</from>
+					<to>change_in_crop_yield_from_CO2</to>
+				</connector>
+				<connector uid="123" angle="126.481">
+					<from>
+						<alias uid="143"/>
+					</from>
+					<to>change_in_crop_yield_from_STA_squared</to>
+				</connector>
+				<connector uid="124" angle="54.6888">
+					<from>
+						<alias uid="144"/>
+					</from>
+					<to>change_in_crop_yield_from_STA</to>
+				</connector>
+				<aux x="1297" y="1631" name="effect of irrigation\non crop yield"/>
+				<connector uid="126" angle="318.166">
+					<from>fraction_of_cropland_irrigated</from>
+					<to>effect_of_irrigation_on_crop_yield</to>
+				</connector>
+				<aux x="1257.29" y="1718.93" name="irrigation crop yield parameter"/>
+				<connector uid="127" angle="65.6956">
+					<from>irrigation_crop_yield_parameter</from>
+					<to>effect_of_irrigation_on_crop_yield</to>
+				</connector>
+				<aux x="1410.43" y="1606.5" name="change in\ncrop yield from irrigation"/>
+				<connector uid="128" angle="12.1884">
+					<from>effect_of_irrigation_on_crop_yield</from>
+					<to>change_in_crop_yield_from_irrigation</to>
+				</connector>
+				<connector uid="129" angle="315.556">
+					<from>
+						<alias uid="145"/>
+					</from>
+					<to>change_in_crop_yield_from_irrigation</to>
+				</connector>
+				<stock font_style="italic" font_weight="bold" x="1961" y="1651.43" name="fertilizer use"/>
+				<connector uid="132" angle="199.026">
+					<from>fertilizer_use</from>
+					<to>effect_of_fertilizer_use_on_crop_yield</to>
+				</connector>
+				<aux x="1492.57" y="1838.29" name="combined change in crop yield\nfrom STA"/>
+				<connector uid="133" angle="281.067">
+					<from>change_in_crop_yield_from_STA</from>
+					<to>combined_change_in_crop_yield_from_STA</to>
+				</connector>
+				<connector uid="134" angle="226.761">
+					<from>change_in_crop_yield_from_STA_squared</from>
+					<to>combined_change_in_crop_yield_from_STA</to>
+				</connector>
+				<stacked_container uid="135" x="2103.29" y="950.357" width="656" height="571">
+					<graph width="656" height="571" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="true" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="change_in_crop_yield_from_irrigation[1]"/>
+						</plot>
+						<plot color="red" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="combined_change_in_crop_yield_from_STA[1]"/>
+						</plot>
+						<plot color="fuchsia" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
+							<entity name="change_in_crop_yield_from_CO2[1]"/>
+						</plot>
+						<plot color="#008F44" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
+							<entity name="change_in_crop_yield_from_fertilizer_use[1]"/>
+						</plot>
+						<plot color="#FF7F00" isee:keep_zero_visible="true" pen_width="1" index="4" show_y_axis="true">
+							<entity name="change_in_crop_yield_from_soil_carbon[1]"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<aux font_style="italic" font_weight="bold" x="1243.67" y="1288.03" name="soil carbon cropland"/>
+				<connector uid="139" angle="351.562">
 					<from>soil_carbon_cropland</from>
 					<to>effect_of_soil_carbon_on_crop_yield</to>
 				</connector>
-				<stock font_style="italic" font_weight="bold" x="669" y="895.333" name="available\nwater supply"/>
-				<connector uid="46" angle="49.1849">
-					<from>available_water_supply</from>
-					<to>effect_of_irrigation_on_crop_yield</to>
+				<aux font_style="italic" font_weight="bold" x="1478.56" y="2079" name="Surface Temperature Anomaly"/>
+				<connector uid="140" angle="128.877">
+					<from>Surface_Temperature_Anomaly</from>
+					<to>effect_of_STA_on_crop_yield</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="917" y="1403" name="Atmospheric CO2 Concentration"/>
-				<connector uid="47" angle="104.036">
+				<connector uid="141" angle="49.1752">
+					<from>Surface_Temperature_Anomaly</from>
+					<to>effect_of_STA_squared_on_crop_yield</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1703.57" y="1932.86" name="Atmospheric CO2 Concentration"/>
+				<connector uid="142" angle="86.2686">
 					<from>Atmospheric_CO2_Concentration</from>
-					<to>effect_of_CO2_concentration_on_average_crop_yield</to>
+					<to>effect_of_CO2_on_crop_yield</to>
 				</connector>
-				<connector uid="48" angle="43.3634">
-					<from>Atmospheric_CO2_Concentration</from>
-					<to>CO2_concentration_1980</to>
+				<aux x="1625.71" y="1262.57" name="crop yield"/>
+				<connector uid="157" angle="121.77">
+					<from>crop_yield</from>
+					<to>crop_production</to>
 				</connector>
+				<connector uid="158" angle="174.625">
+					<from>initial_crop_yield</from>
+					<to>crop_yield</to>
+				</connector>
+				<connector uid="159" angle="113.209">
+					<from>change_in_crop_yield_from_CO2</from>
+					<to>crop_yield</to>
+				</connector>
+				<connector uid="160" angle="96.6131">
+					<from>change_in_crop_yield_from_STA</from>
+					<to>crop_yield</to>
+				</connector>
+				<connector uid="161" angle="107.585">
+					<from>change_in_crop_yield_from_STA_squared</from>
+					<to>crop_yield</to>
+				</connector>
+				<connector uid="162" angle="133.739">
+					<from>change_in_crop_yield_from_fertilizer_use</from>
+					<to>crop_yield</to>
+				</connector>
+				<connector uid="163" angle="31.4117">
+					<from>change_in_crop_yield_from_soil_carbon</from>
+					<to>crop_yield</to>
+				</connector>
+				<connector uid="164" angle="82.9558">
+					<from>change_in_crop_yield_from_irrigation</from>
+					<to>crop_yield</to>
+				</connector>
+				<connector uid="167" angle="93.0128">
+					<from>
+						<alias uid="168"/>
+					</from>
+					<to>change_in_crop_yield_from_fertilizer_use</to>
+				</connector>
+				<alias color="blue" background="white" font_style="italic" uid="145" x="1283.74" y="1482.07" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>initial_crop_yield</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="144" x="1356" y="1843.86" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>initial_crop_yield</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="143" x="1626.25" y="1859" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>initial_crop_yield</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="147" x="1672.43" y="1719" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>initial_crop_yield</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="146" x="1330.4" y="1417.54" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>initial_crop_yield</of>
+				</alias>
+				<alias font_style="italic" uid="168" x="1755.17" y="1756" width="18" height="18">
+					<of>initial_crop_yield</of>
+				</alias>
 			</view>
 		</views>
 	</model>
@@ -1501,20 +1573,13 @@ Tilman D, Balzer C, Hill J, Befort BL. 2011. Global food demand and the sustaina
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>crop_demand_for_direct_consumption + crop_demand_from_livestock</eqn>
-				<units>Mtcrop/year</units>
+				<units>PCal/year</units>
 			</aux>
 			<aux name="GDP Per Capita" access="output" throughput="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<units>b$/Mp/year</units>
-			</aux>
-			<aux name="elasticity of crop demand\nfor direct consumption\nto GDP per person">
-				<doc>${Calibration Parameter}
-Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>0.416242937049227</eqn>
-				<range min="0" max="0.5"/>
-				<units>dmnl</units>
 			</aux>
 			<aux name="Population" access="output" throughput="true">
 				<dimensions>
@@ -1523,63 +1588,26 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>Mp</units>
 			</aux>
-			<aux name="crop demand\nfor direct consumption\nper capita 1980">
-				<doc>${Calibration Parameter}
-Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>0.820019954117752</eqn>
-				<range min="0" max="2"/>
-				<units>Mtcrop/Mp/year</units>
-			</aux>
-			<aux name="crop demand\nfor direct consumption\nper capita">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>IF switch_crop_demand_for_direct_consumption_per_Mp_policy = 0 OR TIME &lt; policy_start_year THEN
-((perceived_GDP_per_person/INIT(perceived_GDP_per_person))^elasticity_of_crop_demand_for_direct_consumption_to_GDP_per_person)*crop_demand_for_direct_consumption_per_capita_1980
-ELSE
-crop_demand_for_direct_consumption_per_Mp_policy</eqn>
-				<units>Mtcrop/Mp/year</units>
-			</aux>
-			<aux name="livestock demand\nper capita">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>IF switch_livestock_demand_per_Mp_policy = 0 OR TIME &lt; policy_start_year THEN
-((perceived_GDP_per_person/INIT(perceived_GDP_per_person))^elasticity_of_livestock_demand_to_GDP_per_person)*livestock_demand_per_capita_1980 ELSE
-livestock_demand_per_Mp_policy</eqn>
-				<units>Mkg/Mp/year</units>
-			</aux>
-			<aux name="elasticity of livestock demand\nto GDP per person">
-				<doc>${Calibration Parameter}
-Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>0.372297409535297</eqn>
-				<range min="0" max="0.5"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="livestock demand\nper capita 1980">
-				<doc>${Calibration Parameter}
-Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>31.5416235051522</eqn>
-				<range min="30" max="35"/>
-				<units>Mkg/Mp/year</units>
-			</aux>
 			<aux name="livestock demand" access="output">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>Population*livestock_demand_per_capita</eqn>
-				<units>MKg/Year</units>
+				<units>PCal/Year</units>
 			</aux>
 			<aux name="crop demand from\nlivestock">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>livestock_demand*crops_required_per_MKg_of_livestock_demand</eqn>
-				<units>Mtcrop/year</units>
+				<eqn>livestock_demand*crops_required_per_PCal_of_livestock_demand</eqn>
+				<units>PCal/year</units>
 			</aux>
-			<aux name="crops required\nper MKg of livestock\ndemand in 1980">
-				<eqn>0.0105095634923097</eqn>
-				<units>Mtcrop/MKg</units>
+			<aux name="crops required\nper PCal of livestock\ndemand in 1980">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>1.33496985835</eqn>
+				<range min="1" max="3"/>
+				<units>PCal/PCal</units>
 			</aux>
 			<aux name="effect of livestock\nintensification on crop\ndemand">
 				<dimensions>
@@ -1588,17 +1616,17 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>(Livestock_Yield/INIT(Livestock_Yield) )^elasticity_of_crops_required_for_livestock_to_livestock_yield</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="crops required\nper MKg of livestock\ndemand">
+			<aux name="crops required\nper PCal of livestock\ndemand">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>crops_required_per_MKg_of_livestock_demand_in_1980*effect_of_livestock_intensification_on_crop_demand</eqn>
-				<units>Mtcrop/MKg</units>
+				<eqn>crops_required_per_PCal_of_livestock_demand_in_1980*effect_of_livestock_intensification_on_crop_demand</eqn>
+				<units>PCal/PCal</units>
 			</aux>
 			<aux name="elasticity of\ncrops required for livestock\nto livestock yield">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.240806050837605</eqn>
+				<eqn>0.238388129810279</eqn>
 				<range min="0" max="1"/>
 				<units>dmnl</units>
 			</aux>
@@ -1606,8 +1634,8 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>crop_demand_for_direct_consumption_per_capita*Population</eqn>
-				<units>Mtcrop/year</units>
+				<eqn>direct_crop_demand_per_capita*Population</eqn>
+				<units>PCal/year</units>
 			</aux>
 			<aux name="fraction of crops\nfor livestock" access="output">
 				<doc>${Calibrated}
@@ -1618,16 +1646,16 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>crop_demand_from_livestock/crop_demand</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="crop demand for direct\nconsumption per Mp\npolicy">
+			<aux name="food demand policy">
 				<eqn>TIME</eqn>
 				<gf>
 					<xscale min="2020" max="2100"/>
-					<yscale min="0.8" max="1.5"/>
-					<ypts>1.22,1.22,1.22,1.22,1.22,1.22,1.22,1.22,1.22</ypts>
+					<yscale min="0" max="5000"/>
+					<ypts>2254,2254,2254,2254,2254,2254,2254,2254,2254</ypts>
 				</gf>
-				<units>Mtcrop/Mp/year</units>
+				<units>Cal/Person/Day</units>
 			</aux>
-			<aux name="switch crop demand for direct\nconsumption per Mp\npolicy">
+			<aux name="switch food demand\npolicy">
 				<eqn>0</eqn>
 				<format precision="1" scale_by="auto"/>
 				<range min="0" max="1"/>
@@ -1637,16 +1665,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>2024</eqn>
 				<units>Year</units>
 			</aux>
-			<aux name="livestock demand per Mp\npolicy">
-				<eqn>TIME</eqn>
-				<gf>
-					<xscale min="2020" max="2100"/>
-					<yscale min="31" max="55"/>
-					<ypts>46,40.23,36.63,34.38,32.98,32.1,31.55,31.21,31</ypts>
-				</gf>
-				<units>Mkg/Mp/year</units>
-			</aux>
-			<aux name="switch livestock demand per Mp\npolicy">
+			<aux name="switch livestock fraction policy">
 				<eqn>0</eqn>
 				<format precision="1" scale_by="auto"/>
 				<range min="0" max="1"/>
@@ -1657,7 +1676,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>MKg/Mha/Year</units>
+				<units>PCal/Mha/Year</units>
 			</stock>
 			<aux name="perceived GDP per person">
 				<dimensions>
@@ -1670,6 +1689,95 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 			<aux name="time to change dietary habits">
 				<eqn>10</eqn>
 				<units>years</units>
+			</aux>
+			<aux name="UNIT days per year">
+				<eqn>365</eqn>
+				<units>days/year</units>
+			</aux>
+			<aux name="UNIT cal per pcal">
+				<eqn>1000000000000</eqn>
+				<units>Cal/PCal</units>
+			</aux>
+			<aux name="UNIT p per Mp">
+				<eqn>1000000</eqn>
+				<units>p/Mp</units>
+			</aux>
+			<aux name="direct food demand\nper person per day">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF TIME &gt; policy_start_year AND switch_food_demand_policy THEN food_demand_policy
+ELSE
+direct_food_demand_per_person_per_day_1980*(perceived_GDP_per_person/INIT(perceived_GDP_per_person))^elasticity_of_food_demand_to_GDP_per_person</eqn>
+				<units>Cal/Person/Day</units>
+			</aux>
+			<aux name="elasticity of food demand\nto GDP per person">
+				<doc>${Calibration Parameter}
+Calibration Parameter: fertilizer use &amp; crop production</doc>
+				<eqn>0.222</eqn>
+				<range min="0.1" max="0.3"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="direct food demand\nper person per day 1980">
+				<doc>${Calibration Parameter}
+Calibration Parameter: fertilizer use &amp; crop production</doc>
+				<eqn>1828.64</eqn>
+				<range min="1500" max="2200"/>
+				<units>Cal/Person/Day</units>
+			</aux>
+			<aux name="livestock\nfraction of food demand">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF TIME &gt; policy_start_year AND switch_livestock_fraction_policy THEN
+livestock_fraction_policy
+ELSE
+livestock_fraction_of_food_demand_1980*(perceived_GDP_per_person/INIT(perceived_GDP_per_person))^elasticity_of_desired_livestock_fraction_of_food_demand_to_GDP_per_person</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="elasticity of desired livestock fraction\nof food demand to GDP per person">
+				<doc>${Calibration Parameter}
+Calibration Parameter: fertilizer use &amp; crop production</doc>
+				<eqn>0.0405</eqn>
+				<range min="0" max="0.2"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="livestock fraction\nof food demand 1980">
+				<doc>${Calibration Parameter}
+Calibration Parameter: fertilizer use &amp; crop production</doc>
+				<eqn>0.221343999824</eqn>
+				<range min="0.15" max="0.25"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="direct food demand\nper capita">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>direct_food_demand_per_person_per_day*UNIT_p_per_Mp*UNIT_days_per_year/UNIT_cal_per_pcal</eqn>
+				<units>PCal/Mp/Year</units>
+			</aux>
+			<aux name="direct crop demand\nper capita">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>direct_food_demand_per_capita-livestock_demand_per_capita</eqn>
+				<units>PCal/Mp/Year</units>
+			</aux>
+			<aux name="livestock demand per capita">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>direct_food_demand_per_capita*livestock_fraction_of_food_demand</eqn>
+				<units>PCal/Mp/Year</units>
+			</aux>
+			<aux name="livestock fraction policy">
+				<eqn>TIME</eqn>
+				<gf>
+					<xscale min="2020" max="2100"/>
+					<yscale min="0" max="1"/>
+					<ypts>0.23,0.23,0.23,0.23,0.23,0.23,0.23,0.23,0.23</ypts>
+				</gf>
+				<units>dmnl</units>
 			</aux>
 		</variables>
 		<views>
@@ -1720,7 +1828,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="51" isee:scroll_y="660" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1759,149 +1867,181 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<aux label_side="left" x="469.25" y="596.417" name="crop demand"/>
-				<aux font_style="italic" font_weight="bold" label_side="top" x="451.25" y="106.167" name="GDP Per Capita"/>
-				<aux label_side="left" x="181.167" y="278.556" name="elasticity of crop demand\nfor direct consumption\nto GDP per person"/>
-				<connector uid="2" angle="355.394">
-					<from>elasticity_of_crop_demand_for_direct_consumption_to_GDP_per_person</from>
-					<to>crop_demand_for_direct_consumption_per_capita</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="493.25" y="369.5" name="Population"/>
-				<aux label_side="left" label_angle="135" x="275.917" y="153.667" name="crop demand\nfor direct consumption\nper capita 1980"/>
-				<connector uid="3" angle="286.828">
-					<from>crop_demand_for_direct_consumption_per_capita_1980</from>
-					<to>crop_demand_for_direct_consumption_per_capita</to>
-				</connector>
-				<aux label_side="bottom" x="317" y="289.5" name="crop demand\nfor direct consumption\nper capita"/>
-				<aux x="605.5" y="251.667" name="livestock demand\nper capita"/>
-				<aux label_side="right" label_angle="45" x="736.42" y="251.667" name="elasticity of livestock demand\nto GDP per person"/>
-				<aux label_side="right" label_angle="45" x="754.42" y="88.167" name="livestock demand\nper capita 1980"/>
-				<connector uid="5" angle="222.424">
-					<from>livestock_demand_per_capita_1980</from>
-					<to>livestock_demand_per_capita</to>
-				</connector>
-				<connector uid="6" angle="183.029">
-					<from>elasticity_of_livestock_demand_to_GDP_per_person</from>
-					<to>livestock_demand_per_capita</to>
-				</connector>
-				<aux label_side="right" label_angle="315" x="623.5" y="443.25" name="livestock demand"/>
-				<connector uid="7" angle="275.367">
-					<from>livestock_demand_per_capita</from>
-					<to>livestock_demand</to>
-				</connector>
-				<connector uid="8" angle="330.481">
+				<aux label_side="left" x="504.25" y="451.323" name="crop demand"/>
+				<aux font_style="italic" font_weight="bold" label_side="bottom" x="504.25" y="1402.17" name="GDP Per Capita"/>
+				<aux font_style="italic" font_weight="bold" x="515.25" y="664.24" name="Population"/>
+				<aux label_side="right" label_angle="315" x="615.5" y="578.417" name="livestock demand"/>
+				<connector uid="8" angle="40.5666">
 					<from>Population</from>
 					<to>livestock_demand</to>
 				</connector>
-				<aux x="577.75" y="508.25" name="crop demand from\nlivestock"/>
-				<connector uid="9" angle="234.86">
+				<aux x="612" y="479.49" name="crop demand from\nlivestock"/>
+				<connector uid="9" angle="92.0263">
 					<from>livestock_demand</from>
 					<to>crop_demand_from_livestock</to>
 				</connector>
-				<connector uid="10" angle="219.097">
+				<connector uid="10" angle="165.35">
 					<from>crop_demand_from_livestock</from>
 					<to>crop_demand</to>
 				</connector>
-				<aux x="580.75" y="682.321" name="crops required\nper MKg of livestock\ndemand in 1980"/>
-				<aux x="710.25" y="537" name="effect of livestock\nintensification on crop\ndemand"/>
-				<aux x="587.5" y="586.417" name="crops required\nper MKg of livestock\ndemand"/>
-				<connector uid="11" angle="84.5223">
-					<from>crops_required_per_MKg_of_livestock_demand_in_1980</from>
-					<to>crops_required_per_MKg_of_livestock_demand</to>
+				<aux x="632" y="257.823" name="crops required\nper PCal of livestock\ndemand in 1980"/>
+				<aux x="775.25" y="354.323" name="effect of livestock\nintensification on crop\ndemand"/>
+				<aux x="646.5" y="396.323" name="crops required\nper PCal of livestock\ndemand"/>
+				<connector uid="11" angle="275.977">
+					<from>crops_required_per_PCal_of_livestock_demand_in_1980</from>
+					<to>crops_required_per_PCal_of_livestock_demand</to>
 				</connector>
-				<connector uid="12" angle="97.11">
-					<from>crops_required_per_MKg_of_livestock_demand</from>
+				<connector uid="12" angle="247.47">
+					<from>crops_required_per_PCal_of_livestock_demand</from>
 					<to>crop_demand_from_livestock</to>
 				</connector>
-				<aux x="845.25" y="411.5" name="elasticity of\ncrops required for livestock\nto livestock yield"/>
-				<connector uid="13" angle="222.911">
+				<aux x="928.25" y="366.24" name="elasticity of\ncrops required for livestock\nto livestock yield"/>
+				<connector uid="13" angle="175.546">
 					<from>elasticity_of_crops_required_for_livestock_to_livestock_yield</from>
 					<to>effect_of_livestock_intensification_on_crop_demand</to>
 				</connector>
-				<aux x="402.75" y="498" name="crop demand\nfor direct consumption"/>
-				<connector uid="14" angle="292.356">
-					<from>crop_demand_for_direct_consumption_per_capita</from>
-					<to>crop_demand_for_direct_consumption</to>
-				</connector>
-				<connector uid="15" angle="234.844">
+				<aux x="417.75" y="540.74" name="crop demand\nfor direct consumption"/>
+				<connector uid="15" angle="128.29">
 					<from>Population</from>
 					<to>crop_demand_for_direct_consumption</to>
 				</connector>
-				<connector uid="16" angle="310.02">
+				<connector uid="16" angle="45.95">
 					<from>crop_demand_for_direct_consumption</from>
 					<to>crop_demand</to>
 				</connector>
-				<aux x="500.25" y="483" name="fraction of crops\nfor livestock"/>
-				<connector uid="20" angle="74.7129">
+				<aux x="504.25" y="361.25" name="fraction of crops\nfor livestock"/>
+				<connector uid="20" angle="90">
 					<from>crop_demand</from>
 					<to>fraction_of_crops_for_livestock</to>
 				</connector>
-				<connector uid="21" angle="161.954">
+				<connector uid="21" angle="132.342">
 					<from>crop_demand_from_livestock</from>
 					<to>fraction_of_crops_for_livestock</to>
 				</connector>
-				<aux label_side="bottom" x="128.5" y="379.25" name="crop demand for direct\nconsumption per Mp\npolicy"/>
-				<aux x="235.5" y="436.25" name="switch crop demand for direct\nconsumption per Mp\npolicy"/>
-				<connector uid="22" angle="60.9537">
-					<from>switch_crop_demand_for_direct_consumption_per_Mp_policy</from>
-					<to>crop_demand_for_direct_consumption_per_capita</to>
-				</connector>
-				<connector uid="23" angle="25.4604">
-					<from>crop_demand_for_direct_consumption_per_Mp_policy</from>
-					<to>crop_demand_for_direct_consumption_per_capita</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="321.5" y="64.25" name="policy start year"/>
-				<connector uid="24" angle="268.856">
-					<from>policy_start_year</from>
-					<to>crop_demand_for_direct_consumption_per_capita</to>
-				</connector>
-				<aux label_side="bottom" x="587.5" y="59.25" name="livestock demand per Mp\npolicy"/>
-				<aux x="887.5" y="161.25" name="switch livestock demand per Mp\npolicy"/>
-				<connector uid="25" angle="191.004">
-					<from>switch_livestock_demand_per_Mp_policy</from>
-					<to>livestock_demand_per_capita</to>
-				</connector>
-				<connector uid="26" angle="275.344">
-					<from>livestock_demand_per_Mp_policy</from>
-					<to>livestock_demand_per_capita</to>
-				</connector>
-				<connector uid="27" angle="240.803">
-					<from>
-						<alias uid="28"/>
-					</from>
-					<to>livestock_demand_per_capita</to>
-				</connector>
-				<connector uid="29" angle="201.929">
+				<aux label_side="bottom" x="223" y="1089.56" name="food demand policy"/>
+				<aux x="268.5" y="1158" name="switch food demand\npolicy"/>
+				<aux font_style="italic" font_weight="bold" x="398.75" y="1229.25" name="policy start year"/>
+				<aux x="695.5" y="1211.25" name="switch livestock fraction policy"/>
+				<connector uid="29" angle="198.067">
 					<from>effect_of_livestock_intensification_on_crop_demand</from>
-					<to>crops_required_per_MKg_of_livestock_demand</to>
+					<to>crops_required_per_PCal_of_livestock_demand</to>
 				</connector>
-				<stock font_style="italic" font_weight="bold" x="862" y="569.917" name="Livestock Yield"/>
-				<connector uid="31" angle="151.39">
+				<stock font_style="italic" font_weight="bold" x="861" y="257.823" name="Livestock Yield"/>
+				<connector uid="31" angle="228.376">
 					<from>Livestock_Yield</from>
 					<to>effect_of_livestock_intensification_on_crop_demand</to>
 				</connector>
-				<aux x="451.25" y="205.667" name="perceived GDP per person"/>
-				<aux x="538" y="301" name="time to change dietary habits"/>
-				<connector uid="32" angle="132.301">
+				<aux x="509.25" y="1150" name="perceived GDP per person"/>
+				<aux x="412" y="1341" name="time to change dietary habits"/>
+				<connector uid="32" angle="63.0165">
 					<from>time_to_change_dietary_habits</from>
 					<to>perceived_GDP_per_person</to>
 				</connector>
-				<connector uid="33" angle="270">
+				<connector uid="33" angle="88.8641">
 					<from>GDP_Per_Capita</from>
 					<to>perceived_GDP_per_person</to>
 				</connector>
-				<connector uid="34" angle="217.555">
-					<from>perceived_GDP_per_person</from>
-					<to>crop_demand_for_direct_consumption_per_capita</to>
+				<aux x="350" y="782" name="UNIT days per year"/>
+				<aux x="297" y="822" name="UNIT cal per pcal"/>
+				<aux x="291" y="889" name="UNIT p per Mp"/>
+				<aux x="430" y="997" name="direct food demand\nper person per day"/>
+				<aux label_side="left" label_angle="225" x="230.167" y="951.667" name="elasticity of food demand\nto GDP per person"/>
+				<aux label_side="left" label_angle="225" x="217" y="1015" name="direct food demand\nper person per day 1980"/>
+				<connector uid="45" angle="347.219">
+					<from>elasticity_of_food_demand_to_GDP_per_person</from>
+					<to>direct_food_demand_per_person_per_day</to>
 				</connector>
-				<connector uid="35" angle="337.039">
+				<connector uid="46" angle="4.83042">
+					<from>direct_food_demand_per_person_per_day_1980</from>
+					<to>direct_food_demand_per_person_per_day</to>
+				</connector>
+				<connector uid="47" angle="117.383">
 					<from>perceived_GDP_per_person</from>
+					<to>direct_food_demand_per_person_per_day</to>
+				</connector>
+				<aux x="612" y="933.667" name="livestock\nfraction of food demand"/>
+				<aux label_side="bottom" x="778" y="1089.56" name="elasticity of desired livestock fraction\nof food demand to GDP per person"/>
+				<aux label_side="right" label_angle="315" x="857" y="1001.67" name="livestock fraction\nof food demand 1980"/>
+				<connector uid="51" angle="136.798">
+					<from>elasticity_of_desired_livestock_fraction_of_food_demand_to_GDP_per_person</from>
+					<to>livestock_fraction_of_food_demand</to>
+				</connector>
+				<connector uid="52" angle="164.488">
+					<from>livestock_fraction_of_food_demand_1980</from>
+					<to>livestock_fraction_of_food_demand</to>
+				</connector>
+				<connector uid="53" angle="64.594">
+					<from>perceived_GDP_per_person</from>
+					<to>livestock_fraction_of_food_demand</to>
+				</connector>
+				<aux x="424.25" y="886" name="direct food demand\nper capita"/>
+				<connector uid="56" angle="92.9654">
+					<from>direct_food_demand_per_person_per_day</from>
+					<to>direct_food_demand_per_capita</to>
+				</connector>
+				<connector uid="59" angle="305.525">
+					<from>UNIT_days_per_year</from>
+					<to>direct_food_demand_per_capita</to>
+				</connector>
+				<connector uid="63" angle="333.3">
+					<from>UNIT_cal_per_pcal</from>
+					<to>direct_food_demand_per_capita</to>
+				</connector>
+				<aux x="420.75" y="718" name="direct crop demand\nper capita"/>
+				<connector uid="64" angle="91.1935">
+					<from>direct_food_demand_per_capita</from>
+					<to>direct_crop_demand_per_capita</to>
+				</connector>
+				<aux x="618.5" y="718" name="livestock demand per capita"/>
+				<connector uid="65" angle="88.2737">
+					<from>livestock_fraction_of_food_demand</from>
 					<to>livestock_demand_per_capita</to>
 				</connector>
-				<alias color="blue" background="white" font_style="italic" uid="28" x="680.5" y="25.25" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>policy_start_year</of>
-				</alias>
+				<connector uid="66" angle="180">
+					<from>livestock_demand_per_capita</from>
+					<to>direct_crop_demand_per_capita</to>
+				</connector>
+				<connector uid="67" angle="40.8554">
+					<from>direct_food_demand_per_capita</from>
+					<to>livestock_demand_per_capita</to>
+				</connector>
+				<connector uid="68" angle="1.28974">
+					<from>UNIT_p_per_Mp</from>
+					<to>direct_food_demand_per_capita</to>
+				</connector>
+				<connector uid="69" angle="90.9696">
+					<from>direct_crop_demand_per_capita</from>
+					<to>crop_demand_for_direct_consumption</to>
+				</connector>
+				<connector uid="70" angle="91.2312">
+					<from>livestock_demand_per_capita</from>
+					<to>livestock_demand</to>
+				</connector>
+				<connector uid="71" angle="44.9112">
+					<from>switch_food_demand_policy</from>
+					<to>direct_food_demand_per_person_per_day</to>
+				</connector>
+				<connector uid="72" angle="82.3367">
+					<from>policy_start_year</from>
+					<to>direct_food_demand_per_person_per_day</to>
+				</connector>
+				<connector uid="73" angle="24.0918">
+					<from>food_demand_policy</from>
+					<to>direct_food_demand_per_person_per_day</to>
+				</connector>
+				<connector uid="74" angle="104.34">
+					<from>switch_livestock_fraction_policy</from>
+					<to>livestock_fraction_of_food_demand</to>
+				</connector>
+				<aux label_side="bottom" x="813" y="1225.56" name="livestock fraction policy"/>
+				<connector uid="75" angle="125.391">
+					<from>livestock_fraction_policy</from>
+					<to>livestock_fraction_of_food_demand</to>
+				</connector>
+				<connector uid="76" angle="55.3973">
+					<from>policy_start_year</from>
+					<to>livestock_fraction_of_food_demand</to>
+				</connector>
 			</view>
 		</views>
 	</model>
@@ -2017,7 +2157,7 @@ The available water supply is recharged at a natural constant rate (safe assumpt
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>initial_available_water_supply</eqn>
-				<inflow>natural_water_recharge</inflow>
+				<inflow>natural_water_recharge_flow</inflow>
 				<inflow>technological_water_discovery</inflow>
 				<outflow>total_water_withdrawal</outflow>
 				<units>m^3</units>
@@ -2035,14 +2175,14 @@ The available water supply is recharged at a natural constant rate (safe assumpt
 			<aux name="elasticity of\nnon agricultural water withdrawal\nper capita to GDP per person">
 				<doc>${Calibration Parameter}
 Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>0.00194647691599067</eqn>
+				<eqn>0.164029585318099</eqn>
 				<range min="0" max="0.5"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="non agricultural water\nwithdrawal 1980">
 				<doc>${Calibration Parameter}
 Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>159553000.006848</eqn>
+				<eqn>150000000</eqn>
 				<range min="150000000" max="400000000"/>
 				<units>m^3/Mp/year</units>
 			</aux>
@@ -2061,14 +2201,13 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>Population_1*non_agricultural_water_withdrawal_per_million_person</eqn>
 				<units>m^3/year</units>
 			</aux>
-			<flow name="natural water\nrecharge">
+			<flow name="natural water\nrecharge flow">
 				<doc>${Calibration Parameter}
 </doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>2899999877664.31</eqn>
-				<range min="100000000000" max="10000000000000"/>
+				<eqn>natural_water_recharge</eqn>
 				<non_negative/>
 				<units>m^3/year</units>
 			</flow>
@@ -2076,7 +2215,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>water_withdrawal_per_Mtcrop_irrigated*irrigated_crop_production</eqn>
+				<eqn>water_withdrawal_per_PCal_irrigated*irrigated_crop_production</eqn>
 				<units>m^3/year</units>
 			</aux>
 			<aux name="fraction of water\nwithdrawal for agriculture" access="output">
@@ -2091,7 +2230,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 			<aux name="rate of change\nin irrigation efficiency">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.0206351059282409</eqn>
+				<eqn>0.0255968560432097</eqn>
 				<range min="0" max="0.04"/>
 				<units>1/year</units>
 			</aux>
@@ -2108,7 +2247,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.0893154256429683</eqn>
+					<eqn>0.0643524347524963</eqn>
 				</element>
 				<units>1</units>
 			</aux>
@@ -2119,33 +2258,26 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>(1 + switch_for_climate_damage*sensitivity_of_surface_temperature_anomaly_on_water_used_per_Mtcrop * (Surface_Temperature_Anomaly/INIT(Surface_Temperature_Anomaly)-1))</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="water withdrawal per\nMtcrop irrigated 1980">
+			<aux name="water withdrawal per\nPCal irrigated 1980">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>2159732053.41122</eqn>
-				<range min="1000000000" max="4000000000"/>
-				<units>m^3/Mtcrop</units>
+				<eqn>4295978001.15533</eqn>
+				<range min="1000000000" max="5000000000"/>
+				<units>m^3/PCal</units>
 			</aux>
-			<aux name="water withdrawal per\nMtcrop irrigated">
+			<aux name="water withdrawal per\nPCal irrigated">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>water_withdrawal_per_Mtcrop_irrigated_1980*effect_of_technology_on_irrigation_efficiency*effect_of_surface_temperature_anomaly_on_water_lost_to_evapotranspiration</eqn>
-				<units>m^3/Mtcrop</units>
+				<eqn>water_withdrawal_per_PCal_irrigated_1980*effect_of_technology_on_irrigation_efficiency*effect_of_surface_temperature_anomaly_on_water_lost_to_evapotranspiration</eqn>
+				<units>m^3/PCal</units>
 			</aux>
-			<aux name="normal\nfraction of cropland\nirrigated">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.209921129158496</eqn>
-				<range min="0.2" max="0.4"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="fraction of cropland\nirrigated">
+			<aux name="fraction of cropland\nirrigated" access="output" isee:autocreated="true">
 				<doc>Dieter data differ, but a current estimate says 20% of cropland are irrigated, accounting for 70% of withdrawals: https://www.nature.com/articles/s43017-023-00438-5</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>normal_fraction_of_cropland_irrigated*effect_of_available_water_supply_on_land_irrigated</eqn>
+				<eqn>fraction_of_cropland_irrigated_indicated_by_GDP_per_person*effect_of_available_water_supply_on_land_irrigated</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of available\nwater supply on land\nirrigated">
@@ -2158,7 +2290,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 			<aux name="sensitivity of effect of available\nwater supply on land\nirrigated">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.196974651223677</eqn>
+				<eqn>0.053537028353792</eqn>
 				<range min="0" max="1"/>
 				<units>dmnl</units>
 			</aux>
@@ -2167,9 +2299,9 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>crop_production_1*fraction_of_cropland_irrigated</eqn>
-				<units>Mtcrop/year</units>
+				<units>PCal/year</units>
 			</aux>
-			<flow name="technological\nwater discovery">
+			<flow name="technological\nwater discovery" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -2180,15 +2312,14 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 			<aux name="technological water\ndiscovery 1980">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>100087055317.491</eqn>
-				<range min="10000000000" max="1000000000000"/>
+				<eqn>15785315531.991</eqn>
+				<range min="1000000000" max="100000000000"/>
 				<units>m^3/year</units>
 			</aux>
 			<aux name="rate of change\nin technological\nwater discovery">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>-0.00574368916235796</eqn>
-				<range min="-0.02" max="0"/>
+				<eqn>-0.0372464523180553</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="effect of technology\non available water supply">
@@ -2208,14 +2339,13 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 			<aux name="sensitivity\nof pressure to expand\nwater supply to available\nwater supply">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>-1.00103122987667</eqn>
-				<range min="-3" max="0"/>
+				<eqn>-106.071764127661</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial available water supply">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>59999999911129.2</eqn>
+				<eqn>48246124643007.7</eqn>
 				<range min="30000000000000" max="120000000000000"/>
 				<units>m^3</units>
 			</aux>
@@ -2235,7 +2365,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>Mtcrop/year</units>
+				<units>PCal/year</units>
 			</aux>
 			<aux name="Population 1" access="input">
 				<dimensions>
@@ -2250,6 +2380,47 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/Mp/year</units>
+			</aux>
+			<aux name="natural water\nrecharge">
+				<eqn>3208284668377.25</eqn>
+				<range min="100000000000" max="10000000000000"/>
+				<units>m^3/year</units>
+			</aux>
+			<stock name="Cropland" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mha</units>
+			</stock>
+			<aux name="irrigated cropland">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Cropland*fraction_of_cropland_irrigated</eqn>
+				<units>Mha</units>
+			</aux>
+			<aux name="GDP per person 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/Mp/year</units>
+			</aux>
+			<aux name="fraction of cropland irrigated\nindicated by GDP per person">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(GDP_per_person_1/INIT(GDP_per_person_1)) ^ sensitivity_of_fraction_of_cropland_irrigated_indicated_to_GDP_per_person * base_fraction_of_cropland_irrigated</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sensitivity of fraction of cropland irrigated\nindicated to GDP per person">
+				<eqn>0.297607609161609</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="base fraction of cropland irrigated">
+				<eqn>0.163976576238027</eqn>
+				<units>dmnl</units>
 			</aux>
 		</variables>
 		<views>
@@ -2300,7 +2471,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="287" isee:scroll_y="258" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="259" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2346,14 +2517,14 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 						<pt x="740.5" y="650"/>
 					</pts>
 				</flow>
-				<aux label_side="bottom" x="614.083" y="1014.17" name="elasticity of\nnon agricultural water withdrawal\nper capita to GDP per person"/>
-				<aux label_side="bottom" x="868.209" y="1003.42" name="non agricultural water\nwithdrawal 1980"/>
+				<aux label_side="bottom" x="581.083" y="1027.17" name="elasticity of\nnon agricultural water withdrawal\nper capita to GDP per person"/>
+				<aux label_side="bottom" x="887.209" y="1018.75" name="non agricultural water\nwithdrawal 1980"/>
 				<aux label_side="right" label_angle="45" x="719" y="961.42" name="non agricultural\nwater withdrawal\nper million person"/>
-				<connector uid="2" angle="26.6923">
+				<connector uid="2" angle="25.4888">
 					<from>elasticity_of_non_agricultural_water_withdrawal_per_capita_to_GDP_per_person</from>
 					<to>non_agricultural_water_withdrawal_per_million_person</to>
 				</connector>
-				<connector uid="3" angle="164.407">
+				<connector uid="3" angle="161.18">
 					<from>non_agricultural_water_withdrawal_1980</from>
 					<to>non_agricultural_water_withdrawal_per_million_person</to>
 				</connector>
@@ -2366,7 +2537,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>non_agricultural_water_withdrawl</from>
 					<to>total_water_withdrawal</to>
 				</connector>
-				<flow label_side="bottom" x="429.834" y="653" name="natural water\nrecharge">
+				<flow label_side="bottom" x="429.834" y="653" name="natural water\nrecharge flow">
 					<pts>
 						<pt x="344.25" y="653"/>
 						<pt x="515.417" y="653"/>
@@ -2398,30 +2569,25 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>sensitivity_of_surface_temperature_anomaly_on_water_used_per_Mtcrop</from>
 					<to>effect_of_surface_temperature_anomaly_on_water_lost_to_evapotranspiration</to>
 				</connector>
-				<aux x="892.278" y="216.97" name="water withdrawal per\nMtcrop irrigated 1980"/>
-				<aux x="828.361" y="406.5" name="water withdrawal per\nMtcrop irrigated"/>
+				<aux x="892.278" y="216.97" name="water withdrawal per\nPCal irrigated 1980"/>
+				<aux x="828.361" y="406.5" name="water withdrawal per\nPCal irrigated"/>
 				<connector uid="13" angle="184.84">
 					<from>effect_of_surface_temperature_anomaly_on_water_lost_to_evapotranspiration</from>
-					<to>water_withdrawal_per_Mtcrop_irrigated</to>
+					<to>water_withdrawal_per_PCal_irrigated</to>
 				</connector>
 				<connector uid="14" angle="250.666">
-					<from>water_withdrawal_per_Mtcrop_irrigated_1980</from>
-					<to>water_withdrawal_per_Mtcrop_irrigated</to>
+					<from>water_withdrawal_per_PCal_irrigated_1980</from>
+					<to>water_withdrawal_per_PCal_irrigated</to>
 				</connector>
 				<connector uid="15" angle="221.075">
 					<from>effect_of_technology_on_irrigation_efficiency</from>
-					<to>water_withdrawal_per_Mtcrop_irrigated</to>
+					<to>water_withdrawal_per_PCal_irrigated</to>
 				</connector>
 				<connector uid="16" angle="218.684">
-					<from>water_withdrawal_per_Mtcrop_irrigated</from>
+					<from>water_withdrawal_per_PCal_irrigated</from>
 					<to>agricultural_water_withdrawal</to>
 				</connector>
-				<aux x="467.833" y="266.75" name="normal\nfraction of cropland\nirrigated"/>
 				<aux x="517.417" y="374" name="fraction of cropland\nirrigated"/>
-				<connector uid="17" angle="295.127">
-					<from>normal_fraction_of_cropland_irrigated</from>
-					<to>fraction_of_cropland_irrigated</to>
-				</connector>
 				<aux x="458.833" y="492.25" name="effect of available\nwater supply on land\nirrigated"/>
 				<aux x="363" y="344" name="sensitivity of effect of available\nwater supply on land\nirrigated"/>
 				<connector uid="18" angle="82.9817">
@@ -2448,9 +2614,9 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					</pts>
 				</flow>
 				<aux x="296.5" y="891.5" name="technological water\ndiscovery 1980"/>
-				<aux background="white" label_side="bottom" x="345.75" y="1000.75" name="rate of change\nin technological\nwater discovery"/>
+				<aux background="white" label_side="bottom" x="345" y="1000.75" name="rate of change\nin technological\nwater discovery"/>
 				<aux label_side="bottom" x="400.583" y="922.679" name="effect of technology\non available water supply"/>
-				<connector uid="22" angle="54.5965">
+				<connector uid="22" angle="54.5509">
 					<from>rate_of_change_in_technological_water_discovery</from>
 					<to>effect_of_technology_on_available_water_supply</to>
 				</connector>
@@ -2471,8 +2637,8 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>pressure_to_expand_available_water_supply</from>
 					<to>technological_water_discovery</to>
 				</connector>
-				<aux x="147.111" y="565.36" name="sensitivity\nof pressure to expand\nwater supply to available\nwater supply"/>
-				<connector uid="27" angle="312.289">
+				<aux x="146.111" y="570.36" name="sensitivity\nof pressure to expand\nwater supply to available\nwater supply"/>
+				<connector uid="27" angle="314.324">
 					<from>sensitivity_of_pressure_to_expand_water_supply_to_available_water_supply</from>
 					<to>pressure_to_expand_available_water_supply</to>
 				</connector>
@@ -2496,8 +2662,8 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>crop_production_1</from>
 					<to>irrigated_crop_production</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="849" y="835" name="Population 1"/>
-				<connector uid="34" angle="150.524">
+				<aux font_style="italic" font_weight="bold" x="798" y="864" name="Population 1"/>
+				<connector uid="34" angle="166.854">
 					<from>Population_1</from>
 					<to>non_agricultural_water_withdrawl</to>
 				</connector>
@@ -2506,6 +2672,44 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>GDP_per_person</from>
 					<to>non_agricultural_water_withdrawal_per_million_person</to>
 				</connector>
+				<aux x="400.583" y="734.53" name="natural water\nrecharge"/>
+				<connector uid="37" angle="63.9126">
+					<from>natural_water_recharge</from>
+					<to>natural_water_recharge_flow</to>
+				</connector>
+				<stock font_style="italic" font_weight="bold" x="466" y="121" name="Cropland"/>
+				<aux x="564" y="184" name="irrigated cropland"/>
+				<connector uid="38" angle="327.265">
+					<from>Cropland</from>
+					<to>irrigated_cropland</to>
+				</connector>
+				<connector uid="39" angle="76.2243">
+					<from>fraction_of_cropland_irrigated</from>
+					<to>irrigated_cropland</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="116" y="242.97" name="GDP per person 1"/>
+				<aux x="278.5" y="213" name="fraction of cropland irrigated\nindicated by GDP per person"/>
+				<aux x="147.111" y="59" name="sensitivity of fraction of cropland irrigated\nindicated to GDP per person"/>
+				<connector uid="41" angle="310.47">
+					<from>sensitivity_of_fraction_of_cropland_irrigated_indicated_to_GDP_per_person</from>
+					<to>fraction_of_cropland_irrigated_indicated_by_GDP_per_person</to>
+				</connector>
+				<connector uid="42" angle="10.4497">
+					<from>GDP_per_person_1</from>
+					<to>fraction_of_cropland_irrigated_indicated_by_GDP_per_person</to>
+				</connector>
+				<aux x="288.778" y="90" name="base fraction of cropland irrigated"/>
+				<connector uid="43" angle="265.223">
+					<from>base_fraction_of_cropland_irrigated</from>
+					<to>fraction_of_cropland_irrigated_indicated_by_GDP_per_person</to>
+				</connector>
+				<connector uid="44" angle="326.025">
+					<from>fraction_of_cropland_irrigated_indicated_by_GDP_per_person</from>
+					<to>fraction_of_cropland_irrigated</to>
+				</connector>
+				<text_box border_width="thin" border_style="solid" uid="45" x="62.825" y="1068" width="260" height="58">the more technological water discovery
+the less future investment due to crowding out of more profitable forms of investment</text_box>
+				<text_box border_width="thin" border_style="solid" uid="46" x="964.417" y="197" width="260" height="58">do we need to represent the cost of this technological development in investment?</text_box>
 			</view>
 		</views>
 	</model>
@@ -2645,7 +2849,7 @@ Includes Manure and Technological</doc>
 			<aux name="elasticity of effect of livestock\non manure fertilizer use">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.134515613371059</eqn>
+				<eqn>0.0975915086490948</eqn>
 				<range min="0.01" max="1.5"/>
 				<units>dmnl</units>
 			</aux>
@@ -2661,7 +2865,7 @@ Includes Manure and Technological</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>MKg/Year</units>
+				<units>PCal/Year</units>
 			</aux>
 			<aux name="crop balance\nwith reserves" access="input">
 				<dimensions>
@@ -2696,7 +2900,10 @@ Includes Manure and Technological</doc>
 				<units>dmnl</units>
 			</aux>
 			<aux name="sensitivity of fertilizer use to crop balance with reserves">
-				<eqn>-0.875</eqn>
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>-0.848654913215222</eqn>
+				<range min="-1.5" max="-0.2"/>
 				<units>dmnl</units>
 			</aux>
 		</variables>
@@ -2748,7 +2955,7 @@ Includes Manure and Technological</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="65" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="104" isee:scroll_y="167" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2959,7 +3166,7 @@ Lambin EF, Meyfroidt P. 2011. Global land use change, economic globalization, an
 			<aux name="fraction of new\ncropland\nfrom forests">
 				<doc>${Calibration Parameter}
 Calibration Parameter: forest land &amp; CO2 emissions from land cover change &amp; agricultural land</doc>
-				<eqn>0.334617835194451</eqn>
+				<eqn>0.335108319589631</eqn>
 				<range min="0.2" max="0.8"/>
 				<units>dmnl</units>
 			</aux>
@@ -2993,7 +3200,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="fraction of\ndepleting cropland\nto grassland">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.686440361730295</eqn>
+				<eqn>0.682481881332126</eqn>
 				<range min="0.2" max="0.8"/>
 				<units>dmnl</units>
 			</aux>
@@ -3016,7 +3223,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="fraction of grassland for grazing">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.711599444253126</eqn>
+				<eqn>0.759548107068463</eqn>
 				<range min="0.6" max="0.8"/>
 				<units>dmnl</units>
 			</aux>
@@ -3044,7 +3251,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="time to close\ngrassland gap">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>3.73217544527822</eqn>
+				<eqn>3.72393979618224</eqn>
 				<range min="2" max="5"/>
 				<units>years</units>
 			</aux>
@@ -3111,7 +3318,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="cropland\nexpansion time">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>2.42408048858354</eqn>
+				<eqn>2.38579268967886</eqn>
 				<range min="1" max="5"/>
 				<units>years</units>
 			</aux>
@@ -3166,7 +3373,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="elasticity of effect of livestock\nyield on fraction\nof grassland degrading">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.77861358964679</eqn>
+				<eqn>0.791911568325403</eqn>
 				<range min="0.2" max="2"/>
 				<units>dmnl</units>
 			</aux>
@@ -3181,13 +3388,13 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(average_crop_yield/average_crop_yield_in_1980)^elasticity_of_effect_of_crop_yield_on_fraction_cropland_degrading</eqn>
+				<eqn>(crop_yield/INIT(crop_yield))^elasticity_of_effect_of_crop_yield_on_fraction_cropland_degrading</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="elasticity of effect of crop yield\non fraction cropland\ndegrading">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.833187761152697</eqn>
+				<eqn>0.856543552075817</eqn>
 				<range min="0.2" max="2"/>
 				<units>dmnl</units>
 			</aux>
@@ -3207,25 +3414,6 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				</gf>
 				<units>1/Year</units>
 			</aux>
-			<aux name="average crop yield in\n1980" access="input">
-				<eqn>3.63363805468962</eqn>
-				<units>tcrop/(ha*year)</units>
-			</aux>
-			<aux name="average crop yield" access="input">
-				<doc>the Average Crop Yield is also negatively impacted by the STA (from IPCC AR6 WGI, Chapter 12 (Ranasinghe et al., 2021))
-
-Ranasinghe R, Ruane AC, Vautard R, Arnell N, Coppola E, Cruz FA, Dessai S, Saiful Islam AKM, Rahimi M, Carrascal DR, Sillmann J. 2021. Climate Change Information for Regional Impact and for Risk Assessment. In Climate Change 2021: The Physical Science Basis. Contribution of Working Group I to the Sixth Assessment Report of the Intergovernmental Panel on Climate Change. Cambridge University Press, Cambridge, United Kingdom and New York, NY, USA, pp. 1767–1926, doi: 10.1017/9781009157896.014.
-
-
-the Average Crop Yield is bolstered slightly in comparison by the increasing concentration of CO2 in the atmosphere due to plantlife respiring CO2 (Kimball et al. 1983). 
-
-Kimball BA, Idso SB. 1983. Increasing atmospheric CO2: effects on crop yield, water use and climate. Agricultural water management 7(1-3): 55-72.</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>average_crop_yield_in_1980*effect_of_man_made_fertilizer_use_on_crop_yield*effect_of_manure_fertilizer_use_on_crop_yield*net_effect_of_climate_on_crop_yield*effect_of_irrigation_on_crop_yield*effect_of_soil_carbon_on_crop_yield</eqn>
-				<units>tcrop/(ha*year)</units>
-			</aux>
 			<aux name="Policy Start Year" access="input">
 				<eqn>2024</eqn>
 				<units>Year</units>
@@ -3235,12 +3423,12 @@ Kimball BA, Idso SB. 1983. Increasing atmospheric CO2: effects on crop yield, wa
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>MKg/Mha/Year</units>
+				<units>PCal/Mha/Year</units>
 			</stock>
 			<aux name="sensitivity of effect of crop\nbalance on crop land\nexpansion rate">
 				<doc>${Calibration Parameter}
 Calibration Parameter: forest land &amp; CO2 emissions from land cover change &amp; agricultural land &amp; crop production &amp; fertilizer use</doc>
-				<eqn>-0.207433143883424</eqn>
+				<eqn>-0.206839626739367</eqn>
 				<range min="-1" max="0"/>
 				<units>1</units>
 			</aux>
@@ -3268,7 +3456,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="sensitivity of effect of livestock\nbalance on grassland\nexpansion rate">
 				<doc>${Calibration Parameter}
 Calibration Parameter: forest land &amp; CO2 emissions from land cover change &amp; agricultural land &amp; crop production &amp; fertilizer use</doc>
-				<eqn>-0.0457993227627829</eqn>
+				<eqn>-0.0627407987320223</eqn>
 				<range min="-1" max="0"/>
 				<units>1</units>
 			</aux>
@@ -3278,6 +3466,13 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>1</units>
+			</aux>
+			<aux name="crop yield" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>PCal/(Mha*year)</units>
 			</aux>
 		</variables>
 		<views>
@@ -3328,7 +3523,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="2" isee:page_rows="2" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="277.857" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3624,14 +3819,6 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<from>elasticity_of_effect_of_crop_yield_on_fraction_cropland_degrading</from>
 					<to>effect_of_crop_yield_on_fraction_cropland_degrading</to>
 				</connector>
-				<connector uid="41" angle="46.7162">
-					<from>average_crop_yield_in_1980</from>
-					<to>effect_of_crop_yield_on_fraction_cropland_degrading</to>
-				</connector>
-				<connector uid="42" angle="90">
-					<from>average_crop_yield</from>
-					<to>effect_of_crop_yield_on_fraction_cropland_degrading</to>
-				</connector>
 				<connector uid="43" angle="82.875">
 					<from>effect_of_crop_yield_on_fraction_cropland_degrading</from>
 					<to>fraction_cropland_degrading</to>
@@ -3654,8 +3841,6 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<from>Grassland</from>
 					<to>afforestation</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="907" y="665.08" name="average crop yield"/>
-				<aux font_style="italic" font_weight="bold" x="813" y="636.92" name="average crop yield in\n1980"/>
 				<aux font_style="italic" font_weight="bold" x="1452" y="563.04" name="Policy Start Year"/>
 				<connector uid="54" angle="179.857">
 					<from>Policy_Start_Year</from>
@@ -3696,6 +3881,11 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<from>livestock_balance_with_reserves</from>
 					<to>effect_of_livestock_balance_on_grazing_land</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" x="980.714" y="695" name="crop yield"/>
+				<connector uid="64" angle="118.706">
+					<from>crop_yield</from>
+					<to>effect_of_crop_yield_on_fraction_cropland_degrading</to>
+				</connector>
 				<alias font_style="italic" uid="16" x="73.5" y="396.375" width="18" height="18">
 					<of>fraction_of_grassland_for_grazing</of>
 				</alias>
@@ -3719,7 +3909,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>normal_rate_of_livestock_intensification*Livestock_Yield*effect_of_livestock_balance_on_yield_intensification</eqn>
-				<units>MKg/Mha/Year/Year</units>
+				<units>PCal/Mha/Year/Year</units>
 			</flow>
 			<stock name="Livestock Yield" access="output">
 				<dimensions>
@@ -3727,16 +3917,19 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				</dimensions>
 				<eqn>Livestock_Yield_in_1980</eqn>
 				<inflow>livestock_yield_intensification</inflow>
-				<units>MKg/Mha/Year</units>
+				<units>PCal/Mha/Year</units>
 			</stock>
 			<aux name="Livestock Yield in 1980">
-				<eqn>60.4211390735556</eqn>
-				<units>MKg/Mha/Year</units>
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.263417373498638</eqn>
+				<range min="0" max="1"/>
+				<units>PCal/Mha/Year</units>
 			</aux>
 			<aux name="normal rate\nof livestock intensification">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.00721757253730449</eqn>
+				<eqn>0.00893044781328361</eqn>
 				<range min="0" max="0.05"/>
 				<units>1/year</units>
 			</aux>
@@ -3762,7 +3955,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="sensitivity of effect of livestock\nbalance on livestock yield">
 				<doc>${Calibration Parameter}
 Calibration Parameter: forest land &amp; CO2 emissions from land cover change &amp; agricultural land &amp; crop production &amp; fertilizer use</doc>
-				<eqn>-28.9862727773753</eqn>
+				<eqn>-28.2257924978656</eqn>
 				<range min="-30" max="0"/>
 				<units>1</units>
 			</aux>
@@ -3773,7 +3966,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>grazing_land*Livestock_Yield</eqn>
-				<units>MKg/Year</units>
+				<units>PCal/Year</units>
 			</aux>
 			<aux name="grazing land" access="input">
 				<dimensions>
@@ -3787,7 +3980,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>MKg/Year</units>
+				<units>PCal/Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -3838,7 +4031,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="291" isee:scroll_y="300" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="502" isee:scroll_y="259" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3928,8 +4121,8 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<from>livestock_balance_with_reserves</from>
 					<to>effect_of_livestock_balance_on_yield_intensification</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1118" y="402" name="grazing land"/>
-				<connector uid="17" angle="201.64">
+				<aux font_style="italic" font_weight="bold" x="1033" y="379" name="grazing land"/>
+				<connector uid="17" angle="224.227">
 					<from>grazing_land</from>
 					<to>livestock_production</to>
 				</connector>
@@ -4075,14 +4268,14 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="climate response sensitivity">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.326202289675977</eqn>
+				<eqn>0.287280938989651</eqn>
 				<range min="0.1" max="0.4"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="litter decay factor">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>3.91641265135314</eqn>
+				<eqn>3.98306252412255</eqn>
 				<range min="1" max="10"/>
 				<units>dmnl</units>
 			</aux>
@@ -4156,7 +4349,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="466" isee:scroll_y="16" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="305" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
