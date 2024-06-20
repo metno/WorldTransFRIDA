@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE">
 	<header>
-		<smile version="1.0" namespace="std, isee" uses_arrays="1" uses_submodels=""/>
+		<smile version="1.0" namespace="std, isee" uses_arrays="1" uses_conveyor="" uses_submodels=""/>
 		<name>Economy</name>
 		<uuid>fcee5f0e-014c-46f8-aae7-88ab3d659635</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.6.1" isee:build_number="3282" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7" isee:build_number="3335" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -42,11 +42,6 @@
 	<isee:number_format_extenders/>
 	<default_format scale_by="1"/>
 	<model_units>
-		<unit name="Years">
-			<eqn/>
-			<alias>yr</alias>
-			<alias>year</alias>
-		</unit>
 		<unit name="G$">
 			<eqn>Giga*$</eqn>
 		</unit>
@@ -206,11 +201,6 @@
 		<unit name="GtN2O">
 			<eqn>Giga*tN2O</eqn>
 		</unit>
-		<unit name="Dollar">
-			<eqn>$</eqn>
-			<alias>Dollars</alias>
-			<alias>$s</alias>
-		</unit>
 	</model_units>
 	<model name="Economy">
 		<variables>
@@ -252,6 +242,8 @@
 				<connect2 to="Government.GDP" from="GDP.GDP"/>
 				<connect to="Population.GDP" from="GDP.GDP"/>
 				<connect2 to="Population.GDP" from="GDP.GDP"/>
+				<connect to="Circular_Flow.GDP_growth_rate" from="GDP.GDP_growth_rate"/>
+				<connect2 to="Circular_Flow.GDP_growth_rate" from="GDP.GDP_growth_rate"/>
 				<connect to="Finance.GDP_growth_rate" from="GDP.GDP_growth_rate"/>
 				<connect2 to="Finance.GDP_growth_rate" from="GDP.GDP_growth_rate"/>
 				<connect to="GDP.government_spending" from="Government.government_consumption"/>
@@ -281,6 +273,8 @@
 				<connect2 to="Government.GDP" from="GDP.GDP"/>
 				<connect to="Government.profit_tax" from="Circular_Flow.profit_tax"/>
 				<connect2 to="Government.profit_tax" from="Circular_Flow.profit_tax"/>
+				<connect to="Government.rent_tax" from="Circular_Flow.rent_tax"/>
+				<connect2 to="Government.rent_tax" from="Circular_Flow.rent_tax"/>
 				<connect to="Government.wage_tax" from="Circular_Flow.wage_tax"/>
 				<connect2 to="Government.wage_tax" from="Circular_Flow.wage_tax"/>
 			</module>
@@ -288,6 +282,8 @@
 				<format scale_by="auto"/>
 				<connect to="Finance.Firms_Checking_Accounts_1" from="Circular_Flow.Firms_Checking_Accounts"/>
 				<connect2 to="Finance.Firms_Checking_Accounts_1" from="Circular_Flow.Firms_Checking_Accounts"/>
+				<connect to='Employment."non-bank_profits"' from='Circular_Flow."non-bank_profits"'/>
+				<connect2 to='Employment."non-bank_profits"' from='Circular_Flow."non-bank_profits"'/>
 				<connect to="Finance.owner_savings" from="Circular_Flow.owner_savings"/>
 				<connect2 to="Finance.owner_savings" from="Circular_Flow.owner_savings"/>
 				<connect to="Economy.private_consumption" from="Circular_Flow.private_consumption"/>
@@ -298,18 +294,30 @@
 				<connect2 to="Finance.private_investment" from="Circular_Flow.private_investment"/>
 				<connect to="Government.profit_tax" from="Circular_Flow.profit_tax"/>
 				<connect2 to="Government.profit_tax" from="Circular_Flow.profit_tax"/>
+				<connect to="Government.rent_tax" from="Circular_Flow.rent_tax"/>
+				<connect2 to="Government.rent_tax" from="Circular_Flow.rent_tax"/>
+				<connect to="Finance.time_to_pay_out_profits" from="Circular_Flow.time_to_pay_out_profits"/>
+				<connect2 to="Finance.time_to_pay_out_profits" from="Circular_Flow.time_to_pay_out_profits"/>
 				<connect to="Government.wage_tax" from="Circular_Flow.wage_tax"/>
 				<connect2 to="Government.wage_tax" from="Circular_Flow.wage_tax"/>
+				<connect to="Employment.wages" from="Circular_Flow.wages"/>
+				<connect2 to="Employment.wages" from="Circular_Flow.wages"/>
 				<connect to="Finance.Worker_Savings" from="Circular_Flow.Worker_Savings"/>
 				<connect2 to="Finance.Worker_Savings" from="Circular_Flow.Worker_Savings"/>
+				<connect to="Circular_Flow.annual_aggregate_wages" from="Employment.annual_aggregate_wages"/>
+				<connect2 to="Circular_Flow.annual_aggregate_wages" from="Employment.annual_aggregate_wages"/>
 				<connect to="Circular_Flow.Bank_Investment" from="Finance.Bank_Investment"/>
 				<connect2 to="Circular_Flow.Bank_Investment" from="Finance.Bank_Investment"/>
+				<connect to="Circular_Flow.GDP_growth_rate" from="GDP.GDP_growth_rate"/>
+				<connect2 to="Circular_Flow.GDP_growth_rate" from="GDP.GDP_growth_rate"/>
 				<connect to="Circular_Flow.government_spending_1" from="Government.government_consumption"/>
 				<connect2 to="Circular_Flow.government_spending_1" from="Government.government_consumption"/>
 				<connect to="Circular_Flow.net_bank_assets_1" from="Finance.net_bank_assets"/>
 				<connect2 to="Circular_Flow.net_bank_assets_1" from="Finance.net_bank_assets"/>
 				<connect to="Circular_Flow.public_investment" from="Finance.public_investment"/>
 				<connect2 to="Circular_Flow.public_investment" from="Finance.public_investment"/>
+				<connect to="Circular_Flow.rent_1" from="Employment.rent"/>
+				<connect2 to="Circular_Flow.rent_1" from="Employment.rent"/>
 				<connect to="Circular_Flow.risky_interest" from="Finance.risky_interest"/>
 				<connect2 to="Circular_Flow.risky_interest" from="Finance.risky_interest"/>
 				<connect to="Circular_Flow.risky_bank_assets_1" from="Finance.risky_bank_assets"/>
@@ -329,6 +337,8 @@
 				<format scale_by="auto"/>
 				<connect to="Circular_Flow.Bank_Investment" from="Finance.Bank_Investment"/>
 				<connect2 to="Circular_Flow.Bank_Investment" from="Finance.Bank_Investment"/>
+				<connect to="Employment.defaults" from="Finance.defaults"/>
+				<connect2 to="Employment.defaults" from="Finance.defaults"/>
 				<connect to="Circular_Flow.net_bank_assets_1" from="Finance.net_bank_assets"/>
 				<connect2 to="Circular_Flow.net_bank_assets_1" from="Finance.net_bank_assets"/>
 				<connect to="Circular_Flow.public_investment" from="Finance.public_investment"/>
@@ -343,6 +353,10 @@
 				<connect2 to="Circular_Flow.safe_interest_1" from="Finance.safe_interest"/>
 				<connect to="Circular_Flow.safe_interest_2" from="Finance.safe_interest"/>
 				<connect2 to="Circular_Flow.safe_interest_2" from="Finance.safe_interest"/>
+				<connect to="Employment.safe_interest" from="Finance.safe_interest"/>
+				<connect2 to="Employment.safe_interest" from="Finance.safe_interest"/>
+				<connect to="Employment.Safe_Loans_1" from="Finance.Safe_Loans"/>
+				<connect2 to="Employment.Safe_Loans_1" from="Finance.Safe_Loans"/>
 				<connect to="Circular_Flow.safe_bank_assets_1" from="Finance.safe_bank_assets"/>
 				<connect2 to="Circular_Flow.safe_bank_assets_1" from="Finance.safe_bank_assets"/>
 				<connect to="energy_demand.Surface_Temperature_Anomaly_1" from="Finance.Surface_Temperature_Anomaly_1"/>
@@ -353,6 +367,8 @@
 				<connect2 to=".switch_only_economy_energy_damage_1" from="Finance.switch_only_economy_energy_damage_1"/>
 				<connect to="Economy.Investment_1" from="Finance.total_investment"/>
 				<connect2 to="Investment_1" from="Finance.total_investment"/>
+				<connect to="Employment.total_investment" from="Finance.total_investment"/>
+				<connect2 to="Employment.total_investment" from="Finance.total_investment"/>
 				<connect to="GDP.Investment_1" from="Finance.total_investment"/>
 				<connect2 to="GDP.Investment_1" from="Finance.total_investment"/>
 				<connect to="Finance.crop_balance_1" from="Crop.crop_balance"/>
@@ -383,6 +399,8 @@
 				<connect2 to="Finance.switch_only_economy_energy_damage_1" from="Society.switch_only_economy_energy_damage"/>
 				<connect to="Finance.technological_water_discovery" from="Freshwater.technological_water_discovery"/>
 				<connect2 to="Finance.technological_water_discovery" from="Freshwater.technological_water_discovery"/>
+				<connect to="Finance.time_to_pay_out_profits" from="Circular_Flow.time_to_pay_out_profits"/>
+				<connect2 to="Finance.time_to_pay_out_profits" from="Circular_Flow.time_to_pay_out_profits"/>
 				<connect to="Finance.Worker_Savings" from="Circular_Flow.Worker_Savings"/>
 				<connect2 to="Finance.Worker_Savings" from="Circular_Flow.Worker_Savings"/>
 			</module>
@@ -414,6 +432,48 @@
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/year</units>
 			</aux>
+			<module name="Employment" isee:label="">
+				<format scale_by="auto"/>
+				<connect to="Circular_Flow.annual_aggregate_wages" from="Employment.annual_aggregate_wages"/>
+				<connect2 to="Circular_Flow.annual_aggregate_wages" from="Employment.annual_aggregate_wages"/>
+				<connect to="Circular_Flow.rent_1" from="Employment.rent"/>
+				<connect2 to="Circular_Flow.rent_1" from="Employment.rent"/>
+				<connect to="Employment.Aged_1_to_20_years" from="Population.Aged_1_to_20_years"/>
+				<connect2 to="Employment.Aged_1_to_20_years" from="Population.Aged_1_to_20_years"/>
+				<connect to="Employment.Aged_20_to_40_years" from="Population.Aged_20_to_40_years"/>
+				<connect2 to="Employment.Aged_20_to_40_years" from="Population.Aged_20_to_40_years"/>
+				<connect to="Employment.Aged_40_to_60_years" from="Population.Aged_40_to_60_years"/>
+				<connect2 to="Employment.Aged_40_to_60_years" from="Population.Aged_40_to_60_years"/>
+				<connect to="Employment.Aged_60_to_80_years" from="Population.Aged_60_to_80_years"/>
+				<connect2 to="Employment.Aged_60_to_80_years" from="Population.Aged_60_to_80_years"/>
+				<connect to="Employment.deaths_1_to_20_years" from="Population.deaths_1_to_20_years"/>
+				<connect2 to="Employment.deaths_1_to_20_years" from="Population.deaths_1_to_20_years"/>
+				<connect to="Employment.deaths_20_to_40_years_1" from="Population.deaths_20_to_40_years"/>
+				<connect2 to="Employment.deaths_20_to_40_years_1" from="Population.deaths_20_to_40_years"/>
+				<connect to="Employment.deaths_40_to_60_years_1" from="Population.deaths_40_to_60_years"/>
+				<connect2 to="Employment.deaths_40_to_60_years_1" from="Population.deaths_40_to_60_years"/>
+				<connect to="Employment.deaths_60_to_80_years" from="Population.deaths_60_to_80_years"/>
+				<connect2 to="Employment.deaths_60_to_80_years" from="Population.deaths_60_to_80_years"/>
+				<connect to="Employment.defaults" from="Finance.defaults"/>
+				<connect2 to="Employment.defaults" from="Finance.defaults"/>
+				<connect to='Employment."non-bank_profits"' from='Circular_Flow."non-bank_profits"'/>
+				<connect2 to='Employment."non-bank_profits"' from='Circular_Flow."non-bank_profits"'/>
+				<connect to="Employment.Population" from="Population.Population"/>
+				<connect2 to="Employment.Population" from="Population.Population"/>
+				<connect to="Employment.safe_interest" from="Finance.safe_interest"/>
+				<connect2 to="Employment.safe_interest" from="Finance.safe_interest"/>
+				<connect to="Employment.Safe_Loans_1" from="Finance.Safe_Loans"/>
+				<connect2 to="Employment.Safe_Loans_1" from="Finance.Safe_Loans"/>
+				<connect to="Employment.total_investment" from="Finance.total_investment"/>
+				<connect2 to="Employment.total_investment" from="Finance.total_investment"/>
+				<connect to="Employment.wages" from="Circular_Flow.wages"/>
+				<connect2 to="Employment.wages" from="Circular_Flow.wages"/>
+				<connect to="Employment.working_age_population_1" from="Population.working_age_population"/>
+				<connect2 to="Employment.working_age_population_1" from="Population.working_age_population"/>
+			</module>
+			<module name="Inflation" isee:label="">
+				<format scale_by="auto"/>
+			</module>
 		</variables>
 		<views>
 			<style color="black" border_style="none" font_family="Arial" padding="2" background="white" text_align="center" border_width="thin" font_color="black" border_color="black" font_size="10pt" vertical_text_align="center" font_style="normal" text_decoration="none" font_weight="normal">
@@ -557,7 +617,7 @@
 					<from>Government</from>
 					<to>GDP</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1020.75" y="105" name="GDP 1"/>
+				<aux font_style="italic" font_weight="bold" x="1020.75" y="108.75" name="GDP 1"/>
 				<connector uid="270" color="#EBEBEB" font_color="#EBEBEB" angle="23.8035" isee:autocreated="true">
 					<from>GDP</from>
 					<to>GDP_1</to>
@@ -597,6 +657,24 @@
 					<from>government_consumption</from>
 					<to>government_consumption_by_PCTILE</to>
 				</connector>
+				<module x="291.595" y="533.26" name="Employment"/>
+				<connector uid="284" isee:thickness="2" angle="270" isee:autocreated="true">
+					<from>Finance</from>
+					<to>Employment</to>
+				</connector>
+				<connector uid="285" isee:thickness="2" angle="297.498" isee:autocreated="true">
+					<from>Circular_Flow</from>
+					<to>Employment</to>
+				</connector>
+				<connector uid="286" isee:thickness="2" angle="103.483" isee:autocreated="true">
+					<from>Employment</from>
+					<to>Circular_Flow</to>
+				</connector>
+				<module x="427.5" y="536.76" name="Inflation"/>
+				<connector uid="287" isee:thickness="2" angle="295" isee:autocreated="true">
+					<from>GDP</from>
+					<to>Circular_Flow</to>
+				</connector>
 			</view>
 		</views>
 	</model>
@@ -617,20 +695,23 @@
 				<outflow>&quot;non-bank_profits&quot;</outflow>
 				<outflow>wages</outflow>
 				<outflow>firms_paying_interest</outflow>
+				<outflow>rent</outflow>
 				<units>b$</units>
 			</stock>
 			<flow name="owner consumption" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>MAX (adjusted_owner_consumption, &quot;non-bank_profits&quot;*minimum_percentage_of_profits_to_consumption)</eqn>
+				<eqn>MAX (adjusted_owner_consumption, (&quot;non-bank_profits&quot;+rent+bank_profits+owner_savings_interest)*minimum_percentage_of_profits_to_consumption)</eqn>
 				<units>b$/year</units>
 			</flow>
-			<flow name="non-bank profits">
+			<flow name="non-bank profits" access="output">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Firms_Checking_Accounts*profit_rate</eqn>
+				<eqn>(Firms_Checking_Accounts*profit_rate*(1-labour_coupling_switch))
++
+(Firms_Checking_Accounts/time_to_pay_out_profits*labour_coupling_switch)</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
@@ -642,8 +723,10 @@
 				<inflow>&quot;non-bank_profits&quot;</inflow>
 				<inflow>owner_savings_interest</inflow>
 				<inflow>bank_profits</inflow>
+				<inflow>rent</inflow>
 				<outflow>owner_consumption</outflow>
 				<outflow>profit_tax</outflow>
+				<outflow>rent_tax</outflow>
 				<units>b$</units>
 			</stock>
 			<aux name="profit rate">
@@ -658,21 +741,18 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(&quot;non-bank_profits&quot;+owner_savings_interest+bank_profits)*desired_savings_as_multiple_of_profits</eqn>
+				<eqn>(&quot;non-bank_profits&quot;+rent+owner_savings_interest+bank_profits)*desired_savings_as_multiple_of_profits</eqn>
 				<units>b$</units>
 			</aux>
 			<aux name="desired savings\nas multiple of\nprofits">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>12.6358604220512</eqn>
-				<range min="2" max="20"/>
+				<eqn>14.8484625168368</eqn>
 				<units>Years</units>
 			</aux>
 			<aux name="target owner\nconsumption">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(&quot;non-bank_profits&quot;+owner_savings_interest+bank_profits)-annual_owner_savings_to_reach_goal</eqn>
+				<eqn>(&quot;non-bank_profits&quot;+rent+owner_savings_interest+bank_profits)-annual_owner_savings_to_reach_goal</eqn>
 				<units>b$/year</units>
 			</aux>
 			<stock name="adjusted owner\nconsumption">
@@ -699,10 +779,7 @@
 				<units>b$/year</units>
 			</aux>
 			<aux name="time to change\nconsumption habits">
-				<doc>${Calibration Parameter}
-</doc>
 				<eqn>1</eqn>
-				<range min="1" max="10"/>
 				<units>year</units>
 			</aux>
 			<aux name="owner savings\ngoal shortfall">
@@ -716,22 +793,16 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SMTH1(indicated_desired_owner_savings_goal, time_to_consider_desired_savings, initial_desired_owner_savings)</eqn>
+				<eqn>SMTH1(indicated_desired_owner_savings_goal, time_to_consider_desired_savings)</eqn>
 				<isee:delay_aux/>
 				<units>b$</units>
 			</aux>
 			<aux name="time to consider desired savings">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>4.87881742712912</eqn>
-				<range min="1" max="10"/>
+				<eqn>6.03744187660151</eqn>
 				<units>Years</units>
 			</aux>
 			<aux name="time to reach\nsavings goal">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>2.07624365140694</eqn>
-				<range min="1" max="5"/>
+				<eqn>5</eqn>
 				<units>year</units>
 			</aux>
 			<aux name="annual\nowner savings\nto reach goal">
@@ -742,10 +813,7 @@
 				<units>b$/year</units>
 			</aux>
 			<aux name="minimum\npercentage of profits\nto consumption">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.141821200189589</eqn>
-				<range min="0.05" max="0.5"/>
+				<eqn>0.19917132766648</eqn>
 				<units>dmnl</units>
 			</aux>
 			<stock name="Worker\nSavings" access="output" isee:autocreated="true">
@@ -761,11 +829,13 @@
 				<outflow>wage_tax</outflow>
 				<units>b$</units>
 			</stock>
-			<flow name="wages">
+			<flow name="wages" access="output">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Firms_Checking_Accounts*wage_rate</eqn>
+				<eqn>(Firms_Checking_Accounts*wage_rate*(1-labour_coupling_switch))
++
+(annual_aggregate_wages*labour_coupling_switch)</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
@@ -779,15 +849,12 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>MAX (adjusted_worker_consumption, wages*minimum_percentage_of_wages_to_consumption)</eqn>
+				<eqn>MAX (adjusted_worker_consumption, (wages+bank_wages+transfers+worker_savings_interest)*minimum_percentage_of_wages_to_consumption)</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
 			<aux name="minimum\npercentage of wages\nto consumption">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.204855996217949</eqn>
-				<range min="0.05" max="0.9"/>
+				<eqn>0.219541764175348</eqn>
 				<units>dmnl</units>
 			</aux>
 			<stock name="adjusted worker\nconsumption">
@@ -817,7 +884,7 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(wages+worker_savings_interest)-annual_worker_savings_to_reach_goal</eqn>
+				<eqn>(wages+bank_wages+transfers+worker_savings_interest)-annual_worker_savings_to_reach_goal</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="annual\nworker savings\nto reach goal">
@@ -838,7 +905,7 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SMTH1(indicated_desired_worker_savings_goal, time_to_consider_desired_savings, initial_desired_worker_savings)</eqn>
+				<eqn>SMTH1(indicated_desired_worker_savings_goal, time_to_consider_desired_savings)</eqn>
 				<isee:delay_aux/>
 				<units>b$</units>
 			</aux>
@@ -846,14 +913,11 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(wages+worker_savings_interest)*desired_savings_as_multiple_of_wages</eqn>
+				<eqn>(wages+transfers+bank_wages+worker_savings_interest)*desired_savings_as_multiple_of_wages</eqn>
 				<units>b$</units>
 			</aux>
 			<aux name="desired savings\nas multiple of\nwages">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>2.28987737569738</eqn>
-				<range min="1" max="5"/>
+				<eqn>1.7991295037634</eqn>
 				<units>Years</units>
 			</aux>
 			<flow name="firms paying\ninterest">
@@ -923,22 +987,16 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>wages*wage_tax_rate</eqn>
+				<eqn>(wages+bank_wages)*wage_tax_rate</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
 			<aux name="wage tax rate">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.207046736409404</eqn>
-				<range min="0.1" max="0.3"/>
+				<eqn>0.226175705525731</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="profit tax rate">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.336464056344044</eqn>
-				<range min="0.1" max="0.4"/>
+				<eqn>0.326621350864897</eqn>
 				<units>dmnl</units>
 			</aux>
 			<flow name="profit tax" access="output" isee:autocreated="true">
@@ -953,20 +1011,20 @@
 				<eqn>34747.7696755</eqn>
 				<units>b$</units>
 			</aux>
-			<aux name="initial firms checking accounts">
+			<aux name="initial firms\nchecking accounts">
 				<eqn>19854.3980645</eqn>
 				<units>b$</units>
 			</aux>
 			<aux name="initial worker savings">
-				<eqn>22647.797477</eqn>
+				<eqn>8400.7233753426</eqn>
 				<units>b$</units>
 			</aux>
 			<aux name="initial adjusted owner consumption">
-				<eqn>4890.86762775</eqn>
+				<eqn>1300</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="initial adjusted worker\nconsumption">
-				<eqn>12661.0104825</eqn>
+				<eqn>10595.4668173591</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="government spending 1" access="input">
@@ -1039,8 +1097,6 @@
 				<units>b$</units>
 			</aux>
 			<aux name="private consumption" isee:derived_units="true" access="output" isee:autocreated="true">
-				<doc>${Calibrated}
-</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -1061,6 +1117,60 @@
 				</dimensions>
 				<units>b$/year</units>
 			</flow>
+			<aux name="annual\naggregate wages" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="labour coupling switch">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="time to pay out profits" access="output" isee:autocreated="true">
+				<eqn>4.9826248374311</eqn>
+				<units>year</units>
+			</aux>
+			<flow name="rent">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>rent_1</eqn>
+				<non_negative/>
+				<units>b$/year</units>
+			</flow>
+			<aux name="rent 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<flow name="inflation">
+				<eqn>0.02</eqn>
+				<units>Per Year</units>
+			</flow>
+			<stock name="Cumulative inflation" access="output" isee:autocreated="true">
+				<eqn>0</eqn>
+				<inflow>inflation</inflow>
+				<units>dmnl</units>
+			</stock>
+			<flow name="rent tax" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>rent*profit_tax_rate</eqn>
+				<non_negative/>
+				<units>b$/year</units>
+			</flow>
+			<aux name="GDP\ngrowth rate" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>1/year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -1110,7 +1220,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="133" isee:scroll_y="348" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="615" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1149,53 +1259,53 @@
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<stock x="705.345" y="472.7" width="87.917" height="49.375" name="Firms\nChecking\nAccounts"/>
-				<flow x="580.396" y="580" name="owner consumption">
+				<stock label_side="top" x="1117.92" y="499.783" width="115" height="77.5" name="Firms\nChecking\nAccounts"/>
+				<flow label_side="bottom" x="918.681" y="682" name="owner consumption">
 					<pts>
-						<pt x="449.167" y="521.67"/>
-						<pt x="449.167" y="580"/>
-						<pt x="711.625" y="580"/>
-						<pt x="711.625" y="522.075"/>
+						<pt x="713.166" y="578.75"/>
+						<pt x="713.166" y="682"/>
+						<pt x="1124.2" y="682"/>
+						<pt x="1124.2" y="577.283"/>
 					</pts>
 				</flow>
-				<flow x="582.063" y="429.17" name="non-bank profits">
+				<flow x="920.348" y="413.42" name="non-bank profits">
 					<pts>
-						<pt x="714.125" y="472.7"/>
-						<pt x="714.125" y="429.17"/>
-						<pt x="450" y="429.17"/>
-						<pt x="450" y="486.67"/>
+						<pt x="1126.7" y="499.783"/>
+						<pt x="1126.7" y="413.42"/>
+						<pt x="713.999" y="413.42"/>
+						<pt x="713.999" y="501.25"/>
 					</pts>
 				</flow>
 				<connector uid="1" angle="175.576">
 					<from>Firms_Checking_Accounts</from>
 					<to>&quot;non-bank_profits&quot;</to>
 				</connector>
-				<stock x="448.751" y="504.17" name="owner\nsavings"/>
-				<aux x="630.418" y="395.66" name="profit rate"/>
-				<connector uid="2" angle="214.722">
+				<stock x="690.25" y="501.25" width="45" height="77.5" name="owner\nsavings"/>
+				<aux x="1059.67" y="352.86" name="profit rate"/>
+				<connector uid="2" angle="215.279">
 					<from>profit_rate</from>
 					<to>&quot;non-bank_profits&quot;</to>
 				</connector>
-				<aux x="457.891" y="328.79" name="indicated desired\nowner savings goal"/>
-				<aux x="405.251" y="240.17" name="desired savings\nas multiple of\nprofits"/>
-				<connector uid="3" angle="300.71">
+				<aux x="710.001" y="225.54" name="indicated desired\nowner savings goal"/>
+				<aux label_side="top" x="698.391" y="167.74" name="desired savings\nas multiple of\nprofits"/>
+				<connector uid="3" angle="281.358">
 					<from>desired_savings_as_multiple_of_profits</from>
 					<to>indicated_desired_owner_savings_goal</to>
 				</connector>
-				<connector uid="4" angle="113.026">
+				<connector uid="4" angle="114.178">
 					<from>&quot;non-bank_profits&quot;</from>
 					<to>indicated_desired_owner_savings_goal</to>
 				</connector>
-				<aux x="325" y="634.5" name="target owner\nconsumption"/>
-				<stock x="527.667" y="717.33" name="adjusted owner\nconsumption"/>
-				<flow x="446.167" y="716.67" name="change in\nowner consumption">
+				<aux x="522.417" y="856.25" name="target owner\nconsumption"/>
+				<stock label_side="right" x="812.667" y="904.413" name="adjusted owner\nconsumption"/>
+				<flow x="731.167" y="903.753" name="change in\nowner consumption">
 					<pts>
-						<pt x="375.167" y="716.67"/>
-						<pt x="505.167" y="716.67"/>
+						<pt x="660.167" y="903.753"/>
+						<pt x="790.167" y="903.753"/>
 					</pts>
 				</flow>
-				<aux x="483.391" y="659.83" name="desired change\nin owner consumption"/>
-				<connector uid="5" angle="328.494">
+				<aux label_side="top" x="768.391" y="846.913" name="desired change\nin owner consumption"/>
+				<connector uid="5" angle="342.878">
 					<from>target_owner_consumption</from>
 					<to>desired_change_in_owner_consumption</to>
 				</connector>
@@ -1203,8 +1313,8 @@
 					<from>desired_change_in_owner_consumption</from>
 					<to>change_in_owner_consumption</to>
 				</connector>
-				<aux x="377" y="743.83" name="time to change\nconsumption habits"/>
-				<connector uid="7" angle="21.4386">
+				<aux x="653.125" y="936.997" name="time to change\nconsumption habits"/>
+				<connector uid="7" angle="23.0724">
 					<from>time_to_change_consumption_habits</from>
 					<to>change_in_owner_consumption</to>
 				</connector>
@@ -1212,35 +1322,35 @@
 					<from>adjusted_owner_consumption</from>
 					<to>desired_change_in_owner_consumption</to>
 				</connector>
-				<aux x="271.001" y="435.17" name="owner savings\ngoal shortfall"/>
-				<connector uid="9" angle="117.218">
+				<aux x="310.751" y="456.283" name="owner savings\ngoal shortfall"/>
+				<connector uid="9" angle="110.513">
 					<from>owner_savings</from>
 					<to>owner_savings_goal_shortfall</to>
 				</connector>
-				<aux x="340.333" y="348.99" name="desired owner\nsavings"/>
+				<aux x="474.917" y="255.573" name="desired owner\nsavings"/>
 				<connector uid="10" angle="212.036">
 					<from>desired_owner_savings</from>
 					<to>owner_savings_goal_shortfall</to>
 				</connector>
-				<connector uid="11" angle="175.12">
+				<connector uid="11" angle="170.829">
 					<from>indicated_desired_owner_savings_goal</from>
 					<to>desired_owner_savings</to>
 				</connector>
-				<aux x="315.334" y="308.79" name="time to consider desired savings"/>
-				<connector uid="12" angle="301.871">
+				<aux label_side="top" x="466.584" y="200.373" name="time to consider desired savings"/>
+				<connector uid="12" angle="278.585">
 					<from>time_to_consider_desired_savings</from>
 					<to>desired_owner_savings</to>
 				</connector>
-				<connector uid="13" angle="126.027">
+				<connector uid="13" angle="126.972">
 					<from>&quot;non-bank_profits&quot;</from>
 					<to>target_owner_consumption</to>
 				</connector>
-				<connector uid="14" angle="39.9785">
+				<connector uid="14" angle="9.10709">
 					<from>adjusted_owner_consumption</from>
 					<to>owner_consumption</to>
 				</connector>
-				<aux x="217.666" y="572.77" name="time to reach\nsavings goal"/>
-				<connector uid="15" angle="17.1314">
+				<aux x="265.418" y="723.58" name="time to reach\nsavings goal"/>
+				<connector uid="15" angle="0.370442">
 					<from>time_to_reach_savings_goal</from>
 					<to>annual_owner_savings_to_reach_goal</to>
 				</connector>
@@ -1248,13 +1358,13 @@
 					<from>owner_savings_goal_shortfall</from>
 					<to>annual_owner_savings_to_reach_goal</to>
 				</connector>
-				<aux x="266" y="557.87" name="annual\nowner savings\nto reach goal"/>
-				<connector uid="17" angle="293.724">
+				<aux label_side="bottom" x="342.751" y="723.08" name="annual\nowner savings\nto reach goal"/>
+				<connector uid="17" angle="306.795">
 					<from>annual_owner_savings_to_reach_goal</from>
 					<to>target_owner_consumption</to>
 				</connector>
-				<aux x="630.418" y="619.33" name="minimum\npercentage of profits\nto consumption"/>
-				<connector uid="18" angle="141.824">
+				<aux label_side="left" x="874.917" y="726.08" name="minimum\npercentage of profits\nto consumption"/>
+				<connector uid="18" angle="45.2059">
 					<from>minimum_percentage_of_profits_to_consumption</from>
 					<to>owner_consumption</to>
 				</connector>
@@ -1262,17 +1372,17 @@
 					<from>&quot;non-bank_profits&quot;</from>
 					<to>owner_consumption</to>
 				</connector>
-				<stock x="1058.56" y="505.2" name="Worker\nSavings"/>
-				<flow x="920.415" y="426.67" name="wages">
+				<stock x="1603.89" y="498.533" width="45" height="77.5" name="Worker\nSavings"/>
+				<flow x="1423.21" y="410.92" name="wages">
 					<pts>
-						<pt x="783.5" y="472.7"/>
-						<pt x="783.5" y="426.67"/>
-						<pt x="1057.33" y="426.67"/>
-						<pt x="1057.33" y="487.7"/>
+						<pt x="1221.25" y="499.783"/>
+						<pt x="1221.25" y="410.92"/>
+						<pt x="1625.16" y="410.92"/>
+						<pt x="1625.16" y="498.533"/>
 					</pts>
 				</flow>
-				<aux x="876.599" y="377.66" name="wage rate"/>
-				<connector uid="20" angle="311.797">
+				<aux x="1293.58" y="352.86" name="wage rate"/>
+				<connector uid="20" angle="324.92">
 					<from>wage_rate</from>
 					<to>wages</to>
 				</connector>
@@ -1280,41 +1390,37 @@
 					<from>Firms_Checking_Accounts</from>
 					<to>wages</to>
 				</connector>
-				<flow x="924.591" y="581.67" name="worker consumption">
+				<flow x="1424.25" y="682" name="worker consumption">
 					<pts>
-						<pt x="1058.17" y="522.7"/>
-						<pt x="1058.17" y="581.67"/>
-						<pt x="791.012" y="581.67"/>
-						<pt x="791.012" y="522.075"/>
+						<pt x="1626" y="576.033"/>
+						<pt x="1626" y="682"/>
+						<pt x="1222.5" y="682"/>
+						<pt x="1222.5" y="577.283"/>
 					</pts>
 				</flow>
-				<aux x="884.33" y="619.33" name="minimum\npercentage of wages\nto consumption"/>
-				<connector uid="22" angle="43.0882">
+				<aux label_side="right" x="1463.08" y="718.5" name="minimum\npercentage of wages\nto consumption"/>
+				<connector uid="22" angle="136.77">
 					<from>minimum_percentage_of_wages_to_consumption</from>
 					<to>worker_consumption</to>
 				</connector>
-				<stock x="992.83" y="717.33" name="adjusted worker\nconsumption"/>
-				<connector uid="23" angle="129.949">
-					<from>adjusted_worker_consumption</from>
-					<to>worker_consumption</to>
-				</connector>
-				<connector uid="24" angle="239.422">
+				<stock label_side="left" x="1532" y="910.497" name="adjusted worker\nconsumption"/>
+				<connector uid="24" angle="299.203">
 					<from>wages</from>
 					<to>worker_consumption</to>
 				</connector>
-				<flow x="1073.92" y="717.33" name="change in\nworker consumption">
+				<flow x="1613.08" y="910.497" name="change in\nworker consumption">
 					<pts>
-						<pt x="1144.5" y="717.33"/>
-						<pt x="1015.33" y="717.33"/>
+						<pt x="1683.67" y="910.497"/>
+						<pt x="1554.5" y="910.497"/>
 					</pts>
 				</flow>
-				<connector uid="25" angle="159.377">
+				<connector uid="25" angle="156.555">
 					<from>
 						<alias uid="26"/>
 					</from>
 					<to>change_in_worker_consumption</to>
 				</connector>
-				<aux x="1038.06" y="657.83" name="desired change\nin worker consumption"/>
+				<aux label_side="top" x="1577.23" y="856.25" name="desired change\nin worker consumption"/>
 				<connector uid="27" angle="90">
 					<from>adjusted_worker_consumption</from>
 					<to>desired_change_in_worker_consumption</to>
@@ -1323,87 +1429,87 @@
 					<from>desired_change_in_worker_consumption</from>
 					<to>change_in_worker_consumption</to>
 				</connector>
-				<aux x="1178.67" y="634.5" name="target worker\nconsumption"/>
-				<connector uid="29" angle="208.356">
+				<aux x="1823.33" y="865.08" name="target worker\nconsumption"/>
+				<connector uid="29" angle="193.908">
 					<from>target_worker_consumption</from>
 					<to>desired_change_in_worker_consumption</to>
 				</connector>
-				<aux x="1239.33" y="557.87" name="annual\nworker savings\nto reach goal"/>
-				<connector uid="30" angle="245.167">
+				<aux label_side="bottom" x="2008.08" y="723.08" name="annual\nworker savings\nto reach goal"/>
+				<connector uid="30" angle="238.47">
 					<from>annual_worker_savings_to_reach_goal</from>
 					<to>target_worker_consumption</to>
 				</connector>
-				<connector uid="31" angle="163.163">
+				<connector uid="31" angle="180">
 					<from>
 						<alias uid="32"/>
 					</from>
 					<to>annual_worker_savings_to_reach_goal</to>
 				</connector>
-				<connector uid="33" angle="54.057">
+				<connector uid="33" angle="54.9748">
 					<from>wages</from>
 					<to>target_worker_consumption</to>
 				</connector>
-				<aux x="1241.33" y="436" name="worker savings\ngoal shortfall"/>
-				<connector uid="34" angle="287.356">
+				<aux x="2041.08" y="456.283" name="worker savings\ngoal shortfall"/>
+				<connector uid="34" angle="283.389">
 					<from>worker_savings_goal_shortfall</from>
 					<to>annual_worker_savings_to_reach_goal</to>
 				</connector>
-				<aux x="1173.33" y="350.99" name="desired worker\nsavings"/>
-				<connector uid="35" angle="324.11">
+				<aux label_side="bottom" x="1899.58" y="259.74" name="desired worker\nsavings"/>
+				<connector uid="35" angle="326.378">
 					<from>desired_worker_savings</from>
 					<to>worker_savings_goal_shortfall</to>
 				</connector>
-				<aux x="1036.22" y="328.79" name="indicated desired\nworker savings goal"/>
-				<connector uid="36" angle="10.6443">
+				<aux label_side="right" label_angle="315" x="1634.97" y="225.54" name="indicated desired\nworker savings goal"/>
+				<connector uid="36" angle="12.4407">
 					<from>indicated_desired_worker_savings_goal</from>
 					<to>desired_worker_savings</to>
 				</connector>
-				<connector uid="37" angle="61.1892">
+				<connector uid="37" angle="62.5912">
 					<from>wages</from>
 					<to>indicated_desired_worker_savings_goal</to>
 				</connector>
-				<aux x="973.92" y="269.29" name="desired savings\nas multiple of\nwages"/>
-				<connector uid="38" angle="316.318">
+				<aux label_side="top" x="1634.97" y="171.49" name="desired savings\nas multiple of\nwages"/>
+				<connector uid="38" angle="270">
 					<from>desired_savings_as_multiple_of_wages</from>
 					<to>indicated_desired_worker_savings_goal</to>
 				</connector>
-				<connector uid="39" angle="218.805">
+				<connector uid="39" angle="270">
 					<from>
 						<alias uid="40"/>
 					</from>
 					<to>desired_worker_savings</to>
 				</connector>
-				<connector uid="41" angle="72.6111">
+				<connector uid="41" angle="63.0849">
 					<from>Worker_Savings</from>
 					<to>worker_savings_goal_shortfall</to>
 				</connector>
-				<flow label_side="right" label_angle="315" x="770.795" y="578.453" name="firms paying\ninterest">
+				<flow label_side="top" x="1175.42" y="681.892" name="firms paying\ninterest">
 					<pts>
-						<pt x="770.795" y="522.075"/>
-						<pt x="770.795" y="655.83"/>
+						<pt x="1175.42" y="577.283"/>
+						<pt x="1175.42" y="807.5"/>
 					</pts>
 				</flow>
-				<flow x="982.697" y="489.95" name="worker savings\ninterest">
+				<flow label_side="top" x="1536.32" y="508.75" name="worker savings\ninterest">
 					<pts>
-						<pt x="929.333" y="489.95"/>
-						<pt x="1036.06" y="489.95"/>
+						<pt x="1468.75" y="508.75"/>
+						<pt x="1603.89" y="508.75"/>
 					</pts>
 				</flow>
-				<flow x="513.126" y="488.92" name="owner savings\ninterest">
+				<flow label_side="top" x="807.625" y="507.5" name="owner savings\ninterest">
 					<pts>
-						<pt x="555" y="488.92"/>
-						<pt x="471.251" y="488.92"/>
+						<pt x="880" y="507.5"/>
+						<pt x="735.25" y="507.5"/>
 					</pts>
 				</flow>
-				<connector uid="42" angle="355.868">
+				<connector uid="42" angle="70.71">
 					<from>owner_savings</from>
 					<to>owner_savings_interest</to>
 				</connector>
-				<connector uid="44" angle="122.008">
+				<connector uid="44" angle="139.5">
 					<from>owner_savings_interest</from>
 					<to>target_owner_consumption</to>
 				</connector>
-				<connector uid="45" angle="54.6925">
+				<connector uid="45" angle="45.3304">
 					<from>worker_savings_interest</from>
 					<to>target_worker_consumption</to>
 				</connector>
@@ -1415,59 +1521,59 @@
 					<from>owner_savings_interest</from>
 					<to>indicated_desired_owner_savings_goal</to>
 				</connector>
-				<flow x="382.459" y="505" name="bank profits">
+				<flow x="806.625" y="572.5" name="bank profits">
 					<pts>
-						<pt x="326.667" y="505"/>
-						<pt x="426.251" y="505"/>
+						<pt x="890" y="572.5"/>
+						<pt x="735.25" y="572.5"/>
 					</pts>
 				</flow>
-				<connector uid="48" angle="209.121">
+				<connector uid="48" angle="135.939">
 					<from>bank_profits</from>
 					<to>target_owner_consumption</to>
 				</connector>
-				<connector uid="49" angle="35.9053">
+				<connector uid="49" angle="56.6418">
 					<from>bank_profits</from>
 					<to>indicated_desired_owner_savings_goal</to>
 				</connector>
-				<aux x="189" y="738.83" name="bank profit\npayment\npercentage"/>
-				<flow x="1129.78" y="520.45" name="bank wages">
+				<aux label_side="right" x="852.917" y="628.663" name="bank profit\npayment\npercentage"/>
+				<flow x="1535.91" y="568.283" name="bank wages">
 					<pts>
-						<pt x="1178.5" y="520.45"/>
-						<pt x="1081.06" y="520.45"/>
+						<pt x="1467.92" y="568.283"/>
+						<pt x="1603.89" y="568.283"/>
 					</pts>
 				</flow>
-				<aux x="1087" y="562.6" name="cost rate"/>
-				<connector uid="52" angle="44.5736">
+				<aux x="1535.91" y="628.663" name="cost rate"/>
+				<connector uid="52" angle="90">
 					<from>cost_rate</from>
 					<to>bank_wages</to>
 				</connector>
-				<connector uid="53" angle="60.0997">
+				<connector uid="53" angle="180">
 					<from>bank_profit_payment_percentage</from>
 					<to>bank_profit_payment</to>
 				</connector>
-				<aux label_side="top" x="215.164" y="693.33" name="bank profit\npayment"/>
-				<connector uid="57" angle="48.3851">
+				<aux label_side="bottom" x="806.125" y="628.663" name="bank profit\npayment"/>
+				<connector uid="57" angle="89.4899">
 					<from>bank_profit_payment</from>
 					<to>bank_profits</to>
 				</connector>
-				<aux x="171" y="343.33" name="initial desired\nowner savings"/>
-				<aux x="1336.83" y="350.99" name="initial desired\nworker savings"/>
-				<flow x="994.697" y="520.45" name="wage tax">
+				<aux label_side="left" x="412.333" y="233.373" name="initial desired\nowner savings"/>
+				<aux label_side="right" label_angle="45" x="1960.41" y="233.373" name="initial desired\nworker savings"/>
+				<flow x="1713.24" y="508.75" name="wage tax">
 					<pts>
-						<pt x="1036.06" y="520.45"/>
-						<pt x="929.333" y="520.45"/>
+						<pt x="1648.89" y="508.75"/>
+						<pt x="1801.58" y="508.75"/>
 					</pts>
 				</flow>
-				<aux x="955.92" y="538.45" name="wage tax rate"/>
-				<connector uid="58" angle="24.9007">
+				<aux label_side="top" x="1712.82" y="456.283" name="wage tax rate"/>
+				<connector uid="58" angle="270.455">
 					<from>wage_tax_rate</from>
 					<to>wage_tax</to>
 				</connector>
-				<connector uid="59" angle="265.401">
+				<connector uid="59" angle="33.9255">
 					<from>wages</from>
 					<to>wage_tax</to>
 				</connector>
-				<connector uid="60" angle="69.3671">
+				<connector uid="60" angle="19.7689">
 					<from>Firms_Checking_Accounts</from>
 					<to>bank_wages</to>
 				</connector>
@@ -1475,119 +1581,1858 @@
 					<from>Worker_Savings</from>
 					<to>worker_savings_interest</to>
 				</connector>
-				<aux x="541.167" y="544.6" name="profit tax rate"/>
-				<flow x="501.209" y="518.33" name="profit tax">
+				<aux label_side="top" x="646.125" y="456.283" name="profit tax rate"/>
+				<flow x="646.125" y="511.25" name="profit tax">
 					<pts>
-						<pt x="471.251" y="518.33"/>
-						<pt x="555.167" y="518.33"/>
+						<pt x="690.25" y="511.25"/>
+						<pt x="578" y="511.25"/>
 					</pts>
 				</flow>
-				<connector uid="62" angle="146.677">
+				<connector uid="62" angle="270">
 					<from>profit_tax_rate</from>
 					<to>profit_tax</to>
 				</connector>
-				<connector uid="63" angle="260.071">
+				<connector uid="63" angle="175.365">
 					<from>&quot;non-bank_profits&quot;</from>
 					<to>profit_tax</to>
 				</connector>
-				<connector uid="64" angle="297.039">
+				<connector uid="64" angle="220.143">
 					<from>bank_profits</from>
 					<to>profit_tax</to>
 				</connector>
-				<connector uid="65" angle="162.615">
+				<connector uid="65" angle="151.811">
 					<from>wage_rate</from>
 					<to>profit_rate</to>
 				</connector>
-				<aux x="448.751" y="387.86" name="initial owner savings"/>
-				<aux x="741.625" y="330.99" name="initial firms checking accounts"/>
-				<aux x="1058.56" y="380.71" name="initial worker savings"/>
-				<aux x="527.751" y="775" name="initial adjusted owner consumption"/>
-				<aux x="992.83" y="767.14" name="initial adjusted worker\nconsumption"/>
-				<connector uid="66" angle="7.49586">
-					<from>initial_desired_owner_savings</from>
-					<to>desired_owner_savings</to>
-				</connector>
-				<connector uid="67" angle="189.98">
-					<from>initial_desired_worker_savings</from>
-					<to>desired_worker_savings</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="top" x="658.173" y="568" name="government spending 1"/>
-				<flow x="658.173" y="501" name="government spending">
+				<aux x="720.001" y="370.86" name="initial owner savings"/>
+				<aux label_side="right" x="1256.42" y="597.117" name="initial firms\nchecking accounts"/>
+				<aux x="1650.06" y="667.043" name="initial worker savings"/>
+				<aux x="812.667" y="959.057" name="initial adjusted owner consumption"/>
+				<aux x="1532" y="959.057" name="initial adjusted worker\nconsumption"/>
+				<aux font_style="italic" font_weight="bold" label_side="top" x="1108.92" y="266.75" name="government spending 1"/>
+				<flow label_side="left" x="1143.75" y="394.892" name="government spending">
 					<pts>
-						<pt x="611" y="501"/>
-						<pt x="705.345" y="501"/>
+						<pt x="1143.75" y="290"/>
+						<pt x="1143.75" y="499.783"/>
 					</pts>
 				</flow>
-				<connector uid="68" angle="90">
+				<connector uid="68" angle="285.208">
 					<from>government_spending_1</from>
 					<to>government_spending</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="701.875" y="761.83" name="safe bank assets 1"/>
-				<connector uid="69" angle="69.4019">
+				<aux font_style="italic" font_weight="bold" label_side="left" x="1139.63" y="711.5" name="safe bank assets 1"/>
+				<connector uid="69" angle="39.5989">
 					<from>safe_bank_assets_1</from>
 					<to>firms_paying_interest</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="851" y="761.83" name="risky bank assets 1"/>
-				<connector uid="70" angle="113.623">
+				<aux font_style="italic" font_weight="bold" label_side="left" x="1139.63" y="741.58" name="risky bank assets 1"/>
+				<connector uid="70" angle="59.0513">
 					<from>risky_bank_assets_1</from>
 					<to>firms_paying_interest</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="954" y="457" name="safe\ninterest"/>
-				<connector uid="71" angle="302.574">
+				<aux font_style="italic" font_weight="bold" label_side="top" x="1475.25" y="466.2" name="safe\ninterest"/>
+				<connector uid="71" angle="325.134">
 					<from>safe_interest</from>
 					<to>worker_savings_interest</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="529" y="453" name="safe\ninterest 1"/>
-				<connector uid="72" angle="254.476">
+				<aux font_style="italic" font_weight="bold" label_side="top" x="838.917" y="474.283" name="safe\ninterest 1"/>
+				<connector uid="72" angle="226.709">
 					<from>safe_interest_1</from>
 					<to>owner_savings_interest</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="793" y="717.33" name="risky\ninterest"/>
-				<connector uid="73" angle="99.0841">
+				<aux font_style="italic" font_weight="bold" label_side="right" label_angle="315" x="1211.25" y="741.58" name="risky\ninterest"/>
+				<connector uid="73" angle="120.978">
 					<from>risky_interest</from>
 					<to>firms_paying_interest</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="752.795" y="717.33" name="safe\ninterest 2"/>
-				<connector uid="74" angle="82.615">
+				<aux font_style="italic" font_weight="bold" label_side="right" x="1211.25" y="711.5" name="safe\ninterest 2"/>
+				<connector uid="74" angle="140.434">
 					<from>safe_interest_2</from>
 					<to>firms_paying_interest</to>
 				</connector>
-				<flow label_side="left" x="759" y="393.35" name="private investment">
+				<flow label_side="right" x="1208.75" y="393.767" name="private investment">
 					<pts>
-						<pt x="759" y="305"/>
-						<pt x="759" y="472.7"/>
+						<pt x="1208.75" y="278.75"/>
+						<pt x="1208.75" y="499.783"/>
 					</pts>
 				</flow>
-				<stock font_style="italic" font_weight="bold" x="566" y="247" name="Bank\nInvestment"/>
-				<connector uid="75" angle="326.889">
+				<stock font_style="italic" font_weight="bold" x="1265.88" y="266.75" name="Bank\nInvestment"/>
+				<connector uid="75" angle="245.784">
 					<from>Bank_Investment</from>
 					<to>private_investment</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="left" x="160" y="705.33" name="net bank\nassets 1"/>
-				<connector uid="76" angle="12.2725">
+				<aux font_style="italic" font_weight="bold" label_side="left" x="759.917" y="628.663" name="net bank\nassets 1"/>
+				<connector uid="76" angle="0">
 					<from>net_bank_assets_1</from>
 					<to>bank_profit_payment</to>
 				</connector>
-				<aux x="1460" y="489.95" name="private consumption"/>
-				<aux font_style="italic" font_weight="bold" x="658.173" y="438.571" name="public investment"/>
-				<connector uid="77" angle="270">
+				<aux x="1041.67" y="946.997" name="private consumption"/>
+				<aux font_style="italic" font_weight="bold" label_side="left" label_angle="135" x="1077.67" y="284.75" name="public investment"/>
+				<connector uid="77" angle="300.963">
 					<from>public_investment</from>
 					<to>government_spending</to>
 				</connector>
-				<flow font_style="italic" font_weight="bold" label_side="top" x="1133.74" y="490" name="transfers">
+				<flow font_style="italic" font_weight="bold" label_side="bottom" x="1729.82" y="565.417" name="transfers">
 					<pts>
-						<pt x="1186.43" y="490"/>
-						<pt x="1081.06" y="490"/>
+						<pt x="1810.75" y="565.417"/>
+						<pt x="1648.89" y="565.417"/>
 					</pts>
 				</flow>
-				<alias uid="26" x="1135.33" y="734.83" width="18" height="18">
+				<aux font_style="italic" font_weight="bold" label_side="top" x="1423.21" y="313.04" name="annual\naggregate wages"/>
+				<aux label_side="top" x="1175.42" y="83.5" name="labour coupling switch"/>
+				<connector uid="78" angle="270">
+					<from>annual_aggregate_wages</from>
+					<to>wages</to>
+				</connector>
+				<aux label_side="top" x="920.348" y="313.04" name="time to pay out profits"/>
+				<connector uid="79" angle="307.118">
+					<from>labour_coupling_switch</from>
+					<to>wages</to>
+				</connector>
+				<connector uid="80" angle="270">
+					<from>time_to_pay_out_profits</from>
+					<to>&quot;non-bank_profits&quot;</to>
+				</connector>
+				<connector uid="81" angle="232.292">
+					<from>labour_coupling_switch</from>
+					<to>&quot;non-bank_profits&quot;</to>
+				</connector>
+				<flow x="932.583" y="540.42" name="rent">
+					<pts>
+						<pt x="1117.92" y="540.42"/>
+						<pt x="735.25" y="540.42"/>
+					</pts>
+				</flow>
+				<aux font_style="italic" font_weight="bold" x="1008.06" y="586.283" name="rent 1"/>
+				<connector uid="82" angle="148.716">
+					<from>rent_1</from>
+					<to>rent</to>
+				</connector>
+				<connector uid="84" angle="111.372">
+					<from>bank_wages</from>
+					<to>indicated_desired_worker_savings_goal</to>
+				</connector>
+				<connector uid="85" angle="40.3028">
+					<from>bank_wages</from>
+					<to>target_worker_consumption</to>
+				</connector>
+				<connector uid="86" angle="99.1187">
+					<from>rent</from>
+					<to>indicated_desired_owner_savings_goal</to>
+				</connector>
+				<connector uid="87" angle="113.392">
+					<from>rent</from>
+					<to>target_owner_consumption</to>
+				</connector>
+				<flow x="1213.18" y="931.429" name="inflation">
+					<pts>
+						<pt x="1139.68" y="931.429"/>
+						<pt x="1274.68" y="931.429"/>
+					</pts>
+				</flow>
+				<stock x="1297.18" y="931.429" name="Cumulative inflation"/>
+				<connector uid="92" angle="144.663">
+					<from>transfers</from>
+					<to>indicated_desired_worker_savings_goal</to>
+				</connector>
+				<connector uid="93" angle="316.974">
+					<from>transfers</from>
+					<to>target_worker_consumption</to>
+				</connector>
+				<connector uid="23" angle="167.353">
+					<from>adjusted_worker_consumption</from>
+					<to>worker_consumption</to>
+				</connector>
+				<flow x="644.625" y="568.75" name="rent tax">
+					<pts>
+						<pt x="690.25" y="568.75"/>
+						<pt x="575" y="568.75"/>
+					</pts>
+				</flow>
+				<connector uid="101" angle="223.534">
+					<from>rent</from>
+					<to>rent_tax</to>
+				</connector>
+				<connector uid="102" angle="209.935">
+					<from>profit_tax_rate</from>
+					<to>rent_tax</to>
+				</connector>
+				<connector uid="103" angle="82.4495">
+					<from>bank_wages</from>
+					<to>wage_tax</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="863.333" y="160.833" name="GDP\ngrowth rate"/>
+				<connector uid="104" angle="230.445">
+					<from>rent</from>
+					<to>owner_consumption</to>
+				</connector>
+				<connector uid="105" angle="274.254">
+					<from>bank_profits</from>
+					<to>owner_consumption</to>
+				</connector>
+				<connector uid="106" angle="198.044">
+					<from>bank_wages</from>
+					<to>worker_consumption</to>
+				</connector>
+				<connector uid="107" angle="234.333">
+					<from>transfers</from>
+					<to>worker_consumption</to>
+				</connector>
+				<connector uid="108" angle="206.812">
+					<from>worker_savings_interest</from>
+					<to>worker_consumption</to>
+				</connector>
+				<connector uid="109" angle="332.823">
+					<from>owner_savings_interest</from>
+					<to>owner_consumption</to>
+				</connector>
+				<alias uid="26" x="1688.25" y="937.997" width="18" height="18">
 					<of>time_to_change_consumption_habits</of>
 				</alias>
-				<alias uid="32" x="1299.17" y="569.7" width="18" height="18">
+				<alias label_side="right" uid="32" x="2073.34" y="714.08" width="18" height="18">
 					<of>time_to_reach_savings_goal</of>
 				</alias>
-				<alias uid="40" x="1214.33" y="301.79" width="18" height="18">
+				<alias label_side="top" uid="40" x="1890.58" y="191.373" width="18" height="18">
 					<of>time_to_consider_desired_savings</of>
+				</alias>
+			</view>
+		</views>
+	</model>
+	<model name="Employment">
+		<variables>
+			<aux name="working age population 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="initial unemployment rate">
+				<eqn>0.05</eqn>
+				<units>dmnl</units>
+			</aux>
+			<stock name="Aged 1 to 20 years" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<conveyor/>
+				<units>Mp</units>
+			</stock>
+			<aux name="passing 15">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>AGECOUNT(Aged_1_to_20_years, 14, 15)</eqn>
+				<units>Mp</units>
+			</aux>
+			<stock name="Aged 60 to 80 years" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<conveyor/>
+				<units>Mp</units>
+			</stock>
+			<aux name="passing 64">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>AGECOUNT(Aged_60_to_80_years, 4, 5)</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="deaths\n60 to 80 years" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="deaths from 60 to 64">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Aged_60_to_64/ Aged_60_to_80_years * deaths_60_to_80_years</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="Initial Wage Rate">
+				<eqn>8000</eqn>
+				<units>$/p/year</units>
+			</aux>
+			<flow name="firing">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>firing_from_defaults+firing_from_missed_profits</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="wage\nchange">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Wage_Rate*fractional_wage_growth</eqn>
+				<units>$/p/year</units>
+			</flow>
+			<flow name="hiring">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>desired_additional_hires*effect_of_labour_balance_on_hiring</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="aging out\nof employed">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>aging_out*percentage_of_working_age_that_are_employed/one_year</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="employed\ndeaths">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>working_age_deaths*percentage_of_working_age_that_are_employed</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="unemployed\ndeaths">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>working_age_deaths*percentage_of_working_age_that_are_unemployed</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<stock name="Wage Rate">
+				<doc>https://rshiny.ilo.org/dataexplorer17/?id=SDG_1041_NOC_RT_A&amp;ref_area=X01</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>10000</eqn>
+				<inflow>wage_change</inflow>
+				<units>$/p</units>
+			</stock>
+			<stock name="Employed">
+				<doc>https://rshiny.ilo.org/dataexplorer15/?id=EMP_2EMP_SEX_AGE_NB_A&amp;ref_area=X01&amp;sex=SEX_T&amp;classif1=AGE_YTHADULT_YGE15&amp;timefrom=1991</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(working_age_population-&quot;non-active_working_age&quot;)*(1-initial_unemployment_rate)</eqn>
+				<inflow>hiring</inflow>
+				<outflow>firing</outflow>
+				<outflow>aging_out_of_employed</outflow>
+				<outflow>employed_deaths</outflow>
+				<non_negative/>
+				<units>Mp</units>
+			</stock>
+			<aux name="profit firing\nthreshold">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Safe_Loans_1*safe_interest*profit_threshold_multiplier</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="missed\nprofits">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MAX(0, profit_firing_threshold-&quot;non-bank_profits&quot;)</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="firing from\nmissed profits">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MAX(0, (missed_profits*firing_multiplier)/wage_rate_in_billions_per_million_people)</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="firing from\ndefaults">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>defaults/wage_rate_in_billions_per_million_people</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="dollars per billion">
+				<eqn>1000000000</eqn>
+				<units>$/B$</units>
+			</aux>
+			<aux name="wage rate\nin billions per\nmillion people">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Wage_Rate/dollars_per_billion*persons_per_million_people</eqn>
+				<units>B$/Mp</units>
+			</aux>
+			<aux name="desired\nadditional hires">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(planned_investment*hiring_to_investment_ratio)/wage_rate_in_billions_per_million_people</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="one year">
+				<eqn>1</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="persons per\nmillion people">
+				<eqn>1000000</eqn>
+				<units>p/Mp</units>
+			</aux>
+			<aux name="annual\naggregate wages" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>wage_rate_in_billions_per_million_people*Employed/one_year</eqn>
+				<units>b$/year</units>
+			</aux>
+			<flow name="aging out of\nunemployed">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>aging_out*percentage_of_working_age_that_are_unemployed/one_year</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="new labour\nforce entrants">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>aging_in*labour_force_participation_rate/one_year</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<stock name="Unemployed" access="output" isee:autocreated="true">
+				<doc>https://rshiny.ilo.org/dataexplorer16/?id=UNE_2UNE_SEX_AGE_NB_A&amp;ref_area=X01&amp;sex=SEX_T&amp;classif1=AGE_YTHADULT_YGE15&amp;timefrom=1991</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(working_age_population-&quot;non-active_working_age&quot;)*initial_unemployment_rate</eqn>
+				<inflow>firing</inflow>
+				<inflow>new_labour_force_entrants</inflow>
+				<inflow>Seeking_work</inflow>
+				<outflow>hiring</outflow>
+				<outflow>unemployed_deaths</outflow>
+				<outflow>aging_out_of_unemployed</outflow>
+				<units>Mp</units>
+			</stock>
+			<aux name="total investment" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="defaults" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="safe\ninterest" access="input">
+				<eqn>0.0149828077326221</eqn>
+				<units>1/year</units>
+			</aux>
+			<stock name="Safe\nLoans 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$</units>
+			</stock>
+			<aux name="fractional\nwage growth">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(max_change_in_fractional_wage_growth*effect_of_labour_balance_on_fractional_wage_growth_rate)*(1-SWITCH_better_effect)
++
+(max_change_in_fractional_wage_growth*effect_of_labour_balance_on_fractional_wage_growth_rate_1)*(SWITCH_better_effect)</eqn>
+				<units>dmnl/year</units>
+			</aux>
+			<aux name="unemployment rate">
+				<doc>https://rshiny.ilo.org/dataexplorer32/?id=UNE_2EAP_SEX_AGE_RT_A&amp;ref_area=X01&amp;sex=SEX_T&amp;classif1=AGE_YTHADULT_YGE15&amp;timefrom=1991</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Unemployed/(Unemployed+Employed)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="wages" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="profit threshold\nmultiplier">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="deaths 15 to 20 years">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Aged_15_to_20 / Aged_1_to_20_years * deaths_1_to_20_years</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="deaths\n1 to 20 years" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="aging in">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>passing_15</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="aging out">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>passing_64</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="working age\ndeaths">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>deaths_20_to_40_years_1+deaths_40_to_60_years_1+deaths_15_to_20_years+deaths_from_60_to_64</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="Check">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(Employed+Unemployed+&quot;non-active_working_age&quot;)
+/(working_age_population)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="participating population">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Employed+Unemployed</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="percentage\nof working age that\nare employed">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Employed/working_age_population</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="percentage\nof working age that\nare unemployed">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Unemployed/working_age_population</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="working\nage population">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Aged_20_to_40_years+Aged_40_to_60_years+Aged_15_to_20+Aged_60_to_64</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="Aged 15 to 20">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>AGECOUNT(Aged_1_to_20_years, 14, 19)</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="Aged 60 to 64">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>AGECOUNT(Aged_60_to_80_years, 0, 4)</eqn>
+				<units>Mp</units>
+			</aux>
+			<stock name="Aged 20 to 40 years" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<conveyor/>
+				<units>Mp</units>
+			</stock>
+			<aux name="firing multiplier">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="deaths\n20 to 40 years 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="deaths\n40 to 60 years 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<stock name="Aged 40 to 60 years" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<conveyor/>
+				<units>Mp</units>
+			</stock>
+			<aux name="labour force\nparticipation rate" access="output" isee:autocreated="true">
+				<doc>https://rshiny.ilo.org/dataexplorer20/?id=EAP_2WAP_SEX_AGE_RT_A&amp;ref_area=X01&amp;sex=SEX_T&amp;classif1=AGE_AGGREGATE_TOTAL&amp;timefrom=1991</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>labour_force_participation_fixed/100</eqn>
+				<units>dmnl</units>
+			</aux>
+			<stock name="non-active working age">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>working_age_population*(1-labour_force_participation_rate)</eqn>
+				<inflow>new_potential_labour_force_entrants</inflow>
+				<outflow>aging_out_of_potential</outflow>
+				<outflow>potential_labour_deaths</outflow>
+				<outflow>Seeking_work</outflow>
+				<units>Mp</units>
+			</stock>
+			<flow name="new\npotential labour\nforce entrants">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>aging_in*(1-labour_force_participation_rate)/one_year</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="potential\nlabour deaths">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>working_age_deaths*&quot;percentage_of_working_age_that_are_non-active&quot;</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="aging out\nof potential">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>aging_out*&quot;percentage_of_working_age_that_are_non-active&quot;/one_year</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="Seeking work">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>participation_gap/time_for_labour_participation_to_change</eqn>
+				<units>Mp/year</units>
+			</flow>
+			<aux name="time for labour\nparticipation to change">
+				<eqn>1</eqn>
+				<units>Years</units>
+			</aux>
+			<aux name="percentage\nof working age that\nare non-active">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>&quot;non-active_working_age&quot;/working_age_population</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="indicated\nparticipation">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>working_age_population*labour_force_participation_rate</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="participation\ngap">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>indicated_participation-participating_labourers</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="participating\nlabourers">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Unemployed+Employed</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="rent to\ninvestment ratio">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0.25</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="rent" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>planned_investment*rent_to_investment_ratio</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="non-bank profits" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="effect of labour balance on hiring">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MAX(MIN(labour_balance^sensitivity_of_hiring_to_labour_balance, 1), 0)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="labour balance">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Unemployed/desired_additional_hires/time_seeking_employees</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="time seeking\nemployees">
+				<eqn>1</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="effect of labour balance on fractional wage growth rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>labour_balance-zero_point_in_wage_growth+1</eqn>
+				<gf>
+					<xscale min="0" max="2"/>
+					<yscale min="-1" max="1"/>
+					<ypts>1,0.9747,0.9132,0.7669,0.4648,0,-0.4648,-0.7669,-0.9132,-0.9747,-1</ypts>
+				</gf>
+				<units>dmnl</units>
+			</aux>
+			<aux name="max change in\nfractional wage growth">
+				<eqn>0.28717563530196</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="zero point in\nwage growth">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sensitivity of hiring to labour balance">
+				<eqn>2.85865902212272</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="spent investment in labour">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>hiring*wage_rate_in_billions_per_million_people</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="spent investment in rent">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>spent_investment_in_labour*(1/rent_to_investment_ratio)</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="total spent investment">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>spent_investment_in_rent+spent_investment_in_labour</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="labour force\nparticipation fixed">
+				<doc>https://rshiny.ilo.org/dataexplorer20/?id=EAP_2WAP_SEX_AGE_RT_A&amp;ref_area=X01&amp;sex=SEX_T&amp;classif1=AGE_AGGREGATE_TOTAL&amp;timefrom=1991</doc>
+				<eqn>61.9597033357374</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="labour force participation percentage">
+				<eqn>63</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="initial labour participation rate">
+				<eqn>0.64</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="percentage of working age that are active">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>1-&quot;percentage_of_working_age_that_are_non-active&quot;</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="isn't this the correct correct total?">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>rent+spent_investment_in_labour</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="hiring to\ninvestment ratio">
+				<eqn>0.168353843401783</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="labour participation guess">
+				<eqn>IF TIME&lt;1991 THEN 74
+ELSE (labour_force_participation_percentage+9)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sloshing around in\nthe firms checking">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>planned_investment*slosh_to_investment_ratio</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="slosh to\ninvestment ratio">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>1-rent_to_investment_ratio-hiring_to_investment_ratio</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of labour balance on\nfractional wage growth rate 1">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>labour_balance-zero_point_in_wage_growth_1+1</eqn>
+				<gf>
+					<xscale min="0" max="2"/>
+					<yscale min="-1" max="1"/>
+					<ypts>1,0.778,0.59,0.429,0.307,0.207,0.126,0.077,0.038,0.015,0,-0.005,-0.01,-0.019,-0.027,-0.038,-0.054,-0.08,-0.115,-0.169,-0.245</ypts>
+				</gf>
+				<units>dmnl</units>
+			</aux>
+			<aux name="zero point in\nwage growth 1">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="SWITCH\nbetter effect">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="Population" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="fraction of pop that is working age">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>working_age_population/Population</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="planned investment">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>SMTH1(total_investment, 1, initial_planned_investment)</eqn>
+				<isee:delay_aux/>
+				<units>b$/year</units>
+			</aux>
+			<aux name="initial planned investment">
+				<eqn>7960.53</eqn>
+				<units>b$/year</units>
+			</aux>
+		</variables>
+		<views>
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
+				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:sim_speed_slider color="black" background="white"/>
+				<isee:time_slider color="#E95F74" background="silver"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
+				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
+				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="390" isee:scroll_y="338" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
+						<shape type="rectangle" width="45" height="35"/>
+					</stock>
+					<flow color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</flow>
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="11pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
+						<shape type="rectangle" width="67" height="55"/>
+					</module>
+					<aux color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</aux>
+					<group color="red" background="white" font_color="red" font_size="11pt"/>
+					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
+					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+					<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+						<isee:series_styles>
+							<isee:series_style color="blue" thickness="1"/>
+							<isee:series_style color="red" thickness="1"/>
+							<isee:series_style color="fuchsia" thickness="1"/>
+							<isee:series_style color="#008F44" thickness="1"/>
+							<isee:series_style color="#FF7F00" thickness="1"/>
+							<isee:series_style color="#7F00FF" thickness="1"/>
+							<isee:series_style color="#0CA0FF" thickness="1"/>
+							<isee:series_style color="lime" thickness="1"/>
+							<isee:series_style color="#FF007F" thickness="1"/>
+							<isee:series_style color="aqua" thickness="1"/>
+							<isee:series_style color="#F586FF" thickness="1"/>
+							<isee:series_style color="black" thickness="1"/>
+							<isee:series_style color="#C8C8C8" thickness="1"/>
+						</isee:series_styles>
+					</graph>
+					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				</style>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="171.625" y="37.4166" name="working age population 1"/>
+				<aux label_side="left" x="171.625" y="81.666" name="initial unemployment rate"/>
+				<stock font_style="italic" font_weight="bold" label_side="right" x="2163.33" y="852.67" name="Aged 1 to 20 years"/>
+				<aux label_side="bottom" x="1937" y="1178.5" name="passing 15"/>
+				<stock font_style="italic" font_weight="bold" label_side="top" x="2137.33" y="1258.57" name="Aged 60 to 80 years"/>
+				<aux label_side="bottom" x="1937" y="1257.57" name="passing 64"/>
+				<connector uid="1" angle="179.714">
+					<from>Aged_60_to_80_years</from>
+					<to>passing_64</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="right" x="2150.99" y="934.913" width="17" height="17" name="deaths\n60 to 80 years"/>
+				<aux label_side="bottom" x="2066.5" y="943.913" name="deaths from 60 to 64"/>
+				<connector uid="2" angle="180.308">
+					<from>deaths_60_to_80_years</from>
+					<to>deaths_from_60_to_64</to>
+				</connector>
+				<aux label_side="left" x="171.625" y="121.625" name="Initial Wage Rate"/>
+				<flow label_side="right" label_angle="315" x="524.625" y="819.167" name="firing">
+					<pts>
+						<pt x="625" y="1117.63"/>
+						<pt x="435.25" y="1117.63"/>
+						<pt x="435.25" y="819.167"/>
+						<pt x="626" y="819.167"/>
+					</pts>
+				</flow>
+				<flow label_side="right" x="1390.3" y="985.543" name="wage\nchange">
+					<pts>
+						<pt x="1390.3" y="919.375"/>
+						<pt x="1390.3" y="1042.71"/>
+					</pts>
+				</flow>
+				<flow label_side="left" label_angle="135" x="792.688" y="1117.58" name="hiring">
+					<pts>
+						<pt x="691" y="821.167"/>
+						<pt x="883.375" y="821.167"/>
+						<pt x="883.375" y="1117.58"/>
+						<pt x="690" y="1117.58"/>
+					</pts>
+				</flow>
+				<flow label_side="bottom" x="753.75" y="1145.75" name="aging out\nof employed">
+					<pts>
+						<pt x="690" y="1145.75"/>
+						<pt x="841.5" y="1145.75"/>
+					</pts>
+				</flow>
+				<flow label_side="right" x="660.5" y="1213.74" name="employed\ndeaths">
+					<pts>
+						<pt x="660.5" y="1158.81"/>
+						<pt x="660.5" y="1289.67"/>
+					</pts>
+				</flow>
+				<flow label_side="left" x="657.5" y="881.251" name="unemployed\ndeaths">
+					<pts>
+						<pt x="657.5" y="826.835"/>
+						<pt x="657.5" y="956.667"/>
+					</pts>
+				</flow>
+				<stock label_side="left" x="1390.3" y="1060.21" name="Wage Rate"/>
+				<connector uid="4" angle="132.359">
+					<from>Wage_Rate</from>
+					<to>wage_change</to>
+				</connector>
+				<stock label_side="top" x="625" y="1103.81" width="65" height="55" name="Employed"/>
+				<aux label_side="bottom" x="263.084" y="941.58" name="profit firing\nthreshold"/>
+				<aux label_side="right" x="339.5" y="941.58" name="missed\nprofits"/>
+				<connector uid="5" angle="0">
+					<from>profit_firing_threshold</from>
+					<to>missed_profits</to>
+				</connector>
+				<aux label_side="bottom" x="339.5" y="864.92" name="firing from\nmissed profits"/>
+				<connector uid="6" angle="90.519">
+					<from>missed_profits</from>
+					<to>firing_from_missed_profits</to>
+				</connector>
+				<aux label_side="left" x="339.5" y="784.417" name="firing from\ndefaults"/>
+				<aux label_side="bottom" x="1183.68" y="1252.16" name="dollars per billion"/>
+				<aux label_side="top" x="1201.68" y="1208.74" name="wage rate\nin billions per\nmillion people"/>
+				<connector uid="7" angle="256.412">
+					<from>Wage_Rate</from>
+					<to>wage_rate_in_billions_per_million_people</to>
+				</connector>
+				<connector uid="8" angle="67.4833">
+					<from>dollars_per_billion</from>
+					<to>wage_rate_in_billions_per_million_people</to>
+				</connector>
+				<aux label_side="right" x="1033" y="1111.58" name="desired\nadditional hires"/>
+				<connector uid="9" angle="178.529">
+					<from>wage_rate_in_billions_per_million_people</from>
+					<to>desired_additional_hires</to>
+				</connector>
+				<aux label_side="bottom" x="803.25" y="1206.93" name="one year"/>
+				<connector uid="10" angle="128.975">
+					<from>one_year</from>
+					<to>aging_out_of_employed</to>
+				</connector>
+				<aux label_side="right" x="1225.68" y="1252.16" name="persons per\nmillion people"/>
+				<connector uid="11" angle="118.931">
+					<from>persons_per_million_people</from>
+					<to>wage_rate_in_billions_per_million_people</to>
+				</connector>
+				<aux x="1749.97" y="321.336" name="annual\naggregate wages"/>
+				<connector uid="12" angle="270">
+					<from>
+						<alias uid="13"/>
+					</from>
+					<to>annual_aggregate_wages</to>
+				</connector>
+				<connector uid="14" angle="345.323">
+					<from>
+						<alias uid="15"/>
+					</from>
+					<to>firing_from_missed_profits</to>
+				</connector>
+				<connector uid="16" angle="14.2908">
+					<from>
+						<alias uid="15"/>
+					</from>
+					<to>firing_from_defaults</to>
+				</connector>
+				<flow label_side="top" x="738.5" y="784.167" name="aging out of\nunemployed">
+					<pts>
+						<pt x="691" y="784.167"/>
+						<pt x="810" y="784.167"/>
+					</pts>
+				</flow>
+				<flow label_side="top" x="562.25" y="783.413" name="new labour\nforce entrants">
+					<pts>
+						<pt x="498.5" y="783.413"/>
+						<pt x="626" y="783.413"/>
+					</pts>
+				</flow>
+				<stock label_side="top" x="626" y="771.835" width="65" height="55" name="Unemployed"/>
+				<connector uid="17" angle="326.6">
+					<from>
+						<alias uid="18"/>
+					</from>
+					<to>aging_out_of_unemployed</to>
+				</connector>
+				<connector uid="19" angle="180">
+					<from>
+						<alias uid="20"/>
+					</from>
+					<to>annual_aggregate_wages</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="right" x="1077.7" y="1072.08" name="total investment"/>
+				<aux font_style="italic" font_weight="bold" label_side="left" label_angle="135" x="263.084" y="737.17" name="defaults"/>
+				<connector uid="22" angle="328.272">
+					<from>defaults</from>
+					<to>firing_from_defaults</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="245.084" y="1006.58" name="safe\ninterest"/>
+				<connector uid="23" angle="74.5214">
+					<from>safe_interest</from>
+					<to>profit_firing_threshold</to>
+				</connector>
+				<stock font_style="italic" font_weight="bold" label_side="left" x="182.084" y="941.58" name="Safe\nLoans 1"/>
+				<connector uid="24" angle="356.864">
+					<from>Safe_Loans_1</from>
+					<to>profit_firing_threshold</to>
+				</connector>
+				<aux x="1295.68" y="844.208" name="fractional\nwage growth"/>
+				<aux label_side="right" x="1473.92" y="864" name="unemployment rate"/>
+				<connector uid="31" angle="332.789">
+					<from>fractional_wage_growth</from>
+					<to>wage_change</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="1749.97" y="390.959" name="wages"/>
+				<aux label_side="right" x="281.084" y="1006.58" name="profit threshold\nmultiplier"/>
+				<connector uid="33" angle="105.479">
+					<from>profit_threshold_multiplier</from>
+					<to>profit_firing_threshold</to>
+				</connector>
+				<aux label_side="bottom" x="2067.5" y="840.33" name="deaths 15 to 20 years"/>
+				<connector uid="35" angle="172.662">
+					<from>Aged_1_to_20_years</from>
+					<to>deaths_15_to_20_years</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="right" x="2159.99" y="802.33" name="deaths\n1 to 20 years"/>
+				<connector uid="36" angle="202.336">
+					<from>deaths_1_to_20_years</from>
+					<to>deaths_15_to_20_years</to>
+				</connector>
+				<aux label_side="left" x="1868.63" y="1178.5" name="aging in"/>
+				<connector uid="37" angle="179.714">
+					<from>
+						<alias uid="38"/>
+					</from>
+					<to>passing_15</to>
+				</connector>
+				<aux label_side="left" x="1868.63" y="1257.57" name="aging out"/>
+				<aux label_side="bottom" x="1958.23" y="878.33" name="working age\ndeaths"/>
+				<connector uid="39" angle="149.969">
+					<from>
+						<alias uid="40"/>
+					</from>
+					<to>deaths_from_60_to_64</to>
+				</connector>
+				<aux label_side="left" x="2087.4" y="374.959" name="Check"/>
+				<aux label_side="left" x="2087.4" y="504.667" name="participating population"/>
+				<aux label_side="left" x="2053.9" y="554.67" name="percentage\nof working age that\nare employed"/>
+				<aux label_side="right" x="2116.97" y="554.67" name="percentage\nof working age that\nare unemployed"/>
+				<aux label_side="bottom" x="2086.3" y="309.267" name="working\nage population"/>
+				<connector uid="41" angle="296.324">
+					<from>
+						<alias uid="42"/>
+					</from>
+					<to>participating_population</to>
+				</connector>
+				<connector uid="43" angle="242.907">
+					<from>
+						<alias uid="44"/>
+					</from>
+					<to>participating_population</to>
+				</connector>
+				<connector uid="45" angle="253.166">
+					<from>
+						<alias uid="42"/>
+					</from>
+					<to>percentage_of_working_age_that_are_employed</to>
+				</connector>
+				<connector uid="46" angle="64.5">
+					<from>
+						<alias uid="42"/>
+					</from>
+					<to>Check</to>
+				</connector>
+				<connector uid="47" angle="116.252">
+					<from>
+						<alias uid="44"/>
+					</from>
+					<to>Check</to>
+				</connector>
+				<aux x="2045.33" y="763.958" name="Aged 15 to 20"/>
+				<connector uid="48" angle="287.338">
+					<from>
+						<alias uid="49"/>
+					</from>
+					<to>Aged_15_to_20</to>
+				</connector>
+				<aux x="2044" y="1005.67" name="Aged 60 to 64"/>
+				<connector uid="50" angle="63.6052">
+					<from>
+						<alias uid="51"/>
+					</from>
+					<to>Aged_60_to_64</to>
+				</connector>
+				<connector uid="52" angle="268.38">
+					<from>
+						<alias uid="53"/>
+					</from>
+					<to>aging_out_of_unemployed</to>
+				</connector>
+				<connector uid="54" angle="270">
+					<from>
+						<alias uid="55"/>
+					</from>
+					<to>new_labour_force_entrants</to>
+				</connector>
+				<connector uid="56" angle="159.246">
+					<from>
+						<alias uid="57"/>
+					</from>
+					<to>unemployed_deaths</to>
+				</connector>
+				<connector uid="58" angle="21.0343">
+					<from>
+						<alias uid="59"/>
+					</from>
+					<to>employed_deaths</to>
+				</connector>
+				<connector uid="60" angle="92.0884">
+					<from>
+						<alias uid="61"/>
+					</from>
+					<to>aging_out_of_employed</to>
+				</connector>
+				<stock font_style="italic" font_weight="bold" label_side="top" x="2010.9" y="162.642" name="Aged 20 to 40 years"/>
+				<connector uid="62" angle="297.214">
+					<from>Aged_20_to_40_years</from>
+					<to>working_age_population</to>
+				</connector>
+				<connector uid="63" angle="151.45">
+					<from>
+						<alias uid="64"/>
+					</from>
+					<to>aging_out_of_employed</to>
+				</connector>
+				<connector uid="65" angle="215.187">
+					<from>
+						<alias uid="66"/>
+					</from>
+					<to>aging_out_of_unemployed</to>
+				</connector>
+				<connector uid="67" angle="213.69">
+					<from>
+						<alias uid="68"/>
+					</from>
+					<to>unemployed_deaths</to>
+				</connector>
+				<connector uid="69" angle="331.987">
+					<from>
+						<alias uid="70"/>
+					</from>
+					<to>employed_deaths</to>
+				</connector>
+				<connector uid="71" angle="69.9808">
+					<from>Aged_60_to_64</from>
+					<to>deaths_from_60_to_64</to>
+				</connector>
+				<connector uid="72" angle="208.379">
+					<from>
+						<alias uid="18"/>
+					</from>
+					<to>new_labour_force_entrants</to>
+				</connector>
+				<connector uid="73" angle="175.17">
+					<from>passing_15</from>
+					<to>aging_in</to>
+				</connector>
+				<connector uid="74" angle="199.176">
+					<from>deaths_15_to_20_years</from>
+					<to>working_age_deaths</to>
+				</connector>
+				<connector uid="75" angle="321.752">
+					<from>
+						<alias uid="76"/>
+					</from>
+					<to>working_age_population</to>
+				</connector>
+				<connector uid="77" angle="286.187">
+					<from>Aged_15_to_20</from>
+					<to>deaths_15_to_20_years</to>
+				</connector>
+				<connector uid="78" angle="150.446">
+					<from>deaths_from_60_to_64</from>
+					<to>working_age_deaths</to>
+				</connector>
+				<connector uid="79" angle="183.112">
+					<from>passing_64</from>
+					<to>aging_out</to>
+				</connector>
+				<connector uid="80" angle="211.369">
+					<from>
+						<alias uid="81"/>
+					</from>
+					<to>working_age_population</to>
+				</connector>
+				<connector uid="82" angle="266.99">
+					<from>working_age_population</from>
+					<to>Check</to>
+				</connector>
+				<connector uid="85" angle="353.66">
+					<from>
+						<alias uid="86"/>
+					</from>
+					<to>annual_aggregate_wages</to>
+				</connector>
+				<aux x="387" y="819.167" name="firing multiplier"/>
+				<connector uid="87" angle="214.598">
+					<from>firing_multiplier</from>
+					<to>firing_from_missed_profits</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="top" x="1877.5" y="826.17" name="deaths\n20 to 40 years 1"/>
+				<connector uid="88" angle="327.133">
+					<from>deaths_20_to_40_years_1</from>
+					<to>working_age_deaths</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1882.5" y="951.5" name="deaths\n40 to 60 years 1"/>
+				<connector uid="89" angle="45">
+					<from>deaths_40_to_60_years_1</from>
+					<to>working_age_deaths</to>
+				</connector>
+				<stock font_style="italic" font_weight="bold" x="2124.5" y="176.5" name="Aged 40 to 60 years"/>
+				<connector uid="90" angle="255.069">
+					<from>Aged_40_to_60_years</from>
+					<to>working_age_population</to>
+				</connector>
+				<stock label_side="center" x="623.5" y="265.542" width="65" height="55" name="non-active working age"/>
+				<flow label_side="bottom" x="553.25" y="273" name="new\npotential labour\nforce entrants">
+					<pts>
+						<pt x="483" y="273"/>
+						<pt x="623.5" y="273"/>
+					</pts>
+				</flow>
+				<connector uid="91" angle="270">
+					<from>
+						<alias uid="92"/>
+					</from>
+					<to>new_potential_labour_force_entrants</to>
+				</connector>
+				<flow label_side="left" x="656" y="370.521" name="potential\nlabour deaths">
+					<pts>
+						<pt x="656" y="320.542"/>
+						<pt x="656" y="441.5"/>
+					</pts>
+				</flow>
+				<flow label_side="top" x="753.25" y="273" name="aging out\nof potential">
+					<pts>
+						<pt x="688.5" y="273"/>
+						<pt x="842" y="273"/>
+					</pts>
+				</flow>
+				<connector uid="93" angle="329.824">
+					<from>
+						<alias uid="94"/>
+					</from>
+					<to>aging_out_of_potential</to>
+				</connector>
+				<connector uid="95" angle="220.602">
+					<from>
+						<alias uid="96"/>
+					</from>
+					<to>aging_out_of_potential</to>
+				</connector>
+				<flow label_side="bottom" x="762" y="595" name="Seeking work">
+					<pts>
+						<pt x="688.5" y="306.5"/>
+						<pt x="842" y="306.5"/>
+						<pt x="842" y="595"/>
+						<pt x="682" y="595"/>
+						<pt x="682" y="771.835"/>
+					</pts>
+				</flow>
+				<aux label_side="top" x="762" y="534.542" name="time for labour\nparticipation to change"/>
+				<connector uid="97" angle="270">
+					<from>time_for_labour_participation_to_change</from>
+					<to>Seeking_work</to>
+				</connector>
+				<aux label_side="top" x="933.92" y="520.542" name="labour force\nparticipation rate"/>
+				<connector uid="98" angle="26.1468">
+					<from>
+						<alias uid="99"/>
+					</from>
+					<to>Check</to>
+				</connector>
+				<aux label_side="left" x="1907.13" y="554.67" name="percentage\nof working age that\nare non-active"/>
+				<connector uid="100" angle="280.361">
+					<from>
+						<alias uid="99"/>
+					</from>
+					<to>&quot;percentage_of_working_age_that_are_non-active&quot;</to>
+				</connector>
+				<connector uid="101" angle="259.409">
+					<from>working_age_population</from>
+					<to>&quot;percentage_of_working_age_that_are_non-active&quot;</to>
+				</connector>
+				<connector uid="102" angle="270">
+					<from>
+						<alias uid="103"/>
+					</from>
+					<to>aging_out_of_potential</to>
+				</connector>
+				<connector uid="104" angle="200.873">
+					<from>
+						<alias uid="105"/>
+					</from>
+					<to>potential_labour_deaths</to>
+				</connector>
+				<connector uid="106" angle="153.608">
+					<from>
+						<alias uid="107"/>
+					</from>
+					<to>potential_labour_deaths</to>
+				</connector>
+				<connector uid="108" angle="317.564">
+					<from>
+						<alias uid="109"/>
+					</from>
+					<to>new_labour_force_entrants</to>
+				</connector>
+				<connector uid="110" angle="322.103">
+					<from>
+						<alias uid="111"/>
+					</from>
+					<to>new_potential_labour_force_entrants</to>
+				</connector>
+				<connector uid="112" angle="287.479">
+					<from>working_age_population</from>
+					<to>percentage_of_working_age_that_are_employed</to>
+				</connector>
+				<connector uid="113" angle="302.124">
+					<from>working_age_population</from>
+					<to>percentage_of_working_age_that_are_unemployed</to>
+				</connector>
+				<connector uid="114" angle="292.435">
+					<from>
+						<alias uid="44"/>
+					</from>
+					<to>percentage_of_working_age_that_are_unemployed</to>
+				</connector>
+				<connector uid="117" angle="211.079">
+					<from>
+						<alias uid="94"/>
+					</from>
+					<to>new_potential_labour_force_entrants</to>
+				</connector>
+				<aux label_side="left" x="933.92" y="583" name="indicated\nparticipation"/>
+				<aux label_side="bottom" x="933.92" y="653.5" name="participation\ngap"/>
+				<connector uid="118" angle="270">
+					<from>indicated_participation</from>
+					<to>participation_gap</to>
+				</connector>
+				<aux label_side="right" label_angle="315" x="982" y="744.83" name="participating\nlabourers"/>
+				<connector uid="119" angle="31.1215">
+					<from>participating_labourers</from>
+					<to>participation_gap</to>
+				</connector>
+				<connector uid="120" angle="352.072">
+					<from>Unemployed</from>
+					<to>participating_labourers</to>
+				</connector>
+				<connector uid="121" angle="61.0903">
+					<from>Employed</from>
+					<to>participating_labourers</to>
+				</connector>
+				<connector uid="122" angle="191.687">
+					<from>participation_gap</from>
+					<to>Seeking_work</to>
+				</connector>
+				<connector uid="123" angle="180">
+					<from>
+						<alias uid="124"/>
+					</from>
+					<to>indicated_participation</to>
+				</connector>
+				<connector uid="128" angle="2.49651">
+					<from>firing_from_defaults</from>
+					<to>firing</to>
+				</connector>
+				<connector uid="129" angle="357.972">
+					<from>firing_from_missed_profits</from>
+					<to>firing</to>
+				</connector>
+				<aux label_side="right" label_angle="315" x="1163" y="1001.54" name="rent to\ninvestment ratio"/>
+				<aux label_side="top" x="1119.37" y="1039.04" name="rent"/>
+				<connector uid="132" angle="220.677">
+					<from>rent_to_investment_ratio</from>
+					<to>rent</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="235" y="886" name="non-bank profits"/>
+				<connector uid="141" angle="330.945">
+					<from>&quot;non-bank_profits&quot;</from>
+					<to>missed_profits</to>
+				</connector>
+				<aux label_side="right" x="924.92" y="991.543" name="effect of labour balance on hiring"/>
+				<aux label_side="top" x="1033" y="921.08" name="labour balance"/>
+				<connector uid="147" angle="308.632">
+					<from>Unemployed</from>
+					<to>labour_balance</to>
+				</connector>
+				<aux label_side="right" x="1085.7" y="933.08" name="time seeking\nemployees"/>
+				<connector uid="149" angle="167.172">
+					<from>time_seeking_employees</from>
+					<to>labour_balance</to>
+				</connector>
+				<connector uid="150" angle="173.024">
+					<from>labour_balance</from>
+					<to>effect_of_labour_balance_on_hiring</to>
+				</connector>
+				<connector uid="151" angle="246.761">
+					<from>effect_of_labour_balance_on_hiring</from>
+					<to>hiring</to>
+				</connector>
+				<aux x="1151" y="829.335" name="effect of labour balance on fractional wage growth rate"/>
+				<connector uid="153" angle="63.6171">
+					<from>labour_balance</from>
+					<to>effect_of_labour_balance_on_fractional_wage_growth_rate</to>
+				</connector>
+				<connector uid="154" angle="11.9844">
+					<from>effect_of_labour_balance_on_fractional_wage_growth_rate</from>
+					<to>fractional_wage_growth</to>
+				</connector>
+				<aux label_side="top" x="1295.68" y="798.335" name="max change in\nfractional wage growth"/>
+				<connector uid="155" angle="270">
+					<from>max_change_in_fractional_wage_growth</from>
+					<to>fractional_wage_growth</to>
+				</connector>
+				<aux label_side="top" x="1151" y="774.17" name="zero point in\nwage growth"/>
+				<connector uid="156" angle="270">
+					<from>zero_point_in_wage_growth</from>
+					<to>effect_of_labour_balance_on_fractional_wage_growth_rate</to>
+				</connector>
+				<aux x="942.92" y="1033.21" name="sensitivity of hiring to labour balance"/>
+				<connector uid="159" angle="113.364">
+					<from>sensitivity_of_hiring_to_labour_balance</from>
+					<to>effect_of_labour_balance_on_hiring</to>
+				</connector>
+				<aux label_side="top" x="1025.63" y="1530.63" name="spent investment in labour"/>
+				<aux x="1156.88" y="1530.63" name="spent investment in rent"/>
+				<connector uid="162" angle="0">
+					<from>spent_investment_in_labour</from>
+					<to>spent_investment_in_rent</to>
+				</connector>
+				<aux x="1094.38" y="1615" name="total spent investment"/>
+				<connector uid="164" angle="233.471">
+					<from>spent_investment_in_rent</from>
+					<to>total_spent_investment</to>
+				</connector>
+				<connector uid="165" angle="309.177">
+					<from>spent_investment_in_labour</from>
+					<to>total_spent_investment</to>
+				</connector>
+				<connector uid="125" angle="270">
+					<from>labour_force_participation_rate</from>
+					<to>indicated_participation</to>
+				</connector>
+				<aux label_side="right" x="1000" y="467.542" name="labour force\nparticipation fixed"/>
+				<aux label_side="right" x="1000" y="520.542" name="labour force participation percentage"/>
+				<aux label_side="left" x="171.625" y="169" name="initial labour participation rate"/>
+				<aux x="1652" y="467.5" name="percentage of working age that are active"/>
+				<connector uid="173" angle="161.136">
+					<from>&quot;percentage_of_working_age_that_are_non-active&quot;</from>
+					<to>percentage_of_working_age_that_are_active</to>
+				</connector>
+				<connector uid="176" angle="258.199">
+					<from>
+						<alias uid="175"/>
+					</from>
+					<to>unemployment_rate</to>
+				</connector>
+				<connector uid="177" angle="324.069">
+					<from>
+						<alias uid="178"/>
+					</from>
+					<to>unemployment_rate</to>
+				</connector>
+				<connector uid="182" angle="266.565">
+					<from>
+						<alias uid="179"/>
+					</from>
+					<to>spent_investment_in_rent</to>
+				</connector>
+				<connector uid="183" angle="270">
+					<from>
+						<alias uid="181"/>
+					</from>
+					<to>spent_investment_in_labour</to>
+				</connector>
+				<connector uid="184" angle="0">
+					<from>
+						<alias uid="180"/>
+					</from>
+					<to>spent_investment_in_labour</to>
+				</connector>
+				<aux x="1235.8" y="1604" name="isn't this the correct correct total?"/>
+				<connector uid="187" angle="263.66">
+					<from>
+						<alias uid="188"/>
+					</from>
+					<to>&quot;isn&apos;t_this_the_correct_correct_total?&quot;</to>
+				</connector>
+				<connector uid="189" angle="335.392">
+					<from>spent_investment_in_labour</from>
+					<to>&quot;isn&apos;t_this_the_correct_correct_total?&quot;</to>
+				</connector>
+				<aux label_side="bottom" x="989.333" y="1146.75" name="hiring to\ninvestment ratio"/>
+				<aux x="933.92" y="412.836" name="labour participation guess"/>
+				<connector uid="208" angle="38.8487">
+					<from>hiring_to_investment_ratio</from>
+					<to>desired_additional_hires</to>
+				</connector>
+				<aux x="1004.33" y="1234.16" name="sloshing around in\nthe firms checking"/>
+				<connector uid="210" angle="244.29">
+					<from>rent_to_investment_ratio</from>
+					<to>slosh_to_investment_ratio</to>
+				</connector>
+				<connector uid="211" angle="305.202">
+					<from>hiring_to_investment_ratio</from>
+					<to>slosh_to_investment_ratio</to>
+				</connector>
+				<aux label_side="right" x="1051" y="1234.16" name="slosh to\ninvestment ratio"/>
+				<connector uid="213" angle="180">
+					<from>slosh_to_investment_ratio</from>
+					<to>sloshing_around_in_the_firms_checking</to>
+				</connector>
+				<connector uid="195" angle="116.757">
+					<from>labour_force_participation_percentage</from>
+					<to>labour_participation_guess</to>
+				</connector>
+				<connector uid="217" angle="221.04">
+					<from>labour_force_participation_fixed</from>
+					<to>labour_force_participation_rate</to>
+				</connector>
+				<stacked_container uid="218" x="221.036" y="1353.69" width="573.214" height="345.476">
+					<graph width="573.214" height="345.476" type="scatter" x_axis_auto_scale="true" connect_dots="false" single_point="false" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="labour_balance[*]"/>
+						</plot>
+						<plot color="red" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="effect_of_labour_balance_on_hiring[*]"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<aux label_side="right" label_angle="315" x="1197.04" y="905.794" name="effect of labour balance on\nfractional wage growth rate 1"/>
+				<aux label_side="right" x="1197.04" y="958.257" name="zero point in\nwage growth 1"/>
+				<connector uid="221" angle="26.5943">
+					<from>labour_balance</from>
+					<to>effect_of_labour_balance_on_fractional_wage_growth_rate_1</to>
+				</connector>
+				<connector uid="222" angle="90">
+					<from>zero_point_in_wage_growth_1</from>
+					<to>effect_of_labour_balance_on_fractional_wage_growth_rate_1</to>
+				</connector>
+				<aux x="1397.86" y="844.208" name="SWITCH\nbetter effect"/>
+				<connector uid="223" angle="144.938">
+					<from>SWITCH_better_effect</from>
+					<to>fractional_wage_growth</to>
+				</connector>
+				<connector uid="224" angle="340.773">
+					<from>effect_of_labour_balance_on_fractional_wage_growth_rate_1</from>
+					<to>fractional_wage_growth</to>
+				</connector>
+				<stacked_container uid="225" x="1450.23" y="1318" width="499" height="372">
+					<graph width="499" height="372" type="scatter" x_axis_auto_scale="true" connect_dots="false" single_point="false" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="labour_balance[*]"/>
+						</plot>
+						<plot color="red" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="fractional_wage_growth[*]"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<text_box border_width="thin" border_style="solid" uid="227" x="1536" y="926.865" width="162" height="62.783">Hand calibrate with Ben, and then set tight ranges for the parameters the machine can work with.</text_box>
+				<stacked_container uid="226" x="1617" y="1154.58">
+					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="desired_additional_hires[*]"/>
+						</plot>
+						<plot color="red" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="Unemployed[*]"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<aux font_style="italic" font_weight="bold" x="2370" y="315" name="Population"/>
+				<aux x="2212" y="315" name="fraction of pop that is working age"/>
+				<connector uid="228" angle="355.364">
+					<from>working_age_population</from>
+					<to>fraction_of_pop_that_is_working_age</to>
+				</connector>
+				<connector uid="229" angle="183.945">
+					<from>Population</from>
+					<to>fraction_of_pop_that_is_working_age</to>
+				</connector>
+				<connector uid="146" angle="181.43">
+					<from>desired_additional_hires</from>
+					<to>hiring</to>
+				</connector>
+				<connector uid="148" angle="117.821">
+					<from>desired_additional_hires</from>
+					<to>labour_balance</to>
+				</connector>
+				<aux x="1181" y="1111.58" name="planned investment"/>
+				<aux label_side="top" x="1288" y="1117.58" name="initial planned investment"/>
+				<connector uid="235" angle="176.791">
+					<from>initial_planned_investment</from>
+					<to>planned_investment</to>
+				</connector>
+				<connector uid="236" angle="127.75">
+					<from>planned_investment</from>
+					<to>rent</to>
+				</connector>
+				<connector uid="237" angle="190.394">
+					<from>planned_investment</from>
+					<to>desired_additional_hires</to>
+				</connector>
+				<connector uid="238" angle="336.024">
+					<from>total_investment</from>
+					<to>planned_investment</to>
+				</connector>
+				<connector uid="239" angle="209.734">
+					<from>planned_investment</from>
+					<to>sloshing_around_in_the_firms_checking</to>
+				</connector>
+				<alias color="blue" background="white" font_style="italic" label_side="left" uid="15" x="243.25" y="814.833" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>wage_rate_in_billions_per_million_people</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" label_side="top" uid="18" x="649.5" y="722.417" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>one_year</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="13" x="1740.97" y="251.668" width="18" height="18">
+					<of>wage_rate_in_billions_per_million_people</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="38" x="2114.83" y="1162" width="45" height="35">
+					<of>Aged_1_to_20_years</of>
+				</alias>
+				<alias font_style="italic" uid="20" x="1807.33" y="303.836" width="45" height="35">
+					<of>Employed</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" label_side="right" uid="40" x="2150.83" y="988.167" width="45" height="35">
+					<of>Aged_60_to_80_years</of>
+				</alias>
+				<alias font_style="italic" uid="44" x="2097.47" y="423.5" width="45" height="35">
+					<of>Unemployed</of>
+				</alias>
+				<alias font_style="italic" uid="42" x="2033.4" y="423.5" width="45" height="35">
+					<of>Employed</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" label_side="top" uid="49" x="1999" y="670.125" width="45" height="35">
+					<of>Aged_1_to_20_years</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" label_side="top" uid="51" x="1984.63" y="1062.46" width="45" height="35">
+					<of>Aged_60_to_80_years</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" label_side="left" uid="76" x="1946" y="196.767" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>Aged_15_to_20</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" label_side="right" uid="81" x="2231" y="206.563" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>Aged_60_to_64</of>
+				</alias>
+				<alias font_style="italic" uid="61" x="747.5" y="1212.16" width="18" height="18">
+					<of>aging_out</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="53" x="731.501" y="704.417" width="18" height="18">
+					<of>aging_out</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="55" x="553.25" y="704.417" width="18" height="18">
+					<of>aging_in</of>
+				</alias>
+				<alias font_style="italic" label_side="right" uid="57" x="696" y="890.251" width="18" height="18">
+					<of>working_age_deaths</of>
+				</alias>
+				<alias font_style="italic" label_side="left" uid="59" x="599" y="1230.16" width="18" height="18">
+					<of>working_age_deaths</of>
+				</alias>
+				<alias font_style="italic" label_side="right" label_angle="45" uid="64" x="818.375" y="1176.81" width="18" height="18">
+					<of>percentage_of_working_age_that_are_employed</of>
+				</alias>
+				<alias font_style="italic" label_side="right" label_angle="45" uid="66" x="783.688" y="736.961" width="18" height="18">
+					<of>percentage_of_working_age_that_are_unemployed</of>
+				</alias>
+				<alias font_style="italic" label_side="right" uid="68" x="696" y="849" width="18" height="18">
+					<of>percentage_of_working_age_that_are_unemployed</of>
+				</alias>
+				<alias font_style="italic" label_side="left" uid="70" x="599" y="1176.81" width="18" height="18">
+					<of>percentage_of_working_age_that_are_employed</of>
+				</alias>
+				<alias font_style="italic" uid="86" x="1665.38" y="309.75" width="18" height="18">
+					<of>one_year</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" label_side="top" uid="94" x="647" y="214.767" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>one_year</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" label_side="top" uid="96" x="801.688" y="214.767" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>aging_out</of>
+				</alias>
+				<alias font_style="italic" uid="99" x="1917" y="402" width="65" height="55">
+					<of>&quot;non-active_working_age&quot;</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="103" x="744.25" y="196.767" width="18" height="18">
+					<of>&quot;percentage_of_working_age_that_are_non-active&quot;</of>
+				</alias>
+				<alias font_style="italic" label_side="right" uid="105" x="696" y="342.836" width="18" height="18">
+					<of>&quot;percentage_of_working_age_that_are_non-active&quot;</of>
+				</alias>
+				<alias font_style="italic" label_side="right" uid="107" x="696" y="385.836" width="18" height="18">
+					<of>working_age_deaths</of>
+				</alias>
+				<alias font_style="italic" label_side="left" label_angle="135" uid="109" x="492" y="720" width="18" height="18">
+					<of>labour_force_participation_rate</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="111" x="481" y="214.767" width="18" height="18">
+					<of>aging_in</of>
+				</alias>
+				<alias font_style="italic" label_side="right" uid="124" x="991" y="574" width="18" height="18">
+					<of>working_age_population</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="92" x="544.25" y="196.767" width="18" height="18">
+					<of>labour_force_participation_rate</of>
+				</alias>
+				<alias font_style="italic" uid="175" x="1509.5" y="745.5" width="65" height="55">
+					<of>Unemployed</of>
+				</alias>
+				<alias font_style="italic" uid="178" x="1387.5" y="739.5" width="65" height="55">
+					<of>Employed</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="179" x="1152" y="1453" width="18" height="18">
+					<of>rent_to_investment_ratio</of>
+				</alias>
+				<alias font_style="italic" uid="180" x="932" y="1521.63" width="18" height="18">
+					<of>wage_rate_in_billions_per_million_people</of>
+				</alias>
+				<alias font_style="italic" uid="181" x="1016.63" y="1453" width="18" height="18">
+					<of>hiring</of>
+				</alias>
+				<alias font_style="italic" uid="188" x="1265" y="1513" width="18" height="18">
+					<of>rent</of>
 				</alias>
 			</view>
 		</views>
@@ -1631,7 +3476,7 @@
 				<eqn>(indicated_risk_premium-Risk_Premium)/renegotiation_time</eqn>
 				<units>1/year/years</units>
 			</flow>
-			<flow name="defaults">
+			<flow name="defaults" access="output">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -1659,7 +3504,6 @@
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>Bank_Investment*(1-failure_rate)</eqn>
-				<non_negative/>
 				<units>b$/year</units>
 			</flow>
 			<stock name="Good\nLoans">
@@ -1680,7 +3524,7 @@
 				<outflow>defaults</outflow>
 				<units>b$</units>
 			</stock>
-			<stock name="Safe\nLoans">
+			<stock name="Safe\nLoans" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -1689,10 +3533,7 @@
 				<units>b$</units>
 			</stock>
 			<aux name="loan maturation time">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>24.6284123566807</eqn>
-				<range min="3" max="30"/>
+				<eqn>18.5277392489114</eqn>
 				<units>Years</units>
 			</aux>
 			<flow name="change in bank\ninvestment">
@@ -1726,10 +3567,7 @@
 				<units>Per Year</units>
 			</flow>
 			<aux name="max change in lending\nstandards">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.358055820686225</eqn>
-				<range min="0.2" max="1"/>
+				<eqn>0.375528759302163</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="indicated lending\nstandards">
@@ -1740,17 +3578,11 @@
 				<units>dmnl</units>
 			</aux>
 			<aux name="time to change\nlending standards">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.821412892436984</eqn>
-				<range min="0.5" max="1.5"/>
+				<eqn>1.06574582289382</eqn>
 				<units>year</units>
 			</aux>
 			<aux name="normal\nbank investment\ngrowth target">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.0392351770483715</eqn>
-				<range min="0.01" max="0.04"/>
+				<eqn>0.06</eqn>
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="bank investment\ngrowth rate">
@@ -1776,15 +3608,12 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SMTH1(defaults, reporting_delay, initial_perceived_defaults)</eqn>
+				<eqn>SMTH1(defaults, reporting_delay)</eqn>
 				<isee:delay_aux/>
 				<units>b$/year</units>
 			</aux>
 			<aux name="reporting\ndelay">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.250738326227611</eqn>
-				<range min="0.25" max="1"/>
+				<eqn>0.25</eqn>
 				<units>year</units>
 			</aux>
 			<aux name="Total Loans" isee:derived_units="true">
@@ -1810,10 +3639,7 @@
 				<units>dmnl</units>
 			</aux>
 			<aux name="normal failure rate">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.0314102493134167</eqn>
-				<range min="0.01" max="0.05"/>
+				<eqn>0.0287563089954964</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of lending\nstandards on failure\nrate">
@@ -1836,10 +3662,7 @@
 				<units>dmnl</units>
 			</aux>
 			<aux name="elasticity of\ndesired bank growth\nrate to changes in lending\nstandards">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>1</eqn>
-				<range min="1" max="10"/>
+				<eqn>6.32711606274225</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="indicated\nbank investment\ngrowth rate">
@@ -1851,10 +3674,7 @@ effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="max change in\nbank investment\ngrowth target">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.0238153730688977</eqn>
-				<range min="0" max="0.04"/>
+				<eqn>0.0343661941802837</eqn>
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="effect of gdp growth\non bank investment">
@@ -1873,7 +3693,7 @@ effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SMTH1(GDP_growth_rate,  bank_expectation_formation_time,  initial_recent_GDP_growth_rate)</eqn>
+				<eqn>SMTH1(GDP_growth_rate,  bank_expectation_formation_time)</eqn>
 				<isee:delay_aux/>
 				<units>dmnl/year</units>
 			</aux>
@@ -1885,26 +3705,12 @@ effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</
 				<units>dmnl</units>
 			</aux>
 			<aux name="max change in failure rate">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.2</eqn>
-				<range min="0.05" max="0.2"/>
+				<eqn>0.054627083948894</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="bank expectation\nformation time">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>7.83483724574661</eqn>
-				<range min="2" max="20"/>
+				<eqn>5.19235259093003</eqn>
 				<units>years</units>
-			</aux>
-			<aux name="initial recent\nGDP growth rate">
-				<eqn>0.041071182</eqn>
-				<units>dmnl/year</units>
-			</aux>
-			<aux name="initial perceived\ndefaults">
-				<eqn>39.508388875</eqn>
-				<units>b$/year</units>
 			</aux>
 			<aux name="indicated risk premium">
 				<dimensions>
@@ -1921,17 +3727,11 @@ effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</
 				<units>dmnl</units>
 			</aux>
 			<aux name="elasticity of bankruptcy\nrate on risk premium">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>1.06382181896825</eqn>
-				<range min="0.5" max="1.5"/>
+				<eqn>4.71748113002864</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial risk premium">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.0284314509912506</eqn>
-				<range min="0.01" max="0.05"/>
+				<eqn>0.0103433504992902</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="climate adjusted\nfailure rate">
@@ -1939,25 +3739,6 @@ effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth)</
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>normal_failure_rate*effect_of_STA_on_failure_rate</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="elasticity of\nfailure rate to STA">
-				<doc>${Calibration Parameter}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<element subscript="1">
-					<eqn>0.75</eqn>
-				</element>
-				<range min="0.001" max="0.8"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="effect of STA\non failure rate">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(Surface_Temperature_Anomaly_1/INIT(Surface_Temperature_Anomaly_1))^(elasticity_of_failure_rate_to_STA*switch_for_all_climate_damage*switch_only_economy_energy_damage_1)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial bank investment">
@@ -2013,39 +3794,30 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="sensitivity of effect of share of GDP invested\nin energy vs expectation\non investment growth">
-				<doc>${Calibration Parameter}
-</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
 					<eqn>-1.77394514553164</eqn>
 				</element>
-				<range min="-4" max="-0.1"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="sensitivity of effect of energy\nsupply demand\nbalance on investment growth">
-				<doc>${Calibration Parameter}
-</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
 					<eqn>0.960647701256923</eqn>
 				</element>
-				<range min="0.1" max="4"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="sensitivity of\neffect of crop balance on\ninvestment growth">
-				<doc>${Calibration Parameter}
-</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
 					<eqn>0.1</eqn>
 				</element>
-				<range min="0.1" max="4"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of crop balance\non investment growth">
@@ -2070,10 +3842,9 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<units>b$</units>
 			</aux>
 			<aux name="safe\ninterest" access="output" isee:autocreated="true">
-				<doc>${Calibration Parameter}
+				<doc>${Calibration}
 </doc>
-				<eqn>0.0149828077326221</eqn>
-				<range min="0.01" max="0.03"/>
+				<eqn>0.01</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="Bank\nAssets" isee:derived_units="true">
@@ -2157,8 +3928,6 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="total investment" access="output" isee:autocreated="true">
-				<doc>${Calibrated}
-</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -2177,7 +3946,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>TREND(Bank_Investment, 1, initial_investment_growth_rate)</eqn>
+				<eqn>TREND(Bank_Investment, investment_growth_rate_measuring_time, initial_investment_growth_rate)</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="ratio of investment\nto GDP growth">
@@ -2195,10 +3964,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="sensitivity of failure rate to\ninvestment to gdp ratio">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.497178905091953</eqn>
-				<range min="0.1" max="1"/>
+				<eqn>0.103574189810062</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial investment growth rate">
@@ -2237,6 +4003,28 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<eqn>29286.762206</eqn>
 				<units>B$</units>
 			</aux>
+			<aux name="investment growth\nrate measuring time">
+				<eqn>1</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="effect of STA on failure rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>1+sensitivity_of_effect_of_sta_on_failure_rate*(Surface_Temperature_Anomaly_1/INIT(Surface_Temperature_Anomaly_1) - 1)*switch_for_all_climate_damage*switch_only_economy_energy_damage_1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sensitivity of effect of sta on failure rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0.2</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="time to pay out profits" access="input">
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>year</units>
+			</aux>
 			<aux name="technological\nwater discovery" access="input">
 				<dimensions>
 					<dim name="Run"/>
@@ -2264,7 +4052,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<element subscript="1">
 					<eqn>-0.01</eqn>
 				</element>
-				<range min="-0.1" max="0"/>
+				<range min="-1" max="0"/>
 				<units>dmnl</units>
 			</aux>
 		</variables>
@@ -2316,7 +4104,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="78" isee:scroll_y="480" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="2" isee:page_rows="3" isee:scroll_y="373" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2357,7 +4145,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				</style>
 				<aux x="992.795" y="172" name="risky\ninterest"/>
 				<aux x="1005.42" y="689.5" name="bankruptcy\nrate"/>
-				<aux x="982.845" y="321.54" name="renegotiation time"/>
+				<aux label_side="top" x="982.845" y="321.54" name="renegotiation time"/>
 				<stock x="1055.3" y="261.34" name="Risk\nPremium"/>
 				<connector uid="1" angle="134.049">
 					<from>Risk_Premium</from>
@@ -2399,7 +4187,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 						<pt x="812.627" y="646.29"/>
 					</pts>
 				</flow>
-				<flow x="767.751" y="384.13" name="good\ninvestments">
+				<flow x="773.751" y="384.13" name="good\ninvestments">
 					<pts>
 						<pt x="722.875" y="384.13"/>
 						<pt x="812.627" y="384.13"/>
@@ -2516,7 +4304,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>lending_standards</from>
 					<to>effect_of_lending_standards_on_failure_rate</to>
 				</connector>
-				<connector uid="29" angle="83.292">
+				<connector uid="29" angle="83.701">
 					<from>failure_rate</from>
 					<to>good_investments</to>
 				</connector>
@@ -2563,13 +4351,13 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<to>indicated_lending_standards</to>
 				</connector>
 				<aux x="708.08" y="1053.08" name="effect of gdp growth\non bank investment"/>
-				<aux x="972.845" y="1012.33" name="recent GDP\ngrowth rate"/>
+				<aux x="987.42" y="1035.08" name="recent GDP\ngrowth rate"/>
 				<aux x="858.417" y="1012.33" name="GDP growth rate\nrelative to expected"/>
 				<connector uid="40" angle="211.859">
 					<from>GDP_growth_rate_relative_to_expected</from>
 					<to>effect_of_gdp_growth_on_bank_investment</to>
 				</connector>
-				<connector uid="41" angle="180">
+				<connector uid="41" angle="169.999">
 					<from>recent_GDP_growth_rate</from>
 					<to>GDP_growth_rate_relative_to_expected</to>
 				</connector>
@@ -2583,15 +4371,9 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<to>indicated_bank_investment_growth_rate</to>
 				</connector>
 				<aux x="1075.02" y="1099.47" name="bank expectation\nformation time"/>
-				<connector uid="44" angle="139.541">
+				<connector uid="44" angle="143.682">
 					<from>bank_expectation_formation_time</from>
 					<to>recent_GDP_growth_rate</to>
-				</connector>
-				<aux x="1167.63" y="1012.33" name="initial recent\nGDP growth rate"/>
-				<aux x="954.845" y="833.92" name="initial perceived\ndefaults"/>
-				<connector uid="45" angle="144.697">
-					<from>initial_perceived_defaults</from>
-					<to>perceived_defaults</to>
 				</connector>
 				<aux x="1152.4" y="353.92" name="indicated risk premium"/>
 				<aux label_side="right" x="1114.43" y="641" name="effect of bankruptcy\nrate on risk premium"/>
@@ -2622,24 +4404,10 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>climate_adjusted_failure_rate</from>
 					<to>failure_rate</to>
 				</connector>
-				<aux x="592.416" y="134.75" name="elasticity of\nfailure rate to STA"/>
-				<aux x="605.616" y="273" name="effect of STA\non failure rate"/>
-				<connector uid="53" angle="275.454">
-					<from>elasticity_of_failure_rate_to_STA</from>
-					<to>effect_of_STA_on_failure_rate</to>
-				</connector>
-				<connector uid="54" angle="319.127">
-					<from>effect_of_STA_on_failure_rate</from>
-					<to>climate_adjusted_failure_rate</to>
-				</connector>
 				<aux x="524.998" y="298.86" name="initial bank investment"/>
 				<aux x="834.167" y="298.86" name="initial good loans"/>
 				<aux x="838.714" y="729.96" name="initial bad loans"/>
 				<aux x="834.167" y="101" name="Initial safe assets"/>
-				<connector uid="55" angle="180">
-					<from>initial_recent_GDP_growth_rate</from>
-					<to>recent_GDP_growth_rate</to>
-				</connector>
 				<aux x="488.998" y="1053.08" name="energy and food adjusted\nbank investment\ngrowth target"/>
 				<connector uid="56" angle="356.556">
 					<from>normal_bank_investment_growth_target</from>
@@ -2685,12 +4453,12 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<to>effect_of_energy_supply_demand_balance_on_investment_growth</to>
 				</connector>
 				<aux x="272" y="1307" name="sensitivity of\neffect of crop balance on\ninvestment growth"/>
-				<aux x="375.998" y="1198" name="effect of crop balance\non investment growth"/>
-				<connector uid="67" angle="46.3453">
+				<aux x="330.998" y="1181" name="effect of crop balance\non investment growth"/>
+				<connector uid="67" angle="64.9092">
 					<from>sensitivity_of_effect_of_crop_balance_on_investment_growth</from>
 					<to>effect_of_crop_balance_on_investment_growth</to>
 				</connector>
-				<connector uid="69" angle="52.055">
+				<connector uid="69" angle="44.1169">
 					<from>effect_of_crop_balance_on_investment_growth</from>
 					<to>energy_and_food_adjusted_bank_investment_growth_target</to>
 				</connector>
@@ -2746,7 +4514,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<to>net_bank_assets</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="972.845" y="950" name="GDP growth rate"/>
-				<connector uid="110" angle="270">
+				<connector uid="110" angle="279.721">
 					<from>GDP_growth_rate</from>
 					<to>recent_GDP_growth_rate</to>
 				</connector>
@@ -2755,7 +4523,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<to>GDP_growth_rate_relative_to_expected</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="425" y="1307" name="crop balance 1"/>
-				<connector uid="112" angle="114.207">
+				<connector uid="112" angle="126.725">
 					<from>crop_balance_1</from>
 					<to>effect_of_crop_balance_on_investment_growth</to>
 				</connector>
@@ -2769,26 +4537,14 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<to>effect_of_share_of_GDP_invested_in_energy_vs_expectation_on_investment_growth</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" label_side="top" x="1402.41" y="1070.57" name="private investment"/>
-				<aux font_style="italic" font_weight="bold" label_side="left" x="439.5" y="211.06" name="Surface Temperature Anomaly 1"/>
-				<connector uid="116" angle="339.551">
-					<from>Surface_Temperature_Anomaly_1</from>
-					<to>effect_of_STA_on_failure_rate</to>
-				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="582.247" y="207" name="Surface Temperature Anomaly 1"/>
 				<aux font_style="italic" font_weight="bold" x="716" y="1289" name="Energy Balance"/>
 				<connector uid="117" angle="133.227">
 					<from>Energy_Balance</from>
 					<to>effect_of_energy_supply_demand_balance_on_investment_growth</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="left" x="435" y="273" name="switch only economy energy damage 1"/>
-				<connector uid="118" angle="0">
-					<from>switch_only_economy_energy_damage_1</from>
-					<to>effect_of_STA_on_failure_rate</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="top" x="482" y="167.5" name="switch for all climate damage"/>
-				<connector uid="119" angle="319.521">
-					<from>switch_for_all_climate_damage</from>
-					<to>effect_of_STA_on_failure_rate</to>
-				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="502.248" y="251" name="switch only economy energy damage 1"/>
+				<aux font_style="italic" font_weight="bold" label_side="top" x="575.918" y="132.75" name="switch for all climate damage"/>
 				<text_box uid="128" x="1305.83" y="1165" width="260" height="58">Have a look at this https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/component/e2ee1eb1-en for that</text_box>
 				<aux x="1448.16" y="1102.57" name="total investment"/>
 				<aux font_style="italic" font_weight="bold" label_side="left" x="1372.5" y="1107.5" name="public investment"/>
@@ -2832,23 +4588,51 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<stock font_style="italic" font_weight="bold" label_side="bottom" x="1407.91" y="956.5" name="owner\nsavings"/>
 				<stock font_style="italic" font_weight="bold" label_side="top" x="1333.17" y="956.5" name="Firms\nChecking\nAccounts 1"/>
 				<aux font_style="italic" font_weight="bold" x="722" y="101" name="initial government debt"/>
-				<aux font_style="italic" font_weight="bold" x="134" y="1216" name="technological\nwater discovery"/>
-				<aux x="248" y="1137.57" name="effect of technological water\ndiscovery on investment growth"/>
-				<aux x="130" y="1071.08" name="baseline technological water discovery"/>
-				<connector uid="141" angle="32.5741">
+				<aux x="147.998" y="325" name="investment growth\nrate measuring time"/>
+				<connector uid="141" angle="281.007">
+					<from>investment_growth_rate_measuring_time</from>
+					<to>Investment_growth_rate</to>
+				</connector>
+				<aux x="691.918" y="273" name="effect of STA on failure rate"/>
+				<connector uid="143" angle="328.96">
+					<from>Surface_Temperature_Anomaly_1</from>
+					<to>effect_of_STA_on_failure_rate</to>
+				</connector>
+				<aux x="726.714" y="160.75" name="sensitivity of effect of sta on failure rate"/>
+				<connector uid="144" angle="252.777">
+					<from>sensitivity_of_effect_of_sta_on_failure_rate</from>
+					<to>effect_of_STA_on_failure_rate</to>
+				</connector>
+				<connector uid="149" angle="304.05">
+					<from>effect_of_STA_on_failure_rate</from>
+					<to>climate_adjusted_failure_rate</to>
+				</connector>
+				<connector uid="150" angle="309.594">
+					<from>switch_for_all_climate_damage</from>
+					<to>effect_of_STA_on_failure_rate</to>
+				</connector>
+				<connector uid="151" angle="353.384">
+					<from>switch_only_economy_energy_damage_1</from>
+					<to>effect_of_STA_on_failure_rate</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1086" y="915.67" name="time to pay out profits"/>
+				<aux font_style="italic" font_weight="bold" x="91" y="1094" name="technological\nwater discovery"/>
+				<aux x="205" y="1015.57" name="effect of technological water\ndiscovery on investment growth"/>
+				<aux x="87" y="949.08" name="baseline technological water discovery"/>
+				<connector uid="152" angle="32.5741">
 					<from>technological_water_discovery</from>
 					<to>effect_of_technological_water_discovery_on_investment_growth</to>
 				</connector>
-				<connector uid="142" angle="340.258">
+				<connector uid="153" angle="340.258">
 					<from>baseline_technological_water_discovery</from>
 					<to>effect_of_technological_water_discovery_on_investment_growth</to>
 				</connector>
-				<aux x="160" y="950" name="sensitivity of\neffect of technological water\ndiscovery on investment growth"/>
-				<connector uid="143" angle="295.134">
+				<aux x="117" y="828" name="sensitivity of\neffect of technological water\ndiscovery on investment growth"/>
+				<connector uid="154" angle="295.134">
 					<from>sensitivity_of_effect_of_technological_water_discovery_on_investment_growth</from>
 					<to>effect_of_technological_water_discovery_on_investment_growth</to>
 				</connector>
-				<connector uid="144" angle="23.8222">
+				<connector uid="155" angle="2.64384">
 					<from>effect_of_technological_water_discovery_on_investment_growth</from>
 					<to>energy_and_food_adjusted_bank_investment_growth_target</to>
 				</connector>
@@ -2883,8 +4667,6 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="GDP" access="output">
-				<doc>${Calibrated}
-</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -2959,6 +4741,13 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/year</units>
 			</aux>
+			<aux name="Exported GDP" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>GDP</eqn>
+				<units>b$/year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -3008,7 +4797,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:scroll_x="102" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3122,6 +4911,11 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>Investment_1</from>
 					<to>GDP</to>
 				</connector>
+				<aux x="426" y="479" name="Exported GDP"/>
+				<connector uid="28" angle="299.27">
+					<from>GDP</from>
+					<to>Exported_GDP</to>
+				</connector>
 				<alias font_style="italic" label_side="top" uid="25" x="735" y="66" width="18" height="18">
 					<of>GDP</of>
 				</alias>
@@ -3138,7 +4932,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>profit_tax+wage_tax</eqn>
+				<eqn>profit_tax+wage_tax+rent_tax</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="proportion of taxes\nto public spending">
@@ -3148,7 +4942,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<eqn>effect_of_debt_to_GDP_ratio_on_government_spending</eqn>
 				<units>dmnl</units>
 			</aux>
-			<flow name="government\ntaking up debt">
+			<flow name="government\ntaking up debt" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -3206,10 +5000,7 @@ government_interest_payments</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="public\nconsumption to transfers\nratio">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.701545700676984</eqn>
-				<range min="0.7" max="1"/>
+				<eqn>0.7</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial government debt" access="output" isee:autocreated="true">
@@ -3217,8 +5008,6 @@ government_interest_payments</eqn>
 				<units>B$</units>
 			</aux>
 			<aux name="government\nconsumption" access="output">
-				<doc>${Calibrated}
-</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -3248,14 +5037,15 @@ government_interest_payments</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="initial\nperceived GDP">
+				<doc>${Calibration}
+</doc>
 				<eqn>21497.616594</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="GDP\nperception time">
-				<doc>${Calibration Parameter}
+				<doc>${Calibration}
 </doc>
-				<eqn>2.17730464701823</eqn>
-				<range min="1" max="3"/>
+				<eqn>2.07172079211703</eqn>
 				<units>Years</units>
 			</aux>
 			<aux name="GDP" access="input">
@@ -3275,15 +5065,21 @@ government_interest_payments</eqn>
 			<aux name="investment share of\npublic expenditure">
 				<doc>${Assumption,Calibration Parameter}
 https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/component/e2ee1eb1-en</doc>
-				<eqn>0.118323065818825</eqn>
-				<range min="0.04" max="0.12"/>
+				<eqn>0.16</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="public investment" access="output" isee:autocreated="true">
+			<aux name="public\ninvestment" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>public_expenditure[1]*investment_share_of_public_expenditure</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="rent tax" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/year</units>
 			</aux>
 		</variables>
@@ -3335,7 +5131,7 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:scroll_x="45" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3448,7 +5244,7 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 					<from>public_expenditure_for_consumption_and_transfers</from>
 					<to>government_consumption</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="left" label_angle="225" x="327" y="52" name="profit tax"/>
+				<aux font_style="italic" font_weight="bold" label_side="left" label_angle="225" x="327" y="61.1667" name="profit tax"/>
 				<aux font_style="italic" font_weight="bold" x="327" y="97" name="wage tax"/>
 				<connector uid="15" angle="9.30013">
 					<from>profit_tax</from>
@@ -3488,7 +5284,7 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 					<to>government_transfers</to>
 				</connector>
 				<aux label_side="left" x="200" y="119.025" name="investment share of\npublic expenditure"/>
-				<aux label_side="left" x="200" y="176.025" name="public investment"/>
+				<aux label_side="left" x="200" y="176.025" name="public\ninvestment"/>
 				<connector uid="27" angle="180">
 					<from>public_expenditure</from>
 					<to>public_investment</to>
@@ -3501,6 +5297,123 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 					<from>public_investment</from>
 					<to>public_expenditure_for_consumption_and_transfers</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="left" label_angle="225" x="327" y="20.6233" name="rent tax"/>
+				<connector uid="31" angle="4.62663">
+					<from>rent_tax</from>
+					<to>total_public_tax_income</to>
+				</connector>
+			</view>
+		</views>
+	</model>
+	<model name="Inflation">
+		<variables>
+			<flow name="inflation">
+				<eqn>0.02</eqn>
+				<units>Per Year</units>
+			</flow>
+			<stock name="Cumulative inflation" access="output" isee:autocreated="true">
+				<eqn>0</eqn>
+				<inflow>inflation</inflow>
+				<units>dmnl</units>
+			</stock>
+		</variables>
+		<views>
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
+				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:sim_speed_slider color="black" background="white"/>
+				<isee:time_slider color="#E95F74" background="silver"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
+				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
+				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
+						<shape type="rectangle" width="45" height="35"/>
+					</stock>
+					<flow color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</flow>
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="11pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
+						<shape type="rectangle" width="67" height="55"/>
+					</module>
+					<aux color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</aux>
+					<group color="red" background="white" font_color="red" font_size="11pt"/>
+					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
+					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+					<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+						<isee:series_styles>
+							<isee:series_style color="blue" thickness="1"/>
+							<isee:series_style color="red" thickness="1"/>
+							<isee:series_style color="fuchsia" thickness="1"/>
+							<isee:series_style color="#008F44" thickness="1"/>
+							<isee:series_style color="#FF7F00" thickness="1"/>
+							<isee:series_style color="#7F00FF" thickness="1"/>
+							<isee:series_style color="#0CA0FF" thickness="1"/>
+							<isee:series_style color="lime" thickness="1"/>
+							<isee:series_style color="#FF007F" thickness="1"/>
+							<isee:series_style color="aqua" thickness="1"/>
+							<isee:series_style color="#F586FF" thickness="1"/>
+							<isee:series_style color="black" thickness="1"/>
+							<isee:series_style color="#C8C8C8" thickness="1"/>
+						</isee:series_styles>
+					</graph>
+					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				</style>
+				<stacked_container uid="3" x="600.714" y="276.429">
+					<graph width="350" height="250" type="time_series" isee:points_only="true" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true"/>
+				</stacked_container>
+				<flow x="197.5" y="276.858" name="inflation">
+					<pts>
+						<pt x="124" y="276.858"/>
+						<pt x="259" y="276.858"/>
+					</pts>
+				</flow>
+				<stock x="281.5" y="276.858" name="Cumulative inflation"/>
 			</view>
 		</views>
 	</model>
