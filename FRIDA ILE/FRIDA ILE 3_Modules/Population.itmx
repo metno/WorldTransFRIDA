@@ -5,7 +5,7 @@
 		<name>Population</name>
 		<uuid>754d41b4-6e07-4fd6-9ae8-1b296394f58a</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.6" isee:build_number="3236" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7" isee:build_number="3335" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -20,7 +20,7 @@
 			<elem name="P75"/>
 			<elem name="High"/>
 		</dim>
-		<dim name="Run" size="17"/>
+		<dim name="Run" size="19"/>
 		<dim name="ShortPopCohort" size="19"/>
 		<dim name="StdPopCohort" size="20"/>
 	</dimensions>
@@ -49,8 +49,10 @@
 			<alias>yr</alias>
 			<alias>year</alias>
 		</unit>
-		<unit name="Per Year">
-			<eqn>1/Years</eqn>
+		<unit name="Calories">
+			<eqn/>
+			<alias>cal</alias>
+			<alias>calorie</alias>
 		</unit>
 		<unit name="G$">
 			<eqn>Giga*$</eqn>
@@ -134,11 +136,6 @@
 			<eqn>kW</eqn>
 			<alias>kilowatt</alias>
 		</unit>
-		<unit name="Dollar">
-			<eqn>$</eqn>
-			<alias>Dollars</alias>
-			<alias>$s</alias>
-		</unit>
 		<unit name="Hour">
 			<eqn/>
 			<alias>Hours</alias>
@@ -188,6 +185,22 @@
 			<eqn/>
 			<alias>K</alias>
 		</unit>
+		<unit name="Day">
+			<eqn/>
+			<alias>Days</alias>
+		</unit>
+		<unit name="Month">
+			<eqn/>
+			<alias>Months</alias>
+		</unit>
+		<unit name="Euros">
+			<eqn/>
+			<alias>EUR</alias>
+			<alias>euro</alias>
+		</unit>
+		<unit name="euros per year per person">
+			<eqn>EUR/(person-year)</eqn>
+		</unit>
 		<unit name="G">
 			<eqn>Giga</eqn>
 		</unit>
@@ -200,14 +213,6 @@
 		<unit name="GtN2O">
 			<eqn>Giga*tN2O</eqn>
 		</unit>
-		<unit name="Day">
-			<eqn/>
-			<alias>Days</alias>
-		</unit>
-		<unit name="Month">
-			<eqn/>
-			<alias>Months</alias>
-		</unit>
 	</model_units>
 	<model name="Population">
 		<variables>
@@ -219,7 +224,8 @@
 				<units>b$/Mp/year</units>
 			</aux>
 			<aux name="GDP per person" access="output">
-				<doc>Penn World Table version 10.01 (Friedlingstein et al. 2022)
+				<doc>${Calibrated}
+Penn World Table version 10.01 (Friedlingstein et al. 2022)
 
 Feenstra RC, Inklaar R, Timmer MP. 2015. The Next Generation of the Penn World Table. American Economic Review 105(10): 3150-3182. DOI: 10.1257/aer.20130954, available for download at www.ggdc.net/pwt
 
@@ -230,7 +236,9 @@ Feenstra RC, Inklaar R, Timmer MP. 2015. The Next Generation of the Penn World T
 				<eqn>(GDP/Population)</eqn>
 				<units>b$/Mp/year</units>
 			</aux>
-			<stock name="Aged 20 to 40 years">
+			<stock name="Aged 20 to 40 years" access="output" isee:autocreated="true">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -244,15 +252,18 @@ Feenstra RC, Inklaar R, Timmer MP. 2015. The Next Generation of the Penn World T
 				<units>Mp</units>
 			</stock>
 			<aux name="fraction women">
-				<eqn>0.5075</eqn>
+				<eqn>0.496</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="fertile period">
+				<doc>${}
+</doc>
 				<eqn>20</eqn>
 				<units>year</units>
 			</aux>
 			<stock name="fertility">
-				<doc>All calibration data of Population sector form:
+				<doc>${Calibrated}
+All calibration data of Population sector form:
 
 United Nations (2022)
 
@@ -288,7 +299,9 @@ United Nations, Department of Economic and Social Affairs, Population Division (
 				<non_negative/>
 				<units>Mp/Year</units>
 			</flow>
-			<stock name="Aged 60 to 80 years">
+			<stock name="Aged 60 to 80 years" access="output" isee:autocreated="true">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -309,7 +322,9 @@ United Nations, Department of Economic and Social Affairs, Population Division (
 				<non_negative/>
 				<units>Mp/year</units>
 			</flow>
-			<stock name="Aged 40 to 60 years">
+			<stock name="Aged 40 to 60 years" access="output" isee:autocreated="true">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -323,7 +338,8 @@ United Nations, Department of Economic and Social Affairs, Population Division (
 				<units>Mp</units>
 			</stock>
 			<flow name="Births">
-				<doc>Births are based on a calculated fertility rate, the result of a calibrated balancing power function regression using GDP per person as an input. With rising standards of living and education, birth rates drop exponentially (Callegari &amp; Stoknes, 2023; Kirk, 1996; Lesthaeghe, 2010; Marquez-Ramos and Mourelle, 2019, Proto and Rustichini, 2013). 
+				<doc>${Calibrated}
+Births are based on a calculated fertility rate, the result of a calibrated balancing power function regression using GDP per person as an input. With rising standards of living and education, birth rates drop exponentially (Callegari &amp; Stoknes, 2023; Kirk, 1996; Lesthaeghe, 2010; Marquez-Ramos and Mourelle, 2019, Proto and Rustichini, 2013). 
 
 Callegari B, Stoknes PE. 2023. People and Planet: 21st- century sustainable population scenarios and possible living standards within planetary boundaries. Earth4All, version 1.0.
 
@@ -363,7 +379,9 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 				<eqn>total_deaths/Population</eqn>
 				<units>1/year</units>
 			</aux>
-			<stock name="Aged 1 to 20 years">
+			<stock name="Aged 1 to 20 years" access="output" isee:autocreated="true">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -389,7 +407,9 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 				</dimensions>
 				<units>b$/year</units>
 			</aux>
-			<flow name="deaths\n1 to 20 years">
+			<flow name="deaths\n1 to 20 years" access="output">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -398,7 +418,9 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 				<leak/>
 				<units>Mp/year</units>
 			</flow>
-			<flow name="deaths\n60 to 80 years">
+			<flow name="deaths\n60 to 80 years" access="output">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -407,7 +429,9 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 				<leak/>
 				<units>Mp/year</units>
 			</flow>
-			<flow name="deaths\n40 to 60 years">
+			<flow name="deaths\n40 to 60 years" access="output">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -416,7 +440,9 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 				<leak/>
 				<units>Mp/year</units>
 			</flow>
-			<flow name="deaths\n20 to 40 years">
+			<flow name="deaths\n20 to 40 years" access="output">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -433,64 +459,71 @@ Pörtner HO, Roberts DC, Adams H, Adler C, Aldunce P, Ali E, Begum RA, Betts R, 
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>1+((Slope_of_Population_Damage_Function*Surface_Temperature_Anomaly)^Exponent_of_Capital_Damage_Function)</eqn>
+				<eqn>1+((Slope_of_Population_Damage_Function*Surface_Temperature_Anomaly)^Exponent_of_Population_Damage_Function)*switch_for_climate_damage</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Slope of Population\nDamage Function">
-				<doc>Calibration Parameter: All death rates &amp; population</doc>
+				<doc>${Calibration Parameter}
+Calibration Parameter: All death rates &amp; population</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.54296875</eqn>
+					<eqn>0.1215625</eqn>
 				</element>
 				<element subscript="2">
-					<eqn>0.66796875</eqn>
+					<eqn>0.10515625</eqn>
 				</element>
 				<element subscript="3">
-					<eqn>0.63671875</eqn>
+					<eqn>0.058398438</eqn>
 				</element>
 				<element subscript="4">
-					<eqn>0.650390625</eqn>
+					<eqn>0.179804688</eqn>
 				</element>
 				<element subscript="5">
-					<eqn>0.549804688</eqn>
+					<eqn>0.219179688</eqn>
 				</element>
 				<element subscript="6">
-					<eqn>0.543945313</eqn>
+					<eqn>0.105976563</eqn>
 				</element>
 				<element subscript="7">
-					<eqn>0.700195313</eqn>
+					<eqn>0.194570313</eqn>
 				</element>
 				<element subscript="8">
-					<eqn>0.637695313</eqn>
+					<eqn>0.044042969</eqn>
 				</element>
 				<element subscript="9">
-					<eqn>0.512695313</eqn>
+					<eqn>0.152324219</eqn>
 				</element>
 				<element subscript="10">
-					<eqn>0.508789063</eqn>
+					<eqn>0.145146484</eqn>
 				</element>
 				<element subscript="11">
-					<eqn>0.532226563</eqn>
+					<eqn>0.094287109</eqn>
 				</element>
 				<element subscript="12">
-					<eqn>0.638183594</eqn>
+					<eqn>0.028662109</eqn>
 				</element>
 				<element subscript="13">
-					<eqn>0.567871094</eqn>
+					<eqn>0.202568359</eqn>
 				</element>
 				<element subscript="14">
-					<eqn>0.651855469</eqn>
+					<eqn>0.137763672</eqn>
 				</element>
 				<element subscript="15">
-					<eqn>0.530761719</eqn>
+					<eqn>0.011435547</eqn>
 				</element>
 				<element subscript="16">
-					<eqn>0.557128906</eqn>
+					<eqn>0.207900391</eqn>
 				</element>
 				<element subscript="17">
-					<eqn>0.566894531</eqn>
+					<eqn>0.214462891</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>0.112744141</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>0.064345703</eqn>
 				</element>
 				<units>1/deg C</units>
 			</aux>
@@ -824,6 +857,8 @@ Pörtner HO, Roberts DC, Adams H, Adler C, Aldunce P, Ali E, Begum RA, Betts R, 
 				<units>Mp</units>
 			</aux>
 			<stock name="Aged Over 80 years">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -845,6 +880,8 @@ Pörtner HO, Roberts DC, Adams H, Adler C, Aldunce P, Ali E, Begum RA, Betts R, 
 				<units>Mp/Year</units>
 			</flow>
 			<flow name="deaths Over 80 years">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -922,7 +959,8 @@ Pörtner HO, Roberts DC, Adams H, Adler C, Aldunce P, Ali E, Begum RA, Betts R, 
 				<units>Mp</units>
 			</aux>
 			<stock name="Aged 0 years">
-				<doc>All calibration data of Population sector form:
+				<doc>${Calibrated}
+All calibration data of Population sector form:
 
 United Nations (2022)
 
@@ -965,6 +1003,8 @@ Eberlein RL, Thompson JP. 2013. Precise modeling of aging populations. System Dy
 				<units>years</units>
 			</aux>
 			<flow name="deaths\n0 years">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -974,6 +1014,8 @@ Eberlein RL, Thompson JP. 2013. Precise modeling of aging populations. System Dy
 				<units>Mp/Year</units>
 			</flow>
 			<aux name="Population" access="output">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -994,6 +1036,8 @@ Eberlein RL, Thompson JP. 2013. Precise modeling of aging populations. System Dy
 				<units>Per Year</units>
 			</aux>
 			<aux name="total deaths">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -1002,8 +1046,9 @@ Eberlein RL, Thompson JP. 2013. Precise modeling of aging populations. System Dy
 				<units>Million*p/Years</units>
 			</aux>
 			<aux name="initial\nfertility">
-				<doc>Calibration Parameter: fertility</doc>
-				<eqn>3.92121031659814</eqn>
+				<doc>${Calibration Parameter}
+Calibration Parameter: fertility</doc>
+				<eqn>3.81344603981565</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="relative GDP per person">
@@ -1013,24 +1058,23 @@ Eberlein RL, Thompson JP. 2013. Precise modeling of aging populations. System Dy
 				<eqn>GDP_per_person/GDP_per_person_in_1980</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="sensitivity of fertility\nto GDP per person\nbeta">
-				<doc>Calibration Parameter: fertility</doc>
-				<eqn>0.560037000807267</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="sensitivity of fertility\nto GDP per person\nalpha">
-				<doc>Calibration Parameter: fertility</doc>
-				<eqn>-0.0350160473695705</eqn>
+			<aux name="sensitivity of fertility\nto inverse\nGDP per person">
+				<doc>${Calibration Parameter}
+Calibration Parameter: fertility</doc>
+				<eqn>-0.442417465356211</eqn>
+				<range min="-2" max="0"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="infant mortality\nalpha">
-				<doc>Calibration Parameter: deaths 0 years</doc>
-				<eqn>0.671899335469491</eqn>
+				<doc>${Calibration Parameter}
+Calibration Parameter: deaths 0 years</doc>
+				<eqn>0.671810368350955</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="infant mortality\ngamma">
-				<doc>Calibration Parameter: deaths 0 years</doc>
-				<eqn>-1.25665673522483</eqn>
+				<doc>${Calibration Parameter}
+Calibration Parameter: deaths 0 years</doc>
+				<eqn>-1.25662788763881</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of GDP per person\non infant mortality">
@@ -1041,17 +1085,19 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>infant_mortality_alpha*relative_GDP_per_person^infant_mortality_gamma</eqn>
+				<eqn>infant_mortality_alpha*average_relative_GDP_per_person^infant_mortality_gamma</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="1 to 20 mortality\nalpha">
-				<doc>Calibration Parameter: deaths 1-20 years</doc>
-				<eqn>0.909177780328754</eqn>
+				<doc>${Calibration Parameter}
+Calibration Parameter: deaths 1-20 years</doc>
+				<eqn>0.662872881960872</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="1 to 20 mortality\ngamma">
-				<doc>Calibration Parameter: deaths 1-20 years</doc>
-				<eqn>-1.28556645265319</eqn>
+				<doc>${Calibration Parameter}
+Calibration Parameter: deaths 1-20 years</doc>
+				<eqn>-0.693209195571325</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of GDP per person\non 1 to 20 mortality">
@@ -1062,17 +1108,19 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>&quot;1_to_20_mortality_alpha&quot;*relative_GDP_per_person^&quot;1_to_20_mortality_gamma&quot;</eqn>
+				<eqn>&quot;1_to_20_mortality_alpha&quot;*average_relative_GDP_per_person^&quot;1_to_20_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="20 to 40 mortality\nalpha">
-				<doc>Calibration Parameter: deaths 20-40 years</doc>
-				<eqn>1.74479656389778</eqn>
+				<doc>${Calibration Parameter}
+Calibration Parameter: deaths 20-40 years</doc>
+				<eqn>1.73471817568514</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="20 to 40 mortality\ngamma">
-				<doc>Calibration Parameter: deaths 20-40 years</doc>
-				<eqn>-0.769983610195425</eqn>
+				<doc>${Calibration Parameter}
+Calibration Parameter: deaths 20-40 years</doc>
+				<eqn>-0.500826085528387</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of GDP per person\non 20 to 40 mortality">
@@ -1083,17 +1131,19 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>&quot;20_to_40_mortality_alpha&quot;*relative_GDP_per_person^&quot;20_to_40_mortality_gamma&quot;</eqn>
+				<eqn>&quot;20_to_40_mortality_alpha&quot;*average_relative_GDP_per_person^&quot;20_to_40_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="40 to 60 mortality\nalpha">
-				<doc>Calibration Parameter: deaths 40-60 years</doc>
-				<eqn>0.723089383467185</eqn>
+				<doc>${Calibration Parameter}
+Calibration Parameter: deaths 40-60 years</doc>
+				<eqn>0.743137410116832</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="40 to 60 mortality\ngamma">
-				<doc>Calibration Parameter: deaths 40-60 years</doc>
-				<eqn>-0.714943898821103</eqn>
+				<doc>${Calibration Parameter}
+Calibration Parameter: deaths 40-60 years</doc>
+				<eqn>-0.476222150903841</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of GDP per person\non 40 to 60 mortality">
@@ -1104,17 +1154,19 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>&quot;40_to_60_mortality_alpha&quot;*relative_GDP_per_person^&quot;40_to_60_mortality_gamma&quot;</eqn>
+				<eqn>&quot;40_to_60_mortality_alpha&quot;*average_relative_GDP_per_person^&quot;40_to_60_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="60 to 80 mortality\nalpha">
-				<doc>Calibration Parameter: deaths 60-80 years</doc>
-				<eqn>1.33723688100373</eqn>
+				<doc>${Calibration Parameter}
+Calibration Parameter: deaths 60-80 years</doc>
+				<eqn>1.1989027544173</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="60 to 80 mortality\ngamma">
-				<doc>Calibration Parameter: deaths 60-80 years</doc>
-				<eqn>-0.976861432896503</eqn>
+				<doc>${Calibration Parameter}
+Calibration Parameter: deaths 60-80 years</doc>
+				<eqn>-0.534171600927099</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of GDP per person\non 60 to 80 mortality">
@@ -1125,17 +1177,19 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>&quot;60_to_80_mortality_alpha&quot;*relative_GDP_per_person^&quot;60_to_80_mortality_gamma&quot;</eqn>
+				<eqn>&quot;60_to_80_mortality_alpha&quot;*average_relative_GDP_per_person^&quot;60_to_80_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Over 80 mortality\nalpha">
-				<doc>Calibration Parameter: deaths over 80 years</doc>
-				<eqn>0.79816703220101</eqn>
+				<doc>${Calibration Parameter}
+Calibration Parameter: deaths over 80 years</doc>
+				<eqn>0.786065753209636</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Over 80 mortality\ngamma">
-				<doc>Calibration Parameter: deaths over 80 years</doc>
-				<eqn>-0.777687038659181</eqn>
+				<doc>${Calibration Parameter}
+Calibration Parameter: deaths over 80 years</doc>
+				<eqn>-0.552982789833417</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of GDP per person\non Over 80 mortality">
@@ -1146,7 +1200,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Over_80_mortality_alpha*relative_GDP_per_person^Over_80_mortality_gamma</eqn>
+				<eqn>Over_80_mortality_alpha*average_relative_GDP_per_person^Over_80_mortality_gamma</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Over 80 death\nrate">
@@ -1313,24 +1367,30 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				<units>Per Year</units>
 			</flow>
 			<aux name="time to change\nfertility">
-				<eqn>22.4691536348316</eqn>
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>22.1564952043635</eqn>
 				<units>years</units>
 			</aux>
 			<aux name="effect of GDP\non change in fertility">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>sensitivity_of_fertility_to_GDP_per_person_alpha*LN(relative_GDP_per_person)+sensitivity_of_fertility_to_GDP_per_person_beta</eqn>
+				<eqn>sensitivity_of_fertility_to_inverse_GDP_per_person/average_relative_GDP_per_person
+{sensitivity_of_fertility_to_GDP_per_person_alpha*LN(relative_GDP_per_person)}{+sensitivity_of_fertility_to_GDP_per_person_beta}</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="indicated fertility">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>initial_fertility*effect_of_GDP_on_change_in_fertility</eqn>
+				<eqn>{initial_fertility*effect_of_GDP_on_change_in_fertility*effect_of_literacy_on_change_in_fertility}
+initial_fertility+effect_of_GDP_on_change_in_fertility+effect_of_literacy_on_change_in_fertility</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="Exponent of Capital Damage Function">
+			<aux name="Exponent of Population\nDamage Function">
+				<doc>${Calibration Parameter}
+</doc>
 				<eqn>2</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -1342,12 +1402,67 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				<units>$/person/year</units>
 			</aux>
 			<aux name="$ per b$">
-				<eqn>1e9</eqn>
+				<eqn>1000000000</eqn>
 				<units>$/b$</units>
 			</aux>
 			<aux name="p per mp">
-				<eqn>1e6</eqn>
+				<eqn>1000000</eqn>
 				<units>p/Mp</units>
+			</aux>
+			<aux name="switch for climate damage" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="female population\nliteracy percentage">
+				<doc>${Calibrated}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>
+100-(100/(effect_of_GDP_on_female_population_literacy_percentage_constant+effect_of_GDP_on_female_population_literacy_percentage_scale_factor*relative_GDP_per_person))</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sensitivity of fertility\nto literacy">
+				<doc>${Calibration Parameter}
+Calibration Parameter: fertility</doc>
+				<eqn>-0.0180679499936358</eqn>
+				<range min="-1" max="0"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of literacy\non change in fertility">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>sensitivity_of_fertility_to_literacy*female_population_literacy_percentage
+{+sensitivity_of_fertility_to_literacy_beta}</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of GDP on female population\nliteracy percentage\nconstant">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.567604828519167</eqn>
+				<range min="0" max="1"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of GDP on female population\nliteracy percentage\nscale factor">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>1.93512492928626</eqn>
+				<range min="0" max="3"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="average relative GDP per person">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>SMTH1(relative_GDP_per_person, averaging_time)</eqn>
+				<isee:delay_aux/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="averaging time">
+				<eqn>7</eqn>
+				<units>years</units>
 			</aux>
 		</variables>
 		<views>
@@ -1396,7 +1511,7 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="5" isee:scroll_x="1171" isee:scroll_y="1565" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="5" isee:scroll_x="68" isee:scroll_y="1505" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1472,7 +1587,7 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				<aux label_side="top" x="1816" y="1020.17" name="Dependency ratio"/>
 				<aux label_side="left" x="567.5" y="1190.67" name="fertile period"/>
 				<aux label_side="left" x="1614.33" y="1609.67" name="birth rate"/>
-				<aux label_side="left" label_angle="135" x="908.333" y="1010.33" name="fraction women"/>
+				<aux label_side="left" label_angle="135" x="904.999" y="1010.33" name="fraction women"/>
 				<aux label_side="right" x="1666.58" y="1569.67" name="death rate"/>
 				<aux label_side="left" x="1584.67" y="2028.84" name="GDP per person in 1980"/>
 				<stock label_side="top" x="530" y="1582.67" name="fertility"/>
@@ -1645,13 +1760,12 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 					<to>&quot;0_death_rate&quot;</to>
 				</connector>
 				<aux x="555.333" y="1726.83" name="initial\nfertility"/>
-				<aux label_side="left" label_angle="225" x="1159.17" y="2097.17" name="relative GDP per person"/>
+				<aux label_side="left" label_angle="225" x="1159.17" y="2087.17" name="relative GDP per person"/>
 				<connector uid="276" angle="225.646">
 					<from>GDP_per_person</from>
 					<to>relative_GDP_per_person</to>
 				</connector>
-				<aux x="632.5" y="2303.33" name="sensitivity of fertility\nto GDP per person\nbeta"/>
-				<aux x="442.5" y="2208.84" name="sensitivity of fertility\nto GDP per person\nalpha"/>
+				<aux x="550.167" y="2244.67" name="sensitivity of fertility\nto inverse\nGDP per person"/>
 				<aux x="773.5" y="1615.34" name="infant mortality\nalpha"/>
 				<aux x="685.5" y="1600.67" name="infant mortality\ngamma"/>
 				<aux label_side="left" x="791.5" y="1488.67" name="effect of GDP per person\non infant mortality"/>
@@ -1659,8 +1773,8 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 					<from>infant_mortality_alpha</from>
 					<to>effect_of_GDP_per_person_on_infant_mortality</to>
 				</connector>
-				<connector uid="286" angle="140.102">
-					<from>relative_GDP_per_person</from>
+				<connector uid="286" angle="136.773">
+					<from>average_relative_GDP_per_person</from>
 					<to>effect_of_GDP_per_person_on_infant_mortality</to>
 				</connector>
 				<connector uid="287" angle="46.5766">
@@ -1829,7 +1943,7 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 					<from>Aged_1_to_20_years</from>
 					<to>number_of_fertile_women</to>
 				</connector>
-				<connector uid="371" angle="287.39">
+				<connector uid="371" angle="289.337">
 					<from>fraction_women</from>
 					<to>number_of_fertile_women</to>
 				</connector>
@@ -1887,7 +2001,7 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 					</from>
 					<to>Dependency_ratio</to>
 				</connector>
-				<connector uid="390" angle="189.123">
+				<connector uid="390" angle="187.806">
 					<from>GDP_per_person_in_1980</from>
 					<to>relative_GDP_per_person</to>
 				</connector>
@@ -2015,8 +2129,8 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 					<to>change_in_fertility</to>
 				</connector>
 				<aux label_side="right" label_angle="315" x="601" y="2175" name="effect of GDP\non change in fertility"/>
-				<connector uid="424" angle="221.666">
-					<from>relative_GDP_per_person</from>
+				<connector uid="424" angle="204.159">
+					<from>average_relative_GDP_per_person</from>
 					<to>effect_of_GDP_on_change_in_fertility</to>
 				</connector>
 				<aux x="446" y="1748" name="indicated fertility"/>
@@ -2028,25 +2142,17 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 					<from>effect_of_GDP_on_change_in_fertility</from>
 					<to>indicated_fertility</to>
 				</connector>
-				<connector uid="435" angle="202.427">
-					<from>initial_fertility</from>
-					<to>indicated_fertility</to>
-				</connector>
 				<connector uid="436" angle="138.292">
 					<from>fertility</from>
 					<to>change_in_fertility</to>
 				</connector>
-				<connector uid="437" angle="110.912">
-					<from>sensitivity_of_fertility_to_GDP_per_person_beta</from>
+				<connector uid="438" angle="53.8846">
+					<from>sensitivity_of_fertility_to_inverse_GDP_per_person</from>
 					<to>effect_of_GDP_on_change_in_fertility</to>
 				</connector>
-				<connector uid="438" angle="12.0518">
-					<from>sensitivity_of_fertility_to_GDP_per_person_alpha</from>
-					<to>effect_of_GDP_on_change_in_fertility</to>
-				</connector>
-				<aux x="1327.5" y="1887" name="Exponent of Capital Damage Function"/>
+				<aux x="1327.5" y="1887" name="Exponent of Population\nDamage Function"/>
 				<connector uid="439" angle="150.44">
-					<from>Exponent_of_Capital_Damage_Function</from>
+					<from>Exponent_of_Population_Damage_Function</from>
 					<to>effect_of_surface_temperature_anomaly_on_mortality</to>
 				</connector>
 				<aux x="1746.67" y="2039" name="GDP per capita"/>
@@ -2059,25 +2165,73 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 					<from>&quot;$_per_b$&quot;</from>
 					<to>GDP_per_capita</to>
 				</connector>
-				<aux x="1880" y="1980" name="p per mp"/>
+				<aux x="1883" y="1990" name="p per mp"/>
 				<connector uid="442" angle="192.875">
 					<from>p_per_mp</from>
 					<to>GDP_per_capita</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" x="1091" y="1842" name="switch for climate damage"/>
+				<connector uid="443" angle="18.4349">
+					<from>switch_for_climate_damage</from>
+					<to>effect_of_surface_temperature_anomaly_on_mortality</to>
+				</connector>
+				<aux label_side="right" label_angle="315" x="477.667" y="2436.67" name="female population\nliteracy percentage"/>
+				<aux x="176.667" y="2183.84" name="sensitivity of fertility\nto literacy"/>
+				<aux label_side="right" label_angle="315" x="335.167" y="2150" name="effect of literacy\non change in fertility"/>
+				<connector uid="457" angle="12.0518">
+					<from>sensitivity_of_fertility_to_literacy</from>
+					<to>effect_of_literacy_on_change_in_fertility</to>
+				</connector>
+				<connector uid="458" angle="143.549">
+					<from>female_population_literacy_percentage</from>
+					<to>effect_of_literacy_on_change_in_fertility</to>
+				</connector>
+				<connector uid="459" angle="91.7624">
+					<from>effect_of_literacy_on_change_in_fertility</from>
+					<to>indicated_fertility</to>
+				</connector>
+				<connector uid="435" angle="202.427">
+					<from>initial_fertility</from>
+					<to>indicated_fertility</to>
+				</connector>
+				<aux x="400" y="2556.5" name="effect of GDP on female population\nliteracy percentage\nconstant"/>
+				<aux x="272.167" y="2462.16" name="effect of GDP on female population\nliteracy percentage\nscale factor"/>
+				<connector uid="464" angle="57.051">
+					<from>effect_of_GDP_on_female_population_literacy_percentage_constant</from>
+					<to>female_population_literacy_percentage</to>
+				</connector>
+				<connector uid="465" angle="7.07079">
+					<from>effect_of_GDP_on_female_population_literacy_percentage_scale_factor</from>
+					<to>female_population_literacy_percentage</to>
+				</connector>
+				<aux x="958.67" y="2140" name="average relative GDP per person"/>
+				<connector uid="466" angle="194.761">
+					<from>relative_GDP_per_person</from>
+					<to>average_relative_GDP_per_person</to>
+				</connector>
+				<aux x="964.5" y="2259.17" name="averaging time"/>
+				<connector uid="467" angle="92.8008">
+					<from>averaging_time</from>
+					<to>average_relative_GDP_per_person</to>
+				</connector>
+				<connector uid="468" angle="258.684">
+					<from>relative_GDP_per_person</from>
+					<to>female_population_literacy_percentage</to>
+				</connector>
 				<alias font_style="italic" uid="330" x="1114.67" y="1688.83" width="18" height="18">
-					<of>relative_GDP_per_person</of>
+					<of>average_relative_GDP_per_person</of>
 				</alias>
 				<alias font_style="italic" uid="332" x="1928.42" y="1830.5" width="18" height="18">
-					<of>relative_GDP_per_person</of>
+					<of>average_relative_GDP_per_person</of>
 				</alias>
 				<alias font_style="italic" uid="334" x="1467.83" y="1649" width="18" height="18">
-					<of>relative_GDP_per_person</of>
+					<of>average_relative_GDP_per_person</of>
 				</alias>
 				<alias font_style="italic" uid="336" x="2071.33" y="1822.17" width="18" height="18">
-					<of>relative_GDP_per_person</of>
+					<of>average_relative_GDP_per_person</of>
 				</alias>
 				<alias font_style="italic" uid="338" x="2592.17" y="1619.67" width="18" height="18">
-					<of>relative_GDP_per_person</of>
+					<of>average_relative_GDP_per_person</of>
 				</alias>
 				<alias background="white" font_style="italic" label_side="right" uid="340" x="1424.67" y="1455.84" width="18" height="18">
 					<of>effect_of_surface_temperature_anomaly_on_mortality</of>
