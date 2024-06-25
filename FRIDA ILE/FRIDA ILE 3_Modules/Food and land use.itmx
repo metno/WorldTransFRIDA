@@ -242,7 +242,7 @@
 				<units>dmnl</units>
 			</aux>
 			<isee:placeholder name="calibration data">
-				<eqn>Land_Use.Forest_Land[1] + Land_Use.Cropland[1] + Crop.crop_production[1] + Livestock.livestock_production[1] + Freshwater.total_water_withdrawal[1] + Land_Nutrients.fertilizer_use[1] + Land_Nutrients.manure_fertilizer_use[1] + Land_Nutrients.man_made_fertilizer_use[1] + Crop.crop_balance[1] + Livestock.livestock_balance[1] + Freshwater.fraction_of_water_withdrawal_for_agriculture[1] + Food_Demand.fraction_of_crops_for_livestock[1] + Freshwater.available_water_supply[1] + Soil.soil_carbon_loss_cropland[1] + Freshwater.irrigated_cropland[1]</eqn>
+				<eqn>Land_Use.Forest_Land[1] + Land_Use.Cropland[1] + Crop.crop_production[1] + Animal_Products.animal_products_production[1] + Freshwater.total_water_withdrawal[1] + Land_Nutrients.fertilizer_use[1] + Land_Nutrients.manure_fertilizer_use[1] + Land_Nutrients.man_made_fertilizer_use[1] + Crop.crop_balance[1] + Animal_Products.animal_products_balance[1] + Freshwater.fraction_of_water_withdrawal_for_agriculture[1] + Food_Demand.fraction_of_crops_for_animal_products[1] + Freshwater.available_water_supply[1] + Soil.soil_carbon_loss_cropland[1] + Freshwater.irrigated_cropland[1]</eqn>
 			</isee:placeholder>
 			<aux name="Forest Land by PCTILE">
 				<dimensions>
@@ -272,7 +272,7 @@
 				<eqn>PERCENTILE(total_water_withdrawal,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
 				<units>m^3/year</units>
 			</aux>
-			<aux name="livestock production by PCTILE">
+			<aux name="animal products production by PCTILE">
 				<dimensions>
 					<dim name="PCTILE"/>
 				</dimensions>
@@ -286,7 +286,7 @@
 				<eqn>PERCENTILE(fraction_of_water_withdrawal_for_agriculture,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="fraction of crops\nfor livestock by PCTILE">
+			<aux name="fraction of crops\nfor animal products by PCTILE">
 				<dimensions>
 					<dim name="PCTILE"/>
 				</dimensions>
@@ -335,45 +335,45 @@
 				<eqn>PERCENTILE(soil_carbon_loss_cropland,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
 				<units>GtC</units>
 			</aux>
-			<module name="Livestock" isee:label="">
+			<module name="Animal Products" isee:label="">
 				<format scale_by="auto"/>
-				<connect to="Land_Use.livestock_balance_with_reserves" from="Livestock.livestock_balance_with_reserves"/>
-				<connect2 to="Land_Use.livestock_balance_with_reserves" from="Livestock.livestock_balance_with_reserves"/>
-				<connect to="Emissions.livestock_production" from="Livestock.livestock_production"/>
-				<connect2 to="Emissions.livestock_production" from="Livestock.livestock_production"/>
-				<connect to="Food_and_land_use.production" from="Livestock.livestock_production"/>
-				<connect2 to="production" from="Livestock.livestock_production"/>
-				<connect to="Land_Nutrients.production" from="Livestock.livestock_production"/>
-				<connect2 to="Land_Nutrients.production" from="Livestock.livestock_production"/>
-				<connect to="Food_Demand.Livestock_Yield" from="Livestock.Livestock_Yield"/>
-				<connect2 to="Food_Demand.Livestock_Yield" from="Livestock.Livestock_Yield"/>
-				<connect to="Land_Use.Livestock_Yield" from="Livestock.Livestock_Yield"/>
-				<connect2 to="Land_Use.Livestock_Yield" from="Livestock.Livestock_Yield"/>
-				<connect to="Livestock.grazing_land" from="Land_Use.grazing_land"/>
-				<connect2 to="Livestock.grazing_land" from="Land_Use.grazing_land"/>
-				<connect to="Livestock.livestock_demand" from="Food_Demand.livestock_demand"/>
-				<connect2 to="Livestock.livestock_demand" from="Food_Demand.livestock_demand"/>
+				<connect to="Land_Use.livestock_balance_with_reserves" from="Animal_Products.animal_products_balance_with_reserves"/>
+				<connect2 to="Land_Use.livestock_balance_with_reserves" from="Animal_Products.animal_products_balance_with_reserves"/>
+				<connect to="Emissions.livestock_production" from="Animal_Products.animal_products_production"/>
+				<connect2 to="Emissions.livestock_production" from="Animal_Products.animal_products_production"/>
+				<connect to="Food_and_land_use.production" from="Animal_Products.animal_products_production"/>
+				<connect2 to="production" from="Animal_Products.animal_products_production"/>
+				<connect to="Land_Nutrients.production" from="Animal_Products.animal_products_production"/>
+				<connect2 to="Land_Nutrients.production" from="Animal_Products.animal_products_production"/>
+				<connect to="Food_Demand.Livestock_Yield" from="Animal_Products.Animal_Products_Yield"/>
+				<connect2 to="Food_Demand.Livestock_Yield" from="Animal_Products.Animal_Products_Yield"/>
+				<connect to="Land_Use.Livestock_Yield" from="Animal_Products.Animal_Products_Yield"/>
+				<connect2 to="Land_Use.Livestock_Yield" from="Animal_Products.Animal_Products_Yield"/>
+				<connect to="Animal_Products.grazing_land" from="Land_Use.grazing_land"/>
+				<connect2 to="Animal_Products.grazing_land" from="Land_Use.grazing_land"/>
+				<connect to="Animal_Products.livestock_demand" from="Food_Demand.animal_products_demand"/>
+				<connect2 to="Animal_Products.livestock_demand" from="Food_Demand.animal_products_demand"/>
 			</module>
 			<module name="Food Demand" isee:label="">
 				<format scale_by="auto"/>
+				<connect to="Animal_Products.livestock_demand" from="Food_Demand.animal_products_demand"/>
+				<connect2 to="Animal_Products.livestock_demand" from="Food_Demand.animal_products_demand"/>
+				<connect to=".livestock_fraction_policy" from="Food_Demand.animal_products_fraction_policy"/>
+				<connect2 to=".livestock_fraction_policy" from="Food_Demand.animal_products_fraction_policy"/>
 				<connect to="Crop.crop_demand_1" from="Food_Demand.crop_demand"/>
 				<connect2 to="Crop.crop_demand_1" from="Food_Demand.crop_demand"/>
 				<connect to=".food_demand_policy" from="Food_Demand.food_demand_policy"/>
 				<connect2 to=".food_demand_policy" from="Food_Demand.food_demand_policy"/>
-				<connect to="Food_and_land_use.fraction_of_crops_for_livestock" from="Food_Demand.fraction_of_crops_for_livestock"/>
-				<connect2 to="fraction_of_crops_for_livestock" from="Food_Demand.fraction_of_crops_for_livestock"/>
-				<connect to="Livestock.livestock_demand" from="Food_Demand.livestock_demand"/>
-				<connect2 to="Livestock.livestock_demand" from="Food_Demand.livestock_demand"/>
-				<connect to=".livestock_fraction_policy" from="Food_Demand.livestock_fraction_policy"/>
-				<connect2 to=".livestock_fraction_policy" from="Food_Demand.livestock_fraction_policy"/>
+				<connect to="Food_and_land_use.fraction_of_crops_for_livestock" from="Food_Demand.fraction_of_crops_for_animal_products"/>
+				<connect2 to="fraction_of_crops_for_livestock" from="Food_Demand.fraction_of_crops_for_animal_products"/>
+				<connect to=".switch_livestock_fraction_policy" from="Food_Demand.switch_animal_products_fraction_policy"/>
+				<connect2 to=".switch_livestock_fraction_policy" from="Food_Demand.switch_animal_products_fraction_policy"/>
 				<connect to=".switch_food_demand_policy" from="Food_Demand.switch_food_demand_policy"/>
 				<connect2 to=".switch_food_demand_policy" from="Food_Demand.switch_food_demand_policy"/>
-				<connect to=".switch_livestock_fraction_policy" from="Food_Demand.switch_livestock_fraction_policy"/>
-				<connect2 to=".switch_livestock_fraction_policy" from="Food_Demand.switch_livestock_fraction_policy"/>
 				<connect to="Food_Demand.GDP_Per_Capita" from="Population.GDP_per_person"/>
 				<connect2 to="Food_Demand.GDP_Per_Capita" from="Population.GDP_per_person"/>
-				<connect to="Food_Demand.Livestock_Yield" from="Livestock.Livestock_Yield"/>
-				<connect2 to="Food_Demand.Livestock_Yield" from="Livestock.Livestock_Yield"/>
+				<connect to="Food_Demand.Livestock_Yield" from="Animal_Products.Animal_Products_Yield"/>
+				<connect2 to="Food_Demand.Livestock_Yield" from="Animal_Products.Animal_Products_Yield"/>
 				<connect to="Food_Demand.policy_start_year" from="Society.Policy_Start_Year"/>
 				<connect2 to="Food_Demand.policy_start_year" from="Society.Policy_Start_Year"/>
 				<connect to="Food_Demand.Population" from="Population.Population"/>
@@ -409,8 +409,8 @@
 				<connect2 to=".forestation_policy" from="Land_Use.forestation_policy"/>
 				<connect to="Food_and_land_use.Grassland" from="Land_Use.Grassland"/>
 				<connect2 to="Grassland" from="Land_Use.Grassland"/>
-				<connect to="Livestock.grazing_land" from="Land_Use.grazing_land"/>
-				<connect2 to="Livestock.grazing_land" from="Land_Use.grazing_land"/>
+				<connect to="Animal_Products.grazing_land" from="Land_Use.grazing_land"/>
+				<connect2 to="Animal_Products.grazing_land" from="Land_Use.grazing_land"/>
 				<connect to="Emissions.Mature_Forest" from="Land_Use.Mature_Forest"/>
 				<connect2 to="Emissions.Mature_Forest" from="Land_Use.Mature_Forest"/>
 				<connect to="Food_and_land_use.Mature_Forest" from="Land_Use.Mature_Forest"/>
@@ -423,10 +423,10 @@
 				<connect2 to="Land_Use.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
 				<connect to="Land_Use.crop_yield" from="Crop.crop_yield"/>
 				<connect2 to="Land_Use.crop_yield" from="Crop.crop_yield"/>
-				<connect to="Land_Use.livestock_balance_with_reserves" from="Livestock.livestock_balance_with_reserves"/>
-				<connect2 to="Land_Use.livestock_balance_with_reserves" from="Livestock.livestock_balance_with_reserves"/>
-				<connect to="Land_Use.Livestock_Yield" from="Livestock.Livestock_Yield"/>
-				<connect2 to="Land_Use.Livestock_Yield" from="Livestock.Livestock_Yield"/>
+				<connect to="Land_Use.livestock_balance_with_reserves" from="Animal_Products.animal_products_balance_with_reserves"/>
+				<connect2 to="Land_Use.livestock_balance_with_reserves" from="Animal_Products.animal_products_balance_with_reserves"/>
+				<connect to="Land_Use.Livestock_Yield" from="Animal_Products.Animal_Products_Yield"/>
+				<connect2 to="Land_Use.Livestock_Yield" from="Animal_Products.Animal_Products_Yield"/>
 				<connect to="Land_Use.Policy_Start_Year" from="Society.Policy_Start_Year"/>
 				<connect2 to="Land_Use.Policy_Start_Year" from="Society.Policy_Start_Year"/>
 			</module>
@@ -450,8 +450,8 @@
 				<connect2 to="manure_fertilizer_use" from="Land_Nutrients.manure_fertilizer_use"/>
 				<connect to="Land_Nutrients.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
 				<connect2 to="Land_Nutrients.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
-				<connect to="Land_Nutrients.production" from="Livestock.livestock_production"/>
-				<connect2 to="Land_Nutrients.production" from="Livestock.livestock_production"/>
+				<connect to="Land_Nutrients.production" from="Animal_Products.animal_products_production"/>
+				<connect2 to="Land_Nutrients.production" from="Animal_Products.animal_products_production"/>
 			</module>
 			<module name="Freshwater" isee:label="">
 				<format scale_by="auto"/>
@@ -756,9 +756,9 @@
 				<aux x="2047.51" y="132.5" name="crop production by PCTILE"/>
 				<aux x="2051.51" y="192.833" name="Cropland by PCTILE"/>
 				<aux x="2047.51" y="278.333" name="total\nwater\nwithdrawal by PCTILE"/>
-				<aux x="2493.42" y="66.6667" name="livestock production by PCTILE"/>
+				<aux x="2493.42" y="66.6667" name="animal products production by PCTILE"/>
 				<aux x="2507.35" y="132.5" name="fraction of water\nwithdrawal for\nagriculture by PCTILE"/>
-				<aux x="2493.42" y="210.833" name="fraction of crops\nfor livestock by PCTILE"/>
+				<aux x="2493.42" y="210.833" name="fraction of crops\nfor animal products by PCTILE"/>
 				<aux x="2493.42" y="313.667" name="available\nwater supply by PCTILE"/>
 				<aux x="2969.58" y="63.3334" name="man made fertilizer use by PCTILE"/>
 				<aux x="2974.17" y="136.125" name="manure fertilizer use by PCTILE"/>
@@ -771,7 +771,7 @@
 					<to>Cropland_by_PCTILE</to>
 				</connector>
 				<aux x="2970.58" y="330.125" name="soil carbon loss cropland\nby PCTILE"/>
-				<module x="135.17" y="266.917" name="Livestock"/>
+				<module x="135.17" y="266.917" name="Animal Products"/>
 				<module x="274.17" y="379.5" name="Food Demand"/>
 				<stock font_style="italic" font_weight="bold" x="2840.5" y="491.913" name="Mature Forest"/>
 				<stock font_style="italic" font_weight="bold" x="2678.75" y="615.25" name="Recovering Forest"/>
@@ -787,19 +787,19 @@
 				<stock font_style="italic" font_weight="bold" x="2966.75" y="521.5" name="Cropland"/>
 				<connector uid="944" isee:thickness="2" angle="173.64">
 					<from>Land_Use</from>
-					<to>Livestock</to>
+					<to>Animal_Products</to>
 				</connector>
 				<connector uid="945" isee:thickness="2" angle="6.80389">
-					<from>Livestock</from>
+					<from>Animal_Products</from>
 					<to>Land_Use</to>
 				</connector>
 				<connector uid="946" isee:thickness="2" angle="293.353">
-					<from>Livestock</from>
+					<from>Animal_Products</from>
 					<to>Food_Demand</to>
 				</connector>
 				<connector uid="947" isee:thickness="2" angle="114.794">
 					<from>Food_Demand</from>
-					<to>Livestock</to>
+					<to>Animal_Products</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="2352.75" y="210.833" name="fraction of crops\nfor livestock"/>
 				<connector uid="949" color="#ECECEC" font_color="#ECECEC" angle="4.63912" isee:autocreated="true">
@@ -833,7 +833,7 @@
 				</connector>
 				<connector uid="972" angle="21.7083">
 					<from>fraction_of_crops_for_livestock</from>
-					<to>fraction_of_crops_for_livestock_by_PCTILE</to>
+					<to>fraction_of_crops_for_animal_products_by_PCTILE</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="2787.5" y="84.6667" name="man made fertilizer use"/>
 				<connector uid="973" color="#EBEBEB" font_color="#EBEBEB" angle="9.41469" isee:autocreated="true">
@@ -868,12 +868,12 @@
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="2351.25" y="72.5" name="production"/>
 				<connector uid="982" color="#EBEBEB" font_color="#EBEBEB" angle="5.01373" isee:autocreated="true">
-					<from>Livestock</from>
+					<from>Animal_Products</from>
 					<to>production</to>
 				</connector>
 				<connector uid="983" angle="33.6901">
 					<from>production</from>
-					<to>livestock_production_by_PCTILE</to>
+					<to>animal_products_production_by_PCTILE</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1900.17" y="79" name="Forest Land"/>
 				<connector uid="985" color="#EBEBEB" font_color="#EBEBEB" angle="4.18286" isee:autocreated="true">
@@ -939,7 +939,7 @@
 					<to>fertilizer_use_by_PCTILE</to>
 				</connector>
 				<connector uid="984" isee:thickness="2" angle="251.294" isee:autocreated="true">
-					<from>Livestock</from>
+					<from>Animal_Products</from>
 					<to>Land_Nutrients</to>
 				</connector>
 				<module x="484" y="72" name="Forest"/>
@@ -955,6 +955,254 @@
 				<alias font_style="italic" label_side="center" uid="789" x="1862.5" y="193.333" width="85.8333" height="41.6667">
 					<of>Cropland</of>
 				</alias>
+			</view>
+		</views>
+	</model>
+	<model name="Animal_Products">
+		<variables>
+			<aux name="animal products balance">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>animal_products_production/livestock_demand</eqn>
+				<units>1</units>
+			</aux>
+			<flow name="animal products\nyield intensification">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>normal_rate_of_animal_products_intensification*Animal_Products_Yield*effect_of_animal_products_balance_on_yield_intensification</eqn>
+				<units>PCal/Mha/Year/Year</units>
+			</flow>
+			<stock name="Animal Products Yield" access="output">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Animal_Products_Yield_in_1980</eqn>
+				<inflow>animal_products_yield_intensification</inflow>
+				<units>PCal/Mha/Year</units>
+			</stock>
+			<aux name="Animal Products Yield in 1980">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.263417373498638</eqn>
+				<range min="0" max="1"/>
+				<units>PCal/Mha/Year</units>
+			</aux>
+			<aux name="normal rate\nof animal products intensification">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.00893044781328361</eqn>
+				<range min="0" max="5"/>
+				<units>1/year</units>
+			</aux>
+			<aux name="animal products balance\nwith reserves" access="output">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>animal_products_balance/(1+desired_animal_products_reserve_capacity)</eqn>
+				<units>1</units>
+			</aux>
+			<aux name="effect of animal products\nbalance on yield\nintensification">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>1+sensitivity_of_effect_of_animal_products_balance_on_animal_products_yield*(animal_products_balance_with_reserves-1)</eqn>
+				<units>1</units>
+			</aux>
+			<aux name="desired animal products reserve capacity">
+				<doc>Calibration Parameter: forest land &amp; CO2 emissions from land cover change &amp; agricultural land &amp; crop production &amp; fertilizer use</doc>
+				<eqn>0.05</eqn>
+				<units>1</units>
+			</aux>
+			<aux name="sensitivity of effect of animal products\nbalance on animal products yield">
+				<doc>${Calibration Parameter}
+Calibration Parameter: forest land &amp; CO2 emissions from land cover change &amp; agricultural land &amp; crop production &amp; fertilizer use</doc>
+				<eqn>-28.2257924978656</eqn>
+				<range min="-30" max="0"/>
+				<units>1</units>
+			</aux>
+			<aux name="animal products production" access="output">
+				<doc>${Calibrated}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>grazing_land*(1+fraction_of_animal_products_from_the_ocean)*Animal_Products_Yield</eqn>
+				<units>PCal/Year</units>
+			</aux>
+			<aux name="grazing land" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mha</units>
+			</aux>
+			<aux name="livestock demand" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>PCal/Year</units>
+			</aux>
+			<aux name="fraction of animal products\nfrom the ocean">
+				<eqn>0</eqn>
+				<units>dmnl</units>
+			</aux>
+		</variables>
+		<views>
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="#1EC75A" thickness="1"/>
+						<isee:series_style color="#56D389" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#A5F2B8" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#808285" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#E1DFDB" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
+				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:sim_speed_slider color="black" background="white"/>
+				<isee:time_slider color="#E95F74" background="silver"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
+				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
+				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="394" isee:scroll_y="76" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
+						<shape type="rectangle" width="45" height="35"/>
+					</stock>
+					<flow color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</flow>
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="11pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
+						<shape type="rectangle" width="67" height="55"/>
+					</module>
+					<aux color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</aux>
+					<group color="red" background="white" font_color="red" font_size="11pt"/>
+					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
+					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+					<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+						<isee:series_styles>
+							<isee:series_style color="blue" thickness="1"/>
+							<isee:series_style color="red" thickness="1"/>
+							<isee:series_style color="fuchsia" thickness="1"/>
+							<isee:series_style color="#008F44" thickness="1"/>
+							<isee:series_style color="#FF7F00" thickness="1"/>
+							<isee:series_style color="#7F00FF" thickness="1"/>
+							<isee:series_style color="#0CA0FF" thickness="1"/>
+							<isee:series_style color="lime" thickness="1"/>
+							<isee:series_style color="#FF007F" thickness="1"/>
+							<isee:series_style color="aqua" thickness="1"/>
+							<isee:series_style color="#F586FF" thickness="1"/>
+							<isee:series_style color="black" thickness="1"/>
+							<isee:series_style color="#C8C8C8" thickness="1"/>
+						</isee:series_styles>
+					</graph>
+					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				</style>
+				<aux x="742.25" y="479.17" name="animal products balance"/>
+				<flow x="969.625" y="761.5" name="animal products\nyield intensification">
+					<pts>
+						<pt x="888.25" y="761.5"/>
+						<pt x="1039" y="761.5"/>
+					</pts>
+				</flow>
+				<stock label_side="top" x="1061.5" y="763.5" name="Animal Products Yield"/>
+				<aux x="1167.94" y="799" name="Animal Products Yield in 1980"/>
+				<aux x="951.625" y="914.25" name="normal rate\nof animal products intensification"/>
+				<aux x="679.75" y="619" name="animal products balance\nwith reserves"/>
+				<aux x="708.75" y="733.25" name="effect of animal products\nbalance on yield\nintensification"/>
+				<aux label_side="top" x="593" y="561.42" name="desired animal products reserve capacity"/>
+				<aux label_side="bottom" x="550.5" y="737" name="sensitivity of effect of animal products\nbalance on animal products yield"/>
+				<aux x="934.63" y="474.75" name="animal products production"/>
+				<connector uid="1" angle="83.2793">
+					<from>normal_rate_of_animal_products_intensification</from>
+					<to>animal_products_yield_intensification</to>
+				</connector>
+				<connector uid="4" angle="219.892">
+					<from>Animal_Products_Yield</from>
+					<to>animal_products_yield_intensification</to>
+				</connector>
+				<connector uid="5" angle="152.731">
+					<from>animal_products_production</from>
+					<to>animal_products_balance</to>
+				</connector>
+				<connector uid="6" angle="229.049">
+					<from>animal_products_balance</from>
+					<to>animal_products_balance_with_reserves</to>
+				</connector>
+				<connector uid="7" angle="326.426">
+					<from>desired_animal_products_reserve_capacity</from>
+					<to>animal_products_balance_with_reserves</to>
+				</connector>
+				<connector uid="8" angle="1.35747">
+					<from>sensitivity_of_effect_of_animal_products_balance_on_animal_products_yield</from>
+					<to>effect_of_animal_products_balance_on_yield_intensification</to>
+				</connector>
+				<connector uid="9" angle="76.3995">
+					<from>Animal_Products_Yield</from>
+					<to>animal_products_production</to>
+				</connector>
+				<connector uid="10" angle="293.749">
+					<from>effect_of_animal_products_balance_on_yield_intensification</from>
+					<to>animal_products_yield_intensification</to>
+				</connector>
+				<connector uid="11" angle="253.009">
+					<from>animal_products_balance_with_reserves</from>
+					<to>effect_of_animal_products_balance_on_yield_intensification</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1033" y="379" name="grazing land"/>
+				<connector uid="17" angle="224.227">
+					<from>grazing_land</from>
+					<to>animal_products_production</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="747" y="412" name="livestock demand"/>
+				<connector uid="18" angle="235.923">
+					<from>livestock_demand</from>
+					<to>animal_products_balance</to>
+				</connector>
+				<aux x="1121" y="459.17" name="fraction of animal products\nfrom the ocean"/>
+				<connector uid="19" angle="182.91">
+					<from>fraction_of_animal_products_from_the_ocean</from>
+					<to>animal_products_production</to>
+				</connector>
 			</view>
 		</views>
 	</model>
@@ -1711,42 +1959,42 @@ Tilman D, Balzer C, Hill J, Befort BL. 2011. Global food demand and the sustaina
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>Mp</units>
 			</aux>
-			<aux name="livestock demand" access="output">
+			<aux name="animal products demand" access="output">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Population*livestock_demand_per_capita</eqn>
+				<eqn>Population*animal_products_demand_per_capita</eqn>
 				<units>PCal/Year</units>
 			</aux>
 			<aux name="crop demand for feed">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>livestock_demand*crops_required_per_PCal_of_livestock_demand</eqn>
+				<eqn>animal_products_demand*crops_required_per_PCal_of_animal_products_demand</eqn>
 				<units>PCal/year</units>
 			</aux>
-			<aux name="crops required\nper PCal of livestock\ndemand in 1980">
+			<aux name="crops required\nper PCal of animal products\ndemand in 1980">
 				<doc>${Calibration Parameter}
 </doc>
 				<eqn>1.33496985835</eqn>
 				<range min="1" max="3"/>
 				<units>PCal/PCal</units>
 			</aux>
-			<aux name="effect of livestock\nintensification on crop\ndemand">
+			<aux name="effect of animal products\nintensification on crop\ndemand">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(Livestock_Yield/INIT(Livestock_Yield) )^elasticity_of_crops_required_for_livestock_to_livestock_yield</eqn>
+				<eqn>(Livestock_Yield/INIT(Livestock_Yield) )^elasticity_of_crops_required_for_animal_products_to_animal_products_yield</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="crops required\nper PCal of livestock\ndemand">
+			<aux name="crops required\nper PCal of animal products\ndemand">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>crops_required_per_PCal_of_livestock_demand_in_1980*effect_of_livestock_intensification_on_crop_demand</eqn>
+				<eqn>crops_required_per_PCal_of_animal_products_demand_in_1980*effect_of_animal_products_intensification_on_crop_demand</eqn>
 				<units>PCal/PCal</units>
 			</aux>
-			<aux name="elasticity of\ncrops required for livestock\nto livestock yield">
+			<aux name="elasticity of\ncrops required for animal products\nto animal products yield">
 				<doc>${Calibration Parameter}
 </doc>
 				<eqn>0.238388129810279</eqn>
@@ -1760,7 +2008,7 @@ Tilman D, Balzer C, Hill J, Befort BL. 2011. Global food demand and the sustaina
 				<eqn>direct_crop_demand_per_capita*Population</eqn>
 				<units>PCal/year</units>
 			</aux>
-			<aux name="fraction of crops\nfor livestock" access="output">
+			<aux name="fraction of crops\nfor animal products" access="output">
 				<doc>${Calibrated}
 </doc>
 				<dimensions>
@@ -1788,7 +2036,7 @@ Tilman D, Balzer C, Hill J, Befort BL. 2011. Global food demand and the sustaina
 				<eqn>2024</eqn>
 				<units>Year</units>
 			</aux>
-			<aux name="switch livestock fraction policy" access="output" isee:autocreated="true">
+			<aux name="switch animal products fraction policy" access="output" isee:autocreated="true">
 				<eqn>1</eqn>
 				<format precision="1" scale_by="auto"/>
 				<range min="0" max="1"/>
@@ -1848,24 +2096,24 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<range min="1500" max="2200"/>
 				<units>Cal/Person/Day</units>
 			</aux>
-			<aux name="livestock\nfraction of food demand">
+			<aux name="animal products\nfraction of food demand">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>IF TIME &gt; policy_start_year AND switch_livestock_fraction_policy THEN
-livestock_fraction_policy
+				<eqn>IF TIME &gt; policy_start_year AND switch_animal_products_fraction_policy THEN
+animal_products_fraction_policy
 ELSE
-livestock_fraction_of_food_demand_1980*(perceived_GDP_per_person/INIT(perceived_GDP_per_person))^elasticity_of_desired_livestock_fraction_of_food_demand_to_GDP_per_person</eqn>
+animal_products_fraction_of_food_demand_1980*(perceived_GDP_per_person/INIT(perceived_GDP_per_person))^elasticity_of_desired_animal_products_fraction_of_food_demand_to_GDP_per_person</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="elasticity of desired livestock fraction\nof food demand to GDP per person">
+			<aux name="elasticity of desired animal products fraction\nof food demand to GDP per person">
 				<doc>${Calibration Parameter}
 Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>0.0405</eqn>
 				<range min="0" max="2"/>
 				<units>dmnl</units>
 			</aux>
-			<aux name="livestock fraction\nof food demand 1980">
+			<aux name="animal products fraction\nof food demand 1980">
 				<doc>${Calibration Parameter}
 Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>0.221343999824</eqn>
@@ -1883,17 +2131,17 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>direct_food_demand_per_capita-livestock_demand_per_capita</eqn>
+				<eqn>direct_food_demand_per_capita-animal_products_demand_per_capita</eqn>
 				<units>PCal/Mp/Year</units>
 			</aux>
-			<aux name="livestock demand per capita">
+			<aux name="animal products demand per capita">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>direct_food_demand_per_capita*livestock_fraction_of_food_demand</eqn>
+				<eqn>direct_food_demand_per_capita*animal_products_fraction_of_food_demand</eqn>
 				<units>PCal/Mp/Year</units>
 			</aux>
-			<aux name="livestock fraction policy" access="output" isee:autocreated="true">
+			<aux name="animal products fraction policy" access="output" isee:autocreated="true">
 				<eqn>TIME</eqn>
 				<gf>
 					<xscale min="2020" max="2100"/>
@@ -1993,35 +2241,35 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<aux label_side="left" x="504.25" y="451.323" name="crop demand"/>
 				<aux font_style="italic" font_weight="bold" label_side="bottom" x="504.25" y="1402.17" name="GDP Per Capita"/>
 				<aux font_style="italic" font_weight="bold" x="515.25" y="664.24" name="Population"/>
-				<aux label_side="right" label_angle="315" x="615.5" y="578.417" name="livestock demand"/>
+				<aux label_side="right" label_angle="315" x="615.5" y="578.417" name="animal products demand"/>
 				<connector uid="8" angle="40.5666">
 					<from>Population</from>
-					<to>livestock_demand</to>
+					<to>animal_products_demand</to>
 				</connector>
 				<aux x="608" y="494.49" name="crop demand for feed"/>
 				<connector uid="9" angle="95.1066">
-					<from>livestock_demand</from>
+					<from>animal_products_demand</from>
 					<to>crop_demand_for_feed</to>
 				</connector>
 				<connector uid="10" angle="157.409">
 					<from>crop_demand_for_feed</from>
 					<to>crop_demand</to>
 				</connector>
-				<aux x="632" y="257.823" name="crops required\nper PCal of livestock\ndemand in 1980"/>
-				<aux x="775.25" y="354.323" name="effect of livestock\nintensification on crop\ndemand"/>
-				<aux x="646.5" y="396.323" name="crops required\nper PCal of livestock\ndemand"/>
+				<aux x="632" y="257.823" name="crops required\nper PCal of animal products\ndemand in 1980"/>
+				<aux x="775.25" y="354.323" name="effect of animal products\nintensification on crop\ndemand"/>
+				<aux x="646.5" y="396.323" name="crops required\nper PCal of animal products\ndemand"/>
 				<connector uid="11" angle="275.977">
-					<from>crops_required_per_PCal_of_livestock_demand_in_1980</from>
-					<to>crops_required_per_PCal_of_livestock_demand</to>
+					<from>crops_required_per_PCal_of_animal_products_demand_in_1980</from>
+					<to>crops_required_per_PCal_of_animal_products_demand</to>
 				</connector>
 				<connector uid="12" angle="248.585">
-					<from>crops_required_per_PCal_of_livestock_demand</from>
+					<from>crops_required_per_PCal_of_animal_products_demand</from>
 					<to>crop_demand_for_feed</to>
 				</connector>
-				<aux x="928.25" y="366.24" name="elasticity of\ncrops required for livestock\nto livestock yield"/>
+				<aux x="928.25" y="366.24" name="elasticity of\ncrops required for animal products\nto animal products yield"/>
 				<connector uid="13" angle="175.546">
-					<from>elasticity_of_crops_required_for_livestock_to_livestock_yield</from>
-					<to>effect_of_livestock_intensification_on_crop_demand</to>
+					<from>elasticity_of_crops_required_for_animal_products_to_animal_products_yield</from>
+					<to>effect_of_animal_products_intensification_on_crop_demand</to>
 				</connector>
 				<aux x="417.75" y="540.74" name="crop demand for food"/>
 				<connector uid="15" angle="128.29">
@@ -2032,27 +2280,27 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>crop_demand_for_food</from>
 					<to>crop_demand</to>
 				</connector>
-				<aux x="504.25" y="361.25" name="fraction of crops\nfor livestock"/>
+				<aux x="504.25" y="361.25" name="fraction of crops\nfor animal products"/>
 				<connector uid="20" angle="90">
 					<from>crop_demand</from>
-					<to>fraction_of_crops_for_livestock</to>
+					<to>fraction_of_crops_for_animal_products</to>
 				</connector>
 				<connector uid="21" angle="127.907">
 					<from>crop_demand_for_feed</from>
-					<to>fraction_of_crops_for_livestock</to>
+					<to>fraction_of_crops_for_animal_products</to>
 				</connector>
 				<aux label_side="bottom" x="223" y="1089.56" name="food demand policy"/>
 				<aux x="268.5" y="1158" name="switch food demand\npolicy"/>
 				<aux font_style="italic" font_weight="bold" x="398.75" y="1229.25" name="policy start year"/>
-				<aux x="695.5" y="1211.25" name="switch livestock fraction policy"/>
+				<aux x="695.5" y="1211.25" name="switch animal products fraction policy"/>
 				<connector uid="29" angle="198.067">
-					<from>effect_of_livestock_intensification_on_crop_demand</from>
-					<to>crops_required_per_PCal_of_livestock_demand</to>
+					<from>effect_of_animal_products_intensification_on_crop_demand</from>
+					<to>crops_required_per_PCal_of_animal_products_demand</to>
 				</connector>
 				<stock font_style="italic" font_weight="bold" x="861" y="257.823" name="Livestock Yield"/>
 				<connector uid="31" angle="228.376">
 					<from>Livestock_Yield</from>
-					<to>effect_of_livestock_intensification_on_crop_demand</to>
+					<to>effect_of_animal_products_intensification_on_crop_demand</to>
 				</connector>
 				<aux x="509.25" y="1150" name="perceived GDP per person"/>
 				<aux x="412" y="1341" name="time to change dietary habits"/>
@@ -2082,20 +2330,20 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>perceived_GDP_per_person</from>
 					<to>direct_food_demand_per_person_per_day</to>
 				</connector>
-				<aux x="612" y="933.667" name="livestock\nfraction of food demand"/>
-				<aux label_side="bottom" x="778" y="1089.56" name="elasticity of desired livestock fraction\nof food demand to GDP per person"/>
-				<aux label_side="right" label_angle="315" x="857" y="1001.67" name="livestock fraction\nof food demand 1980"/>
+				<aux x="612" y="933.667" name="animal products\nfraction of food demand"/>
+				<aux label_side="bottom" x="778" y="1089.56" name="elasticity of desired animal products fraction\nof food demand to GDP per person"/>
+				<aux label_side="right" label_angle="315" x="857" y="1001.67" name="animal products fraction\nof food demand 1980"/>
 				<connector uid="51" angle="136.798">
-					<from>elasticity_of_desired_livestock_fraction_of_food_demand_to_GDP_per_person</from>
-					<to>livestock_fraction_of_food_demand</to>
+					<from>elasticity_of_desired_animal_products_fraction_of_food_demand_to_GDP_per_person</from>
+					<to>animal_products_fraction_of_food_demand</to>
 				</connector>
 				<connector uid="52" angle="164.488">
-					<from>livestock_fraction_of_food_demand_1980</from>
-					<to>livestock_fraction_of_food_demand</to>
+					<from>animal_products_fraction_of_food_demand_1980</from>
+					<to>animal_products_fraction_of_food_demand</to>
 				</connector>
 				<connector uid="53" angle="64.594">
 					<from>perceived_GDP_per_person</from>
-					<to>livestock_fraction_of_food_demand</to>
+					<to>animal_products_fraction_of_food_demand</to>
 				</connector>
 				<aux x="424.25" y="886" name="direct food demand\nper capita"/>
 				<connector uid="56" angle="92.9654">
@@ -2115,18 +2363,18 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>direct_food_demand_per_capita</from>
 					<to>direct_crop_demand_per_capita</to>
 				</connector>
-				<aux x="618.5" y="718" name="livestock demand per capita"/>
+				<aux x="618.5" y="718" name="animal products demand per capita"/>
 				<connector uid="65" angle="88.2737">
-					<from>livestock_fraction_of_food_demand</from>
-					<to>livestock_demand_per_capita</to>
+					<from>animal_products_fraction_of_food_demand</from>
+					<to>animal_products_demand_per_capita</to>
 				</connector>
 				<connector uid="66" angle="180">
-					<from>livestock_demand_per_capita</from>
+					<from>animal_products_demand_per_capita</from>
 					<to>direct_crop_demand_per_capita</to>
 				</connector>
 				<connector uid="67" angle="40.8554">
 					<from>direct_food_demand_per_capita</from>
-					<to>livestock_demand_per_capita</to>
+					<to>animal_products_demand_per_capita</to>
 				</connector>
 				<connector uid="68" angle="1.28974">
 					<from>UNIT_p_per_Mp</from>
@@ -2137,8 +2385,8 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<to>crop_demand_for_food</to>
 				</connector>
 				<connector uid="70" angle="91.2312">
-					<from>livestock_demand_per_capita</from>
-					<to>livestock_demand</to>
+					<from>animal_products_demand_per_capita</from>
+					<to>animal_products_demand</to>
 				</connector>
 				<connector uid="71" angle="44.9112">
 					<from>switch_food_demand_policy</from>
@@ -2153,17 +2401,17 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<to>direct_food_demand_per_person_per_day</to>
 				</connector>
 				<connector uid="74" angle="104.34">
-					<from>switch_livestock_fraction_policy</from>
-					<to>livestock_fraction_of_food_demand</to>
+					<from>switch_animal_products_fraction_policy</from>
+					<to>animal_products_fraction_of_food_demand</to>
 				</connector>
-				<aux label_side="bottom" x="813" y="1225.56" name="livestock fraction policy"/>
+				<aux label_side="bottom" x="813" y="1225.56" name="animal products fraction policy"/>
 				<connector uid="75" angle="125.391">
-					<from>livestock_fraction_policy</from>
-					<to>livestock_fraction_of_food_demand</to>
+					<from>animal_products_fraction_policy</from>
+					<to>animal_products_fraction_of_food_demand</to>
 				</connector>
 				<connector uid="76" angle="55.3973">
 					<from>policy_start_year</from>
-					<to>livestock_fraction_of_food_demand</to>
+					<to>animal_products_fraction_of_food_demand</to>
 				</connector>
 			</view>
 		</views>
@@ -3020,21 +3268,21 @@ Includes Manure and Technological</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>manure_fertilizer_use_1980*effect_of_livestock_on_manure_fertilizer_use</eqn>
+				<eqn>manure_fertilizer_use_1980*effect_of_animal_products_on_manure_fertilizer_use</eqn>
 				<units>MtN/year</units>
 			</aux>
-			<aux name="elasticity of effect of livestock\non manure fertilizer use">
+			<aux name="elasticity of effect of animal products\non manure fertilizer use">
 				<doc>${Calibration Parameter}
 </doc>
 				<eqn>0.0975915086490948</eqn>
 				<range min="1" max="15"/>
 				<units>dmnl</units>
 			</aux>
-			<aux name="effect of livestock\non manure fertilizer use">
+			<aux name="effect of animal products\non manure fertilizer use">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(production/INIT(production))^elasticity_of_effect_of_livestock_on_manure_fertilizer_use</eqn>
+				<eqn>(production/INIT(production))^elasticity_of_effect_of_animal_products_on_manure_fertilizer_use</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="production" access="input">
@@ -3180,20 +3428,20 @@ Includes Manure and Technological</doc>
 					<to>manure_fertilizer_use</to>
 				</connector>
 				<aux x="830" y="351.67" name="manure fertilizer use"/>
-				<aux x="1107" y="343.17" name="elasticity of effect of livestock\non manure fertilizer use"/>
-				<aux x="957" y="347" name="effect of livestock\non manure fertilizer use"/>
+				<aux x="1107" y="343.17" name="elasticity of effect of animal products\non manure fertilizer use"/>
+				<aux x="957" y="347" name="effect of animal products\non manure fertilizer use"/>
 				<connector uid="3" angle="181.463">
-					<from>elasticity_of_effect_of_livestock_on_manure_fertilizer_use</from>
-					<to>effect_of_livestock_on_manure_fertilizer_use</to>
+					<from>elasticity_of_effect_of_animal_products_on_manure_fertilizer_use</from>
+					<to>effect_of_animal_products_on_manure_fertilizer_use</to>
 				</connector>
 				<connector uid="6" angle="182.106">
-					<from>effect_of_livestock_on_manure_fertilizer_use</from>
+					<from>effect_of_animal_products_on_manure_fertilizer_use</from>
 					<to>manure_fertilizer_use</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="963" y="486" name="production"/>
 				<connector uid="16" angle="92.4717">
 					<from>production</from>
-					<to>effect_of_livestock_on_manure_fertilizer_use</to>
+					<to>effect_of_animal_products_on_manure_fertilizer_use</to>
 				</connector>
 				<connector uid="20" angle="180">
 					<from>manure_fertilizer_use</from>
@@ -3416,7 +3664,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>grazing_land*effect_of_livestock_balance_on_grazing_land</eqn>
+				<eqn>grazing_land*effect_of_animal_products_balance_on_grazing_land</eqn>
 				<units>MHa</units>
 			</aux>
 			<aux name="indicated grassland">
@@ -3541,17 +3789,17 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>fraction_of_grassland_degrading_1980*effect_of_livestock_yield_on_fraction_of_grassland_degrading</eqn>
+				<eqn>fraction_of_grassland_degrading_1980*effect_of_animal_products_yield_on_fraction_of_grassland_degrading</eqn>
 				<units>1/year</units>
 			</aux>
-			<aux name="effect of livestock\nyield on fraction\nof grassland degrading">
+			<aux name="effect of animal products\nyield on fraction\nof grassland degrading">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(Livestock_Yield/INIT(Livestock_Yield))^elasticity_of_effect_of_livestock_yield_on_fraction_of_grassland_degrading</eqn>
+				<eqn>(Livestock_Yield/INIT(Livestock_Yield))^elasticity_of_effect_of_animal_products_yield_on_fraction_of_grassland_degrading</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="elasticity of effect of livestock\nyield on fraction\nof grassland degrading">
+			<aux name="elasticity of effect of animal products\nyield on fraction\nof grassland degrading">
 				<doc>${Calibration Parameter}
 </doc>
 				<eqn>0.791911568325403</eqn>
@@ -3627,14 +3875,14 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="effect of livestock balance\non grazing land">
+			<aux name="effect of animal products balance\non grazing land">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>1+sensitivity_of_effect_of_livestock_balance_on_grassland_expansion_rate*(livestock_balance_with_reserves-1)</eqn>
+				<eqn>1+sensitivity_of_effect_of_animal_products_balance_on_grassland_expansion_rate*(livestock_balance_with_reserves-1)</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="sensitivity of effect of livestock\nbalance on grassland\nexpansion rate">
+			<aux name="sensitivity of effect of animal products\nbalance on grassland\nexpansion rate">
 				<doc>${Calibration Parameter}
 Calibration Parameter: forest land &amp; CO2 emissions from land cover change &amp; agricultural land &amp; crop production &amp; fertilizer use</doc>
 				<eqn>-0.0627407987320223</eqn>
@@ -4025,14 +4273,14 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<from>fraction_of_grassland_degrading</from>
 					<to>degraded_land_from_grassland</to>
 				</connector>
-				<aux x="920" y="837" name="effect of livestock\nyield on fraction\nof grassland degrading"/>
-				<aux x="789" y="833" name="elasticity of effect of livestock\nyield on fraction\nof grassland degrading"/>
+				<aux x="920" y="837" name="effect of animal products\nyield on fraction\nof grassland degrading"/>
+				<aux x="789" y="833" name="elasticity of effect of animal products\nyield on fraction\nof grassland degrading"/>
 				<connector uid="37" angle="12.875">
-					<from>elasticity_of_effect_of_livestock_yield_on_fraction_of_grassland_degrading</from>
-					<to>effect_of_livestock_yield_on_fraction_of_grassland_degrading</to>
+					<from>elasticity_of_effect_of_animal_products_yield_on_fraction_of_grassland_degrading</from>
+					<to>effect_of_animal_products_yield_on_fraction_of_grassland_degrading</to>
 				</connector>
 				<connector uid="38" angle="45.8069">
-					<from>effect_of_livestock_yield_on_fraction_of_grassland_degrading</from>
+					<from>effect_of_animal_products_yield_on_fraction_of_grassland_degrading</from>
 					<to>fraction_of_grassland_degrading</to>
 				</connector>
 				<aux x="915" y="511.04" name="fraction cropland\ndegrading"/>
@@ -4072,7 +4320,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				<stock font_style="italic" font_weight="bold" x="749" y="1107" name="Livestock Yield"/>
 				<connector uid="56" angle="33.6901">
 					<from>Livestock_Yield</from>
-					<to>effect_of_livestock_yield_on_fraction_of_grassland_degrading</to>
+					<to>effect_of_animal_products_yield_on_fraction_of_grassland_degrading</to>
 				</connector>
 				<aux label_side="left" label_angle="135" x="157.071" y="122.798" name="sensitivity of effect of crop\nbalance on crop land\nexpansion rate"/>
 				<connector uid="57" angle="291.599">
@@ -4089,20 +4337,20 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<from>crop_balance_with_reserves</from>
 					<to>effect_of_crop_balance_on_crop_land_expansion</to>
 				</connector>
-				<aux x="198.071" y="724.607" name="effect of livestock balance\non grazing land"/>
-				<aux label_side="bottom" x="180.071" y="888.277" name="sensitivity of effect of livestock\nbalance on grassland\nexpansion rate"/>
+				<aux x="198.071" y="724.607" name="effect of animal products balance\non grazing land"/>
+				<aux label_side="bottom" x="180.071" y="888.277" name="sensitivity of effect of animal products\nbalance on grassland\nexpansion rate"/>
 				<connector uid="60" angle="105.198">
-					<from>sensitivity_of_effect_of_livestock_balance_on_grassland_expansion_rate</from>
-					<to>effect_of_livestock_balance_on_grazing_land</to>
+					<from>sensitivity_of_effect_of_animal_products_balance_on_grassland_expansion_rate</from>
+					<to>effect_of_animal_products_balance_on_grazing_land</to>
 				</connector>
 				<connector uid="61" angle="77.6897">
-					<from>effect_of_livestock_balance_on_grazing_land</from>
+					<from>effect_of_animal_products_balance_on_grazing_land</from>
 					<to>indicated_grazing_land</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="265.714" y="996.429" name="livestock balance\nwith reserves"/>
 				<connector uid="62" angle="91.1691">
 					<from>livestock_balance_with_reserves</from>
-					<to>effect_of_livestock_balance_on_grazing_land</to>
+					<to>effect_of_animal_products_balance_on_grazing_land</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="980.714" y="695" name="crop yield"/>
 				<connector uid="64" angle="118.706">
@@ -4197,245 +4445,6 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				<alias font_style="italic" uid="25" x="1054.5" y="1029.5" width="18" height="18">
 					<of>time_to_close_grassland_gap</of>
 				</alias>
-			</view>
-		</views>
-	</model>
-	<model name="Livestock">
-		<variables>
-			<aux name="livestock balance">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>livestock_production/livestock_demand</eqn>
-				<units>1</units>
-			</aux>
-			<flow name="livestock\nyield intensification">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>normal_rate_of_livestock_intensification*Livestock_Yield*effect_of_livestock_balance_on_yield_intensification</eqn>
-				<units>PCal/Mha/Year/Year</units>
-			</flow>
-			<stock name="Livestock Yield" access="output">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Livestock_Yield_in_1980</eqn>
-				<inflow>livestock_yield_intensification</inflow>
-				<units>PCal/Mha/Year</units>
-			</stock>
-			<aux name="Livestock Yield in 1980">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.263417373498638</eqn>
-				<range min="0" max="1"/>
-				<units>PCal/Mha/Year</units>
-			</aux>
-			<aux name="normal rate\nof livestock intensification">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.00893044781328361</eqn>
-				<range min="0" max="5"/>
-				<units>1/year</units>
-			</aux>
-			<aux name="livestock balance\nwith reserves" access="output">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>livestock_balance/(1+desired_livestock_reserve_capacity)</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="effect of livestock\nbalance on yield\nintensification">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>1+sensitivity_of_effect_of_livestock_balance_on_livestock_yield*(livestock_balance_with_reserves-1)</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="desired livestock reserve capacity">
-				<doc>Calibration Parameter: forest land &amp; CO2 emissions from land cover change &amp; agricultural land &amp; crop production &amp; fertilizer use</doc>
-				<eqn>0.05</eqn>
-				<units>1</units>
-			</aux>
-			<aux name="sensitivity of effect of livestock\nbalance on livestock yield">
-				<doc>${Calibration Parameter}
-Calibration Parameter: forest land &amp; CO2 emissions from land cover change &amp; agricultural land &amp; crop production &amp; fertilizer use</doc>
-				<eqn>-28.2257924978656</eqn>
-				<range min="-30" max="0"/>
-				<units>1</units>
-			</aux>
-			<aux name="livestock production" access="output">
-				<doc>${Calibrated}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>grazing_land*Livestock_Yield</eqn>
-				<units>PCal/Year</units>
-			</aux>
-			<aux name="grazing land" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>Mha</units>
-			</aux>
-			<aux name="livestock demand" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>PCal/Year</units>
-			</aux>
-		</variables>
-		<views>
-			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
-				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
-				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
-				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
-					<isee:series_styles>
-						<isee:series_style color="#1EC75A" thickness="1"/>
-						<isee:series_style color="#56D389" thickness="1" pen_style="dot_dashed"/>
-						<isee:series_style color="#A5F2B8" thickness="1" pen_style="dotted"/>
-						<isee:series_style color="#808285" thickness="1" pen_style="dashed"/>
-						<isee:series_style color="#E1DFDB" thickness="1"/>
-						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
-						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
-						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
-						<isee:series_style color="#FF007F" thickness="1"/>
-						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
-						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
-						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
-						<isee:series_style color="#C8C8C8" thickness="1"/>
-					</isee:series_styles>
-				</graph>
-				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
-				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
-				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
-				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
-				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
-				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
-				<isee:sim_speed_slider color="black" background="white"/>
-				<isee:time_slider color="#E95F74" background="silver"/>
-				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
-				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
-				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
-				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
-				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
-				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
-				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
-				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
-				<lamp color="black" background="white" font_size="9pt"/>
-				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
-				<isee:spatial_map color="black" background="white" font_size="12pt"/>
-				<isee:animation_object color="black" background="white" font_size="12pt"/>
-				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
-				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
-				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
-				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
-				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
-			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="394" isee:scroll_y="76" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
-				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
-						<shape type="rectangle" width="45" height="35"/>
-					</stock>
-					<flow color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
-						<shape type="circle" radius="18"/>
-					</flow>
-					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="11pt" label_side="bottom"/>
-					<module color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
-						<shape type="rectangle" width="67" height="55"/>
-					</module>
-					<aux color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
-						<shape type="circle" radius="18"/>
-					</aux>
-					<group color="red" background="white" font_color="red" font_size="11pt"/>
-					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
-					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
-					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
-					<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
-					<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
-						<isee:series_styles>
-							<isee:series_style color="blue" thickness="1"/>
-							<isee:series_style color="red" thickness="1"/>
-							<isee:series_style color="fuchsia" thickness="1"/>
-							<isee:series_style color="#008F44" thickness="1"/>
-							<isee:series_style color="#FF7F00" thickness="1"/>
-							<isee:series_style color="#7F00FF" thickness="1"/>
-							<isee:series_style color="#0CA0FF" thickness="1"/>
-							<isee:series_style color="lime" thickness="1"/>
-							<isee:series_style color="#FF007F" thickness="1"/>
-							<isee:series_style color="aqua" thickness="1"/>
-							<isee:series_style color="#F586FF" thickness="1"/>
-							<isee:series_style color="black" thickness="1"/>
-							<isee:series_style color="#C8C8C8" thickness="1"/>
-						</isee:series_styles>
-					</graph>
-					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
-				</style>
-				<aux x="742.25" y="479.17" name="livestock balance"/>
-				<flow x="969.625" y="761.5" name="livestock\nyield intensification">
-					<pts>
-						<pt x="888.25" y="761.5"/>
-						<pt x="1039" y="761.5"/>
-					</pts>
-				</flow>
-				<stock label_side="top" x="1061.5" y="763.5" name="Livestock Yield"/>
-				<aux x="1167.94" y="799" name="Livestock Yield in 1980"/>
-				<aux x="951.625" y="914.25" name="normal rate\nof livestock intensification"/>
-				<aux x="679.75" y="619" name="livestock balance\nwith reserves"/>
-				<aux x="708.75" y="733.25" name="effect of livestock\nbalance on yield\nintensification"/>
-				<aux label_side="top" x="593" y="561.42" name="desired livestock reserve capacity"/>
-				<aux label_side="bottom" x="550.5" y="737" name="sensitivity of effect of livestock\nbalance on livestock yield"/>
-				<aux x="934.63" y="474.75" name="livestock production"/>
-				<connector uid="1" angle="83.2793">
-					<from>normal_rate_of_livestock_intensification</from>
-					<to>livestock_yield_intensification</to>
-				</connector>
-				<connector uid="4" angle="219.892">
-					<from>Livestock_Yield</from>
-					<to>livestock_yield_intensification</to>
-				</connector>
-				<connector uid="5" angle="152.731">
-					<from>livestock_production</from>
-					<to>livestock_balance</to>
-				</connector>
-				<connector uid="6" angle="229.049">
-					<from>livestock_balance</from>
-					<to>livestock_balance_with_reserves</to>
-				</connector>
-				<connector uid="7" angle="326.426">
-					<from>desired_livestock_reserve_capacity</from>
-					<to>livestock_balance_with_reserves</to>
-				</connector>
-				<connector uid="8" angle="1.35747">
-					<from>sensitivity_of_effect_of_livestock_balance_on_livestock_yield</from>
-					<to>effect_of_livestock_balance_on_yield_intensification</to>
-				</connector>
-				<connector uid="9" angle="76.3995">
-					<from>Livestock_Yield</from>
-					<to>livestock_production</to>
-				</connector>
-				<connector uid="10" angle="293.749">
-					<from>effect_of_livestock_balance_on_yield_intensification</from>
-					<to>livestock_yield_intensification</to>
-				</connector>
-				<connector uid="11" angle="253.009">
-					<from>livestock_balance_with_reserves</from>
-					<to>effect_of_livestock_balance_on_yield_intensification</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="1033" y="379" name="grazing land"/>
-				<connector uid="17" angle="224.227">
-					<from>grazing_land</from>
-					<to>livestock_production</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="747" y="412" name="livestock demand"/>
-				<connector uid="18" angle="235.923">
-					<from>livestock_demand</from>
-					<to>livestock_balance</to>
-				</connector>
 			</view>
 		</views>
 	</model>
