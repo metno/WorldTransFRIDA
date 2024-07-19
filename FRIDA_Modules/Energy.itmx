@@ -5,7 +5,7 @@
 		<name>Energy</name>
 		<uuid>dda966fe-252b-44a1-a101-0c3526293b30</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7" isee:build_number="3335" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
+		<product version="3.7" isee:build_number="3335" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="1.5" isee:run_prefix="Run" isee:simulation_delay="0.125" isee:restore_on_start="false" isee:save_interval="2" method="Euler" time_units="Months" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
 		<start>0</start>
@@ -57,6 +57,21 @@
 	<isee:number_format_extenders/>
 	<default_format scale_by="1"/>
 	<model_units>
+		<unit name="$">
+			<eqn/>
+			<alias>dollar</alias>
+			<alias>dollars</alias>
+		</unit>
+		<unit name="Years">
+			<eqn/>
+			<alias>yr</alias>
+			<alias>year</alias>
+		</unit>
+		<unit name="Watts">
+			<eqn/>
+			<alias>w</alias>
+			<alias>watt</alias>
+		</unit>
 		<unit name="G$">
 			<eqn>Giga*$</eqn>
 		</unit>
@@ -209,6 +224,18 @@
 		</unit>
 		<unit name="TW">
 			<eqn>Million*MW</eqn>
+		</unit>
+		<unit name="G">
+			<eqn>Giga</eqn>
+		</unit>
+		<unit name="GtCO2">
+			<eqn>Giga*tCO2</eqn>
+		</unit>
+		<unit name="GtCH4">
+			<eqn>Giga*tCH4</eqn>
+		</unit>
+		<unit name="GtN2O">
+			<eqn>Giga*tN2O</eqn>
 		</unit>
 	</model_units>
 	<model name="Energy" run="true">
@@ -443,6 +470,8 @@
 				<connect2 to="fossil_energy_coal.Investments_in_Fossil_Energy_Capital" from="energy_investments.Coal_Investments_in_Fossil_Energy_Capital"/>
 				<connect to="fossil_energy_coal.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Coal_Investments_in_Fossil_Fuel_Extraction_Capital"/>
 				<connect2 to="fossil_energy_coal.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Coal_Investments_in_Fossil_Fuel_Extraction_Capital"/>
+				<connect to=".future_cost_adjustment" from="energy_investments.future_cost_adjustment"/>
+				<connect2 to=".future_cost_adjustment" from="energy_investments.future_cost_adjustment"/>
 				<connect to="fossil_energy_gas.Investments_in_Fossil_Energy_Capital" from="energy_investments.Gas_Investments_in_Fossil_Energy_Capital"/>
 				<connect2 to="fossil_energy_gas.Investments_in_Fossil_Energy_Capital" from="energy_investments.Gas_Investments_in_Fossil_Energy_Capital"/>
 				<connect to="fossil_energy_gas.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Gas_Investments_in_Fossil_Fuel_Extraction_Capital"/>
@@ -528,6 +557,8 @@
 				<format scale_by="auto"/>
 				<connect to="Energy.Renewable_Energy_Output_Share" from="energy_supply.Renewable_Energy_Output_Share"/>
 				<connect2 to="Renewable_Energy_Output_Share" from="energy_supply.Renewable_Energy_Output_Share"/>
+				<connect to=".Renewable_Energy_Output_Share" from="energy_supply.Renewable_Energy_Output_Share"/>
+				<connect2 to=".Renewable_Energy_Output_Share" from="energy_supply.Renewable_Energy_Output_Share"/>
 				<connect to="energy_supply_vs_demand.Total_Energy_Output" from="energy_supply.Total_Energy_Output"/>
 				<connect2 to="energy_supply_vs_demand.Total_Energy_Output" from="energy_supply.Total_Energy_Output"/>
 				<connect to="Energy.Total_Energy_Output" from="energy_supply.Total_Energy_Output"/>
@@ -1153,7 +1184,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="2681" isee:scroll_y="480" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="654" isee:scroll_y="60" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3360,7 +3391,7 @@ adaptive_energy_investments_differntiating_factor * Differentiating_Relative_Ene
 					<dim name="Run"/>
 					<dim name="EnergySource"/>
 				</dimensions>
-				<eqn>1/adjusted_cost</eqn>
+				<eqn>MIN(1e6,1/adjusted_cost)</eqn>
 				<units>kWh/($*Years)</units>
 			</aux>
 			<aux name="cost of extra energy output through fuel extraction per unit" access="input">
@@ -3815,28 +3846,93 @@ adaptive_energy_investments_differntiating_factor * Differentiating_Relative_Ene
 					<dim name="Run"/>
 					<dim name="EnergySource"/>
 				</dimensions>
-				<eqn>cost_to_build_per_unit*interpolated_historical_cost_adjustment[EnergySource]
+				<eqn>MAX(1e-12, cost_to_build_per_unit*interpolated_historical_cost_adjustment[EnergySource]
 +
 (IF TIME &gt; Policy_Start_Year_1 THEN
 future_cost_adjustment[EnergySource]
 ELSE
-0)</eqn>
+0))</eqn>
 				<units>$*Years/kWh</units>
 			</aux>
 			<aux name="pct of history">
 				<eqn>(TIME-STARTTIME)/(2020-STARTTIME)</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="future cost adjustment">
+			<aux name="future cost adjustment" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="EnergySource"/>
 				</dimensions>
+				<element subscript="Coal_fuel_extraction">
+					<gf>
+						<xscale min="2020" max="2100"/>
+						<yscale min="0" max="10"/>
+						<ypts>0,1.859,3.499,4.947,6.225,7.352,8.347,9.225,10</ypts>
+					</gf>
+				</element>
+				<element subscript="Coal_energy_conversion">
+					<gf>
+						<xscale min="2020" max="2100"/>
+						<yscale min="0" max="10"/>
+						<ypts>0,1.859,3.499,4.947,6.225,7.352,8.347,9.225,10</ypts>
+					</gf>
+				</element>
+				<element subscript="Oil_fuel_extraction">
+					<gf>
+						<xscale min="2020" max="2100"/>
+						<yscale min="0" max="10"/>
+						<ypts>0,1.859,3.499,4.947,6.225,7.352,8.347,9.225,10</ypts>
+					</gf>
+				</element>
+				<element subscript="Oil_energy_conversion">
+					<gf>
+						<xscale min="2020" max="2100"/>
+						<yscale min="0" max="10"/>
+						<ypts>0,1.859,3.499,4.947,6.225,7.352,8.347,9.225,10</ypts>
+					</gf>
+				</element>
+				<element subscript="Gas_fuel_extraction">
+					<gf>
+						<xscale min="2020" max="2100"/>
+						<yscale min="0" max="10"/>
+						<ypts>0,1.859,3.499,4.947,6.225,7.352,8.347,9.225,10</ypts>
+					</gf>
+				</element>
+				<element subscript="Gas_energy_conversion">
+					<gf>
+						<xscale min="2020" max="2100"/>
+						<yscale min="0" max="10"/>
+						<ypts>0,1.859,3.499,4.947,6.225,7.352,8.347,9.225,10</ypts>
+					</gf>
+				</element>
+				<element subscript="Solar_and_Wind">
+					<gf>
+						<xscale min="2020" max="2100"/>
+						<yscale min="-1" max="-0.3"/>
+						<ypts>-0.015,-0.015,-0.015,-0.015,-0.015,-0.015,-0.015,-0.015,-0.015</ypts>
+					</gf>
+				</element>
+				<element subscript="Hydropower">
+					<gf>
+						<xscale min="2020" max="2100"/>
+						<yscale min="0" max="10"/>
+						<ypts>0,0,0,0,0,0,0,0,0</ypts>
+					</gf>
+				</element>
+				<element subscript="Other">
+					<gf>
+						<xscale min="2020" max="2100"/>
+						<yscale min="0" max="10"/>
+						<ypts>0,0,0,0,0,0,0,0,0</ypts>
+					</gf>
+				</element>
+				<element subscript="Nuclear">
+					<gf>
+						<xscale min="2020" max="2100"/>
+						<yscale min="-1.5" max="0"/>
+						<ypts>-1.5,-1.313,-1.125,-0.9375,-0.75,-0.5625,-0.375,-0.1875,0</ypts>
+					</gf>
+				</element>
 				<eqn>TIME</eqn>
-				<gf>
-					<xscale min="2020" max="2100"/>
-					<yscale min="0" max="500"/>
-					<ypts>0,0,0,0,0,0,0,0,0</ypts>
-				</gf>
 				<units>$*Years/kWh</units>
 			</aux>
 			<aux name="interpolated historical cost adjustment">
@@ -3919,7 +4015,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="7" isee:page_rows="6" isee:scroll_x="540" isee:scroll_y="360" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="7" isee:page_rows="8" isee:scroll_x="540" isee:scroll_y="780" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
