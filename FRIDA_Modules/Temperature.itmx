@@ -5,7 +5,7 @@
 		<name>Temperature</name>
 		<uuid>02b3c660-904a-4807-a5db-6ee1992e9f0e</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7" isee:build_number="3335" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7" isee:build_number="3335" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -14,6 +14,11 @@
 	</sim_specs>
 	<dimensions>
 		<dim name="ClimateCase" size="11"/>
+		<dim name="FossilFuelTypes">
+			<elem name="Gas"/>
+			<elem name="Oil"/>
+			<elem name="Coal"/>
+		</dim>
 		<dim name="PCTILE">
 			<elem name="Low"/>
 			<elem name="P25"/>
@@ -190,17 +195,11 @@
 		<unit name="euros per year per person">
 			<eqn>EUR/(person-year)</eqn>
 		</unit>
-		<unit name="G">
-			<eqn>Giga</eqn>
+		<unit name="MWh">
+			<eqn>MW * hour</eqn>
 		</unit>
-		<unit name="GtCO2">
-			<eqn>Giga*tCO2</eqn>
-		</unit>
-		<unit name="GtCH4">
-			<eqn>Giga*tCH4</eqn>
-		</unit>
-		<unit name="GtN2O">
-			<eqn>Giga*tN2O</eqn>
+		<unit name="TW">
+			<eqn>Million*MW</eqn>
 		</unit>
 	</model_units>
 	<model name="Temperature">
@@ -308,6 +307,8 @@
 				<connect2 to="Crop.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Emissions.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Emissions.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="energy_demand.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="energy_demand.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Sea_Level.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Sea_Level.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Temperature.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
@@ -478,8 +479,12 @@
 				<connect2 to="Emissions.clearing_forest_for_grassland" from="Land_Use.clearing_forest_for_grassland"/>
 				<connect to="Emissions.clearing_forests_for_crops" from="Land_Use.clearing_forests_for_crops"/>
 				<connect2 to="Emissions.clearing_forests_for_crops" from="Land_Use.clearing_forests_for_crops"/>
-				<connect to="Emissions.Fossil_Energy_Extraction" from="fossil_energy.Fossil_Energy_Extraction"/>
-				<connect2 to="Emissions.Fossil_Energy_Extraction" from="fossil_energy.Fossil_Energy_Extraction"/>
+				<connect to="Emissions.Fossil_Energy_Extraction_1" from="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
+				<connect2 to="Emissions.Fossil_Energy_Extraction_1" from="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
+				<connect to="Emissions.Fossil_Energy_Extraction_2" from="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
+				<connect2 to="Emissions.Fossil_Energy_Extraction_2" from="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
+				<connect to="Emissions.Fossil_Energy_Extraction_3" from="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
+				<connect2 to="Emissions.Fossil_Energy_Extraction_3" from="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Emissions.GDP_per_person" from="Population.GDP_per_person"/>
 				<connect2 to="Emissions.GDP_per_person" from="Population.GDP_per_person"/>
 				<connect to="Emissions.livestock_production" from="Animal_Products.animal_products_production"/>
@@ -1193,121 +1198,6 @@
 				<eqn>SO2_Emissions_from_Food_and_Land_Use + SO2_emissions_from_Energy</eqn>
 				<units>MtSO2/Year</units>
 			</aux>
-			<aux name="SO2 emissions from Energy">
-				<doc>${Calibrated,Output}
-This depends on the sulphur content of the burnt fuels, depends on the fuel mix
-Calibration from FRIDA 0.1 or from MIND</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Fossil_Energy_Extraction*coupling_factor_of_fossil_fuels_and_SO2_emissions</eqn>
-				<units>MtSO2/Year</units>
-			</aux>
-			<aux name="CO2 emissions from Energy">
-				<doc>${Calibrated,Output}
-Calibration from FRIDA 0.1 , but in principle should be equal to extracted carbon</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Fossil_Energy_Extraction*GtC_from_Energy_to_MtCO2</eqn>
-				<units>MtCO2/Year</units>
-			</aux>
-			<aux name="Initial Fossil Energy\nSulfur Intensity">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>27.2983745475282</eqn>
-				<range min="25" max="30"/>
-				<units>MtSO2/GtC</units>
-			</aux>
-			<aux name="CH4 emissions from Energy">
-				<doc>${Calibrated,Output}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Fossil_Energy_Extraction
-*
-coupling_factor_of_fossil_fuels_and_CH4_emissions</eqn>
-				<units>MtCH4/year</units>
-			</aux>
-			<aux name="N2O emissions from Energy">
-				<doc>${Calibrated,Output}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Fossil_Energy_Extraction*coupling_factor_of_fossil_fuels_and_N2O_emissions</eqn>
-				<units>ktN2O/year</units>
-			</aux>
-			<aux name="desulphurisation rate of energy related emissions">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>-0.0234438694082764</eqn>
-				<range min="-0.05" max="0"/>
-				<units>1/year</units>
-			</aux>
-			<aux name="coupling factor of fossil fuels\nand SO2 emissions">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Initial_Fossil_Energy_Sulfur_Intensity * EXP(desulphurisation_rate_of_energy_related_emissions*(TIME-STARTTIME))</eqn>
-				<units>MtSO2/GtC</units>
-			</aux>
-			<aux name="Initial Fossil Energy\nN2O Intensity">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>188.927672377629</eqn>
-				<range min="150" max="250"/>
-				<units>ktN2O/GtC</units>
-			</aux>
-			<aux name="rate of\nchange in energy\nrelated N2O emissions">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>-0.020714089531214</eqn>
-				<range min="-0.05" max="0"/>
-				<units>1/year</units>
-			</aux>
-			<aux name="coupling factor of fossil fuels\nand N2O emissions">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Initial_Fossil_Energy_N2O_Intensity * EXP(rate_of_change_in_energy_related_N2O_emissions*(TIME-STARTTIME))</eqn>
-				<units>ktN2O/GtC</units>
-			</aux>
-			<aux name="Initial Fossil Energy\nCH4 Intensity">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>21.8665700308221</eqn>
-				<range min="15" max="25"/>
-				<units>MtCH4/GtC</units>
-			</aux>
-			<aux name="rate of\nchange in energy\nrelated CH4 emissions">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>-0.00628672238203886</eqn>
-				<range min="-0.05" max="0"/>
-				<units>1/year</units>
-			</aux>
-			<aux name="coupling factor of fossil fuels\nand CH4 emissions">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Initial_Fossil_Energy_CH4_Intensity * EXP(rate_of_change_in_energy_related_CH4_emissions*(TIME-STARTTIME))</eqn>
-				<units>MtCH4/GtC</units>
-			</aux>
-			<aux name="GtC from Energy to MtCO2">
-				<doc>${Assumption}
-</doc>
-				<eqn>3670</eqn>
-				<units>MtCO2/GTC</units>
-			</aux>
-			<aux name="Fossil Energy Extraction" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>gtC/Year</units>
-			</aux>
 			<stock name="Mature Forest" isee:display_name="Mature_Forest" access="input">
 				<dimensions>
 					<dim name="Run"/>
@@ -1831,6 +1721,314 @@ Calibration Parameter: CO2 from energy and industry</doc>
 				<eqn>19.30675059</eqn>
 				<units>Mt NOx/yr</units>
 			</aux>
+			<aux name="N2O emissions from Energy">
+				<doc>${Calibrated,Output}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>N2O_emissions_by_coal[Run]+
+N2O_emissions_by_oil[Run]+
+N2O_emissions_by_gas[Run]</eqn>
+				<units>ktN2O/year</units>
+			</aux>
+			<aux name="CO2 emissions from Energy">
+				<doc>${Calibrated,Output}
+Calibration from FRIDA 0.1 , but in principle should be equal to extracted carbon</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn> (Fossil_Energy_Extraction_1+Fossil_Energy_Extraction_2+Fossil_Energy_Extraction_3)*GtC_to_MtCO2</eqn>
+				<units>MtCO2/Year</units>
+			</aux>
+			<aux name="SO2 emissions from Energy">
+				<doc>${Calibrated,Output}
+This depends on the sulphur content of the burnt fuels, depends on the fuel mix
+Calibration from FRIDA 0.1 or from MIND</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>SO2_emissions_by_coal[Run]+
+SO2_emissions_by_oil[Run]+
+SO2_emissions_by_gas[Run]</eqn>
+				<units>MtSO2/Year</units>
+			</aux>
+			<aux name="SO2 emissions by gas">
+				<doc>${}
+This depends on the sulphur content of the burnt fuels, depends on the fuel mix
+Calibration from FRIDA 0.1 or from MIND</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Fossil_Energy_Extraction_3[Run]
+*
+coupling_factor_of_fossil_fuels_and_SO2_emissions[Gas]</eqn>
+				<units>MtSO2/Year</units>
+			</aux>
+			<aux name="Initial Fossil Energy\nSulfur Intensity">
+				<doc>${Calibration Parameter}
+</doc>
+				<dimensions>
+					<dim name="FossilFuelTypes"/>
+				</dimensions>
+				<element subscript="Gas">
+					<eqn>40</eqn>
+				</element>
+				<element subscript="Oil">
+					<eqn>11.6354695825436</eqn>
+				</element>
+				<element subscript="Coal">
+					<eqn>40</eqn>
+				</element>
+				<units>MtSO2/GtC</units>
+			</aux>
+			<aux name="CH4 emissions by gas">
+				<doc>${}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Fossil_Energy_Extraction_3[Run]
+*
+coupling_factor_of_fossil_fuels_and_CH4_emissions[Gas]</eqn>
+				<units>MtCH4/year</units>
+			</aux>
+			<aux name="N2O emissions by gas">
+				<doc>${}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Fossil_Energy_Extraction_3[Run]
+*
+coupling_factor_of_fossil_fuels_and_N2O_emissions[Gas]</eqn>
+				<units>ktN2O/year</units>
+			</aux>
+			<aux name="desulphurisation rate of\nenergy related emissions">
+				<doc>${Calibration Parameter}
+</doc>
+				<dimensions>
+					<dim name="FossilFuelTypes"/>
+				</dimensions>
+				<element subscript="Gas">
+					<eqn>-0.0364441867199109</eqn>
+				</element>
+				<element subscript="Oil">
+					<eqn>-0.0190724856592407</eqn>
+				</element>
+				<element subscript="Coal">
+					<eqn>-0.0239554248597676</eqn>
+				</element>
+				<units>1/year</units>
+			</aux>
+			<aux name="coupling factor of fossil fuels\nand SO2 emissions">
+				<dimensions>
+					<dim name="FossilFuelTypes"/>
+				</dimensions>
+				<eqn>Initial_Fossil_Energy_Sulfur_Intensity * EXP(desulphurisation_rate_of_energy_related_emissions*(TIME-STARTTIME))</eqn>
+				<units>MtSO2/GtC</units>
+			</aux>
+			<aux name="Initial Fossil Energy\nN2O Intensity">
+				<doc>${Calibration Parameter}
+</doc>
+				<dimensions>
+					<dim name="FossilFuelTypes"/>
+				</dimensions>
+				<element subscript="Gas">
+					<eqn>113.316427719994</eqn>
+				</element>
+				<element subscript="Oil">
+					<eqn>138.745339535128</eqn>
+				</element>
+				<element subscript="Coal">
+					<eqn>272.381120984734</eqn>
+				</element>
+				<units>ktN2O/GtC</units>
+			</aux>
+			<aux name="rate of\nchange in energy\nrelated N2O emissions">
+				<doc>${Calibration Parameter}
+</doc>
+				<dimensions>
+					<dim name="FossilFuelTypes"/>
+				</dimensions>
+				<element subscript="Gas">
+					<eqn>-0.0185107670650492</eqn>
+				</element>
+				<element subscript="Oil">
+					<eqn>-0.00975938573313134</eqn>
+				</element>
+				<element subscript="Coal">
+					<eqn>-0.028491805437695</eqn>
+				</element>
+				<units>1/year</units>
+			</aux>
+			<aux name="coupling factor of fossil fuels\nand N2O emissions">
+				<dimensions>
+					<dim name="FossilFuelTypes"/>
+				</dimensions>
+				<eqn>Initial_Fossil_Energy_N2O_Intensity * EXP(rate_of_change_in_energy_related_N2O_emissions*(TIME-STARTTIME))</eqn>
+				<units>ktN2O/GtC</units>
+			</aux>
+			<aux name="Initial Fossil Energy\nCH4 Intensity">
+				<doc>${Calibration Parameter}
+</doc>
+				<dimensions>
+					<dim name="FossilFuelTypes"/>
+				</dimensions>
+				<element subscript="Gas">
+					<eqn>28.4975404629345</eqn>
+				</element>
+				<element subscript="Oil">
+					<eqn>15.1676303989484</eqn>
+				</element>
+				<element subscript="Coal">
+					<eqn>30</eqn>
+				</element>
+				<units>MtCH4/GtC</units>
+			</aux>
+			<aux name="rate of\nchange in energy\nrelated CH4 emissions">
+				<doc>${Calibration Parameter}
+</doc>
+				<dimensions>
+					<dim name="FossilFuelTypes"/>
+				</dimensions>
+				<element subscript="Gas">
+					<eqn>-0.0899856867488137</eqn>
+				</element>
+				<element subscript="Oil">
+					<eqn>-0.00504019043299584</eqn>
+				</element>
+				<element subscript="Coal">
+					<eqn>0</eqn>
+				</element>
+				<units>1/year</units>
+			</aux>
+			<aux name="coupling factor of fossil fuels\nand CH4 emissions">
+				<dimensions>
+					<dim name="FossilFuelTypes"/>
+				</dimensions>
+				<eqn>Initial_Fossil_Energy_CH4_Intensity * EXP(rate_of_change_in_energy_related_CH4_emissions*(TIME-STARTTIME))</eqn>
+				<units>MtCH4/GtC</units>
+			</aux>
+			<aux name="GtC to MtCO2">
+				<doc>${Assumption}
+</doc>
+				<eqn>3670</eqn>
+				<units>MtCO2/GTC</units>
+			</aux>
+			<stock name="Cumulative CO2 emissions from energy">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0</eqn>
+				<inflow>Accumulating_CO2_Emissions</inflow>
+				<non_negative/>
+				<units>MtCO2</units>
+			</stock>
+			<flow name="Accumulating CO2 Emissions">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>CO2_emissions_from_Energy</eqn>
+				<non_negative/>
+				<units>MtCO2/Year</units>
+			</flow>
+			<aux name="Fossil Energy Extraction 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>gtC/Year</units>
+			</aux>
+			<aux name="Fossil Energy Extraction 2" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>gtC/Year</units>
+			</aux>
+			<aux name="Fossil Energy Extraction 3" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>gtC/Year</units>
+			</aux>
+			<aux name="CH4 emissions from Energy">
+				<doc>${Calibrated,Output}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>CH4_emissions_from_coal[Run]+
+CH4_emissions_from_oil[Run]+
+CH4_emissions_by_gas[Run]</eqn>
+				<units>MtCH4/year</units>
+			</aux>
+			<aux name="CH4 emissions from coal">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Fossil_Energy_Extraction_1[Run]
+*
+coupling_factor_of_fossil_fuels_and_CH4_emissions[Coal]</eqn>
+				<units>MtCH4/year</units>
+			</aux>
+			<aux name="CH4 emissions from oil">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Fossil_Energy_Extraction_2[Run]
+*
+coupling_factor_of_fossil_fuels_and_CH4_emissions[Oil]</eqn>
+				<units>MtCH4/year</units>
+			</aux>
+			<aux name="N2O emissions by oil">
+				<doc>${}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Fossil_Energy_Extraction_1[Run]
+*
+coupling_factor_of_fossil_fuels_and_N2O_emissions[Coal]</eqn>
+				<units>ktN2O/year</units>
+			</aux>
+			<aux name="N2O emissions by coal">
+				<doc>${}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Fossil_Energy_Extraction_2[Run]
+*
+coupling_factor_of_fossil_fuels_and_N2O_emissions[Oil]</eqn>
+				<units>ktN2O/year</units>
+			</aux>
+			<aux name="SO2 emissions by coal">
+				<doc>${}
+This depends on the sulphur content of the burnt fuels, depends on the fuel mix
+Calibration from FRIDA 0.1 or from MIND</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Fossil_Energy_Extraction_1[Run]
+*
+coupling_factor_of_fossil_fuels_and_SO2_emissions[Coal]</eqn>
+				<units>MtSO2/Year</units>
+			</aux>
+			<aux name="SO2 emissions by oil">
+				<doc>${}
+This depends on the sulphur content of the burnt fuels, depends on the fuel mix
+Calibration from FRIDA 0.1 or from MIND</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Fossil_Energy_Extraction_2[Run]
+*
+coupling_factor_of_fossil_fuels_and_SO2_emissions[Oil]</eqn>
+				<units>MtSO2/Year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -1880,7 +2078,7 @@ Calibration Parameter: CO2 from energy and industry</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="435" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="3" isee:page_rows="4" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1926,102 +2124,6 @@ Calibration Parameter: CO2 from energy and industry</doc>
 				<aux x="208.071" y="120.667" name="Total CO2 Emissions"/>
 				<aux x="191.667" y="309.625" name="CH4 Baseline Emissions"/>
 				<aux x="591.503" y="90.1667" name="Total SO2 Emissions"/>
-				<aux background="#FFAA00" x="616.357" y="837.708" name="SO2 emissions from Energy"/>
-				<aux color="blue" background="#FFAA00" x="608" y="543.651" name="CO2 emissions from Energy"/>
-				<text_box uid="14" x="257.426" y="441.778" width="260" height="74.714">emissions connected to extraction comes from the assumption that everything extracted is burnt and ends up as emissions. Alternatively from a process persp. it should be linked to secondary fossil energy creation</text_box>
-				<aux x="307.023" y="826.2" name="Initial Fossil Energy\nSulfur Intensity"/>
-				<aux background="#FFAA00" x="608" y="613.615" name="CH4 emissions from Energy"/>
-				<aux background="#FFAA00" x="616.357" y="757.988" name="N2O emissions from Energy"/>
-				<aux x="369.523" y="872.508" name="desulphurisation rate of energy related emissions"/>
-				<aux x="459.773" y="837.708" name="coupling factor of fossil fuels\nand SO2 emissions"/>
-				<connector uid="15" angle="355.691">
-					<from>Initial_Fossil_Energy_Sulfur_Intensity</from>
-					<to>coupling_factor_of_fossil_fuels_and_SO2_emissions</to>
-				</connector>
-				<connector uid="16" angle="21.0846">
-					<from>desulphurisation_rate_of_energy_related_emissions</from>
-					<to>coupling_factor_of_fossil_fuels_and_SO2_emissions</to>
-				</connector>
-				<connector uid="17" angle="0">
-					<from>coupling_factor_of_fossil_fuels_and_SO2_emissions</from>
-					<to>SO2_emissions_from_Energy</to>
-				</connector>
-				<aux x="307.023" y="710.698" name="Initial Fossil Energy\nN2O Intensity"/>
-				<aux x="369.523" y="757.988" name="rate of\nchange in energy\nrelated N2O emissions"/>
-				<aux x="463.523" y="729.408" name="coupling factor of fossil fuels\nand N2O emissions"/>
-				<connector uid="18" angle="353.182">
-					<from>Initial_Fossil_Energy_N2O_Intensity</from>
-					<to>coupling_factor_of_fossil_fuels_and_N2O_emissions</to>
-				</connector>
-				<connector uid="19" angle="16.9096">
-					<from>rate_of_change_in_energy_related_N2O_emissions</from>
-					<to>coupling_factor_of_fossil_fuels_and_N2O_emissions</to>
-				</connector>
-				<aux x="307.023" y="604.868" name="Initial Fossil Energy\nCH4 Intensity"/>
-				<aux x="369.523" y="634.948" name="rate of\nchange in energy\nrelated CH4 emissions"/>
-				<aux x="463.523" y="616.948" name="coupling factor of fossil fuels\nand CH4 emissions"/>
-				<connector uid="20" angle="355.584">
-					<from>Initial_Fossil_Energy_CH4_Intensity</from>
-					<to>coupling_factor_of_fossil_fuels_and_CH4_emissions</to>
-				</connector>
-				<connector uid="21" angle="10.8403">
-					<from>rate_of_change_in_energy_related_CH4_emissions</from>
-					<to>coupling_factor_of_fossil_fuels_and_CH4_emissions</to>
-				</connector>
-				<connector uid="22" angle="349.408">
-					<from>coupling_factor_of_fossil_fuels_and_N2O_emissions</from>
-					<to>N2O_emissions_from_Energy</to>
-				</connector>
-				<connector uid="23" angle="1.32168">
-					<from>coupling_factor_of_fossil_fuels_and_CH4_emissions</from>
-					<to>CH4_emissions_from_Energy</to>
-				</connector>
-				<aux color="black" font_color="black" x="463.523" y="540.318" name="GtC from Energy to MtCO2"/>
-				<connector uid="24" angle="358.678">
-					<from>GtC_from_Energy_to_MtCO2</from>
-					<to>CO2_emissions_from_Energy</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="712.976" y="661.905" name="Fossil Energy Extraction"/>
-				<connector uid="25" angle="131.596">
-					<from>Fossil_Energy_Extraction</from>
-					<to>CO2_emissions_from_Energy</to>
-				</connector>
-				<connector uid="26" angle="155.297">
-					<from>Fossil_Energy_Extraction</from>
-					<to>CH4_emissions_from_Energy</to>
-				</connector>
-				<connector uid="27" angle="224.841">
-					<from>Fossil_Energy_Extraction</from>
-					<to>N2O_emissions_from_Energy</to>
-				</connector>
-				<connector uid="28" angle="241.207">
-					<from>Fossil_Energy_Extraction</from>
-					<to>SO2_emissions_from_Energy</to>
-				</connector>
-				<connector uid="31" angle="345.964">
-					<from>
-						<alias uid="30"/>
-					</from>
-					<to>Total_CO2_Emissions</to>
-				</connector>
-				<connector uid="32" angle="200.41">
-					<from>
-						<alias uid="33"/>
-					</from>
-					<to>Total_SO2_Emissions</to>
-				</connector>
-				<connector uid="34" angle="272.963">
-					<from>
-						<alias uid="35"/>
-					</from>
-					<to>Total_N2O_Emissions</to>
-				</connector>
-				<connector uid="36" angle="335.653">
-					<from>
-						<alias uid="37"/>
-					</from>
-					<to>Total_CH4_Emissions</to>
-				</connector>
 				<aux x="458.83" y="1751.33" name="soil carbon emissions"/>
 				<aux background="white" label_side="right" x="735.83" y="1699.5" name="CO2 absorption\nper mha of recovering forests"/>
 				<aux label_side="right" label_angle="45" x="649.58" y="1801.33" name="CO2 absorption from\nrecovering forests"/>
@@ -2485,12 +2587,6 @@ Calibration Parameter: CO2 from energy and industry</doc>
 				</connector>
 				<aux x="421.333" y="350.25" name="Baseline N2O non AFOLU\nemissions"/>
 				<aux x="425" y="298.583" name="N2O non AFOLU Emissions"/>
-				<connector uid="173" angle="237.121">
-					<from>
-						<alias uid="35"/>
-					</from>
-					<to>N2O_non_AFOLU_Emissions</to>
-				</connector>
 				<connector uid="174" angle="273.577">
 					<from>
 						<alias uid="113"/>
@@ -2524,18 +2620,222 @@ Calibration Parameter: CO2 from energy and industry</doc>
 					<from>Baseline_NOx_AFOLU_emissions</from>
 					<to>NOx_AFOLU_emissions</to>
 				</connector>
-				<alias color="blue" background="#FFAA00" font_style="italic" uid="30" x="32.6667" y="39.3333" width="18" height="18">
-					<of>CO2_emissions_from_Energy</of>
-				</alias>
-				<alias background="#FFAA00" font_style="italic" uid="33" x="696.833" y="28.5" width="18" height="18">
-					<of>SO2_emissions_from_Energy</of>
-				</alias>
-				<alias background="#FFAA00" font_style="italic" uid="35" x="577.273" y="188.333" width="18" height="18">
-					<of>N2O_emissions_from_Energy</of>
-				</alias>
-				<alias background="#FFAA00" font_style="italic" uid="37" x="59.3333" y="194.333" width="18" height="18">
-					<of>CH4_emissions_from_Energy</of>
-				</alias>
+				<aux background="#FFAA00" x="476.083" y="937.603" name="N2O emissions from Energy"/>
+				<aux color="blue" background="#FFAA00" x="471.875" y="696.793" name="CO2 emissions from Energy"/>
+				<aux background="#FFAA00" x="472.333" y="1043.75" name="SO2 emissions from Energy"/>
+				<aux background="white" label_side="right" x="472.333" y="995.163" name="SO2 emissions by gas"/>
+				<text_box uid="181" x="147.569" y="598.253" width="260" height="74.714">emissions connected to extraction comes from the assumption that everything extracted is burnt and ends up as emissions. Alternatively from a process persp. it should be linked to secondary fossil energy creation</text_box>
+				<aux x="197.166" y="982.673" name="Initial Fossil Energy\nSulfur Intensity"/>
+				<aux background="white" x="476.416" y="773.423" name="CH4 emissions by gas"/>
+				<aux background="white" x="476.083" y="886.923" name="N2O emissions by gas"/>
+				<aux x="259.666" y="1028.98" name="desulphurisation rate of\nenergy related emissions"/>
+				<aux x="349.916" y="994.183" name="coupling factor of fossil fuels\nand SO2 emissions"/>
+				<connector uid="182" angle="355.691">
+					<from>Initial_Fossil_Energy_Sulfur_Intensity</from>
+					<to>coupling_factor_of_fossil_fuels_and_SO2_emissions</to>
+				</connector>
+				<connector uid="183" angle="21.0846">
+					<from>desulphurisation_rate_of_energy_related_emissions</from>
+					<to>coupling_factor_of_fossil_fuels_and_SO2_emissions</to>
+				</connector>
+				<connector uid="184" angle="359.543">
+					<from>coupling_factor_of_fossil_fuels_and_SO2_emissions</from>
+					<to>SO2_emissions_by_gas</to>
+				</connector>
+				<aux x="197.166" y="867.173" name="Initial Fossil Energy\nN2O Intensity"/>
+				<aux x="259.666" y="914.463" name="rate of\nchange in energy\nrelated N2O emissions"/>
+				<aux x="353.666" y="885.883" name="coupling factor of fossil fuels\nand N2O emissions"/>
+				<connector uid="185" angle="353.182">
+					<from>Initial_Fossil_Energy_N2O_Intensity</from>
+					<to>coupling_factor_of_fossil_fuels_and_N2O_emissions</to>
+				</connector>
+				<connector uid="186" angle="16.9096">
+					<from>rate_of_change_in_energy_related_N2O_emissions</from>
+					<to>coupling_factor_of_fossil_fuels_and_N2O_emissions</to>
+				</connector>
+				<aux x="197.166" y="761.343" name="Initial Fossil Energy\nCH4 Intensity"/>
+				<aux x="259.666" y="791.423" name="rate of\nchange in energy\nrelated CH4 emissions"/>
+				<aux x="353.666" y="773.423" name="coupling factor of fossil fuels\nand CH4 emissions"/>
+				<connector uid="187" angle="355.584">
+					<from>Initial_Fossil_Energy_CH4_Intensity</from>
+					<to>coupling_factor_of_fossil_fuels_and_CH4_emissions</to>
+				</connector>
+				<connector uid="188" angle="10.8403">
+					<from>rate_of_change_in_energy_related_CH4_emissions</from>
+					<to>coupling_factor_of_fossil_fuels_and_CH4_emissions</to>
+				</connector>
+				<connector uid="189" angle="359.515">
+					<from>coupling_factor_of_fossil_fuels_and_N2O_emissions</from>
+					<to>N2O_emissions_by_gas</to>
+				</connector>
+				<connector uid="190" angle="2.67491">
+					<from>coupling_factor_of_fossil_fuels_and_CH4_emissions</from>
+					<to>CH4_emissions_by_gas</to>
+				</connector>
+				<aux color="black" font_color="black" x="353.666" y="696.793" name="GtC to MtCO2"/>
+				<stock x="522" y="641.213" name="Cumulative CO2 emissions from energy"/>
+				<flow x="471.874" y="637.883" name="Accumulating CO2 Emissions">
+					<pts>
+						<pt x="444.249" y="637.883"/>
+						<pt x="499.5" y="637.883"/>
+					</pts>
+				</flow>
+				<aux font_style="italic" font_weight="bold" x="696.813" y="786.103" name="Fossil Energy Extraction 1"/>
+				<aux font_style="italic" font_weight="bold" x="696.813" y="836.893" name="Fossil Energy Extraction 2"/>
+				<aux font_style="italic" font_weight="bold" x="701.813" y="885.143" name="Fossil Energy Extraction 3"/>
+				<connector uid="191" angle="213.071">
+					<from>Fossil_Energy_Extraction_3</from>
+					<to>SO2_emissions_by_gas</to>
+				</connector>
+				<connector uid="192" angle="149.931">
+					<from>Fossil_Energy_Extraction_3</from>
+					<to>CH4_emissions_by_gas</to>
+				</connector>
+				<connector uid="193" angle="180">
+					<from>Fossil_Energy_Extraction_3</from>
+					<to>N2O_emissions_by_gas</to>
+				</connector>
+				<aux background="#FFAA00" x="476.416" y="826.093" name="CH4 emissions from Energy"/>
+				<connector uid="194" angle="267.219">
+					<from>CH4_emissions_by_gas</from>
+					<to>CH4_emissions_from_Energy</to>
+				</connector>
+				<connector uid="195" angle="271.324">
+					<from>N2O_emissions_by_gas</from>
+					<to>N2O_emissions_from_Energy</to>
+				</connector>
+				<connector uid="196" angle="273.872">
+					<from>SO2_emissions_by_gas</from>
+					<to>SO2_emissions_from_Energy</to>
+				</connector>
+				<connector uid="197" angle="4.86422">
+					<from>GtC_to_MtCO2</from>
+					<to>CO2_emissions_from_Energy</to>
+				</connector>
+				<connector uid="198" angle="159.443">
+					<from>Fossil_Energy_Extraction_1</from>
+					<to>CO2_emissions_from_Energy</to>
+				</connector>
+				<connector uid="199" angle="142.758">
+					<from>Fossil_Energy_Extraction_2</from>
+					<to>CO2_emissions_from_Energy</to>
+				</connector>
+				<connector uid="200" angle="136.334">
+					<from>Fossil_Energy_Extraction_3</from>
+					<to>CO2_emissions_from_Energy</to>
+				</connector>
+				<connector uid="201" angle="90.0005">
+					<from>CO2_emissions_from_Energy</from>
+					<to>Accumulating_CO2_Emissions</to>
+				</connector>
+				<aux x="437.429" y="748.143" name="CH4 emissions from coal"/>
+				<aux x="503.143" y="740.283" name="CH4 emissions from oil"/>
+				<connector uid="202" angle="196.674">
+					<from>Fossil_Energy_Extraction_1</from>
+					<to>CH4_emissions_from_coal</to>
+				</connector>
+				<connector uid="203" angle="41.7941">
+					<from>coupling_factor_of_fossil_fuels_and_CH4_emissions</from>
+					<to>CH4_emissions_from_coal</to>
+				</connector>
+				<connector uid="204" angle="178.489">
+					<from>Fossil_Energy_Extraction_2</from>
+					<to>CH4_emissions_from_oil</to>
+				</connector>
+				<connector uid="205" angle="37.4996">
+					<from>coupling_factor_of_fossil_fuels_and_CH4_emissions</from>
+					<to>CH4_emissions_from_oil</to>
+				</connector>
+				<connector uid="206" angle="276.009">
+					<from>CH4_emissions_from_coal</from>
+					<to>CH4_emissions_from_Energy</to>
+				</connector>
+				<connector uid="207" angle="278.13">
+					<from>CH4_emissions_from_oil</from>
+					<to>CH4_emissions_from_Energy</to>
+				</connector>
+				<aux background="white" x="437.429" y="860.493" name="N2O emissions by oil"/>
+				<aux background="white" x="553.5" y="854.893" name="N2O emissions by coal"/>
+				<connector uid="208" angle="221.003">
+					<from>Fossil_Energy_Extraction_1</from>
+					<to>N2O_emissions_by_oil</to>
+				</connector>
+				<connector uid="209" angle="41.8621">
+					<from>coupling_factor_of_fossil_fuels_and_N2O_emissions</from>
+					<to>N2O_emissions_by_oil</to>
+				</connector>
+				<connector uid="210" angle="212.159">
+					<from>Fossil_Energy_Extraction_2</from>
+					<to>N2O_emissions_by_coal</to>
+				</connector>
+				<connector uid="211" angle="33.8151">
+					<from>coupling_factor_of_fossil_fuels_and_N2O_emissions</from>
+					<to>N2O_emissions_by_coal</to>
+				</connector>
+				<connector uid="212" angle="5.55928">
+					<from>N2O_emissions_by_oil</from>
+					<to>N2O_emissions_from_Energy</to>
+				</connector>
+				<connector uid="213" angle="230.008">
+					<from>N2O_emissions_by_coal</from>
+					<to>N2O_emissions_from_Energy</to>
+				</connector>
+				<aux background="white" x="539.476" y="955.603" name="SO2 emissions by coal"/>
+				<aux background="white" x="428.047" y="968.733" name="SO2 emissions by oil"/>
+				<connector uid="214" angle="43.0412">
+					<from>coupling_factor_of_fossil_fuels_and_SO2_emissions</from>
+					<to>SO2_emissions_by_oil</to>
+				</connector>
+				<connector uid="215" angle="36.504">
+					<from>coupling_factor_of_fossil_fuels_and_SO2_emissions</from>
+					<to>SO2_emissions_by_coal</to>
+				</connector>
+				<connector uid="216" angle="299.246">
+					<from>SO2_emissions_by_oil</from>
+					<to>SO2_emissions_from_Energy</to>
+				</connector>
+				<connector uid="217" angle="254.508">
+					<from>SO2_emissions_by_coal</from>
+					<to>SO2_emissions_from_Energy</to>
+				</connector>
+				<connector uid="218" angle="231.13">
+					<from>Fossil_Energy_Extraction_2</from>
+					<to>SO2_emissions_by_oil</to>
+				</connector>
+				<connector uid="219" angle="252.131">
+					<from>Fossil_Energy_Extraction_1</from>
+					<to>SO2_emissions_by_coal</to>
+				</connector>
+				<connector uid="220" angle="342.474">
+					<from>
+						<alias uid="221"/>
+					</from>
+					<to>Total_CO2_Emissions</to>
+				</connector>
+				<connector uid="222" angle="357.207">
+					<from>
+						<alias uid="223"/>
+					</from>
+					<to>Total_CH4_Emissions</to>
+				</connector>
+				<connector uid="224" angle="213.69">
+					<from>
+						<alias uid="225"/>
+					</from>
+					<to>N2O_non_AFOLU_Emissions</to>
+				</connector>
+				<connector uid="226" angle="264.428">
+					<from>
+						<alias uid="225"/>
+					</from>
+					<to>Total_N2O_Emissions</to>
+				</connector>
+				<connector uid="227" angle="235.713">
+					<from>
+						<alias uid="228"/>
+					</from>
+					<to>Total_SO2_Emissions</to>
+				</connector>
 				<alias font_style="italic" uid="76" x="380.167" y="26" width="18" height="18">
 					<of>CO2_emissions_from_Food_and_Land_Use</of>
 				</alias>
@@ -2571,6 +2871,18 @@ Calibration Parameter: CO2 from energy and industry</doc>
 				</alias>
 				<alias font_style="italic" uid="180" x="1479.75" y="581" width="18" height="18">
 					<of>SO2_Baseline_Emissions</of>
+				</alias>
+				<alias color="blue" background="#FFAA00" font_style="italic" uid="221" x="63.1429" y="50.2857" width="18" height="18">
+					<of>CO2_emissions_from_Energy</of>
+				</alias>
+				<alias background="#FFAA00" font_style="italic" uid="223" x="54.5714" y="212.429" width="18" height="18">
+					<of>CH4_emissions_from_Energy</of>
+				</alias>
+				<alias background="#FFAA00" font_style="italic" uid="225" x="582.429" y="193.143" width="18" height="18">
+					<of>N2O_emissions_from_Energy</of>
+				</alias>
+				<alias background="#FFAA00" font_style="italic" uid="228" x="656" y="28.1429" width="18" height="18">
+					<of>SO2_emissions_from_Energy</of>
 				</alias>
 			</view>
 		</views>
