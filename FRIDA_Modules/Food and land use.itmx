@@ -42,6 +42,21 @@
 	<isee:number_format_extenders/>
 	<default_format scale_by="1"/>
 	<model_units>
+		<unit name="$">
+			<eqn/>
+			<alias>dollar</alias>
+			<alias>dollars</alias>
+		</unit>
+		<unit name="Years">
+			<eqn/>
+			<alias>yr</alias>
+			<alias>year</alias>
+		</unit>
+		<unit name="Watts">
+			<eqn/>
+			<alias>w</alias>
+			<alias>watt</alias>
+		</unit>
 		<unit name="G$">
 			<eqn>Giga*$</eqn>
 		</unit>
@@ -188,6 +203,12 @@
 		</unit>
 		<unit name="euros per year per person">
 			<eqn>EUR/(person-year)</eqn>
+		</unit>
+		<unit name="MWh">
+			<eqn>MW * hour</eqn>
+		</unit>
+		<unit name="TW">
+			<eqn>Million*MW</eqn>
 		</unit>
 		<unit name="G">
 			<eqn>Giga</eqn>
@@ -465,6 +486,8 @@
 				<connect2 to="Finance.technological_water_discovery" from="Freshwater.technological_water_discovery"/>
 				<connect to="Food_and_land_use.total_water_withdrawal" from="Freshwater.total_water_withdrawal"/>
 				<connect2 to="total_water_withdrawal" from="Freshwater.total_water_withdrawal"/>
+				<connect to="Sea_Level.total_groundwater_anomaly" from="Freshwater.total_groundwater_anomaly"/>
+				<connect2 to="Sea_Level.total_groundwater_anomaly" from="Freshwater.total_groundwater_anomaly"/>
 				<connect to="Freshwater.crop_production_1" from="Crop.crop_production"/>
 				<connect2 to="Freshwater.crop_production_1" from="Crop.crop_production"/>
 				<connect to="Freshwater.Cropland" from="Land_Use.Cropland"/>
@@ -473,8 +496,12 @@
 				<connect2 to="Freshwater.GDP_per_person" from="Population.GDP_per_person"/>
 				<connect to="Freshwater.GDP_per_person_1" from="Population.GDP_per_person"/>
 				<connect2 to="Freshwater.GDP_per_person_1" from="Population.GDP_per_person"/>
+				<connect to="Freshwater.Land_water_storage_from_water_impoundment" from="Sea_Level.Land_water_storage_from_water_impoundment"/>
+				<connect2 to="Freshwater.Land_water_storage_from_water_impoundment" from="Sea_Level.Land_water_storage_from_water_impoundment"/>
 				<connect to="Freshwater.Population_1" from="Population.Population"/>
 				<connect2 to="Freshwater.Population_1" from="Population.Population"/>
+				<connect to="Freshwater.SLR_from_LWS" from="Sea_Level.SLR_from_LWS"/>
+				<connect2 to="Freshwater.SLR_from_LWS" from="Sea_Level.SLR_from_LWS"/>
 				<connect to="Freshwater.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
 				<connect2 to="Freshwater.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
 				<connect to="Freshwater.switch_for_climate_damage" from="Society.switch_for_all_climate_damage"/>
@@ -671,7 +698,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="6" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="5" isee:page_rows="6" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -898,7 +925,7 @@
 					<to>total_water_withdrawal_by_PCTILE</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="2347" y="140.834" name="fraction of water\nwithdrawal for agriculture"/>
-				<connector uid="990" color="#EBEBEB" font_color="#EBEBEB" angle="1.00509" isee:autocreated="true">
+				<connector uid="990" color="#EBEBEB" font_color="#EBEBEB" angle="7.7117" isee:autocreated="true">
 					<from>Freshwater</from>
 					<to>fraction_of_water_withdrawal_for_agriculture</to>
 				</connector>
@@ -2653,8 +2680,8 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 			</flow>
 			<aux name="technological water\ndiscovery 1980">
 				<doc>${Calibration Parameter}
-</doc>
-				<eqn>164600402563.243</eqn>
+Old value from calibration: 164600402563.243</doc>
+				<eqn>30000000000.0</eqn>
 				<range min="1000000000" max="100000000000"/>
 				<units>m^3/year</units>
 			</aux>
@@ -2723,11 +2750,6 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/Mp/year</units>
 			</aux>
-			<aux name="natural water\nrecharge">
-				<eqn>3208284668377.25</eqn>
-				<range min="100000000000" max="10000000000000"/>
-				<units>m^3/year</units>
-			</aux>
 			<stock name="Cropland" access="input">
 				<dimensions>
 					<dim name="Run"/>
@@ -2763,6 +2785,71 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 			<aux name="base fraction of cropland irrigated">
 				<eqn>0.160845646770715</eqn>
 				<units>dmnl</units>
+			</aux>
+			<stock name="total groundwater anomaly" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0.0</eqn>
+				<inflow>deep_groundwater_refill</inflow>
+				<outflow>unsustainable_groundwater_withdrawal</outflow>
+				<units>m^3</units>
+			</stock>
+			<flow name="unsustainable\ngroundwater withdrawal">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MAX(0,total_water_withdrawal) * unsustainable_fraction_of_water_withdrawal</eqn>
+				<units>m^3/year</units>
+			</flow>
+			<flow name="deep groundwater refill">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>-total_groundwater_anomaly/average_deep_groundwater_infiltration_time</eqn>
+				<units>m^3/year</units>
+			</flow>
+			<aux name="average deep groundwater\ninfiltration time">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>100</eqn>
+				<range min="20" max="200"/>
+				<units>year</units>
+			</aux>
+			<aux name="natural water recharge">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>deep_groundwater_refill + (total_water_withdrawal - unsustainable_groundwater_withdrawal)</eqn>
+				<units>m^3/year</units>
+			</aux>
+			<aux name="unsustainable fraction of\nwater withdrawal">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>technological_water_discovery/total_water_withdrawal + initial_fraction_of_unsustainable_water_withdrawal</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="initial fraction of\nunsustainable water withdrawal">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.05</eqn>
+				<range min="0" max="0.3"/>
+				<units>dmnl</units>
+			</aux>
+			<stock name="Land water storage from\nwater impoundment" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>m^3</units>
+			</stock>
+			<aux name="SLR from LWS" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>metre</units>
 			</aux>
 		</variables>
 		<views>
@@ -2813,7 +2900,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="52" isee:scroll_y="259" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="132" isee:scroll_y="240" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3014,11 +3101,6 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>GDP_per_person</from>
 					<to>non_agricultural_water_withdrawal_per_million_person</to>
 				</connector>
-				<aux x="400.583" y="734.53" name="natural water\nrecharge"/>
-				<connector uid="37" angle="63.9126">
-					<from>natural_water_recharge</from>
-					<to>natural_water_recharge_flow</to>
-				</connector>
 				<stock font_style="italic" font_weight="bold" x="466" y="121" name="Cropland"/>
 				<aux x="564" y="184" name="irrigated cropland"/>
 				<connector uid="38" angle="327.265">
@@ -3052,6 +3134,81 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<text_box border_width="thin" border_style="solid" uid="45" x="62.825" y="1068" width="260" height="58">the more technological water discovery
 the less future investment due to crowding out of more profitable forms of investment</text_box>
 				<text_box border_width="thin" border_style="solid" uid="46" x="964.417" y="197" width="260" height="58">do we need to represent the cost of this technological development in investment?</text_box>
+				<stock x="1231.58" y="687.197" name="total groundwater anomaly"/>
+				<flow label_side="left" x="1231.58" y="767.682" name="unsustainable\ngroundwater withdrawal">
+					<pts>
+						<pt x="1231.58" y="704.697"/>
+						<pt x="1231.58" y="839.667"/>
+					</pts>
+				</flow>
+				<connector uid="47" angle="140.974">
+					<from>
+						<alias uid="48"/>
+					</from>
+					<to>unsustainable_groundwater_withdrawal</to>
+				</connector>
+				<flow x="1320.33" y="685.667" name="deep groundwater refill">
+					<pts>
+						<pt x="1398.58" y="685.667"/>
+						<pt x="1254.08" y="685.667"/>
+					</pts>
+				</flow>
+				<aux label_side="top" x="1396.58" y="600.747" name="average deep groundwater\ninfiltration time"/>
+				<connector uid="49" angle="228.079">
+					<from>average_deep_groundwater_infiltration_time</from>
+					<to>deep_groundwater_refill</to>
+				</connector>
+				<aux label_side="right" x="1378.58" y="776.03" name="natural water recharge"/>
+				<connector uid="50" angle="302.807">
+					<from>deep_groundwater_refill</from>
+					<to>natural_water_recharge</to>
+				</connector>
+				<connector uid="51" angle="356.75">
+					<from>unsustainable_groundwater_withdrawal</from>
+					<to>natural_water_recharge</to>
+				</connector>
+				<connector uid="52" angle="27.7585">
+					<from>
+						<alias uid="48"/>
+					</from>
+					<to>natural_water_recharge</to>
+				</connector>
+				<connector uid="53" angle="25.7825">
+					<from>total_groundwater_anomaly</from>
+					<to>deep_groundwater_refill</to>
+				</connector>
+				<aux x="1001.25" y="824" name="unsustainable fraction of\nwater withdrawal"/>
+				<aux x="968.917" y="907.5" name="initial fraction of\nunsustainable water withdrawal"/>
+				<connector uid="54" angle="68.8323">
+					<from>initial_fraction_of_unsustainable_water_withdrawal</from>
+					<to>unsustainable_fraction_of_water_withdrawal</to>
+				</connector>
+				<connector uid="55" angle="309.27">
+					<from>total_water_withdrawal</from>
+					<to>unsustainable_fraction_of_water_withdrawal</to>
+				</connector>
+				<connector uid="56" angle="337.543">
+					<from>technological_water_discovery</from>
+					<to>unsustainable_fraction_of_water_withdrawal</to>
+				</connector>
+				<connector uid="57" angle="0">
+					<from>unsustainable_fraction_of_water_withdrawal</from>
+					<to>unsustainable_groundwater_withdrawal</to>
+				</connector>
+				<connector uid="58" angle="3.27049">
+					<from>
+						<alias uid="59"/>
+					</from>
+					<to>natural_water_recharge_flow</to>
+				</connector>
+				<stock font_style="italic" font_weight="bold" x="1226" y="1116" name="Land water storage from\nwater impoundment"/>
+				<aux font_style="italic" font_weight="bold" x="1396.58" y="1130" name="SLR from LWS"/>
+				<alias font_style="italic" uid="48" x="1328.66" y="844.667" width="18" height="18">
+					<of>total_water_withdrawal</of>
+				</alias>
+				<alias font_style="italic" uid="59" x="306" y="548" width="18" height="18">
+					<of>natural_water_recharge</of>
+				</alias>
 			</view>
 		</views>
 	</model>
