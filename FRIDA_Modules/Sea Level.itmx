@@ -43,6 +43,21 @@
 	<isee:number_format_extenders/>
 	<default_format scale_by="1"/>
 	<model_units>
+		<unit name="$">
+			<eqn/>
+			<alias>dollar</alias>
+			<alias>dollars</alias>
+		</unit>
+		<unit name="Years">
+			<eqn/>
+			<alias>yr</alias>
+			<alias>year</alias>
+		</unit>
+		<unit name="Watts">
+			<eqn/>
+			<alias>w</alias>
+			<alias>watt</alias>
+		</unit>
 		<unit name="G$">
 			<eqn>Giga*$</eqn>
 		</unit>
@@ -189,6 +204,12 @@
 		</unit>
 		<unit name="euros per year per person">
 			<eqn>EUR/(person-year)</eqn>
+		</unit>
+		<unit name="MWh">
+			<eqn>MW * hour</eqn>
+		</unit>
+		<unit name="TW">
+			<eqn>Million*MW</eqn>
 		</unit>
 		<unit name="G">
 			<eqn>Giga</eqn>
@@ -844,34 +865,6 @@ ELSE
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="Population Mp" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>Mp</units>
-			</aux>
-			<aux name="SLR from LWS">
-				<doc>${Calibrated,Output}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(Population_Mp*LWS_per_capita+LWS_with_no_people)/millimetre_to_metre</eqn>
-				<units>metre</units>
-			</aux>
-			<aux name="LWS per capita">
-				<eqn>0.00454881166977024</eqn>
-				<units>millimetre/Mp</units>
-			</aux>
-			<aux name="LWS with no people">
-				<eqn>-26.4661992747091</eqn>
-				<units>millimetre</units>
-			</aux>
-			<aux name="millimetre to metre">
-				<eqn>1000</eqn>
-				<units>millimetre/metre</units>
-			</aux>
 			<aux name="initial SLR from GrIS">
 				<eqn>-0.0028</eqn>
 				<units>metre</units>
@@ -1037,6 +1030,85 @@ Include_MICI_behaviour * AntIS_MICI_disintegration_rate * AntIS_initial_volume /
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>W*year/metre^2/K</units>
 			</aux>
+			<aux name="SLR from LWS" access="output" isee:autocreated="true">
+				<doc>${Calibrated}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>SLR_from_groundwater_withdrawal + SLR_from_water_impoundment + initial_SLR_from_LWS</eqn>
+				<units>metre</units>
+			</aux>
+			<aux name="SLR from\ngroundwater withdrawal">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>- total_groundwater_anomaly * Cubic_metre_to_SLR</eqn>
+				<units>metre</units>
+			</aux>
+			<stock name="Land water storage from\nwater impoundment" access="output" isee:autocreated="true">
+				<doc>${Calibrated}
+There is approximately a linear relationship between installation of hydropower capacity and the volume of the storage. Data from
+
+&quot;Dams for hydropower and irrigation: Trends, challenges, and alternatives&quot; Schmitt and Rosa (2024), Renewable and Sustainable Energy Reviews, Vol. 199, 
+
+https://doi.org/10.1016/j.rser.2024.114439</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Initial_water_storage_from_water_impoundment</eqn>
+				<inflow>Water_catchment_in_global_dams</inflow>
+				<units>m^3</units>
+			</stock>
+			<aux name="Cubic metre to SLR">
+				<doc>361e12 m^2 is the ocean surface area </doc>
+				<eqn>1.0/361.0e12</eqn>
+				<units>metre/m^3</units>
+			</aux>
+			<flow name="Water catchment in\nglobal dams">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Installation_of_Hydropower_Capacity * Water_catchment_per_GW_of_hydropower</eqn>
+				<units>m^3/year</units>
+			</flow>
+			<aux name="Initial water storage from water impoundment">
+				<eqn>3950000000000.0</eqn>
+				<units>m^3</units>
+			</aux>
+			<aux name="initial SLR from LWS">
+				<eqn>-0.00472</eqn>
+				<range min="-0.1" max="0.1"/>
+				<units>metre</units>
+			</aux>
+			<aux name="Installation of\nHydropower Capacity" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>GW/Year</units>
+			</aux>
+			<stock name="total groundwater anomaly" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0.0</eqn>
+				<units>m^3</units>
+			</stock>
+			<aux name="SLR from water impoundment">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(INIT(Land_water_storage_from_water_impoundment) - Land_water_storage_from_water_impoundment) * Cubic_metre_to_SLR</eqn>
+				<units>metre</units>
+			</aux>
+			<aux name="Water catchment per\nGW of hydropower">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>3.0e9</eqn>
+				<range min="2000000000" max="5000000000"/>
+				<units>m^3/GW</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -1084,7 +1156,97 @@ Include_MICI_behaviour * AntIS_MICI_disintegration_rate * AntIS_initial_volume /
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="754.167" isee:scroll_y="325.833" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
+				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:sim_speed_slider color="black" background="white"/>
+				<isee:time_slider color="#E95F74" background="silver"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
+				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
+				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
+				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:sim_speed_slider color="black" background="white"/>
+				<isee:time_slider color="#E95F74" background="silver"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
+				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
+				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="12.5" isee:scroll_y="550" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1856,37 +2018,8 @@ Include_MICI_behaviour * AntIS_MICI_disintegration_rate * AntIS_initial_volume /
 					<from>selected_climate_case</from>
 					<to>net_downward_radiative_flux</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="bottom" x="93.3333" y="906.667" name="Population Mp"/>
-				<aux x="236.786" y="948.333" name="SLR from LWS"/>
-				<connector uid="348" angle="320.332">
-					<from>Population_Mp</from>
-					<to>SLR_from_LWS</to>
-				</connector>
-				<aux label_side="left" label_angle="135" x="178.684" y="868.321" name="LWS per capita"/>
-				<aux x="178.351" y="1008.33" name="LWS with no people"/>
-				<connector uid="349" angle="10.6336">
-					<from>LWS_with_no_people</from>
-					<to>SLR_from_LWS</to>
-				</connector>
-				<connector uid="350" angle="319.532">
-					<from>LWS_per_capita</from>
-					<to>SLR_from_LWS</to>
-				</connector>
-				<aux x="281.667" y="872.833" name="millimetre to metre"/>
-				<connector uid="351" angle="240.945">
-					<from>millimetre_to_metre</from>
-					<to>SLR_from_LWS</to>
-				</connector>
-				<connector uid="353" angle="24.3044">
-					<from>SLR_from_LWS</from>
-					<to>global_SLR</to>
-				</connector>
 				<stacked_container uid="360" x="2570.67" y="91.25" width="391.25" height="206.34">
-					<graph width="391.25" height="206.34" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="SLR_from_LWS[1]"/>
-						</plot>
-					</graph>
+					<graph width="391.25" height="206.34" comparative="true" type="time_series" isee:points_only="true" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true"/>
 				</stacked_container>
 				<stacked_container uid="361" x="1709.42" y="87.5893" width="391.25" height="213.661">
 					<graph width="391.25" height="213.661" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
@@ -2030,12 +2163,6 @@ Include_MICI_behaviour * AntIS_MICI_disintegration_rate * AntIS_initial_volume /
 					<to>global_SLR_by_PCTILE</to>
 				</connector>
 				<aux x="1592.99" y="242.679" name="SLR from LWS by PCTILE"/>
-				<connector uid="394" angle="19.179">
-					<from>
-						<alias uid="393"/>
-					</from>
-					<to>SLR_from_LWS_by_PCTILE</to>
-				</connector>
 				<connector uid="395" angle="67.8878">
 					<from>
 						<alias uid="396"/>
@@ -2092,6 +2219,68 @@ Include_MICI_behaviour * AntIS_MICI_disintegration_rate * AntIS_initial_volume /
 				<connector uid="407" angle="137.326">
 					<from>Change_in_Deep_Ocean_Temperature</from>
 					<to>net_downward_radiative_flux</to>
+				</connector>
+				<aux label_side="right" label_angle="315" x="199.231" y="891.625" name="SLR from LWS"/>
+				<aux x="132.171" y="983" name="SLR from\ngroundwater withdrawal"/>
+				<stock label_side="top" x="302.889" y="1099.67" name="Land water storage from\nwater impoundment"/>
+				<connector uid="408" angle="87.0186">
+					<from>SLR_from_groundwater_withdrawal</from>
+					<to>SLR_from_LWS</to>
+				</connector>
+				<aux x="207.333" y="965" name="Cubic metre to SLR"/>
+				<connector uid="409" angle="155.614">
+					<from>Cubic_metre_to_SLR</from>
+					<to>SLR_from_groundwater_withdrawal</to>
+				</connector>
+				<flow x="373.139" y="1100.67" name="Water catchment in\nglobal dams">
+					<pts>
+						<pt x="432.889" y="1100.67"/>
+						<pt x="325.389" y="1100.67"/>
+					</pts>
+				</flow>
+				<aux x="253.389" y="1127.11" name="Initial water storage from water impoundment"/>
+				<aux x="100.194" y="879.167" name="initial SLR from LWS"/>
+				<connector uid="416" angle="2.80865">
+					<from>initial_SLR_from_LWS</from>
+					<to>SLR_from_LWS</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="465" y="1150" name="Installation of\nHydropower Capacity"/>
+				<connector uid="417" angle="151.764">
+					<from>Installation_of_Hydropower_Capacity</from>
+					<to>Water_catchment_in_global_dams</to>
+				</connector>
+				<stock font_style="italic" font_weight="bold" x="63.3333" y="1093.08" name="total groundwater anomaly"/>
+				<connector uid="418" angle="72.582">
+					<from>total_groundwater_anomaly</from>
+					<to>SLR_from_groundwater_withdrawal</to>
+				</connector>
+				<aux x="271.389" y="1006.29" name="SLR from water impoundment"/>
+				<connector uid="419" angle="114.823">
+					<from>SLR_from_water_impoundment</from>
+					<to>SLR_from_LWS</to>
+				</connector>
+				<connector uid="420" angle="104.455">
+					<from>Land_water_storage_from_water_impoundment</from>
+					<to>SLR_from_water_impoundment</to>
+				</connector>
+				<connector uid="421" angle="352.093">
+					<from>Cubic_metre_to_SLR</from>
+					<to>SLR_from_water_impoundment</to>
+				</connector>
+				<connector uid="422" angle="28.0596">
+					<from>SLR_from_LWS</from>
+					<to>global_SLR</to>
+				</connector>
+				<connector uid="423" angle="11.5922">
+					<from>
+						<alias uid="424"/>
+					</from>
+					<to>SLR_from_LWS_by_PCTILE</to>
+				</connector>
+				<aux x="334.389" y="1180.83" name="Water catchment per\nGW of hydropower"/>
+				<connector uid="425" angle="51.0708">
+					<from>Water_catchment_per_GW_of_hydropower</from>
+					<to>Water_catchment_in_global_dams</to>
 				</connector>
 				<alias font_style="italic" label_side="top" uid="151" x="209.786" y="547.611" width="18" height="18">
 					<of>T_anomaly_for_SLR</of>
@@ -2192,14 +2381,14 @@ Include_MICI_behaviour * AntIS_MICI_disintegration_rate * AntIS_initial_volume /
 				<alias font_style="italic" label_side="top" uid="391" x="1275.06" y="61.5179" width="36.3929" height="36.3929">
 					<of>global_SLR</of>
 				</alias>
-				<alias font_style="italic" label_side="top" uid="393" x="1488.2" y="227.964" width="23" height="23">
-					<of>SLR_from_LWS</of>
-				</alias>
 				<alias font_style="italic" uid="396" x="107.361" y="651.714" width="18" height="18">
 					<of>Kelvin_to_dmnl</of>
 				</alias>
 				<alias font_style="italic" label_side="left" label_angle="225" uid="398" x="89.361" y="638.875" width="18" height="18">
 					<of>dmnl_to_Kelvin</of>
+				</alias>
+				<alias font_style="italic" uid="424" x="1488.34" y="233.679" width="18" height="18">
+					<of>SLR_from_LWS</of>
 				</alias>
 			</view>
 		</views>
