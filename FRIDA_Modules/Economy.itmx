@@ -702,7 +702,6 @@
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>Firms_Checking_Accounts/time_to_pay_out_profits</eqn>
-				<non_negative/>
 				<units>b$/year</units>
 			</flow>
 			<stock name="owner\nsavings" access="output" isee:autocreated="true">
@@ -957,7 +956,7 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Firms_Checking_Accounts*cost_rate</eqn>
+				<eqn>MAX(0, Firms_Checking_Accounts*cost_rate)</eqn>
 				<non_negative/>
 				<units>B$/year</units>
 			</flow>
@@ -1006,7 +1005,7 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(non_bank_profits+bank_profits)*profit_tax_rate</eqn>
+				<eqn>MAX(0, (non_bank_profits+bank_profits))*profit_tax_rate</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
@@ -1203,7 +1202,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="1132.5" isee:scroll_y="111.667" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="680.833" isee:scroll_y="175" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1823,7 +1822,7 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>firing_from_defaults+firing_from_missed_profits</eqn>
+				<eqn>MIN(max_firing_percentage*Employed[Run], firing_from_defaults+firing_from_missed_profits)</eqn>
 				<non_negative/>
 				<units>Mp/year</units>
 			</flow>
@@ -2407,6 +2406,10 @@ ELSE (labour_force_participation_percentage+9)</eqn>
 				<eqn>7960.53</eqn>
 				<units>b$/year</units>
 			</aux>
+			<aux name="max firing percentage">
+				<eqn>.25</eqn>
+				<units>1/year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -2456,7 +2459,7 @@ ELSE (labour_force_participation_percentage+9)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="4" isee:page_rows="3" isee:scroll_y="359" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="4" isee:page_rows="3" isee:scroll_y="540" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3247,6 +3250,15 @@ ELSE (labour_force_participation_percentage+9)</eqn>
 				<connector uid="239" angle="209.734">
 					<from>planned_investment</from>
 					<to>sloshing_around_in_the_firms_checking</to>
+				</connector>
+				<aux x="392" y="1054.08" name="max firing percentage"/>
+				<connector uid="240" angle="62.1584">
+					<from>max_firing_percentage</from>
+					<to>firing</to>
+				</connector>
+				<connector uid="241" angle="131.715">
+					<from>Employed</from>
+					<to>firing</to>
 				</connector>
 				<alias color="blue" background="white" font_style="italic" label_side="left" uid="15" x="243.25" y="814.833" width="18" height="18">
 					<shape type="circle" radius="18"/>
@@ -4084,7 +4096,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="487" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="49" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4573,25 +4585,25 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>investment_growth_rate_measuring_time</from>
 					<to>Investment_growth_rate</to>
 				</connector>
-				<aux x="691.918" y="273" name="effect of STA on failure rate"/>
-				<connector uid="143" angle="328.96">
+				<aux x="692.333" y="273" name="effect of STA on failure rate"/>
+				<connector uid="143" angle="329.056">
 					<from>Surface_Temperature_Anomaly_1</from>
 					<to>effect_of_STA_on_failure_rate</to>
 				</connector>
 				<aux x="726.714" y="160.75" name="sensitivity of effect of sta on failure rate"/>
-				<connector uid="144" angle="252.777">
+				<connector uid="144" angle="252.971">
 					<from>sensitivity_of_effect_of_sta_on_failure_rate</from>
 					<to>effect_of_STA_on_failure_rate</to>
 				</connector>
-				<connector uid="149" angle="304.05">
+				<connector uid="149" angle="304.201">
 					<from>effect_of_STA_on_failure_rate</from>
 					<to>climate_adjusted_failure_rate</to>
 				</connector>
-				<connector uid="150" angle="309.594">
+				<connector uid="150" angle="309.694">
 					<from>switch_for_all_climate_damage</from>
 					<to>effect_of_STA_on_failure_rate</to>
 				</connector>
-				<connector uid="151" angle="353.384">
+				<connector uid="151" angle="353.398">
 					<from>switch_only_economy_energy_damage_1</from>
 					<to>effect_of_STA_on_failure_rate</to>
 				</connector>
