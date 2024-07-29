@@ -2,12 +2,12 @@
 <xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE">
 	<header>
 		<smile version="1.0" namespace="std, isee" uses_arrays="1" uses_conveyor=""/>
-		<name>Population</name>
-		<uuid>754d41b4-6e07-4fd6-9ae8-1b296394f58a</uuid>
+		<name>Demographics</name>
+		<uuid>90bdab97-7d13-4232-ab74-bc9e7cd006d5</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7" isee:build_number="3335" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.1" isee:build_number="3377" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
-	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
+	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
 		<stop>2100</stop>
 		<dt reciprocal="true">8</dt>
@@ -191,6 +191,12 @@
 		<unit name="euros per year per person">
 			<eqn>EUR/(person-year)</eqn>
 		</unit>
+		<unit name="MWh">
+			<eqn>MW * hour</eqn>
+		</unit>
+		<unit name="TW">
+			<eqn>Million*MW</eqn>
+		</unit>
 		<unit name="G">
 			<eqn>Giga</eqn>
 		</unit>
@@ -204,7 +210,7 @@
 			<eqn>Giga*tN2O</eqn>
 		</unit>
 	</model_units>
-	<model name="Population">
+	<model name="Demographics">
 		<variables>
 			<aux name="GDP per person in 1980">
 				<dimensions>
@@ -449,7 +455,7 @@ Pörtner HO, Roberts DC, Adams H, Adler C, Aldunce P, Ali E, Begum RA, Betts R, 
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>1+((Slope_of_Population_Damage_Function*Surface_Temperature_Anomaly)^Exponent_of_Population_Damage_Function)*switch_for_climate_damage</eqn>
+				<eqn>1+((Slope_of_Population_Damage_Function*Surface_Temperature_Anomaly)^Exponent_of_Population_Damage_Function)*switch_for_all_climate_damage</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Slope of Population\nDamage Function">
@@ -461,6 +467,7 @@ Calibration Parameter: All death rates &amp; population</doc>
 				<element subscript="1">
 					<eqn>0.144356648521995</eqn>
 				</element>
+				<range min="0.01" max="0.3"/>
 				<units>1/deg C</units>
 			</aux>
 			<aux name="cohort length">
@@ -985,6 +992,7 @@ Eberlein RL, Thompson JP. 2013. Precise modeling of aging populations. System Dy
 				<doc>${Calibration Parameter}
 Calibration Parameter: fertility</doc>
 				<eqn>3.81344603981565</eqn>
+				<range min="0" max="10"/>
 				<units>1</units>
 			</aux>
 			<aux name="relative GDP per person">
@@ -1005,12 +1013,14 @@ Calibration Parameter: fertility</doc>
 				<doc>${Calibration Parameter}
 Calibration Parameter: deaths 0 years</doc>
 				<eqn>0.671810368350955</eqn>
+				<range min="0" max="2"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="infant mortality\ngamma">
 				<doc>${Calibration Parameter}
 Calibration Parameter: deaths 0 years</doc>
 				<eqn>-1.25662788763881</eqn>
+				<range min="-2" max="0"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of GDP per person\non infant mortality">
@@ -1028,12 +1038,14 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<doc>${Calibration Parameter}
 Calibration Parameter: deaths 1-20 years</doc>
 				<eqn>0.662872881960872</eqn>
+				<range min="0" max="3"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="1 to 20 mortality\ngamma">
 				<doc>${Calibration Parameter}
 Calibration Parameter: deaths 1-20 years</doc>
 				<eqn>-0.693209195571325</eqn>
+				<range min="-3" max="0"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of GDP per person\non 1 to 20 mortality">
@@ -1051,12 +1063,14 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<doc>${Calibration Parameter}
 Calibration Parameter: deaths 20-40 years</doc>
 				<eqn>1.73471817568514</eqn>
+				<range min="0" max="3"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="20 to 40 mortality\ngamma">
 				<doc>${Calibration Parameter}
 Calibration Parameter: deaths 20-40 years</doc>
 				<eqn>-0.500826085528387</eqn>
+				<range min="-3" max="0"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of GDP per person\non 20 to 40 mortality">
@@ -1074,12 +1088,14 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<doc>${Calibration Parameter}
 Calibration Parameter: deaths 40-60 years</doc>
 				<eqn>0.743137410116832</eqn>
+				<range min="0" max="3"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="40 to 60 mortality\ngamma">
 				<doc>${Calibration Parameter}
 Calibration Parameter: deaths 40-60 years</doc>
 				<eqn>-0.476222150903841</eqn>
+				<range min="-3" max="0"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of GDP per person\non 40 to 60 mortality">
@@ -1097,12 +1113,14 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<doc>${Calibration Parameter}
 Calibration Parameter: deaths 60-80 years</doc>
 				<eqn>1.1989027544173</eqn>
+				<range min="0" max="3"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="60 to 80 mortality\ngamma">
 				<doc>${Calibration Parameter}
 Calibration Parameter: deaths 60-80 years</doc>
 				<eqn>-0.534171600927099</eqn>
+				<range min="-3" max="0"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of GDP per person\non 60 to 80 mortality">
@@ -1120,12 +1138,14 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<doc>${Calibration Parameter}
 Calibration Parameter: deaths over 80 years</doc>
 				<eqn>0.786065753209636</eqn>
+				<range min="0" max="3"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Over 80 mortality\ngamma">
 				<doc>${Calibration Parameter}
 Calibration Parameter: deaths over 80 years</doc>
 				<eqn>-0.552982789833417</eqn>
+				<range min="-3" max="0"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of GDP per person\non Over 80 mortality">
@@ -1306,6 +1326,7 @@ AGECOUNT(Aged_60_to_80_years, 0, 10)</eqn>
 				<doc>${Calibration Parameter}
 </doc>
 				<eqn>22.1564952043635</eqn>
+				<range min="15" max="25"/>
 				<units>years</units>
 			</aux>
 			<aux name="effect of GDP\non change in fertility">
@@ -1344,10 +1365,6 @@ initial_fertility+effect_of_GDP_on_change_in_fertility+effect_of_literacy_on_cha
 			<aux name="p per mp">
 				<eqn>1000000</eqn>
 				<units>p/Mp</units>
-			</aux>
-			<aux name="switch for climate damage" access="input">
-				<eqn>1</eqn>
-				<units>dmnl</units>
 			</aux>
 			<aux name="female population\nliteracy percentage">
 				<doc>${Calibrated}
@@ -1397,8 +1414,15 @@ Calibration Parameter: fertility</doc>
 				<units>dmnl</units>
 			</aux>
 			<aux name="averaging time">
+				<doc>${Calibration Parameter}
+</doc>
 				<eqn>7</eqn>
+				<range min="7" max="20"/>
 				<units>years</units>
+			</aux>
+			<aux name="switch for all climate damage" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
 			</aux>
 		</variables>
 		<views>
@@ -1427,12 +1451,14 @@ Calibration Parameter: fertility</doc>
 				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
 				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
 				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
 				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
 				<isee:sim_speed_slider color="black" background="white"/>
 				<isee:time_slider color="#E95F74" background="silver"/>
 				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
 				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
 				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
 				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
 				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
 				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
@@ -1447,7 +1473,7 @@ Calibration Parameter: fertility</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="5" isee:scroll_x="68" isee:scroll_y="1505" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="5" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1529,16 +1555,16 @@ Calibration Parameter: fertility</doc>
 				<stock label_side="top" x="530" y="1582.67" name="fertility"/>
 				<aux label_side="left" label_angle="135" x="1546.67" y="1899.5" name="GDP per person"/>
 				<aux label_side="left" label_angle="135" x="1599.33" y="1523.67" name="population growth rate"/>
-				<connector uid="48" angle="145.627">
+				<connector uid="1" angle="145.627">
 					<from>death_rate</from>
 					<to>population_growth_rate</to>
 				</connector>
-				<connector uid="49" angle="99.8939">
+				<connector uid="2" angle="99.8939">
 					<from>birth_rate</from>
 					<to>population_growth_rate</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" label_side="right" label_angle="45" x="1735.5" y="1810" name="GDP"/>
-				<connector uid="75" angle="205.359">
+				<connector uid="3" angle="205.359">
 					<from>GDP</from>
 					<to>GDP_per_person</to>
 				</connector>
@@ -1568,7 +1594,7 @@ Calibration Parameter: fertility</doc>
 				</flow>
 				<aux background="white" label_side="right" x="1243.25" y="1810" name="effect of surface temperature\nanomaly on mortality"/>
 				<aux background="white" label_side="left" label_angle="225" x="1194.67" y="1928.67" name="Slope of Population\nDamage Function"/>
-				<connector uid="104" angle="67.7354">
+				<connector uid="4" angle="67.7354">
 					<from>Slope_of_Population_Damage_Function</from>
 					<to>effect_of_surface_temperature_anomaly_on_mortality</to>
 				</connector>
@@ -1581,44 +1607,44 @@ Calibration Parameter: fertility</doc>
 				<aux label_side="left" label_angle="225" x="1345.5" y="1496.51" name="20 to 40 normal death\nrate"/>
 				<aux label_side="left" x="1773.33" y="1482.84" name="40 to 60 normal death\nrate"/>
 				<aux x="2022.08" y="1558.67" name="60 to 80 normal death\nrate"/>
-				<connector uid="123" angle="159.491">
+				<connector uid="5" angle="159.491">
 					<from>&quot;1_to_20_normal_death_rate&quot;</from>
 					<to>&quot;1_to_20_death_rate&quot;</to>
 				</connector>
-				<connector uid="124" angle="70.7666">
+				<connector uid="6" angle="70.7666">
 					<from>&quot;20_to_40_normal_death_rate&quot;</from>
 					<to>&quot;20_to_40_death_rate&quot;</to>
 				</connector>
-				<connector uid="125" angle="106.755">
+				<connector uid="7" angle="106.755">
 					<from>&quot;40_to_60_normal_death_rate&quot;</from>
 					<to>&quot;40_to_60_death_rate&quot;</to>
 				</connector>
-				<connector uid="126" angle="96.6031">
+				<connector uid="8" angle="96.6031">
 					<from>&quot;60_to_80_normal_death_rate&quot;</from>
 					<to>&quot;60_to_80_death_rate&quot;</to>
 				</connector>
-				<connector uid="127" angle="114.219">
+				<connector uid="9" angle="114.219">
 					<from>effect_of_surface_temperature_anomaly_on_mortality</from>
 					<to>&quot;1_to_20_death_rate&quot;</to>
 				</connector>
-				<connector uid="135" angle="81.6341">
+				<connector uid="10" angle="81.6341">
 					<from>&quot;1_to_20_death_rate&quot;</from>
 					<to>deaths_1_to_20_years</to>
 				</connector>
-				<connector uid="136" angle="76.8094">
+				<connector uid="11" angle="76.8094">
 					<from>&quot;20_to_40_death_rate&quot;</from>
 					<to>deaths_20_to_40_years</to>
 				</connector>
-				<connector uid="137" angle="71.5651">
+				<connector uid="12" angle="71.5651">
 					<from>&quot;40_to_60_death_rate&quot;</from>
 					<to>deaths_40_to_60_years</to>
 				</connector>
-				<connector uid="138" angle="49.9452">
+				<connector uid="13" angle="49.9452">
 					<from>&quot;60_to_80_death_rate&quot;</from>
 					<to>deaths_60_to_80_years</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1249.67" y="1987.67" name="Surface Temperature Anomaly"/>
-				<connector uid="141" angle="92.0685">
+				<aux x="1249.67" y="1987.67" name="Surface Temperature Anomaly"/>
+				<connector uid="14" angle="92.0685">
 					<from>Surface_Temperature_Anomaly</from>
 					<to>effect_of_surface_temperature_anomaly_on_mortality</to>
 				</connector>
@@ -1640,7 +1666,7 @@ Calibration Parameter: fertility</doc>
 					</pts>
 				</flow>
 				<aux x="1060.5" y="779.833" name="Aged Over 80 in 1980"/>
-				<connector uid="196" angle="286.373">
+				<connector uid="15" angle="286.373">
 					<from>GDP_per_person</from>
 					<to>GDP_per_person_in_1980</to>
 				</connector>
@@ -1660,44 +1686,44 @@ Calibration Parameter: fertility</doc>
 					</pts>
 				</flow>
 				<aux label_side="right" x="1684.58" y="1707.84" name="Population"/>
-				<connector uid="74" angle="234.263">
+				<connector uid="16" angle="234.263">
 					<from>Population</from>
 					<to>GDP_per_person</to>
 				</connector>
-				<connector uid="11" angle="97.4225">
+				<connector uid="17" angle="97.4225">
 					<from>Population</from>
 					<to>death_rate</to>
 				</connector>
-				<connector uid="9" angle="125.588">
+				<connector uid="18" angle="125.588">
 					<from>Population</from>
 					<to>birth_rate</to>
 				</connector>
 				<aux label_side="right" x="803.5" y="1388.17" name="0 death\nrate"/>
 				<aux label_side="left" label_angle="135" x="721" y="1430.67" name="0 normal death\nrate"/>
-				<connector uid="241" angle="27.2553">
+				<connector uid="19" angle="27.2553">
 					<from>&quot;0_normal_death_rate&quot;</from>
 					<to>&quot;0_death_rate&quot;</to>
 				</connector>
-				<connector uid="242" angle="68.4836">
+				<connector uid="20" angle="68.4836">
 					<from>&quot;0_death_rate&quot;</from>
 					<to>deaths_0_years</to>
 				</connector>
-				<connector uid="243" angle="168.317">
+				<connector uid="21" angle="168.317">
 					<from>effect_of_surface_temperature_anomaly_on_mortality</from>
 					<to>&quot;0_death_rate&quot;</to>
 				</connector>
 				<aux x="1764.67" y="1651.34" name="total deaths"/>
-				<connector uid="245" angle="140.218">
+				<connector uid="22" angle="140.218">
 					<from>total_deaths</from>
 					<to>death_rate</to>
 				</connector>
-				<connector uid="247" angle="104.818">
+				<connector uid="23" angle="104.818">
 					<from>effect_of_GDP_per_person_on_infant_mortality</from>
 					<to>&quot;0_death_rate&quot;</to>
 				</connector>
 				<aux x="555.333" y="1726.83" name="initial\nfertility"/>
 				<aux label_side="left" label_angle="225" x="1159.17" y="2087.17" name="relative GDP per person"/>
-				<connector uid="276" angle="225.646">
+				<connector uid="24" angle="225.646">
 					<from>GDP_per_person</from>
 					<to>relative_GDP_per_person</to>
 				</connector>
@@ -1705,246 +1731,246 @@ Calibration Parameter: fertility</doc>
 				<aux x="773.5" y="1615.34" name="infant mortality\nalpha"/>
 				<aux x="685.5" y="1600.67" name="infant mortality\ngamma"/>
 				<aux label_side="left" x="791.5" y="1488.67" name="effect of GDP per person\non infant mortality"/>
-				<connector uid="285" angle="81.9121">
+				<connector uid="25" angle="81.9121">
 					<from>infant_mortality_alpha</from>
 					<to>effect_of_GDP_per_person_on_infant_mortality</to>
 				</connector>
-				<connector uid="286" angle="136.773">
+				<connector uid="26" angle="136.773">
 					<from>average_relative_GDP_per_person</from>
 					<to>effect_of_GDP_per_person_on_infant_mortality</to>
 				</connector>
-				<connector uid="287" angle="46.5766">
+				<connector uid="27" angle="46.5766">
 					<from>infant_mortality_gamma</from>
 					<to>effect_of_GDP_per_person_on_infant_mortality</to>
 				</connector>
 				<aux x="1038.5" y="1640" name="1 to 20 mortality\nalpha"/>
 				<aux x="986.083" y="1587.67" name="1 to 20 mortality\ngamma"/>
 				<aux label_side="left" x="1056.5" y="1541.67" name="effect of GDP per person\non 1 to 20 mortality"/>
-				<connector uid="296" angle="79.6268">
+				<connector uid="28" angle="79.6268">
 					<from>&quot;1_to_20_mortality_alpha&quot;</from>
 					<to>effect_of_GDP_per_person_on_1_to_20_mortality</to>
 				</connector>
-				<connector uid="297" angle="33.1548">
+				<connector uid="29" angle="33.1548">
 					<from>&quot;1_to_20_mortality_gamma&quot;</from>
 					<to>effect_of_GDP_per_person_on_1_to_20_mortality</to>
 				</connector>
-				<connector uid="300" angle="90">
+				<connector uid="30" angle="90">
 					<from>effect_of_GDP_per_person_on_1_to_20_mortality</from>
 					<to>&quot;1_to_20_death_rate&quot;</to>
 				</connector>
 				<aux x="1394" y="1697.83" name="20 to 40 mortality\nalpha"/>
 				<aux x="1317" y="1633.34" name="20 to 40 mortality\ngamma"/>
 				<aux label_side="left" x="1369.83" y="1569.67" name="effect of GDP per person\non 20 to 40 mortality"/>
-				<connector uid="302" angle="100.678">
+				<connector uid="31" angle="100.678">
 					<from>&quot;20_to_40_mortality_alpha&quot;</from>
 					<to>effect_of_GDP_per_person_on_20_to_40_mortality</to>
 				</connector>
-				<connector uid="303" angle="50.3127">
+				<connector uid="32" angle="50.3127">
 					<from>&quot;20_to_40_mortality_gamma&quot;</from>
 					<to>effect_of_GDP_per_person_on_20_to_40_mortality</to>
 				</connector>
-				<connector uid="305" angle="84.7126">
+				<connector uid="33" angle="84.7126">
 					<from>effect_of_GDP_per_person_on_20_to_40_mortality</from>
 					<to>&quot;20_to_40_death_rate&quot;</to>
 				</connector>
 				<aux x="1999.19" y="1643" name="40 to 60 mortality\nalpha"/>
 				<aux x="1978.5" y="1721.67" name="40 to 60 mortality\ngamma"/>
 				<aux label_side="right" x="1828.33" y="1500.84" name="effect of GDP per person\non 40 to 60 mortality"/>
-				<connector uid="306" angle="140.237">
+				<connector uid="34" angle="140.237">
 					<from>&quot;40_to_60_mortality_alpha&quot;</from>
 					<to>effect_of_GDP_per_person_on_40_to_60_mortality</to>
 				</connector>
-				<connector uid="307" angle="128.364">
+				<connector uid="35" angle="128.364">
 					<from>&quot;40_to_60_mortality_gamma&quot;</from>
 					<to>effect_of_GDP_per_person_on_40_to_60_mortality</to>
 				</connector>
-				<connector uid="308" angle="122.869">
+				<connector uid="36" angle="122.869">
 					<from>effect_of_GDP_per_person_on_40_to_60_mortality</from>
 					<to>&quot;40_to_60_death_rate&quot;</to>
 				</connector>
 				<aux x="2190.69" y="1828" name="60 to 80 mortality\nalpha"/>
 				<aux x="2291.67" y="1745.17" name="60 to 80 mortality\ngamma"/>
 				<aux label_side="right" x="2108.33" y="1591.67" name="effect of GDP per person\non 60 to 80 mortality"/>
-				<connector uid="310" angle="109.212">
+				<connector uid="37" angle="109.212">
 					<from>&quot;60_to_80_mortality_alpha&quot;</from>
 					<to>effect_of_GDP_per_person_on_60_to_80_mortality</to>
 				</connector>
-				<connector uid="311" angle="140.063">
+				<connector uid="38" angle="140.063">
 					<from>&quot;60_to_80_mortality_gamma&quot;</from>
 					<to>effect_of_GDP_per_person_on_60_to_80_mortality</to>
 				</connector>
-				<connector uid="312" angle="118.945">
+				<connector uid="39" angle="118.945">
 					<from>effect_of_GDP_per_person_on_60_to_80_mortality</from>
 					<to>&quot;60_to_80_death_rate&quot;</to>
 				</connector>
 				<aux x="2379.19" y="1651.34" name="Over 80 mortality\nalpha"/>
 				<aux x="2521.42" y="1701.67" name="Over 80 mortality\ngamma"/>
 				<aux label_side="right" x="2386.61" y="1501.17" name="effect of GDP per person\non Over 80 mortality"/>
-				<connector uid="314" angle="87.1712">
+				<connector uid="40" angle="87.1712">
 					<from>Over_80_mortality_alpha</from>
 					<to>effect_of_GDP_per_person_on_Over_80_mortality</to>
 				</connector>
-				<connector uid="315" angle="123.916">
+				<connector uid="41" angle="123.916">
 					<from>Over_80_mortality_gamma</from>
 					<to>effect_of_GDP_per_person_on_Over_80_mortality</to>
 				</connector>
 				<aux label_side="left" label_angle="225" x="2323.61" y="1370.17" name="Over 80 death\nrate"/>
 				<aux x="2619.17" y="1437.84" name="Over 80 normal death\nrate"/>
-				<connector uid="316" angle="167.105">
+				<connector uid="42" angle="167.105">
 					<from>Over_80_normal_death_rate</from>
 					<to>Over_80_death_rate</to>
 				</connector>
-				<connector uid="317" angle="115.684">
+				<connector uid="43" angle="115.684">
 					<from>effect_of_GDP_per_person_on_Over_80_mortality</from>
 					<to>Over_80_death_rate</to>
 				</connector>
-				<connector uid="318" angle="94.4183">
+				<connector uid="44" angle="94.4183">
 					<from>Over_80_death_rate</from>
 					<to>deaths_Over_80_years</to>
 				</connector>
-				<connector uid="329" angle="113.273">
+				<connector uid="45" angle="113.273">
 					<from>
-						<alias uid="330"/>
+						<alias uid="46"/>
 					</from>
 					<to>effect_of_GDP_per_person_on_1_to_20_mortality</to>
 				</connector>
-				<connector uid="331" angle="107.855">
+				<connector uid="47" angle="107.855">
 					<from>
-						<alias uid="332"/>
+						<alias uid="48"/>
 					</from>
 					<to>effect_of_GDP_per_person_on_40_to_60_mortality</to>
 				</connector>
-				<connector uid="333" angle="140.459">
+				<connector uid="49" angle="140.459">
 					<from>
-						<alias uid="334"/>
+						<alias uid="50"/>
 					</from>
 					<to>effect_of_GDP_per_person_on_20_to_40_mortality</to>
 				</connector>
-				<connector uid="335" angle="83.3318">
+				<connector uid="51" angle="83.3318">
 					<from>
-						<alias uid="336"/>
+						<alias uid="52"/>
 					</from>
 					<to>effect_of_GDP_per_person_on_60_to_80_mortality</to>
 				</connector>
-				<connector uid="337" angle="149.279">
+				<connector uid="53" angle="149.279">
 					<from>
-						<alias uid="338"/>
+						<alias uid="54"/>
 					</from>
 					<to>effect_of_GDP_per_person_on_Over_80_mortality</to>
 				</connector>
-				<connector uid="339" angle="117.073">
+				<connector uid="55" angle="117.073">
 					<from>
-						<alias uid="340"/>
+						<alias uid="56"/>
 					</from>
 					<to>&quot;20_to_40_death_rate&quot;</to>
 				</connector>
-				<connector uid="341" angle="140.418">
+				<connector uid="57" angle="140.418">
 					<from>
-						<alias uid="342"/>
+						<alias uid="58"/>
 					</from>
 					<to>&quot;40_to_60_death_rate&quot;</to>
 				</connector>
-				<connector uid="343" angle="145.427">
+				<connector uid="59" angle="145.427">
 					<from>
-						<alias uid="344"/>
+						<alias uid="60"/>
 					</from>
 					<to>&quot;60_to_80_death_rate&quot;</to>
 				</connector>
-				<connector uid="345" angle="179.007">
+				<connector uid="61" angle="179.007">
 					<from>
-						<alias uid="346"/>
+						<alias uid="62"/>
 					</from>
 					<to>Over_80_death_rate</to>
 				</connector>
-				<connector uid="349" angle="101.539">
+				<connector uid="63" angle="101.539">
 					<from>
-						<alias uid="350"/>
+						<alias uid="64"/>
 					</from>
 					<to>birth_rate</to>
 				</connector>
-				<connector uid="364" angle="78.931">
+				<connector uid="65" angle="78.931">
 					<from>fertility</from>
 					<to>Births</to>
 				</connector>
-				<connector uid="366" angle="331.182">
+				<connector uid="66" angle="331.182">
 					<from>fertile_period</from>
 					<to>Births</to>
 				</connector>
 				<aux x="936" y="1098.67" name="number of fertile women"/>
-				<connector uid="369" angle="138.997">
+				<connector uid="67" angle="138.997">
 					<from>Aged_20_to_40_years</from>
 					<to>number_of_fertile_women</to>
 				</connector>
-				<connector uid="370" angle="110.134">
+				<connector uid="68" angle="110.134">
 					<from>Aged_1_to_20_years</from>
 					<to>number_of_fertile_women</to>
 				</connector>
-				<connector uid="371" angle="289.337">
+				<connector uid="69" angle="289.337">
 					<from>fraction_women</from>
 					<to>number_of_fertile_women</to>
 				</connector>
-				<connector uid="376" angle="188.406">
+				<connector uid="70" angle="188.406">
 					<from>number_of_fertile_women</from>
 					<to>Births</to>
 				</connector>
 				<aux label_side="bottom" x="1798" y="918.17" name="working age population"/>
-				<connector uid="377" angle="311.266">
+				<connector uid="71" angle="311.266">
 					<from>
-						<alias uid="353"/>
+						<alias uid="72"/>
 					</from>
 					<to>working_age_population</to>
 				</connector>
-				<connector uid="378" angle="254.893">
+				<connector uid="73" angle="254.893">
 					<from>
-						<alias uid="354"/>
+						<alias uid="74"/>
 					</from>
 					<to>working_age_population</to>
 				</connector>
-				<connector uid="379" angle="213.4">
+				<connector uid="75" angle="213.4">
 					<from>
-						<alias uid="356"/>
+						<alias uid="76"/>
 					</from>
 					<to>working_age_population</to>
 				</connector>
-				<connector uid="380" angle="356.76">
+				<connector uid="77" angle="356.76">
 					<from>
-						<alias uid="381"/>
+						<alias uid="78"/>
 					</from>
 					<to>working_age_population</to>
 				</connector>
 				<aux x="2063" y="970" name="net working age\nentrance rate"/>
-				<connector uid="382" angle="348.934">
+				<connector uid="79" angle="348.934">
 					<from>working_age_population</from>
 					<to>net_working_age_entrance_rate</to>
 				</connector>
 				<aux x="2057" y="897" name="smoothing time"/>
-				<connector uid="385" angle="266.73">
+				<connector uid="80" angle="266.73">
 					<from>smoothing_time</from>
 					<to>net_working_age_entrance_rate</to>
 				</connector>
 				<aux x="2161.17" y="911" name="initial net working\nage entrance rate"/>
-				<connector uid="386" angle="211.006">
+				<connector uid="81" angle="211.006">
 					<from>initial_net_working_age_entrance_rate</from>
 					<to>net_working_age_entrance_rate</to>
 				</connector>
-				<connector uid="387" angle="280.008">
+				<connector uid="82" angle="280.008">
 					<from>working_age_population</from>
 					<to>Dependency_ratio</to>
 				</connector>
-				<connector uid="389" angle="0">
+				<connector uid="83" angle="0">
 					<from>
-						<alias uid="388"/>
+						<alias uid="84"/>
 					</from>
 					<to>Dependency_ratio</to>
 				</connector>
-				<connector uid="390" angle="187.806">
+				<connector uid="85" angle="187.806">
 					<from>GDP_per_person_in_1980</from>
 					<to>relative_GDP_per_person</to>
 				</connector>
 				<aux x="1499" y="161" name="population by PCTILE"/>
-				<connector uid="391" angle="34.1145">
+				<connector uid="86" angle="34.1145">
 					<from>
-						<alias uid="392"/>
+						<alias uid="87"/>
 					</from>
 					<to>population_by_PCTILE</to>
 				</connector>
@@ -1954,9 +1980,9 @@ Calibration Parameter: fertility</doc>
 				<aux x="1453" y="490" name="Aged 40 to 60 years by PCTILE"/>
 				<aux x="1449" y="567" name="Aged 60 to 80 years by PCTILE"/>
 				<aux x="1444" y="659" name="Aged Over 80 years by PCTILE"/>
-				<connector uid="408" angle="21.8014">
+				<connector uid="88" angle="21.8014">
 					<from>
-						<alias uid="393"/>
+						<alias uid="89"/>
 					</from>
 					<to>Aged_0_years_by_PCTILE</to>
 				</connector>
@@ -1969,87 +1995,87 @@ Calibration Parameter: fertility</doc>
 				<aux x="2209" y="141" name="fertility by PCTILE"/>
 				<aux x="2205" y="219" name="Births by PCTILE"/>
 				<aux x="2205" y="302" name="total deaths by PCTILE"/>
-				<connector uid="409" angle="6.09586">
+				<connector uid="90" angle="6.09586">
 					<from>
-						<alias uid="394"/>
+						<alias uid="91"/>
 					</from>
 					<to>Aged_1_to_20_yearsby_PCTILE</to>
 				</connector>
-				<connector uid="410" angle="7.28895">
+				<connector uid="92" angle="7.28895">
 					<from>
-						<alias uid="395"/>
+						<alias uid="93"/>
 					</from>
 					<to>Aged_20_to_40_years_by_PCTILE</to>
 				</connector>
-				<connector uid="411" angle="9.5601">
+				<connector uid="94" angle="9.5601">
 					<from>
-						<alias uid="396"/>
+						<alias uid="95"/>
 					</from>
 					<to>Aged_40_to_60_years_by_PCTILE</to>
 				</connector>
-				<connector uid="412" angle="6.48307">
+				<connector uid="96" angle="6.48307">
 					<from>
-						<alias uid="397"/>
+						<alias uid="97"/>
 					</from>
 					<to>Aged_60_to_80_years_by_PCTILE</to>
 				</connector>
-				<connector uid="413" angle="3.25195">
+				<connector uid="98" angle="3.25195">
 					<from>
-						<alias uid="398"/>
+						<alias uid="99"/>
 					</from>
 					<to>Aged_Over_80_years_by_PCTILE</to>
 				</connector>
-				<connector uid="414" angle="20.7723">
+				<connector uid="100" angle="20.7723">
 					<from>
-						<alias uid="399"/>
+						<alias uid="101"/>
 					</from>
 					<to>deaths_0_years_by_PCTILE</to>
 				</connector>
-				<connector uid="415" angle="11.3099">
+				<connector uid="102" angle="11.3099">
 					<from>
-						<alias uid="400"/>
+						<alias uid="103"/>
 					</from>
 					<to>deaths_1_to_20_years_by_PCTILE</to>
 				</connector>
-				<connector uid="416" angle="27.2161">
+				<connector uid="104" angle="27.2161">
 					<from>
-						<alias uid="401"/>
+						<alias uid="105"/>
 					</from>
 					<to>deaths_20_to_40_years_by_PCTILE</to>
 				</connector>
-				<connector uid="417" angle="30.0686">
+				<connector uid="106" angle="30.0686">
 					<from>
-						<alias uid="402"/>
+						<alias uid="107"/>
 					</from>
 					<to>deaths_40_to_60_years_by_PCTILE</to>
 				</connector>
-				<connector uid="418" angle="13.5704">
+				<connector uid="108" angle="13.5704">
 					<from>
-						<alias uid="403"/>
+						<alias uid="109"/>
 					</from>
 					<to>deaths_60_to_80_years_by_PCTILE</to>
 				</connector>
-				<connector uid="419" angle="36.2538">
+				<connector uid="110" angle="36.2538">
 					<from>
-						<alias uid="404"/>
+						<alias uid="111"/>
 					</from>
 					<to>deaths_Over_80_years_by_PCTILE</to>
 				</connector>
-				<connector uid="420" angle="41.0548">
+				<connector uid="112" angle="41.0548">
 					<from>
-						<alias uid="405"/>
+						<alias uid="113"/>
 					</from>
 					<to>fertility_by_PCTILE</to>
 				</connector>
-				<connector uid="421" angle="29.5388">
+				<connector uid="114" angle="29.5388">
 					<from>
-						<alias uid="406"/>
+						<alias uid="115"/>
 					</from>
 					<to>Births_by_PCTILE</to>
 				</connector>
-				<connector uid="422" angle="30.5792">
+				<connector uid="116" angle="30.5792">
 					<from>
-						<alias uid="407"/>
+						<alias uid="117"/>
 					</from>
 					<to>total_deaths_by_PCTILE</to>
 				</connector>
@@ -2060,191 +2086,191 @@ Calibration Parameter: fertility</doc>
 					</pts>
 				</flow>
 				<aux x="309" y="1717" name="time to change\nfertility"/>
-				<connector uid="423" angle="40.857">
+				<connector uid="118" angle="40.857">
 					<from>time_to_change_fertility</from>
 					<to>change_in_fertility</to>
 				</connector>
 				<aux label_side="right" label_angle="315" x="601" y="2175" name="effect of GDP\non change in fertility"/>
-				<connector uid="424" angle="204.159">
+				<connector uid="119" angle="204.159">
 					<from>average_relative_GDP_per_person</from>
 					<to>effect_of_GDP_on_change_in_fertility</to>
 				</connector>
 				<aux x="446" y="1748" name="indicated fertility"/>
-				<connector uid="428" angle="82.3408">
+				<connector uid="120" angle="82.3408">
 					<from>indicated_fertility</from>
 					<to>change_in_fertility</to>
 				</connector>
-				<connector uid="432" angle="142.595">
+				<connector uid="121" angle="142.595">
 					<from>effect_of_GDP_on_change_in_fertility</from>
 					<to>indicated_fertility</to>
 				</connector>
-				<connector uid="436" angle="138.292">
+				<connector uid="122" angle="138.292">
 					<from>fertility</from>
 					<to>change_in_fertility</to>
 				</connector>
-				<connector uid="438" angle="53.8846">
+				<connector uid="123" angle="53.8846">
 					<from>sensitivity_of_fertility_to_inverse_GDP_per_person</from>
 					<to>effect_of_GDP_on_change_in_fertility</to>
 				</connector>
 				<aux x="1327.5" y="1887" name="Exponent of Population\nDamage Function"/>
-				<connector uid="439" angle="150.44">
+				<connector uid="124" angle="150.44">
 					<from>Exponent_of_Population_Damage_Function</from>
 					<to>effect_of_surface_temperature_anomaly_on_mortality</to>
 				</connector>
 				<aux x="1746.67" y="2039" name="GDP per capita"/>
-				<connector uid="440" angle="328.296">
+				<connector uid="125" angle="328.296">
 					<from>GDP_per_person</from>
 					<to>GDP_per_capita</to>
 				</connector>
 				<aux x="1764.67" y="1958" name="$ per b$"/>
-				<connector uid="441" angle="276.55">
+				<connector uid="126" angle="276.55">
 					<from>&quot;$_per_b$&quot;</from>
 					<to>GDP_per_capita</to>
 				</connector>
 				<aux x="1883" y="1990" name="p per mp"/>
-				<connector uid="442" angle="192.875">
+				<connector uid="127" angle="192.875">
 					<from>p_per_mp</from>
 					<to>GDP_per_capita</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="1091" y="1842" name="switch for climate damage"/>
-				<connector uid="443" angle="18.4349">
-					<from>switch_for_climate_damage</from>
-					<to>effect_of_surface_temperature_anomaly_on_mortality</to>
 				</connector>
 				<aux label_side="right" label_angle="315" x="477.667" y="2436.67" name="female population\nliteracy percentage"/>
 				<aux x="176.667" y="2183.84" name="sensitivity of fertility\nto literacy"/>
 				<aux label_side="right" label_angle="315" x="335.167" y="2150" name="effect of literacy\non change in fertility"/>
-				<connector uid="457" angle="12.0518">
+				<connector uid="129" angle="12.0518">
 					<from>sensitivity_of_fertility_to_literacy</from>
 					<to>effect_of_literacy_on_change_in_fertility</to>
 				</connector>
-				<connector uid="458" angle="143.549">
+				<connector uid="130" angle="143.549">
 					<from>female_population_literacy_percentage</from>
 					<to>effect_of_literacy_on_change_in_fertility</to>
 				</connector>
-				<connector uid="459" angle="91.7624">
+				<connector uid="131" angle="91.7624">
 					<from>effect_of_literacy_on_change_in_fertility</from>
 					<to>indicated_fertility</to>
 				</connector>
-				<connector uid="435" angle="202.427">
+				<connector uid="132" angle="202.427">
 					<from>initial_fertility</from>
 					<to>indicated_fertility</to>
 				</connector>
 				<aux x="400" y="2556.5" name="effect of GDP on female population\nliteracy percentage\nconstant"/>
 				<aux x="272.167" y="2462.16" name="effect of GDP on female population\nliteracy percentage\nscale factor"/>
-				<connector uid="464" angle="57.051">
+				<connector uid="133" angle="57.051">
 					<from>effect_of_GDP_on_female_population_literacy_percentage_constant</from>
 					<to>female_population_literacy_percentage</to>
 				</connector>
-				<connector uid="465" angle="7.07079">
+				<connector uid="134" angle="7.07079">
 					<from>effect_of_GDP_on_female_population_literacy_percentage_scale_factor</from>
 					<to>female_population_literacy_percentage</to>
 				</connector>
 				<aux x="958.67" y="2140" name="average relative GDP per person"/>
-				<connector uid="466" angle="194.761">
+				<connector uid="135" angle="194.761">
 					<from>relative_GDP_per_person</from>
 					<to>average_relative_GDP_per_person</to>
 				</connector>
 				<aux x="964.5" y="2259.17" name="averaging time"/>
-				<connector uid="467" angle="92.8008">
+				<connector uid="136" angle="92.8008">
 					<from>averaging_time</from>
 					<to>average_relative_GDP_per_person</to>
 				</connector>
-				<connector uid="468" angle="258.684">
+				<connector uid="137" angle="258.684">
 					<from>relative_GDP_per_person</from>
 					<to>female_population_literacy_percentage</to>
 				</connector>
-				<alias font_style="italic" uid="330" x="1114.67" y="1688.83" width="18" height="18">
+				<aux font_style="italic" font_weight="bold" x="1015" y="1872" name="switch for all climate damage"/>
+				<connector uid="138" angle="22.6199">
+					<from>switch_for_all_climate_damage</from>
+					<to>effect_of_surface_temperature_anomaly_on_mortality</to>
+				</connector>
+				<alias font_style="italic" uid="46" x="1114.67" y="1688.83" width="18" height="18">
 					<of>average_relative_GDP_per_person</of>
 				</alias>
-				<alias font_style="italic" uid="332" x="1928.42" y="1830.5" width="18" height="18">
+				<alias font_style="italic" uid="48" x="1928.42" y="1830.5" width="18" height="18">
 					<of>average_relative_GDP_per_person</of>
 				</alias>
-				<alias font_style="italic" uid="334" x="1467.83" y="1649" width="18" height="18">
+				<alias font_style="italic" uid="50" x="1467.83" y="1649" width="18" height="18">
 					<of>average_relative_GDP_per_person</of>
 				</alias>
-				<alias font_style="italic" uid="336" x="2071.33" y="1822.17" width="18" height="18">
+				<alias font_style="italic" uid="52" x="2071.33" y="1822.17" width="18" height="18">
 					<of>average_relative_GDP_per_person</of>
 				</alias>
-				<alias font_style="italic" uid="338" x="2592.17" y="1619.67" width="18" height="18">
+				<alias font_style="italic" uid="54" x="2592.17" y="1619.67" width="18" height="18">
 					<of>average_relative_GDP_per_person</of>
 				</alias>
-				<alias background="white" font_style="italic" label_side="right" uid="340" x="1424.67" y="1455.84" width="18" height="18">
+				<alias background="white" font_style="italic" label_side="right" uid="56" x="1424.67" y="1455.84" width="18" height="18">
 					<of>effect_of_surface_temperature_anomaly_on_mortality</of>
 				</alias>
-				<alias background="white" font_style="italic" label_side="right" label_angle="315" uid="342" x="1793.83" y="1403.84" width="18" height="18">
+				<alias background="white" font_style="italic" label_side="right" label_angle="315" uid="58" x="1793.83" y="1403.84" width="18" height="18">
 					<of>effect_of_surface_temperature_anomaly_on_mortality</of>
 				</alias>
-				<alias background="white" font_style="italic" label_side="right" uid="344" x="2148.17" y="1499.67" width="18" height="18">
+				<alias background="white" font_style="italic" label_side="right" uid="60" x="2148.17" y="1499.67" width="18" height="18">
 					<of>effect_of_surface_temperature_anomaly_on_mortality</of>
 				</alias>
-				<alias background="white" font_style="italic" label_side="right" label_angle="45" uid="346" x="2603.17" y="1366.17" width="18" height="18">
+				<alias background="white" font_style="italic" label_side="right" label_angle="45" uid="62" x="2603.17" y="1366.17" width="18" height="18">
 					<of>effect_of_surface_temperature_anomaly_on_mortality</of>
 				</alias>
-				<alias font_style="italic" uid="350" x="1623.33" y="1688.83" width="18" height="18">
+				<alias font_style="italic" uid="64" x="1623.33" y="1688.83" width="18" height="18">
 					<of>Births</of>
 				</alias>
-				<alias font_style="italic" uid="353" x="1652.5" y="760.5" width="45" height="35">
+				<alias font_style="italic" uid="72" x="1652.5" y="760.5" width="45" height="35">
 					<of>Aged_20_to_40_years</of>
 				</alias>
-				<alias font_style="italic" uid="354" x="1815.5" y="752.5" width="45" height="35">
+				<alias font_style="italic" uid="74" x="1815.5" y="752.5" width="45" height="35">
 					<of>Aged_40_to_60_years</of>
 				</alias>
-				<alias font_style="italic" uid="356" x="1980.5" y="765.5" width="45" height="35">
+				<alias font_style="italic" uid="76" x="1980.5" y="765.5" width="45" height="35">
 					<of>Aged_60_to_80_years</of>
 				</alias>
-				<alias font_style="italic" uid="381" x="1560.5" y="888.5" width="45" height="35">
+				<alias font_style="italic" uid="78" x="1560.5" y="888.5" width="45" height="35">
 					<of>Aged_1_to_20_years</of>
 				</alias>
-				<alias font_style="italic" uid="388" x="1634.5" y="1011.17" width="18" height="18">
+				<alias font_style="italic" uid="84" x="1634.5" y="1011.17" width="18" height="18">
 					<of>Population</of>
 				</alias>
-				<alias font_style="italic" uid="392" x="1266" y="164" width="18" height="18">
+				<alias font_style="italic" uid="87" x="1266" y="164" width="18" height="18">
 					<of>Population</of>
 				</alias>
-				<alias font_style="italic" label_angle="123.341" uid="393" x="1212.33" y="237.417" width="113.333" height="39.1667">
+				<alias font_style="italic" label_angle="123.341" uid="89" x="1212.33" y="237.417" width="113.333" height="39.1667">
 					<of>Aged_0_years</of>
 				</alias>
-				<alias font_style="italic" uid="394" x="1192.33" y="316.667" width="153.333" height="36.6667">
+				<alias font_style="italic" uid="91" x="1192.33" y="316.667" width="153.333" height="36.6667">
 					<of>Aged_1_to_20_years</of>
 				</alias>
-				<alias font_style="italic" uid="395" x="1189.67" y="397.667" width="146.667" height="36.6667">
+				<alias font_style="italic" uid="93" x="1189.67" y="397.667" width="146.667" height="36.6667">
 					<of>Aged_20_to_40_years</of>
 				</alias>
-				<alias font_style="italic" uid="396" x="1189.25" y="479.833" width="137.5" height="38.3333">
+				<alias font_style="italic" uid="95" x="1189.25" y="479.833" width="137.5" height="38.3333">
 					<of>Aged_40_to_60_years</of>
 				</alias>
-				<alias font_style="italic" uid="397" x="1178.58" y="555.833" width="140.833" height="38.3333">
+				<alias font_style="italic" uid="97" x="1178.58" y="555.833" width="140.833" height="38.3333">
 					<of>Aged_60_to_80_years</of>
 				</alias>
-				<alias font_style="italic" uid="398" x="1173.92" y="643.667" width="144.167" height="36.6667">
+				<alias font_style="italic" uid="99" x="1173.92" y="643.667" width="144.167" height="36.6667">
 					<of>Aged_Over_80_years</of>
 				</alias>
-				<alias font_style="italic" uid="399" x="1693" y="153" width="18" height="18">
+				<alias font_style="italic" uid="101" x="1693" y="153" width="18" height="18">
 					<of>deaths_0_years</of>
 				</alias>
-				<alias background="white" font_style="italic" uid="400" x="1693" y="230" width="18" height="18">
+				<alias background="white" font_style="italic" uid="103" x="1693" y="230" width="18" height="18">
 					<of>deaths_1_to_20_years</of>
 				</alias>
-				<alias background="white" font_style="italic" uid="401" x="1693" y="311" width="18" height="18">
+				<alias background="white" font_style="italic" uid="105" x="1693" y="311" width="18" height="18">
 					<of>deaths_20_to_40_years</of>
 				</alias>
-				<alias background="white" font_style="italic" uid="402" x="1693" y="384" width="18" height="18">
+				<alias background="white" font_style="italic" uid="107" x="1693" y="384" width="18" height="18">
 					<of>deaths_40_to_60_years</of>
 				</alias>
-				<alias background="white" font_style="italic" uid="403" x="1689" y="455" width="18" height="18">
+				<alias background="white" font_style="italic" uid="109" x="1689" y="455" width="18" height="18">
 					<of>deaths_60_to_80_years</of>
 				</alias>
-				<alias font_style="italic" uid="404" x="1693" y="533" width="18" height="18">
+				<alias font_style="italic" uid="111" x="1693" y="533" width="18" height="18">
 					<of>deaths_Over_80_years</of>
 				</alias>
-				<alias font_style="italic" uid="405" x="2080" y="150" width="18" height="18">
+				<alias font_style="italic" uid="113" x="2080" y="150" width="18" height="18">
 					<of>fertility</of>
 				</alias>
-				<alias font_style="italic" uid="406" x="2074" y="233" width="18" height="18">
+				<alias font_style="italic" uid="115" x="2074" y="233" width="18" height="18">
 					<of>Births</of>
 				</alias>
-				<alias font_style="italic" uid="407" x="2080" y="302" width="18" height="18">
+				<alias font_style="italic" uid="117" x="2080" y="302" width="18" height="18">
 					<of>total_deaths</of>
 				</alias>
 			</view>

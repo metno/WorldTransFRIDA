@@ -5,7 +5,7 @@
 		<name>Energy</name>
 		<uuid>dda966fe-252b-44a1-a101-0c3526293b30</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7" isee:build_number="3335" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.1" isee:build_number="3377" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="1.5" isee:run_prefix="Run" isee:simulation_delay="0.125" isee:restore_on_start="false" isee:save_interval="2" method="Euler" time_units="Months" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
 		<start>0</start>
@@ -57,21 +57,6 @@
 	<isee:number_format_extenders/>
 	<default_format scale_by="1"/>
 	<model_units>
-		<unit name="$">
-			<eqn/>
-			<alias>dollar</alias>
-			<alias>dollars</alias>
-		</unit>
-		<unit name="Years">
-			<eqn/>
-			<alias>yr</alias>
-			<alias>year</alias>
-		</unit>
-		<unit name="Watts">
-			<eqn/>
-			<alias>w</alias>
-			<alias>watt</alias>
-		</unit>
 		<unit name="G$">
 			<eqn>Giga*$</eqn>
 		</unit>
@@ -240,10 +225,6 @@
 	</model_units>
 	<model name="Energy" run="true">
 		<variables>
-			<aux name="Energy Balance Target">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
 			<aux name="Renewable Energy Output by PCTILE">
 				<dimensions>
 					<dim name="PCTILE"/>
@@ -441,20 +422,24 @@
 				<connect2 to="demand_for_energy" from="energy_demand.demand_for_energy"/>
 				<connect to="Energy.initial_fudge_amount" from="energy_demand.initial_fudge_amount"/>
 				<connect2 to="initial_fudge_amount" from="energy_demand.initial_fudge_amount"/>
-				<connect to="energy_demand.GDP_per_person" from="Population.GDP_per_person"/>
-				<connect2 to="energy_demand.GDP_per_person" from="Population.GDP_per_person"/>
-				<connect to="energy_demand.Policy_Start_Year" from="Society.Policy_Start_Year"/>
-				<connect2 to="energy_demand.Policy_Start_Year" from="Society.Policy_Start_Year"/>
-				<connect to="energy_demand.Population" from="Population.Population"/>
-				<connect2 to="energy_demand.Population" from="Population.Population"/>
+				<connect to="energy_demand.GDP_per_person" from="Demographics.GDP_per_person"/>
+				<connect2 to="energy_demand.GDP_per_person" from="Demographics.GDP_per_person"/>
+				<connect to="energy_demand.per_person_use_of_energy_policy" from="Behavioral_Choices.per_person_use_of_energy_policy"/>
+				<connect2 to="energy_demand.per_person_use_of_energy_policy" from="Behavioral_Choices.per_person_use_of_energy_policy"/>
+				<connect to="energy_demand.Policy_Start_Year" from="Behavioral_Choices.start_year"/>
+				<connect2 to="energy_demand.Policy_Start_Year" from="Behavioral_Choices.start_year"/>
+				<connect to="energy_demand.Population" from="Demographics.Population"/>
+				<connect2 to="energy_demand.Population" from="Demographics.Population"/>
 				<connect to="energy_demand.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="energy_demand.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="energy_demand.SWITCH_couple_energy_and_climate" from="Energy.SWITCH_couple_energy_and_climate"/>
 				<connect2 to="energy_demand.SWITCH_couple_energy_and_climate" from="SWITCH_couple_energy_and_climate"/>
-				<connect to="energy_demand.switch_for_all_climate_damage" from="Finance.switch_for_all_climate_damage"/>
-				<connect2 to="energy_demand.switch_for_all_climate_damage" from="Finance.switch_for_all_climate_damage"/>
-				<connect to="energy_demand.switch_only_economy_energy_damage" from="Society.switch_only_economy_energy_damage"/>
-				<connect2 to="energy_demand.switch_only_economy_energy_damage" from="Society.switch_only_economy_energy_damage"/>
+				<connect to="energy_demand.switch_energy_demand_policy" from="Behavioral_Choices.switch_energy_demand_policy"/>
+				<connect2 to="energy_demand.switch_energy_demand_policy" from="Behavioral_Choices.switch_energy_demand_policy"/>
+				<connect to="energy_demand.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
+				<connect2 to="energy_demand.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
+				<connect to="energy_demand.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
+				<connect2 to="energy_demand.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
 			</module>
 			<module name="energy investments" isee:label="">
 				<format scale_by="auto"/>
@@ -470,8 +455,6 @@
 				<connect2 to="fossil_energy_coal.Investments_in_Fossil_Energy_Capital" from="energy_investments.Coal_Investments_in_Fossil_Energy_Capital"/>
 				<connect to="fossil_energy_coal.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Coal_Investments_in_Fossil_Fuel_Extraction_Capital"/>
 				<connect2 to="fossil_energy_coal.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Coal_Investments_in_Fossil_Fuel_Extraction_Capital"/>
-				<connect to=".future_cost_adjustment" from="energy_investments.future_cost_adjustment"/>
-				<connect2 to=".future_cost_adjustment" from="energy_investments.future_cost_adjustment"/>
 				<connect to="fossil_energy_gas.Investments_in_Fossil_Energy_Capital" from="energy_investments.Gas_Investments_in_Fossil_Energy_Capital"/>
 				<connect2 to="fossil_energy_gas.Investments_in_Fossil_Energy_Capital" from="energy_investments.Gas_Investments_in_Fossil_Energy_Capital"/>
 				<connect to="fossil_energy_gas.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Gas_Investments_in_Fossil_Fuel_Extraction_Capital"/>
@@ -546,10 +529,12 @@
 				<connect2 to="energy_investments.cost_of_extra_energy_output_through_fuel_extraction_per_unit_1" from="fossil_energy_gas.cost_of_extra_energy_output_through_fuel_extraction_per_unit"/>
 				<connect to="energy_investments.cost_of_extra_energy_output_through_fuel_extraction_per_unit_2" from="fossil_energy_oil.cost_of_extra_energy_output_through_fuel_extraction_per_unit"/>
 				<connect2 to="energy_investments.cost_of_extra_energy_output_through_fuel_extraction_per_unit_2" from="fossil_energy_oil.cost_of_extra_energy_output_through_fuel_extraction_per_unit"/>
+				<connect to="energy_investments.future_cost_adjustment" from="Government_Regulations.energy_source_future_cost_adjustment"/>
+				<connect2 to="energy_investments.future_cost_adjustment" from="Government_Regulations.energy_source_future_cost_adjustment"/>
 				<connect to="energy_investments.GDP" from="GDP.GDP"/>
 				<connect2 to="energy_investments.GDP" from="GDP.GDP"/>
-				<connect to="energy_investments.Policy_Start_Year_1" from="Society.Policy_Start_Year"/>
-				<connect2 to="energy_investments.Policy_Start_Year_1" from="Society.Policy_Start_Year"/>
+				<connect to="energy_investments.Policy_Start_Year_1" from="Government_Regulations.start_year"/>
+				<connect2 to="energy_investments.Policy_Start_Year_1" from="Government_Regulations.start_year"/>
 				<connect to="energy_investments.Relative_Energy_Supply_Missmatch" from="energy_supply_vs_demand.Relative_Energy_Supply_Missmatch"/>
 				<connect2 to="energy_investments.Relative_Energy_Supply_Missmatch" from="energy_supply_vs_demand.Relative_Energy_Supply_Missmatch"/>
 			</module>
@@ -557,8 +542,6 @@
 				<format scale_by="auto"/>
 				<connect to="Energy.Renewable_Energy_Output_Share" from="energy_supply.Renewable_Energy_Output_Share"/>
 				<connect2 to="Renewable_Energy_Output_Share" from="energy_supply.Renewable_Energy_Output_Share"/>
-				<connect to=".Renewable_Energy_Output_Share" from="energy_supply.Renewable_Energy_Output_Share"/>
-				<connect2 to=".Renewable_Energy_Output_Share" from="energy_supply.Renewable_Energy_Output_Share"/>
 				<connect to="energy_supply_vs_demand.Total_Energy_Output" from="energy_supply.Total_Energy_Output"/>
 				<connect2 to="energy_supply_vs_demand.Total_Energy_Output" from="energy_supply.Total_Energy_Output"/>
 				<connect to="Energy.Total_Energy_Output" from="energy_supply.Total_Energy_Output"/>
@@ -567,10 +550,10 @@
 				<connect2 to="energy_supply.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect to="Damages.SWITCH_couple_energy_and_climate" from="Energy.SWITCH_couple_energy_and_climate"/>
 				<connect2 to="Damages.SWITCH_couple_energy_and_climate" from="SWITCH_couple_energy_and_climate"/>
-				<connect to="Damages.switch_for_all_climate_damage" from="Society.switch_for_all_climate_damage"/>
-				<connect2 to="Damages.switch_for_all_climate_damage" from="Society.switch_for_all_climate_damage"/>
-				<connect to="Damages.switch_only_economy_energy_damage" from="Society.switch_only_economy_energy_damage"/>
-				<connect2 to="Damages.switch_only_economy_energy_damage" from="Society.switch_only_economy_energy_damage"/>
+				<connect to="Damages.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
+				<connect2 to="Damages.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
+				<connect to="Damages.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
+				<connect2 to="Damages.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
 				<connect to="Energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy" from="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy"/>
 				<connect2 to="conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy" from="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy"/>
 				<connect to='Energy."Primary_Fossil_Energy_(FUEL)"' from="fossil_energy.Primary_Fossil_Energy_FUEL"/>
@@ -605,8 +588,10 @@
 				<connect2 to="fossil_energy_coal.Investments_in_Fossil_Energy_Capital" from="energy_investments.Coal_Investments_in_Fossil_Energy_Capital"/>
 				<connect to="fossil_energy_coal.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Coal_Investments_in_Fossil_Fuel_Extraction_Capital"/>
 				<connect2 to="fossil_energy_coal.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Coal_Investments_in_Fossil_Fuel_Extraction_Capital"/>
-				<connect to="fossil_energy_coal.Policy_Start_Year" from="Society.Policy_Start_Year"/>
-				<connect2 to="fossil_energy_coal.Policy_Start_Year" from="Society.Policy_Start_Year"/>
+				<connect to="fossil_energy_coal.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect2 to="fossil_energy_coal.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect to="fossil_energy_coal.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_coal_fossil_fuel_extraction_capital"/>
+				<connect2 to="fossil_energy_coal.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_coal_fossil_fuel_extraction_capital"/>
 				<connect to="Energy.carbon_intensity_in_btu_2" from="fossil_energy_gas.carbon_intensity_in_btu"/>
 				<connect2 to="carbon_intensity_in_btu_2" from="fossil_energy_gas.carbon_intensity_in_btu"/>
 				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_1" from="fossil_energy_gas.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
@@ -633,8 +618,10 @@
 				<connect2 to="fossil_energy_gas.Investments_in_Fossil_Energy_Capital" from="energy_investments.Gas_Investments_in_Fossil_Energy_Capital"/>
 				<connect to="fossil_energy_gas.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Gas_Investments_in_Fossil_Fuel_Extraction_Capital"/>
 				<connect2 to="fossil_energy_gas.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Gas_Investments_in_Fossil_Fuel_Extraction_Capital"/>
-				<connect to="fossil_energy_gas.Policy_Start_Year" from="Society.Policy_Start_Year"/>
-				<connect2 to="fossil_energy_gas.Policy_Start_Year" from="Society.Policy_Start_Year"/>
+				<connect to="fossil_energy_gas.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect2 to="fossil_energy_gas.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect to="fossil_energy_gas.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_gas_fossil_fuel_extraction_capital"/>
+				<connect2 to="fossil_energy_gas.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_gas_fossil_fuel_extraction_capital"/>
 				<connect to="Energy.carbon_intensity_in_btu_1" from="fossil_energy_oil.carbon_intensity_in_btu"/>
 				<connect2 to="carbon_intensity_in_btu_1" from="fossil_energy_oil.carbon_intensity_in_btu"/>
 				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_2" from="fossil_energy_oil.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
@@ -661,8 +648,10 @@
 				<connect2 to="fossil_energy_oil.Investments_in_Fossil_Energy_Capital" from="energy_investments.Oil_Investments_in_Fossil_Energy_Capital"/>
 				<connect to="fossil_energy_oil.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Oil_Investments_in_Fossil_Fuel_Extraction_Capital"/>
 				<connect2 to="fossil_energy_oil.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Oil_Investments_in_Fossil_Fuel_Extraction_Capital"/>
-				<connect to="fossil_energy_oil.Policy_Start_Year" from="Society.Policy_Start_Year"/>
-				<connect2 to="fossil_energy_oil.Policy_Start_Year" from="Society.Policy_Start_Year"/>
+				<connect to="fossil_energy_oil.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect2 to="fossil_energy_oil.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect to="fossil_energy_oil.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_oil_fossil_fuel_extraction_capital"/>
+				<connect2 to="fossil_energy_oil.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_oil_fossil_fuel_extraction_capital"/>
 				<connect to="Energy.Ceiling_of_Nuclear_Installation_Costs" from="nuclear_energy.Ceiling_of_Nuclear_Installation_Costs"/>
 				<connect2 to="Ceiling_of_Nuclear_Installation_Costs" from="nuclear_energy.Ceiling_of_Nuclear_Installation_Costs"/>
 				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_6" from="nuclear_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
@@ -1137,6 +1126,10 @@
 				<eqn>2</eqn>
 				<units>years</units>
 			</aux>
+			<aux name="Energy Balance Target">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -1186,7 +1179,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="654" isee:scroll_y="60" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="654" isee:scroll_y="240" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1373,7 +1366,6 @@ SO2 Emissions
 N2O Emissions
 CH4 Emissions
 Energy Balance</text_box>
-				<aux x="1115.33" y="829.33" name="Energy Balance Target"/>
 				<text_box uid="785" x="23.75" y="232.5" width="260" height="109.25">About the future policies WORST, BAU, GREEN
 WORST: Cost minimal provision of energy demanded with No investment in renewables above current levels
 BAU: Cost minimal provision of energy demanded
@@ -2500,6 +2492,7 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 					<from>SWITCH_couple_energy_and_climate</from>
 					<to>energy_demand</to>
 				</connector>
+				<aux x="1091.33" y="846.33" name="Energy Balance Target"/>
 				<alias font_style="italic" font_weight="bold" uid="1179" x="1967.88" y="23.5417" width="18" height="18">
 					<of>&quot;Primary_Fossil_Energy_(FUEL)&quot;</of>
 				</alias>
@@ -2599,7 +2592,7 @@ ELSE
 per_person_use_of_energy_policy</eqn>
 				<units>MWh/(p*year)</units>
 			</aux>
-			<aux name="per person use of energy policy">
+			<aux name="per person use of energy policy" access="input">
 				<eqn>TIME</eqn>
 				<gf>
 					<xscale min="2020" max="2100"/>
@@ -2705,7 +2698,7 @@ historical_demand_for_energy)</eqn>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="switch energy demand policy">
+			<aux name="switch energy demand policy" access="input">
 				<eqn>0</eqn>
 				<format precision="1" scale_by="auto"/>
 				<range min="0" max="1"/>
@@ -2800,7 +2793,7 @@ historical_demand_for_energy)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="2" isee:page_rows="3" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="64.2857" isee:scroll_y="87.1429" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2840,16 +2833,16 @@ historical_demand_for_energy)</eqn>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
 				<aux x="430.25" y="244.83" name="per person use of energy"/>
-				<aux x="403.5" y="329.83" name="per person use of energy policy"/>
+				<aux font_style="italic" font_weight="bold" x="483.5" y="429.83" name="per person use of energy policy"/>
 				<aux label_side="top" x="306.49" y="113.21" name="effect of GDP on\nper person\nuse of energy beta"/>
 				<aux label_side="top" x="220.79" y="131.21" name="effect of GDP on\nper person\nuse of energy alpha"/>
 				<aux label_side="left" label_angle="225" x="376.02" y="222.17" name="effect of GDP per person on\nper person use of energy"/>
-				<aux label_side="top" x="564.92" y="363.17" name="normal per person use of energy"/>
+				<aux label_side="bottom" x="564.92" y="363.17" name="normal per person use of energy"/>
 				<aux label_side="left" x="151.42" y="159.67" name="relative GDP per person"/>
 				<aux background="white" label_side="top" x="416.17" y="143.21" name="sensitivity of\nper person\nuse of energy to surface\ntemperature anomaly"/>
 				<aux background="white" label_side="right" x="470.67" y="227.38" name="effect of surface temperature\nanomaly on per\nperson use of energy"/>
 				<aux background="white" label_side="bottom" x="593.5" y="268.92" name="climate adjusted per person use of\nenergy"/>
-				<connector uid="5" angle="78.6901">
+				<connector uid="5" angle="106.058">
 					<from>per_person_use_of_energy_policy</from>
 					<to>per_person_use_of_energy</to>
 				</connector>
@@ -2882,12 +2875,12 @@ historical_demand_for_energy)</eqn>
 					<from>climate_adjusted_per_person_use_of_energy</from>
 					<to>demand_for_energy</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="126" y="227.38" name="GDP per person"/>
+				<aux x="126" y="227.38" name="GDP per person"/>
 				<connector uid="19" angle="69.4226">
 					<from>GDP_per_person</from>
 					<to>relative_GDP_per_person</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="771" y="407" name="Population"/>
+				<aux x="771" y="407" name="Population"/>
 				<connector uid="20" angle="80.2088">
 					<from>Population</from>
 					<to>demand_for_energy</to>
@@ -2897,7 +2890,7 @@ historical_demand_for_energy)</eqn>
 					<from>switch_for_all_climate_damage</from>
 					<to>effect_of_surface_temperature_anomaly_on_per_person_use_of_energy</to>
 				</connector>
-				<aux x="273.62" y="329.83" name="switch energy demand policy"/>
+				<aux font_style="italic" font_weight="bold" x="273.62" y="329.83" name="switch energy demand policy"/>
 				<connector uid="4" angle="17.4566">
 					<from>switch_energy_demand_policy</from>
 					<to>per_person_use_of_energy</to>
@@ -2908,7 +2901,7 @@ historical_demand_for_energy)</eqn>
 					<to>per_person_use_of_energy</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="708" y="125" name="switch only economy energy damage"/>
-				<connector uid="24" angle="162.897">
+				<connector uid="24" angle="199.654">
 					<from>switch_only_economy_energy_damage</from>
 					<to>effect_of_surface_temperature_anomaly_on_per_person_use_of_energy</to>
 				</connector>
@@ -2931,8 +2924,8 @@ historical_demand_for_energy)</eqn>
 					<from>effect_of_GDP_on_per_person_use_of_energy_beta</from>
 					<to>effect_of_GDP_per_person_on_per_person_use_of_energy</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="607.727" y="77.7273" name="Surface Temperature Anomaly"/>
-				<connector uid="33" angle="185.711">
+				<aux x="604.87" y="69.1559" name="Surface Temperature Anomaly"/>
+				<connector uid="33" angle="229.697">
 					<from>Surface_Temperature_Anomaly</from>
 					<to>effect_of_surface_temperature_anomaly_on_per_person_use_of_energy</to>
 				</connector>
@@ -3841,6 +3834,7 @@ adaptive_energy_investments_differntiating_factor * Differentiating_Relative_Ene
 				<element subscript="Nuclear, 9">
 					<eqn>1.64662950208263</eqn>
 				</element>
+				<range min="0.000001" max="2000"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="adjusted cost">
@@ -3860,81 +3854,16 @@ ELSE
 				<eqn>(TIME-STARTTIME)/(2020-STARTTIME)</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="future cost adjustment" access="output" isee:autocreated="true">
+			<aux name="future cost adjustment" access="output" throughput="true" isee:autocreated="true">
 				<dimensions>
 					<dim name="EnergySource"/>
 				</dimensions>
-				<element subscript="Coal_fuel_extraction">
-					<gf>
-						<xscale min="2020" max="2100"/>
-						<yscale min="0" max="10"/>
-						<ypts>0,1.859,3.499,4.947,6.225,7.352,8.347,9.225,10</ypts>
-					</gf>
-				</element>
-				<element subscript="Coal_energy_conversion">
-					<gf>
-						<xscale min="2020" max="2100"/>
-						<yscale min="0" max="10"/>
-						<ypts>0,1.859,3.499,4.947,6.225,7.352,8.347,9.225,10</ypts>
-					</gf>
-				</element>
-				<element subscript="Oil_fuel_extraction">
-					<gf>
-						<xscale min="2020" max="2100"/>
-						<yscale min="0" max="10"/>
-						<ypts>0,1.859,3.499,4.947,6.225,7.352,8.347,9.225,10</ypts>
-					</gf>
-				</element>
-				<element subscript="Oil_energy_conversion">
-					<gf>
-						<xscale min="2020" max="2100"/>
-						<yscale min="0" max="10"/>
-						<ypts>0,1.859,3.499,4.947,6.225,7.352,8.347,9.225,10</ypts>
-					</gf>
-				</element>
-				<element subscript="Gas_fuel_extraction">
-					<gf>
-						<xscale min="2020" max="2100"/>
-						<yscale min="0" max="10"/>
-						<ypts>0,1.859,3.499,4.947,6.225,7.352,8.347,9.225,10</ypts>
-					</gf>
-				</element>
-				<element subscript="Gas_energy_conversion">
-					<gf>
-						<xscale min="2020" max="2100"/>
-						<yscale min="0" max="10"/>
-						<ypts>0,1.859,3.499,4.947,6.225,7.352,8.347,9.225,10</ypts>
-					</gf>
-				</element>
-				<element subscript="Solar_and_Wind">
-					<gf>
-						<xscale min="2020" max="2100"/>
-						<yscale min="-1" max="-0.3"/>
-						<ypts>-0.015,-0.015,-0.015,-0.015,-0.015,-0.015,-0.015,-0.015,-0.015</ypts>
-					</gf>
-				</element>
-				<element subscript="Hydropower">
-					<gf>
-						<xscale min="2020" max="2100"/>
-						<yscale min="0" max="10"/>
-						<ypts>0,0,0,0,0,0,0,0,0</ypts>
-					</gf>
-				</element>
-				<element subscript="Other">
-					<gf>
-						<xscale min="2020" max="2100"/>
-						<yscale min="0" max="10"/>
-						<ypts>0,0,0,0,0,0,0,0,0</ypts>
-					</gf>
-				</element>
-				<element subscript="Nuclear">
-					<gf>
-						<xscale min="2020" max="2100"/>
-						<yscale min="-1.5" max="0"/>
-						<ypts>-1.5,-1.313,-1.125,-0.9375,-0.75,-0.5625,-0.375,-0.1875,0</ypts>
-					</gf>
-				</element>
 				<eqn>TIME</eqn>
+				<gf>
+					<xscale min="2020" max="2100"/>
+					<yscale min="0" max="10"/>
+					<ypts>0,1.859,3.499,4.947,6.225,7.352,8.347,9.225,10</ypts>
+				</gf>
 				<units>$*Years/kWh</units>
 			</aux>
 			<aux name="interpolated historical cost adjustment">
@@ -4017,7 +3946,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="7" isee:page_rows="8" isee:scroll_x="540" isee:scroll_y="660" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="7" isee:page_rows="8" isee:scroll_x="433" isee:scroll_y="943" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4937,7 +4866,7 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 					</from>
 					<to>adjusted_cost</to>
 				</connector>
-				<aux x="1142.5" y="1309.14" name="future cost adjustment"/>
+				<aux font_style="italic" font_weight="bold" x="1142.5" y="1309.14" name="future cost adjustment"/>
 				<connector uid="483" angle="342.122">
 					<from>future_cost_adjustment</from>
 					<to>adjusted_cost</to>
@@ -5111,10 +5040,10 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="Damages.Surface_Temperature_Anomaly" from="Surface_Temperature_Anomaly"/>
 				<connect to="Damages.SWITCH_couple_energy_and_climate" from="Energy.SWITCH_couple_energy_and_climate"/>
 				<connect2 to="Damages.SWITCH_couple_energy_and_climate" from="Energy.SWITCH_couple_energy_and_climate"/>
-				<connect to="Damages.switch_for_all_climate_damage" from="Society.switch_for_all_climate_damage"/>
-				<connect2 to="Damages.switch_for_all_climate_damage" from="Society.switch_for_all_climate_damage"/>
-				<connect to="Damages.switch_only_economy_energy_damage" from="Society.switch_only_economy_energy_damage"/>
-				<connect2 to="Damages.switch_only_economy_energy_damage" from="Society.switch_only_economy_energy_damage"/>
+				<connect to="Damages.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
+				<connect2 to="Damages.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
+				<connect to="Damages.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
+				<connect2 to="Damages.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
 			</module>
 			<module name="fossil energy" isee:label="">
 				<format scale_by="auto"/>
@@ -5164,8 +5093,10 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="fossil_energy_coal.Investments_in_Fossil_Energy_Capital" from="energy_investments.Coal_Investments_in_Fossil_Energy_Capital"/>
 				<connect to="fossil_energy_coal.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Coal_Investments_in_Fossil_Fuel_Extraction_Capital"/>
 				<connect2 to="fossil_energy_coal.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Coal_Investments_in_Fossil_Fuel_Extraction_Capital"/>
-				<connect to="fossil_energy_coal.Policy_Start_Year" from="Society.Policy_Start_Year"/>
-				<connect2 to="fossil_energy_coal.Policy_Start_Year" from="Society.Policy_Start_Year"/>
+				<connect to="fossil_energy_coal.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect2 to="fossil_energy_coal.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect to="fossil_energy_coal.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_coal_fossil_fuel_extraction_capital"/>
+				<connect2 to="fossil_energy_coal.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_coal_fossil_fuel_extraction_capital"/>
 				<connect to="Energy.carbon_intensity_in_btu_2" from="fossil_energy_gas.carbon_intensity_in_btu"/>
 				<connect2 to="Energy.carbon_intensity_in_btu_2" from="fossil_energy_gas.carbon_intensity_in_btu"/>
 				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_1" from="fossil_energy_gas.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
@@ -5198,8 +5129,10 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="fossil_energy_gas.Investments_in_Fossil_Energy_Capital" from="energy_investments.Gas_Investments_in_Fossil_Energy_Capital"/>
 				<connect to="fossil_energy_gas.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Gas_Investments_in_Fossil_Fuel_Extraction_Capital"/>
 				<connect2 to="fossil_energy_gas.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Gas_Investments_in_Fossil_Fuel_Extraction_Capital"/>
-				<connect to="fossil_energy_gas.Policy_Start_Year" from="Society.Policy_Start_Year"/>
-				<connect2 to="fossil_energy_gas.Policy_Start_Year" from="Society.Policy_Start_Year"/>
+				<connect to="fossil_energy_gas.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect2 to="fossil_energy_gas.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect to="fossil_energy_gas.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_gas_fossil_fuel_extraction_capital"/>
+				<connect2 to="fossil_energy_gas.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_gas_fossil_fuel_extraction_capital"/>
 				<connect to="Energy.carbon_intensity_in_btu_1" from="fossil_energy_oil.carbon_intensity_in_btu"/>
 				<connect2 to="Energy.carbon_intensity_in_btu_1" from="fossil_energy_oil.carbon_intensity_in_btu"/>
 				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_2" from="fossil_energy_oil.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
@@ -5232,8 +5165,10 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="fossil_energy_oil.Investments_in_Fossil_Energy_Capital" from="energy_investments.Oil_Investments_in_Fossil_Energy_Capital"/>
 				<connect to="fossil_energy_oil.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Oil_Investments_in_Fossil_Fuel_Extraction_Capital"/>
 				<connect2 to="fossil_energy_oil.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Oil_Investments_in_Fossil_Fuel_Extraction_Capital"/>
-				<connect to="fossil_energy_oil.Policy_Start_Year" from="Society.Policy_Start_Year"/>
-				<connect2 to="fossil_energy_oil.Policy_Start_Year" from="Society.Policy_Start_Year"/>
+				<connect to="fossil_energy_oil.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect2 to="fossil_energy_oil.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect to="fossil_energy_oil.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_oil_fossil_fuel_extraction_capital"/>
+				<connect2 to="fossil_energy_oil.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_oil_fossil_fuel_extraction_capital"/>
 			</module>
 			<module name="nuclear energy" isee:label="">
 				<format scale_by="auto"/>
@@ -5469,7 +5404,7 @@ This is total energy production of both fossil and renewable</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="342" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -5524,7 +5459,7 @@ This is total energy production of both fossil and renewable</doc>
 					<from>Nuclear_Energy_Output</from>
 					<to>Nuclear_Energy_Output_Share</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="127.458" y="343.917" name="Surface Temperature Anomaly"/>
+				<aux x="127.458" y="343.917" name="Surface Temperature Anomaly"/>
 				<connector uid="22" angle="0">
 					<from>Surface_Temperature_Anomaly</from>
 					<to>Damages</to>
@@ -5812,7 +5747,7 @@ historical_surface_temperature_anomaly</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" zoom="200" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:scroll_x="13.5" isee:scroll_y="21.5" zoom="200" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -5946,8 +5881,10 @@ historical_surface_temperature_anomaly</eqn>
 				<connect2 to="fossil_energy_coal.Investments_in_Fossil_Energy_Capital" from="energy_investments.Coal_Investments_in_Fossil_Energy_Capital"/>
 				<connect to="fossil_energy_coal.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Coal_Investments_in_Fossil_Fuel_Extraction_Capital"/>
 				<connect2 to="fossil_energy_coal.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Coal_Investments_in_Fossil_Fuel_Extraction_Capital"/>
-				<connect to="fossil_energy_coal.Policy_Start_Year" from="Society.Policy_Start_Year"/>
-				<connect2 to="fossil_energy_coal.Policy_Start_Year" from="Society.Policy_Start_Year"/>
+				<connect to="fossil_energy_coal.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect2 to="fossil_energy_coal.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect to="fossil_energy_coal.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_coal_fossil_fuel_extraction_capital"/>
+				<connect2 to="fossil_energy_coal.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_coal_fossil_fuel_extraction_capital"/>
 			</module>
 			<module name="fossil energy oil" isee:label="">
 				<format scale_by="auto"/>
@@ -5993,8 +5930,10 @@ historical_surface_temperature_anomaly</eqn>
 				<connect2 to="fossil_energy_oil.Investments_in_Fossil_Energy_Capital" from="energy_investments.Oil_Investments_in_Fossil_Energy_Capital"/>
 				<connect to="fossil_energy_oil.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Oil_Investments_in_Fossil_Fuel_Extraction_Capital"/>
 				<connect2 to="fossil_energy_oil.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Oil_Investments_in_Fossil_Fuel_Extraction_Capital"/>
-				<connect to="fossil_energy_oil.Policy_Start_Year" from="Society.Policy_Start_Year"/>
-				<connect2 to="fossil_energy_oil.Policy_Start_Year" from="Society.Policy_Start_Year"/>
+				<connect to="fossil_energy_oil.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect2 to="fossil_energy_oil.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect to="fossil_energy_oil.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_oil_fossil_fuel_extraction_capital"/>
+				<connect2 to="fossil_energy_oil.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_oil_fossil_fuel_extraction_capital"/>
 			</module>
 			<module name="fossil energy gas" isee:label="">
 				<format scale_by="auto"/>
@@ -6040,8 +5979,10 @@ historical_surface_temperature_anomaly</eqn>
 				<connect2 to="fossil_energy_gas.Investments_in_Fossil_Energy_Capital" from="energy_investments.Gas_Investments_in_Fossil_Energy_Capital"/>
 				<connect to="fossil_energy_gas.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Gas_Investments_in_Fossil_Fuel_Extraction_Capital"/>
 				<connect2 to="fossil_energy_gas.Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Gas_Investments_in_Fossil_Fuel_Extraction_Capital"/>
-				<connect to="fossil_energy_gas.Policy_Start_Year" from="Society.Policy_Start_Year"/>
-				<connect2 to="fossil_energy_gas.Policy_Start_Year" from="Society.Policy_Start_Year"/>
+				<connect to="fossil_energy_gas.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect2 to="fossil_energy_gas.Policy_Start_Year" from="Government_Regulations.start_year"/>
+				<connect to="fossil_energy_gas.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_gas_fossil_fuel_extraction_capital"/>
+				<connect2 to="fossil_energy_gas.rate_of_decommissioning_fossil_fuel_extraction_capital" from="Government_Regulations.rate_of_decommissioning_gas_fossil_fuel_extraction_capital"/>
 			</module>
 			<aux name="Secondary Fossil Energy Output 3" access="input">
 				<dimensions>
@@ -6221,7 +6162,7 @@ historical_surface_temperature_anomaly</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" zoom="200" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" zoom="200" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -6594,6 +6535,8 @@ value in MIND 0.5</doc>
 				<units>GtC</units>
 			</stock>
 			<flow name="Fossil Fuel Extraction Carbon" access="output" isee:autocreated="true">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -6771,6 +6714,7 @@ value 0.05 * 100t$ taken from gams code
 MIND 2005 Paper lists 5 trillion USD for 1995
 </doc>
 				<eqn>1284300635083.46</eqn>
+				<range min="1000000000" max="50000000000000"/>
 				<units>$</units>
 			</aux>
 			<flow name="Investment in Fossil\nFuel Extraction Capital" access="output" isee:autocreated="true">
@@ -6792,11 +6736,14 @@ MIND Code: 1</doc>
 				<doc>${Calibrated,Calibration Parameter}
 MIND 2005 paper lists 6 trillion USD as the initial value for 1995</doc>
 				<eqn>325143280247.444</eqn>
+				<range min="1000000000" max="5000000000000"/>
 				<units>$</units>
 			</aux>
 			<aux name="initial fossil\nextraction knowledge">
-				<doc>value from MIND</doc>
+				<doc>${Calibration Parameter}
+value from MIND</doc>
 				<eqn>100.62801075018</eqn>
+				<range min="90" max="160"/>
 				<units>extractionknowledge</units>
 			</aux>
 			<stock name="Fossil Extraction\nAccumulated Knowledge">
@@ -6841,10 +6788,11 @@ MIND 2005 paper lists 6 trillion USD as the initial value for 1995</doc>
 				<doc>${Calibration Parameter}
 </doc>
 				<eqn>0.00177120414219463</eqn>
+				<range min="0.0001" max="0.003"/>
 				<units>1/extractionknowledge/Year</units>
 			</aux>
 			<aux name="conversion efficiency\nof fossil fuels to\nsecondary fossil energy" access="output" isee:autocreated="true">
-				<doc>${}
+				<doc>${Calibrated}
 </doc>
 				<dimensions>
 					<dim name="Run"/>
@@ -6946,6 +6894,7 @@ EPA (2023). Inventory of U.S. Greenhouse Gas Emissions and Sinks: 1990-2021. Ann
 
 https://www.epa.gov/system/files/documents/2023-04/US-GHG-Inventory-2023-Annex-2-Emissions-Fossil-Fuel-Combustion.pdf</doc>
 				<eqn>0.0264493862489222</eqn>
+				<range min="0.01" max="0.03"/>
 				<units>GtC/Qbtu</units>
 			</aux>
 			<aux name="Qbtu to zJ">
@@ -7085,7 +7034,7 @@ https://en.wikipedia.org/wiki/British_thermal_unit</doc>
 				<range min="2000" max="2200"/>
 				<units>year</units>
 			</aux>
-			<aux name="rate of decommissioning fossil fuel extraction capital">
+			<aux name="rate of decommissioning fossil fuel extraction capital" access="input">
 				<eqn>TIME</eqn>
 				<gf>
 					<xscale min="2020" max="2100"/>
@@ -7163,7 +7112,7 @@ share_of_primary_energy_in_fossil_energy*
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="319.375" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="216.25" isee:scroll_y="1.875" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -7687,7 +7636,7 @@ share_of_primary_energy_in_fossil_energy*
 					<from>TFP_Ramp</from>
 					<to>Total_Factor_Productivity_Fossil_Energy</to>
 				</connector>
-				<aux x="441.143" y="368.268" name="rate of decommissioning fossil fuel extraction capital"/>
+				<aux font_style="italic" font_weight="bold" x="441.143" y="368.268" name="rate of decommissioning fossil fuel extraction capital"/>
 				<aux font_style="italic" font_weight="bold" x="473.286" y="267.554" name="Policy Start Year"/>
 				<connector uid="148" angle="312.748">
 					<from>Policy_Start_Year</from>
@@ -7790,6 +7739,8 @@ value in MIND 0.5</doc>
 				<units>GtC</units>
 			</stock>
 			<flow name="Fossil Fuel Extraction Carbon" access="output" isee:autocreated="true">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -7967,6 +7918,7 @@ value 0.05 * 100t$ taken from gams code
 MIND 2005 Paper lists 5 trillion USD for 1995
 </doc>
 				<eqn>1988520830978.01</eqn>
+				<range min="1000000000" max="50000000000000"/>
 				<units>$</units>
 			</aux>
 			<flow name="Investment in Fossil\nFuel Extraction Capital" access="output" isee:autocreated="true">
@@ -7988,11 +7940,14 @@ MIND Code: 1</doc>
 				<doc>${Calibrated,Calibration Parameter}
 MIND 2005 paper lists 6 trillion USD as the initial value for 1995</doc>
 				<eqn>247355835964.494</eqn>
+				<range min="1000000000" max="5000000000000"/>
 				<units>$</units>
 			</aux>
 			<aux name="initial fossil\nextraction knowledge">
-				<doc>value from MIND</doc>
+				<doc>${Calibration Parameter}
+value from MIND</doc>
 				<eqn>127.05822244485</eqn>
+				<range min="90" max="160"/>
 				<units>extractionknowledge</units>
 			</aux>
 			<stock name="Fossil Extraction\nAccumulated Knowledge">
@@ -8037,10 +7992,11 @@ MIND 2005 paper lists 6 trillion USD as the initial value for 1995</doc>
 				<doc>${Calibration Parameter}
 </doc>
 				<eqn>0.000340426522970275</eqn>
+				<range min="0.0001" max="0.003"/>
 				<units>1/extractionknowledge/Year</units>
 			</aux>
 			<aux name="conversion efficiency\nof fossil fuels to\nsecondary fossil energy" access="output" isee:autocreated="true">
-				<doc>${}
+				<doc>${Calibrated}
 </doc>
 				<dimensions>
 					<dim name="Run"/>
@@ -8142,6 +8098,7 @@ EPA (2023). Inventory of U.S. Greenhouse Gas Emissions and Sinks: 1990-2021. Ann
 
 https://www.epa.gov/system/files/documents/2023-04/US-GHG-Inventory-2023-Annex-2-Emissions-Fossil-Fuel-Combustion.pdf</doc>
 				<eqn>0.0156774848563482</eqn>
+				<range min="0.01" max="0.03"/>
 				<units>GtC/Qbtu</units>
 			</aux>
 			<aux name="Qbtu to zJ">
@@ -8281,7 +8238,7 @@ https://en.wikipedia.org/wiki/British_thermal_unit</doc>
 				<range min="2000" max="2200"/>
 				<units>year</units>
 			</aux>
-			<aux name="rate of decommissioning fossil fuel extraction capital">
+			<aux name="rate of decommissioning fossil fuel extraction capital" access="input">
 				<eqn>TIME</eqn>
 				<gf>
 					<xscale min="2020" max="2100"/>
@@ -8359,7 +8316,7 @@ share_of_primary_energy_in_fossil_energy*
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="170" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -8862,7 +8819,7 @@ share_of_primary_energy_in_fossil_energy*
 					<from>TFP_Ramp</from>
 					<to>Total_Factor_Productivity_Fossil_Energy</to>
 				</connector>
-				<aux x="432.143" y="382.143" name="rate of decommissioning fossil fuel extraction capital"/>
+				<aux font_style="italic" font_weight="bold" x="432.143" y="382.143" name="rate of decommissioning fossil fuel extraction capital"/>
 				<connector uid="125" angle="7.94347">
 					<from>rate_of_decommissioning_fossil_fuel_extraction_capital</from>
 					<to>Decomisioning_of_fossil_fuel_extraction_capital</to>
@@ -8965,6 +8922,8 @@ value in MIND 0.5</doc>
 				<units>GtC</units>
 			</stock>
 			<flow name="Fossil Fuel Extraction Carbon" access="output" isee:autocreated="true">
+				<doc>${Calibrated}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -9142,6 +9101,7 @@ value 0.05 * 100t$ taken from gams code
 MIND 2005 Paper lists 5 trillion USD for 1995
 </doc>
 				<eqn>8818356306454.84</eqn>
+				<range min="1000000000" max="50000000000000"/>
 				<units>$</units>
 			</aux>
 			<flow name="Investment in Fossil\nFuel Extraction Capital" access="output" isee:autocreated="true">
@@ -9163,11 +9123,14 @@ MIND Code: 1</doc>
 				<doc>${Calibrated,Calibration Parameter}
 MIND 2005 paper lists 6 trillion USD as the initial value for 1995</doc>
 				<eqn>521018947104.162</eqn>
+				<range min="1000000000" max="5000000000000"/>
 				<units>$</units>
 			</aux>
 			<aux name="initial fossil\nextraction knowledge">
-				<doc>value from MIND</doc>
+				<doc>${Calibration Parameter}
+value from MIND</doc>
 				<eqn>151.117578870786</eqn>
+				<range min="90" max="160"/>
 				<units>extractionknowledge</units>
 			</aux>
 			<stock name="Fossil Extraction\nAccumulated Knowledge">
@@ -9212,10 +9175,11 @@ MIND 2005 paper lists 6 trillion USD as the initial value for 1995</doc>
 				<doc>${Calibration Parameter}
 </doc>
 				<eqn>0.000209715322232346</eqn>
+				<range min="0.0001" max="0.003"/>
 				<units>1/extractionknowledge/Year</units>
 			</aux>
 			<aux name="conversion efficiency\nof fossil fuels to\nsecondary fossil energy" access="output" isee:autocreated="true">
-				<doc>${}
+				<doc>${Calibrated}
 </doc>
 				<dimensions>
 					<dim name="Run"/>
@@ -9317,6 +9281,7 @@ EPA (2023). Inventory of U.S. Greenhouse Gas Emissions and Sinks: 1990-2021. Ann
 
 https://www.epa.gov/system/files/documents/2023-04/US-GHG-Inventory-2023-Annex-2-Emissions-Fossil-Fuel-Combustion.pdf</doc>
 				<eqn>0.0196955587751192</eqn>
+				<range min="0.01" max="0.03"/>
 				<units>GtC/Qbtu</units>
 			</aux>
 			<aux name="Qbtu to zJ">
@@ -9456,7 +9421,7 @@ https://en.wikipedia.org/wiki/British_thermal_unit</doc>
 				<range min="2000" max="2200"/>
 				<units>year</units>
 			</aux>
-			<aux name="rate of decommissioning fossil fuel extraction capital">
+			<aux name="rate of decommissioning fossil fuel extraction capital" access="input">
 				<eqn>TIME</eqn>
 				<gf>
 					<xscale min="2020" max="2100"/>
@@ -9534,7 +9499,7 @@ share_of_primary_energy_in_fossil_energy*
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="300" isee:scroll_y="142.5" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="210.625" isee:scroll_y="21.25" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -10054,7 +10019,7 @@ share_of_primary_energy_in_fossil_energy*
 					<from>TFP_Ramp</from>
 					<to>Total_Factor_Productivity_Fossil_Energy</to>
 				</connector>
-				<aux x="435.768" y="387.643" name="rate of decommissioning fossil fuel extraction capital"/>
+				<aux font_style="italic" font_weight="bold" x="435.768" y="387.643" name="rate of decommissioning fossil fuel extraction capital"/>
 				<aux font_style="italic" font_weight="bold" x="467.911" y="286.929" name="Policy Start Year"/>
 				<connector uid="133" angle="326.088">
 					<from>rate_of_decommissioning_fossil_fuel_extraction_capital</from>
@@ -10868,12 +10833,14 @@ Data from 2010 to 2021 specified on the range of 1600$/kW </doc>
 				<doc>${Calibrated,Calibration Parameter}
 </doc>
 				<eqn>38.2026351380751</eqn>
+				<range min="10" max="5000"/>
 				<units>$/kW</units>
 			</aux>
 			<aux name="Slope of Hydropwer\nInstllation Costs wrt. Capacity" access="output" isee:autocreated="true">
 				<doc>${Calibrated,Calibration Parameter}
 </doc>
 				<eqn>0.00000167630608920776</eqn>
+				<range min="1e-7" max="0.0001"/>
 				<units>$/kW^2</units>
 			</aux>
 			<flow name="Hydropower Energy\nCapital Damaged due to STA">
@@ -11244,18 +11211,21 @@ Default 5% rate</doc>
 				<doc>${Calibration Parameter}
 </doc>
 				<eqn>15609.9055272291</eqn>
+				<range min="10000" max="100000"/>
 				<units>$/kW</units>
 			</aux>
 			<aux name="Floor of Other\nInstallation Costs">
 				<doc>${Calibration Parameter}
 </doc>
 				<eqn>1774.41850303409</eqn>
+				<range min="100" max="10000"/>
 				<units>$/kW</units>
 			</aux>
 			<aux name="Slope of Other Installation Costs">
 				<doc>${Calibration Parameter}
 </doc>
 				<eqn>-311.58870378643</eqn>
+				<range min="-10000" max="1"/>
 				<units>$/KW/Year</units>
 			</aux>
 			<flow name="Other Energy\nCapital Damaged due to STA">
@@ -11655,21 +11625,24 @@ Calibrate to time series of ren cap</doc>
 				<units>$/kW</units>
 			</aux>
 			<aux name="Renewable Energy\nLearning Rate">
-				<doc>${Assumption}
+				<doc>${Assumption,Calibration Parameter}
 </doc>
 				<eqn>0.145108758174078</eqn>
+				<range min="0.1" max="0.4"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Renewable Energy\nFloor Costs" access="output" isee:autocreated="true">
 				<doc>${Calibrated,Calibration Parameter}
 </doc>
 				<eqn>236.579600159497</eqn>
+				<range min="1" max="500"/>
 				<units>$/kW</units>
 			</aux>
 			<aux name="Initial Renewable Energy Installation Costs" access="output" isee:autocreated="true">
 				<doc>${Calibrated,Calibration Parameter}
 Calibrate to the initial value of the time series on renewable reducible installation costs</doc>
 				<eqn>5435.79215392358</eqn>
+				<range min="100" max="100000"/>
 				<units>$/kW</units>
 			</aux>
 			<stock name="Cumulative Renewable Energy\nCapacity Construction">
@@ -11740,9 +11713,10 @@ With the time series of total renewable energy capcity we can calculate the entr
 				<units>dmnl</units>
 			</aux>
 			<aux name="stepping on toes parameter\nin renewable energy sector">
-				<doc>${Assumption}
+				<doc>${Assumption,Calibration Parameter}
 </doc>
 				<eqn>0.464074835328884</eqn>
+				<range min="0.1" max="0.5"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Renewable Energy\nReducible Installation\nCost component">
