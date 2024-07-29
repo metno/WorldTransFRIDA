@@ -317,12 +317,20 @@
 				<connect2 to="Ozone_Forcing.Surface_Temperature" from="Energy_Balance_Model.Surface_Temperature"/>
 				<connect to="Crop.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Crop.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Demographics.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Demographics.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Emissions.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Emissions.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="energy_demand.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="energy_demand.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Freshwater.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Freshwater.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Sea_Level.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Sea_Level.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Soil.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Soil.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Temperature.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Energy_Balance_Model.selected_climate_case" from="Climate_Units.selected_climate_case"/>
@@ -815,7 +823,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="134" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1595,14 +1603,14 @@ Calibration Parameter: CO2 from energy and industry</doc>
 			<aux name="max HFC134a eq per person">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>10.3062885988503</eqn>
+				<eqn>4.00751184392</eqn>
 				<range min="0" max="20"/>
 				<units>kt/mp/year</units>
 			</aux>
 			<aux name="sensitivity of HFC134a eq per\nperson to energy consumption\nper capita">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.000964538596783577</eqn>
+				<eqn>0.0013342611781581</eqn>
 				<range min="0" max="2"/>
 				<units>dmnl</units>
 			</aux>
@@ -1613,26 +1621,19 @@ Calibration Parameter: CO2 from energy and industry</doc>
 				<eqn>max_HFC134a_eq_per_person*(1-EXP(-(energy_consumption_per_capita/baseline_energy_consumption_per_capita)*sensitivity_of_HFC134a_eq_per_person_to_energy_consumption_per_capita*effect_of_STA_on_HFC134a_eq_emissions_per_person))</eqn>
 				<units>kt/mp/year</units>
 			</aux>
-			<aux name="Surface Temperature Anomaly" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>deg C</units>
-			</aux>
 			<aux name="effect of STA on\nHFC134a eq emissions per\nperson">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>1+(sensitivity_of_effect_of_STA_on_HFC134a_eq_emissions_per_person*(Surface_Temperature_Anomaly/INIT(Surface_Temperature_Anomaly) - 1)*switch_for_all_climate_damage)</eqn>
+				<eqn>1+((slope_of_effect_of_STA_on_HFC134a_eq_emissions_per_person*Surface_Temperature_Anomaly)^sensitivity_of_effect_of_STA_on_HFC134a_eq_emissions_per_person)*switch_for_all_climate_damage</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="sensitivity of effect of STA on\nHFC134a eq emissions per\nperson">
+			<aux name="slope of effect of STA on\nHFC134a eq emissions per\nperson">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>2.66513571193607</eqn>
+				<eqn>3.15579235111019</eqn>
 				<range min="0" max="5"/>
-				<units>dmnl</units>
+				<units>1/deg C</units>
 			</aux>
 			<aux name="Total Energy Output" access="input">
 				<dimensions>
@@ -2059,6 +2060,18 @@ coupling_factor_of_fossil_fuels_and_SO2_emissions[Oil]</eqn>
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
+			<aux name="Surface Temperature Anomaly" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>deg C</units>
+			</aux>
+			<aux name="sensitivity of effect of STA on\nHFC134a eq emissions per\nperson">
+				<eqn>1.82735202240592</eqn>
+				<range min="1" max="2"/>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -2108,7 +2121,7 @@ coupling_factor_of_fossil_fuels_and_SO2_emissions[Oil]</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="712" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="506" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2478,19 +2491,14 @@ coupling_factor_of_fossil_fuels_and_SO2_emissions[Oil]</eqn>
 					<from>Population</from>
 					<to>HFC134a_eq_emissions</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="777.5" y="353.333" name="Surface Temperature Anomaly"/>
 				<aux x="939.167" y="384" name="effect of STA on\nHFC134a eq emissions per\nperson"/>
-				<connector uid="71" angle="349.259">
-					<from>Surface_Temperature_Anomaly</from>
-					<to>effect_of_STA_on_HFC134a_eq_emissions_per_person</to>
-				</connector>
 				<connector uid="72" angle="354.804">
 					<from>effect_of_STA_on_HFC134a_eq_emissions_per_person</from>
 					<to>HFC134a_eq_emissions_per_person</to>
 				</connector>
-				<aux x="809.95" y="439" name="sensitivity of effect of STA on\nHFC134a eq emissions per\nperson"/>
+				<aux x="809.95" y="439" name="slope of effect of STA on\nHFC134a eq emissions per\nperson"/>
 				<connector uid="73" angle="23.0566">
-					<from>sensitivity_of_effect_of_STA_on_HFC134a_eq_emissions_per_person</from>
+					<from>slope_of_effect_of_STA_on_HFC134a_eq_emissions_per_person</from>
 					<to>effect_of_STA_on_HFC134a_eq_emissions_per_person</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1345" y="278.333" name="Total Energy Output"/>
@@ -2869,6 +2877,16 @@ coupling_factor_of_fossil_fuels_and_SO2_emissions[Oil]</eqn>
 				<aux font_style="italic" font_weight="bold" x="893" y="215" name="switch for all climate damage"/>
 				<connector uid="154" angle="295.907">
 					<from>switch_for_all_climate_damage</from>
+					<to>effect_of_STA_on_HFC134a_eq_emissions_per_person</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="743" y="351" name="Surface Temperature Anomaly"/>
+				<connector uid="155" angle="354.644">
+					<from>Surface_Temperature_Anomaly</from>
+					<to>effect_of_STA_on_HFC134a_eq_emissions_per_person</to>
+				</connector>
+				<aux x="832" y="304" name="sensitivity of effect of STA on\nHFC134a eq emissions per\nperson"/>
+				<connector uid="156" angle="333.435">
+					<from>sensitivity_of_effect_of_STA_on_HFC134a_eq_emissions_per_person</from>
 					<to>effect_of_STA_on_HFC134a_eq_emissions_per_person</to>
 				</connector>
 				<alias font_style="italic" uid="33" x="380.167" y="26" width="18" height="18">
@@ -6439,7 +6457,7 @@ kappa3 in Cummins et al 2020 https://doi.org/10.1175/JCLI-D-19-0589.1</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="246" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -6503,7 +6521,7 @@ kappa3 in Cummins et al 2020 https://doi.org/10.1175/JCLI-D-19-0589.1</doc>
 				<aux x="748" y="140.583" name="Surface Temperature 1850 to\n1900 offset relative to 1750"/>
 				<aux x="589.667" y="460.003" name="Initial Thermocline\nOcean Temperature"/>
 				<aux x="759.833" y="245.333" name="UNIT Celcius to Kelvin"/>
-				<aux x="854.833" y="195.083" name="Surface Temperature Anomaly"/>
+				<aux x="881.833" y="191.503" name="Surface Temperature Anomaly"/>
 				<aux x="201.5" y="364.503" name="Heat Capacity of Thermocline Ocean"/>
 				<aux x="208" y="711.333" name="Heat Capacity of Deep Ocean"/>
 				<aux x="201.5" y="114.503" name="Heat Capacity of\nLand &amp; Ocean Surface"/>
@@ -6511,11 +6529,11 @@ kappa3 in Cummins et al 2020 https://doi.org/10.1175/JCLI-D-19-0589.1</doc>
 				<aux x="252.5" y="442.003" name="Deep Ocean Heat Uptake Efficacy\nFactor"/>
 				<aux x="281" y="294.253" name="Heat Transfer Coefficient\nbetween Surface and Thermocline Ocean"/>
 				<aux x="295.667" y="536.503" name="Heat Transfer Coefficient\nbetween Thermocline Ocean\nand Deep Ocean"/>
-				<connector uid="1" angle="332.972">
+				<connector uid="1" angle="339.169">
 					<from>Surface_Temperature_1850_to_1900_offset_relative_to_1750</from>
 					<to>Surface_Temperature_Anomaly</to>
 				</connector>
-				<connector uid="2" angle="27.8765">
+				<connector uid="2" angle="23.8085">
 					<from>UNIT_Celcius_to_Kelvin</from>
 					<to>Surface_Temperature_Anomaly</to>
 				</connector>
@@ -6594,7 +6612,7 @@ kappa3 in Cummins et al 2020 https://doi.org/10.1175/JCLI-D-19-0589.1</doc>
 					<from>Total_Effective_Radiative_Forcing</from>
 					<to>&quot;Change_in_Land_&amp;_Ocean_Surface_Temperature&quot;</to>
 				</connector>
-				<connector uid="21" angle="1.29004">
+				<connector uid="21" angle="0">
 					<from>Surface_Temperature</from>
 					<to>Surface_Temperature_Anomaly</to>
 				</connector>
@@ -6617,7 +6635,7 @@ kappa3 in Cummins et al 2020 https://doi.org/10.1175/JCLI-D-19-0589.1</doc>
 					</from>
 					<to>Change_in_Deep_Ocean_Temperature</to>
 				</connector>
-				<connector uid="27" angle="300.984">
+				<connector uid="27" angle="311.46">
 					<from>
 						<alias uid="28"/>
 					</from>

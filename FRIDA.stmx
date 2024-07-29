@@ -92,19 +92,20 @@
 			<isee:variable type="uniform" min="0.1" max="1.1" name="Finance.sensitivity_of_effect_of_crop_balance_on_investment_growth[1]" num_samples="5"/>
 			<isee:variable starting_value="1" ending_value="100" type="incremental" min="1" max="100" seed="12345" name="Climate_Units.selected_climate_case[1]" num_samples="100"/>
 			<isee:variable type="uniform" min="0.01" max="0.1" name="Damages.Slope_of_Capital_Damage_Function[1]" num_samples="5"/>
-			<isee:variable type="uniform" min="0" max="0.05" name="energy_demand.sensitivity_of_per_person_use_of_energy_to_surface_temperature_anomaly[1]" num_samples="5"/>
+			<isee:variable type="uniform" min="0" max="0.1" name="energy_demand.sensitivity_of_per_person_use_of_energy_to_surface_temperature_anomaly[1]" num_samples="5"/>
 			<isee:variable type="uniform" min="0.01" max="0.1" name="Freshwater.sensitivity_of_surface_temperature_anomaly_on_water_used_per_Mtcrop[1]" num_samples="5"/>
-			<isee:variable type="uniform" min="0.05" max="0.3" name="Finance.sensitivity_of_effect_of_sta_on_failure_rate[1]" num_samples="5"/>
+			<isee:variable type="uniform" min="0.05" max="1" name="Finance.sensitivity_of_effect_of_sta_on_failure_rate[1]" num_samples="5"/>
 			<isee:variable type="uniform" min="0.3" max="0.6" name="Crop.STA_crop_yield_parameter[1]" num_samples="5"/>
 			<isee:variable type="uniform" min="-0.6" max="-0.1" name="Crop.STA_squared_crop_yield_parameter[1]" num_samples="5"/>
 			<isee:variable type="uniform" min="-0.02" max="-0.005" name="Finance.sensitivity_of_effect_of_technological_water_discovery_on_investment_growth[1]" num_samples="5"/>
+			<isee:variable type="uniform" min="1" max="4" name="energy_demand.slope_of_energy_use_damage_function[1]" num_samples="5"/>
 			<isee:threshold payoff="Full Payoff Sans Climate" val="3700"/>
 		</isee:sensi_specs>
 		<isee:sensi_specs name="Climate Sensitivity" method="grid">
 			<isee:variable starting_value="1" ending_value="100" type="incremental" min="1" max="100" seed="12345" name="Climate_Units.selected_climate_case[1]" num_samples="100"/>
 		</isee:sensi_specs>
 	</isee:sensi_specs_list>
-	<isee:optimizer_specs_list active_index="3">
+	<isee:optimizer_specs_list active_index="7">
 		<isee:optimizer_specs name="Demographics Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
 			<isee:parameter name="Demographics.Slope_of_Population_Damage_Function[1]" scaling="100"/>
 			<isee:parameter name="Demographics.infant_mortality_alpha" scaling="100000"/>
@@ -241,7 +242,7 @@
 			<isee:parameter name="Emissions.tN2O_emission_per_tN_fertilizer_1980" scaling="100"/>
 			<isee:parameter name="Emissions.sensitivity_of_HFC134a_eq_per_person_to_energy_consumption_per_capita"/>
 			<isee:parameter name="Emissions.max_HFC134a_eq_per_person"/>
-			<isee:parameter name="Emissions.sensitivity_of_effect_of_STA_on_HFC134a_eq_emissions_per_person"/>
+			<isee:parameter name="Emissions.slope_of_effect_of_STA_on_HFC134a_eq_emissions_per_person"/>
 			<isee:payoff name="Emissions Payoff" action="min"/>
 		</isee:optimizer_specs>
 		<isee:optimizer_specs name="Fertility calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0">
@@ -255,6 +256,7 @@
 		<isee:optimizer_specs name="HFC134a calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0">
 			<isee:parameter name="Emissions.sensitivity_of_HFC134a_eq_per_person_to_energy_consumption_per_capita" scaling="100"/>
 			<isee:parameter name="Emissions.max_HFC134a_eq_per_person" scaling="100"/>
+			<isee:parameter name="Emissions.slope_of_effect_of_STA_on_HFC134a_eq_emissions_per_person" scaling="100"/>
 			<isee:parameter name="Emissions.sensitivity_of_effect_of_STA_on_HFC134a_eq_emissions_per_person" scaling="100"/>
 			<isee:payoff name="HFC134a emissions" action="min"/>
 		</isee:optimizer_specs>
@@ -757,7 +759,7 @@
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="HFC134a emissions" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Emissions.HFC134a_eq_emissions[1]" weight="3.23303e-7">
+			<isee:payoff_element name="Emissions.HFC134a_eq_emissions[1]" weight="0.0000388282">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
@@ -1389,8 +1391,8 @@
 				<connect2 to="Finance.Energy_Balance" from="energy_supply_vs_demand.Energy_Balance"/>
 				<connect to="Finance.share_of_GDP_invested_in_Energy_1" from="Energy.share_of_GDP_invested_in_Energy"/>
 				<connect2 to="Finance.share_of_GDP_invested_in_Energy_1" from="Energy.share_of_GDP_invested_in_Energy"/>
-				<connect to="Finance.Surface_Temperature_Anomaly_1" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect2 to="Finance.Surface_Temperature_Anomaly_1" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Finance.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect2 to="Finance.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect to="Finance.switch_only_economy_energy_damage_1" from="Climate.switch_only_economy_energy_damage"/>
@@ -1533,8 +1535,8 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 				<connect2 to="Employment.working_age_population_1" from="Demographics.working_age_population"/>
 				<connect to="Demographics.GDP" from="GDP.GDP"/>
 				<connect2 to="Demographics.GDP" from="GDP.GDP"/>
-				<connect to="Demographics.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect2 to="Demographics.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect to="Demographics.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Demographics.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Demographics.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect2 to="Demographics.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 			</module>
@@ -1562,20 +1564,12 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 				<connect2 to="Freshwater.Land_water_storage_from_water_impoundment" from="Sea_Level.Land_water_storage_from_water_impoundment"/>
 				<connect to="Freshwater.SLR_from_LWS" from="Sea_Level.SLR_from_LWS"/>
 				<connect2 to="Freshwater.SLR_from_LWS" from="Sea_Level.SLR_from_LWS"/>
-				<connect to="Freshwater.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
-				<connect2 to="Freshwater.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
-				<connect to="Soil.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
-				<connect2 to="Soil.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
 				<connect to="Sea_Level.Installation_of_Hydropower_Capacity" from="hydropower_energy.Installation_of_Hydropower_Capacity"/>
 				<connect2 to="Sea_Level.Installation_of_Hydropower_Capacity" from="hydropower_energy.Installation_of_Hydropower_Capacity"/>
 				<connect to="Sea_Level.total_groundwater_anomaly" from="Freshwater.total_groundwater_anomaly"/>
 				<connect2 to="Sea_Level.total_groundwater_anomaly" from="Freshwater.total_groundwater_anomaly"/>
-				<connect to="Demographics.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect2 to="Demographics.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect to="energy_supply.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect2 to="energy_supply.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect to="Finance.Surface_Temperature_Anomaly_1" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect2 to="Finance.Surface_Temperature_Anomaly_1" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect to="Emissions.clearing_forest_for_grassland" from="Land_Use.clearing_forest_for_grassland"/>
 				<connect2 to="Emissions.clearing_forest_for_grassland" from="Land_Use.clearing_forest_for_grassland"/>
 				<connect to="Emissions.clearing_forests_for_crops" from="Land_Use.clearing_forests_for_crops"/>
@@ -1604,8 +1598,16 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 				<connect2 to="Emissions.Total_Energy_Output" from="energy_supply_vs_demand.Total_Energy_Output"/>
 				<connect to="Crop.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Crop.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Demographics.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Demographics.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="energy_demand.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="energy_demand.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Freshwater.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Freshwater.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Soil.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Soil.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Crop.Atmospheric_CO2_Concentration" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
 				<connect2 to="Crop.Atmospheric_CO2_Concentration" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
 				<connect to="Land_Use_Forcing.agricultural_water_withdrawal" from="Freshwater.agricultural_water_withdrawal"/>
@@ -1657,8 +1659,8 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 				<connect2 to="Freshwater.Population_1" from="Demographics.Population"/>
 				<connect to="Freshwater.SLR_from_LWS" from="Sea_Level.SLR_from_LWS"/>
 				<connect2 to="Freshwater.SLR_from_LWS" from="Sea_Level.SLR_from_LWS"/>
-				<connect to="Freshwater.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
-				<connect2 to="Freshwater.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
+				<connect to="Freshwater.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Freshwater.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Freshwater.switch_for_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect2 to="Freshwater.switch_for_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect to="Emissions.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
@@ -1677,8 +1679,8 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 				<connect2 to="Land_Use.Policy_Start_Year" from="Government_Regulations.start_year"/>
 				<connect to="Emissions.soil_carbon_emissions_GtC" from="Soil.soil_carbon_emissions_GtC"/>
 				<connect2 to="Emissions.soil_carbon_emissions_GtC" from="Soil.soil_carbon_emissions_GtC"/>
-				<connect to="Soil.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
-				<connect2 to="Soil.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
+				<connect to="Soil.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Soil.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 			</module>
 			<module name="Behavioral\nChoices" isee:label="" url="r../FRIDA_Modules/Behavioral Choices.itmx">
 				<format scale_by="auto"/>
@@ -1775,7 +1777,7 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="8" isee:scroll_y="360" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="8" isee:scroll_y="300" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2111,7 +2113,7 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 					<from>Energy</from>
 					<to>Climate</to>
 				</connector>
-				<connector uid="113" isee:thickness="2" angle="290.403" isee:autocreated="true">
+				<connector uid="113" isee:thickness="2" angle="293.728" isee:autocreated="true">
 					<from>Climate</from>
 					<to>Demographics</to>
 				</connector>
@@ -2191,12 +2193,8 @@ Lorem ipsum dolor sit amet</text_box>
 		<variables>
 			<module name="Temperature" isee:label="" url="r../FRIDA_Modules/Temperature.itmx">
 				<format scale_by="auto"/>
-				<connect to="Demographics.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect2 to="Demographics.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect to="energy_supply.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect2 to="energy_supply.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect to="Finance.Surface_Temperature_Anomaly_1" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect2 to="Finance.Surface_Temperature_Anomaly_1" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect to="Sea_Level.selected_climate_case" from="Climate_Units.selected_climate_case"/>
 				<connect2 to="Sea_Level.selected_climate_case" from="Climate_Units.selected_climate_case"/>
 				<connect to="Emissions.clearing_forest_for_grassland" from="Land_Use.clearing_forest_for_grassland"/>
@@ -2241,10 +2239,18 @@ Lorem ipsum dolor sit amet</text_box>
 				<connect2 to="Sea_Level.Heat_Capacity_of_Upper_Ocean" from="Energy_Balance_Model.Heat_Capacity_of_Thermocline_Ocean"/>
 				<connect to="Crop.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Crop.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Demographics.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Demographics.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="energy_demand.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="energy_demand.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Freshwater.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Freshwater.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Sea_Level.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Sea_Level.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Soil.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Soil.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Crop.Atmospheric_CO2_Concentration" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
 				<connect2 to="Crop.Atmospheric_CO2_Concentration" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
 				<connect to="Land_Use_Forcing.agricultural_water_withdrawal" from="Freshwater.agricultural_water_withdrawal"/>
@@ -2258,10 +2264,6 @@ Lorem ipsum dolor sit amet</text_box>
 				<connect2 to="Freshwater.Land_water_storage_from_water_impoundment" from="Sea_Level.Land_water_storage_from_water_impoundment"/>
 				<connect to="Freshwater.SLR_from_LWS" from="Sea_Level.SLR_from_LWS"/>
 				<connect2 to="Freshwater.SLR_from_LWS" from="Sea_Level.SLR_from_LWS"/>
-				<connect to="Freshwater.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
-				<connect2 to="Freshwater.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
-				<connect to="Soil.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
-				<connect2 to="Soil.Surface_Temperature_Anomaly" from="Sea_Level.Surface_Temperature_Anomaly"/>
 				<connect to="Sea_Level.Change_in_Deep_Ocean_Temperature" from="Energy_Balance_Model.Change_in_Deep_Ocean_Temperature"/>
 				<connect2 to="Sea_Level.Change_in_Deep_Ocean_Temperature" from="Energy_Balance_Model.Change_in_Deep_Ocean_Temperature"/>
 				<connect to="Sea_Level.Change_in_Surface_Temperature" from='Energy_Balance_Model."Change_in_Land_&amp;_Ocean_Surface_Temperature"'/>
