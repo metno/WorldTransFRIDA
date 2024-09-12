@@ -335,6 +335,8 @@
 				<format scale_by="auto"/>
 				<connect to="Land_Use.livestock_balance_with_reserves" from="Animal_Products.animal_products_balance_with_reserves"/>
 				<connect2 to="Land_Use.livestock_balance_with_reserves" from="Animal_Products.animal_products_balance_with_reserves"/>
+				<connect to="Animal_Products_Demand.animal_products_production_1" from="Animal_Products.animal_products_production"/>
+				<connect2 to="Animal_Products_Demand.animal_products_production_1" from="Animal_Products.animal_products_production"/>
 				<connect to="Emissions.livestock_production" from="Animal_Products.animal_products_production"/>
 				<connect2 to="Emissions.livestock_production" from="Animal_Products.animal_products_production"/>
 				<connect to="Land_Nutrients.production" from="Animal_Products.animal_products_production"/>
@@ -364,6 +366,8 @@
 				<connect2 to="Animal_Products.livestock_demand" from="Food_Demand.animal_products_demand"/>
 				<connect to="Crop.crop_demand_1" from="Food_Demand.crop_demand"/>
 				<connect2 to="Crop.crop_demand_1" from="Food_Demand.crop_demand"/>
+				<connect to="Animal_Products_Demand.direct_food_demand_per_person_per_day" from="Food_Demand.direct_food_demand_per_person_per_day"/>
+				<connect2 to="Animal_Products_Demand.direct_food_demand_per_person_per_day" from="Food_Demand.direct_food_demand_per_person_per_day"/>
 				<connect to="Animal_Products.fraction_of_crops_for_animal_products" from="Food_Demand.fraction_of_crops_for_animal_products"/>
 				<connect2 to="Animal_Products.fraction_of_crops_for_animal_products" from="Food_Demand.fraction_of_crops_for_animal_products"/>
 				<connect to="Land_Use_and_Agriculture.fraction_of_crops_for_livestock" from="Food_Demand.fraction_of_crops_for_animal_products"/>
@@ -374,6 +378,8 @@
 				<connect2 to="Food_Demand.animal_products_fraction_policy" from="Behavioral_Choices.animal_products_fraction_policy"/>
 				<connect to="Food_Demand.average_animal_product_growth_efficiency" from="Animal_Products.average_animal_product_growth_efficiency"/>
 				<connect2 to="Food_Demand.average_animal_product_growth_efficiency" from="Animal_Products.average_animal_product_growth_efficiency"/>
+				<connect to="Food_Demand.average_yearly_demand_per_capita" from="Animal_Products_Demand.average_yearly_demand_per_capita"/>
+				<connect2 to="Food_Demand.average_yearly_demand_per_capita" from="Animal_Products_Demand.average_yearly_demand_per_capita"/>
 				<connect to="Food_Demand.food_demand_policy" from="Behavioral_Choices.food_demand_policy"/>
 				<connect2 to="Food_Demand.food_demand_policy" from="Behavioral_Choices.food_demand_policy"/>
 				<connect to="Food_Demand.GDP_Per_Capita" from="Demographics.GDP_per_person"/>
@@ -386,6 +392,8 @@
 				<connect2 to="Food_Demand.policy_start_year" from="Behavioral_Choices.start_year"/>
 				<connect to="Food_Demand.Population" from="Demographics.Population"/>
 				<connect2 to="Food_Demand.Population" from="Demographics.Population"/>
+				<connect to="Food_Demand.start_year" from="Behavioral_Choices.start_year"/>
+				<connect2 to="Food_Demand.start_year" from="Behavioral_Choices.start_year"/>
 				<connect to="Food_Demand.switch_animal_products_fraction_policy" from="Behavioral_Choices.switch_animal_products_fraction_policy"/>
 				<connect2 to="Food_Demand.switch_animal_products_fraction_policy" from="Behavioral_Choices.switch_animal_products_fraction_policy"/>
 				<connect to="Food_Demand.switch_food_demand_policy" from="Behavioral_Choices.switch_food_demand_policy"/>
@@ -530,6 +538,8 @@
 			</aux>
 			<module name="Crop" isee:label="">
 				<format scale_by="auto"/>
+				<connect to="Animal_Products_Demand.crop_balance_1" from="Crop.crop_balance"/>
+				<connect2 to="Animal_Products_Demand.crop_balance_1" from="Crop.crop_balance"/>
 				<connect to="Finance.crop_balance_1" from="Crop.crop_balance"/>
 				<connect2 to="Finance.crop_balance_1" from="Crop.crop_balance"/>
 				<connect to="Land_Nutrients.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
@@ -2054,7 +2064,7 @@ Tilman D, Balzer C, Hill J, Befort BL. 2011. Global food demand and the sustaina
 				<eqn>1000000</eqn>
 				<units>p/Mp</units>
 			</aux>
-			<aux name="direct food demand\nper person per day">
+			<aux name="direct food demand\nper person per day" access="output">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -2077,30 +2087,6 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<range min="1500" max="2200"/>
 				<units>kCal/Person/Day</units>
 			</aux>
-			<aux name="animal products\nfraction of food demand">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>IF TIME &gt; policy_start_year AND switch_animal_products_fraction_policy THEN
-animal_products_fraction_policy
-ELSE
-animal_products_fraction_of_food_demand_1980*(perceived_GDP_per_person/INIT(perceived_GDP_per_person))^elasticity_of_desired_animal_products_fraction_of_food_demand_to_GDP_per_person</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="elasticity of desired animal products fraction\nof food demand to GDP per person">
-				<doc>${Calibration Parameter}
-Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>0.137481967500572</eqn>
-				<range min="0" max="0.2"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="animal products fraction\nof food demand 1980">
-				<doc>${Calibration Parameter}
-Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>0.211475577510863</eqn>
-				<range min="0.15" max="0.25"/>
-				<units>dmnl</units>
-			</aux>
 			<aux name="direct food demand\nper capita">
 				<dimensions>
 					<dim name="Run"/>
@@ -2119,7 +2105,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>direct_food_demand_per_capita*animal_products_fraction_of_food_demand</eqn>
+				<eqn>IF TIME &gt; start_year AND switch_animal_products_fraction_policy THEN direct_food_demand_per_capita*animal_products_fraction_policy ELSE average_yearly_demand_per_capita</eqn>
 				<units>PCal/Mp/Year</units>
 			</aux>
 			<aux name="animal products fraction policy" access="input">
@@ -2162,6 +2148,17 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				</dimensions>
 				<eqn>animal_products_calorie_requirements-animal_products_calorie_requirements_met_via_grazing</eqn>
 				<units>PCal/Year</units>
+			</aux>
+			<aux name="average yearly\ndemand per capita" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>PCal/Mp/Year</units>
+			</aux>
+			<aux name="start year" access="input">
+				<eqn>2024</eqn>
+				<units>Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -2212,7 +2209,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:page_rows="3" isee:scroll_y="468.125" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="2" isee:page_rows="3" isee:scroll_y="356.25" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2284,7 +2281,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<aux font_style="italic" font_weight="bold" label_side="bottom" x="223" y="1089.56" name="food demand policy"/>
 				<aux font_style="italic" font_weight="bold" x="268.5" y="1158" name="switch food demand\npolicy"/>
 				<aux font_style="italic" font_weight="bold" x="398.75" y="1229.25" name="policy start year"/>
-				<aux font_style="italic" font_weight="bold" x="653.5" y="1225.56" name="switch animal products fraction policy"/>
+				<aux font_style="italic" font_weight="bold" x="781" y="822" name="switch animal products fraction policy"/>
 				<stock font_style="italic" font_weight="bold" x="752.5" y="279.823" name="Livestock Yield"/>
 				<aux x="509.25" y="1150" name="perceived GDP per person"/>
 				<aux x="412" y="1341" name="time to change dietary habits"/>
@@ -2314,21 +2311,6 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>perceived_GDP_per_person</from>
 					<to>direct_food_demand_per_person_per_day</to>
 				</connector>
-				<aux x="612" y="933.667" name="animal products\nfraction of food demand"/>
-				<aux label_side="bottom" x="778" y="1089.56" name="elasticity of desired animal products fraction\nof food demand to GDP per person"/>
-				<aux label_side="right" label_angle="315" x="857" y="1001.67" name="animal products fraction\nof food demand 1980"/>
-				<connector uid="12" angle="136.798">
-					<from>elasticity_of_desired_animal_products_fraction_of_food_demand_to_GDP_per_person</from>
-					<to>animal_products_fraction_of_food_demand</to>
-				</connector>
-				<connector uid="13" angle="164.488">
-					<from>animal_products_fraction_of_food_demand_1980</from>
-					<to>animal_products_fraction_of_food_demand</to>
-				</connector>
-				<connector uid="14" angle="64.594">
-					<from>perceived_GDP_per_person</from>
-					<to>animal_products_fraction_of_food_demand</to>
-				</connector>
 				<aux x="424.25" y="886" name="direct food demand\nper capita"/>
 				<connector uid="15" angle="92.9654">
 					<from>direct_food_demand_per_person_per_day</from>
@@ -2348,10 +2330,6 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<to>direct_crop_demand_per_capita</to>
 				</connector>
 				<aux x="618.5" y="718" name="animal products demand per capita"/>
-				<connector uid="19" angle="88.2737">
-					<from>animal_products_fraction_of_food_demand</from>
-					<to>animal_products_demand_per_capita</to>
-				</connector>
 				<connector uid="20" angle="180.912">
 					<from>animal_products_demand_per_capita</from>
 					<to>direct_crop_demand_per_capita</to>
@@ -2384,19 +2362,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>food_demand_policy</from>
 					<to>direct_food_demand_per_person_per_day</to>
 				</connector>
-				<connector uid="28" angle="98.0918">
-					<from>switch_animal_products_fraction_policy</from>
-					<to>animal_products_fraction_of_food_demand</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="bottom" x="813" y="1225.56" name="animal products fraction policy"/>
-				<connector uid="29" angle="125.391">
-					<from>animal_products_fraction_policy</from>
-					<to>animal_products_fraction_of_food_demand</to>
-				</connector>
-				<connector uid="30" angle="55.3973">
-					<from>policy_start_year</from>
-					<to>animal_products_fraction_of_food_demand</to>
-				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="bottom" x="883" y="889" name="animal products fraction policy"/>
 				<aux font_style="italic" font_weight="bold" x="784" y="496" name="average animal\nproduct growth\nefficiency"/>
 				<aux x="618.5" y="487" name="animal products\ncalorie requirements"/>
 				<connector uid="31" angle="88.1204">
@@ -2425,6 +2391,24 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<connector uid="36" angle="198.538">
 					<from>animal_products_calorie_requirements_met_via_grazing</from>
 					<to>animal_product_calorie_requirements_met_from_feed</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="623.5" y="881.875" name="average yearly\ndemand per capita"/>
+				<connector uid="37" angle="149.47">
+					<from>switch_animal_products_fraction_policy</from>
+					<to>animal_products_demand_per_capita</to>
+				</connector>
+				<connector uid="38" angle="75.5497">
+					<from>average_yearly_demand_per_capita</from>
+					<to>animal_products_demand_per_capita</to>
+				</connector>
+				<connector uid="39" angle="119.609">
+					<from>animal_products_fraction_policy</from>
+					<to>animal_products_demand_per_capita</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="735.625" y="678.75" name="start year"/>
+				<connector uid="40" angle="188.297">
+					<from>start_year</from>
+					<to>animal_products_demand_per_capita</to>
 				</connector>
 			</view>
 		</views>
