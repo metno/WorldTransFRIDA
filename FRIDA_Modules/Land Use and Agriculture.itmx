@@ -380,6 +380,8 @@
 				<connect2 to="Food_Demand.average_animal_product_growth_efficiency" from="Animal_Products.average_animal_product_growth_efficiency"/>
 				<connect to="Food_Demand.average_yearly_demand_per_capita" from="Animal_Products_Demand.average_yearly_demand_per_capita"/>
 				<connect2 to="Food_Demand.average_yearly_demand_per_capita" from="Animal_Products_Demand.average_yearly_demand_per_capita"/>
+				<connect to="Food_Demand.crop_production" from="Crop.crop_production"/>
+				<connect2 to="Food_Demand.crop_production" from="Crop.crop_production"/>
 				<connect to="Food_Demand.food_demand_policy" from="Behavioral_Choices.food_demand_policy"/>
 				<connect2 to="Food_Demand.food_demand_policy" from="Behavioral_Choices.food_demand_policy"/>
 				<connect to="Food_Demand.GDP_Per_Capita" from="Demographics.GDP_per_person"/>
@@ -548,6 +550,8 @@
 				<connect2 to="Land_Use.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
 				<connect to="Animal_Products.crop_production" from="Crop.crop_production"/>
 				<connect2 to="Animal_Products.crop_production" from="Crop.crop_production"/>
+				<connect to="Food_Demand.crop_production" from="Crop.crop_production"/>
+				<connect2 to="Food_Demand.crop_production" from="Crop.crop_production"/>
 				<connect to="Land_Use_and_Agriculture.crop_production" from="Crop.crop_production"/>
 				<connect2 to="crop_production" from="Crop.crop_production"/>
 				<connect to="Soil.crop_residue_litter" from="Crop.crop_residue_litter"/>
@@ -988,6 +992,10 @@
 					<from>Land_Use</from>
 					<to>Food_Demand</to>
 				</connector>
+				<connector uid="52" isee:thickness="2" angle="200.734" isee:autocreated="true">
+					<from>Crop</from>
+					<to>Food_Demand</to>
+				</connector>
 				<alias font_style="italic" label_side="center" uid="11" x="1862.5" y="193.333" width="85.8333" height="41.6667">
 					<of>Cropland</of>
 				</alias>
@@ -1007,7 +1015,7 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>normal_rate_of_change_in_grazing_land_animal_products_yield*Grazing_Land_Animal_Products_Yield*effect_of_animal_products_balance_on_yield_intensification</eqn>
+				<eqn>(indicated_grazing_land_animal_products_yield-Grazing_Land_Animal_Products_Yield)/time_to_change_yield</eqn>
 				<units>PCal/Mha/Year/Year</units>
 			</flow>
 			<stock name="Grazing Land\nAnimal Products Yield" access="output">
@@ -1021,16 +1029,9 @@
 			<aux name="Animal Products Yield in 1980">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.564147336112491</eqn>
-				<range min="0" max="2"/>
+				<eqn>0.558137895664259</eqn>
+				<range min="0" max="10"/>
 				<units>PCal/Mha/Year</units>
-			</aux>
-			<aux name="normal rate\nof change in grazing land\nanimal products yield">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.0219756772909279</eqn>
-				<range min="0" max="0.05"/>
-				<units>1/year</units>
 			</aux>
 			<aux name="animal products balance\nwith reserves" access="output">
 				<dimensions>
@@ -1039,23 +1040,24 @@
 				<eqn>animal_products_balance/(1+desired_animal_products_reserve_capacity)</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="effect of animal products\nbalance on yield\nintensification">
+			<aux name="indicated animal products\nyield\nintensification">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>1+sensitivity_of_effect_of_animal_products_balance_on_yield_intensification*(animal_products_balance_with_reserves-1)</eqn>
+				<eqn>1 + (1-animal_products_balance_with_reserves)*sensitivity_of_effect_of_animal_products_balance_on_yield_intensification</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="desired animal products reserve capacity">
 				<doc>Calibration Parameter: forest land &amp; CO2 emissions from land cover change &amp; agricultural land &amp; crop production &amp; fertilizer use</doc>
-				<eqn>0.05</eqn>
+				<eqn>0.0225284010572917</eqn>
+				<range min="-0.05" max="0.05"/>
 				<units>1</units>
 			</aux>
 			<aux name="sensitivity of effect of\nanimal products balance on yield\nintensification">
 				<doc>${Calibration Parameter}
 Calibration Parameter: forest land &amp; CO2 emissions from land cover change &amp; agricultural land &amp; crop production &amp; fertilizer use</doc>
-				<eqn>-25.0642762588657</eqn>
-				<range min="-100" max="0"/>
+				<eqn>6.21660737131648</eqn>
+				<range min="0" max="10"/>
 				<units>1</units>
 			</aux>
 			<aux name="animal products production" access="output">
@@ -1100,22 +1102,22 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="elasticity of aquatic animal product share to GDP per person">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.257944408585047</eqn>
+				<eqn>0.251756464147762</eqn>
 				<range min="0" max="1"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="aquatic animal product share 1980">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.0604404814694232</eqn>
+				<eqn>0.0604919522488609</eqn>
 				<range min="0.059" max="0.061"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="average animal\nproduct growth\nefficiency" access="output" isee:autocreated="true">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.234587830021256</eqn>
-				<range min="0.05" max="0.25"/>
+				<eqn>0.245927091194097</eqn>
+				<range min="0.01" max="0.25"/>
 				<units>PCal/PCal</units>
 			</aux>
 			<aux name="fraction of crops\nfor animal products" access="input">
@@ -1138,6 +1140,18 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				</dimensions>
 				<eqn>crop_production*fraction_of_crops_for_animal_products</eqn>
 				<units>PCal/Year</units>
+			</aux>
+			<aux name="indicated grazing land animal products yield">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Grazing_Land_Animal_Products_Yield*indicated_animal_products_yield_intensification</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<aux name="time to change\nyield">
+				<eqn>3.00071367588587</eqn>
+				<range min="1" max="5"/>
+				<units>years</units>
 			</aux>
 		</variables>
 		<views>
@@ -1188,7 +1202,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="282" isee:scroll_y="95" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="77" isee:scroll_y="229" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1236,16 +1250,11 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				</flow>
 				<stock label_side="top" x="1061.5" y="763.5" name="Grazing Land\nAnimal Products Yield"/>
 				<aux x="1167.94" y="799" name="Animal Products Yield in 1980"/>
-				<aux x="951.625" y="914.25" name="normal rate\nof change in grazing land\nanimal products yield"/>
 				<aux x="679.75" y="619" name="animal products balance\nwith reserves"/>
-				<aux x="708.75" y="733.25" name="effect of animal products\nbalance on yield\nintensification"/>
+				<aux x="708.75" y="733.25" name="indicated animal products\nyield\nintensification"/>
 				<aux label_side="top" x="593" y="561.42" name="desired animal products reserve capacity"/>
 				<aux label_side="bottom" x="513.5" y="743.5" name="sensitivity of effect of\nanimal products balance on yield\nintensification"/>
 				<aux x="934.63" y="474.75" name="animal products production"/>
-				<connector uid="1" angle="83.2793">
-					<from>normal_rate_of_change_in_grazing_land_animal_products_yield</from>
-					<to>change_in_grazing_land_animal_products_yield</to>
-				</connector>
 				<connector uid="2" angle="219.892">
 					<from>Grazing_Land_Animal_Products_Yield</from>
 					<to>change_in_grazing_land_animal_products_yield</to>
@@ -1264,19 +1273,15 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				</connector>
 				<connector uid="6" angle="3.00509">
 					<from>sensitivity_of_effect_of_animal_products_balance_on_yield_intensification</from>
-					<to>effect_of_animal_products_balance_on_yield_intensification</to>
+					<to>indicated_animal_products_yield_intensification</to>
 				</connector>
 				<connector uid="7" angle="76.3995">
 					<from>Grazing_Land_Animal_Products_Yield</from>
 					<to>animal_products_production</to>
 				</connector>
-				<connector uid="8" angle="293.749">
-					<from>effect_of_animal_products_balance_on_yield_intensification</from>
-					<to>change_in_grazing_land_animal_products_yield</to>
-				</connector>
 				<connector uid="9" angle="253.009">
 					<from>animal_products_balance_with_reserves</from>
-					<to>effect_of_animal_products_balance_on_yield_intensification</to>
+					<to>indicated_animal_products_yield_intensification</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="956" y="316" name="grazing land"/>
 				<connector uid="10" angle="262.333">
@@ -1327,6 +1332,24 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				<connector uid="19" angle="174.673">
 					<from>aquatic_animal_product_share</from>
 					<to>animal_products_production</to>
+				</connector>
+				<aux x="945" y="912" name="indicated grazing land animal products yield"/>
+				<connector uid="21" angle="257.106">
+					<from>Grazing_Land_Animal_Products_Yield</from>
+					<to>indicated_grazing_land_animal_products_yield</to>
+				</connector>
+				<connector uid="22" angle="270.466">
+					<from>indicated_animal_products_yield_intensification</from>
+					<to>indicated_grazing_land_animal_products_yield</to>
+				</connector>
+				<aux x="859" y="683" name="time to change\nyield"/>
+				<connector uid="23" angle="104.826">
+					<from>indicated_grazing_land_animal_products_yield</from>
+					<to>change_in_grazing_land_animal_products_yield</to>
+				</connector>
+				<connector uid="24" angle="319.268">
+					<from>time_to_change_yield</from>
+					<to>change_in_grazing_land_animal_products_yield</to>
 				</connector>
 			</view>
 		</views>
@@ -1391,7 +1414,8 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<units>PCal/year</units>
 			</aux>
 			<aux name="desired crop reserve capacity">
-				<eqn>0.05</eqn>
+				<eqn>0.0307794023649205</eqn>
+				<range min="-0.05" max="0.1"/>
 				<units>1</units>
 			</aux>
 			<stock name="Cropland" access="input">
@@ -1494,7 +1518,7 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 			<aux name="fertilizer use crop yield parameter">
 				<doc>${Calibration Parameter,Yield}
 </doc>
-				<eqn>0.0105705539990821</eqn>
+				<eqn>0.00947083971486671</eqn>
 				<range min="0.00001" max="0.1"/>
 				<units>1/MtN*year</units>
 			</aux>
@@ -1515,14 +1539,14 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 			<aux name="soil carbon crop yield parameter">
 				<doc>${Calibration Parameter,Yield}
 </doc>
-				<eqn>0.0175374582189809</eqn>
+				<eqn>0.0175252636540157</eqn>
 				<range min="1e-8" max="0.02"/>
 				<units>1/GtC</units>
 			</aux>
 			<aux name="initial crop yield">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>2.28760276224816</eqn>
+				<eqn>2.36206168328277</eqn>
 				<range min="1" max="3"/>
 				<units>PCal/(Mha*year)</units>
 			</aux>
@@ -1536,7 +1560,7 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 			<aux name="irrigation crop yield parameter">
 				<doc>${Yield,Calibration Parameter}
 </doc>
-				<eqn>4.10252500352673</eqn>
+				<eqn>3.59026975789086</eqn>
 				<range min="3" max="100"/>
 				<units>dmnl</units>
 			</aux>
@@ -1642,7 +1666,7 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="1912" isee:scroll_y="836" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="958" isee:scroll_y="745" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1969,7 +1993,7 @@ Tilman D, Balzer C, Hill J, Befort BL. 2011. Global food demand and the sustaina
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>crop_demand_for_food + animal_product_calorie_requirements_met_from_feed</eqn>
+				<eqn>crop_demand_for_food + desired_animal_product_calorie_requirements_met_from_feed</eqn>
 				<units>PCal/year</units>
 			</aux>
 			<aux name="GDP Per Capita" access="output" throughput="true">
@@ -2005,7 +2029,7 @@ Tilman D, Balzer C, Hill J, Befort BL. 2011. Global food demand and the sustaina
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>animal_product_calorie_requirements_met_from_feed/crop_demand</eqn>
+				<eqn>(crop_production-crop_demand_for_food)/crop_production</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="food demand policy" access="input">
@@ -2076,14 +2100,14 @@ direct_food_demand_per_person_per_day_1980*(perceived_GDP_per_person/INIT(percei
 			<aux name="elasticity of food demand\nto GDP per person">
 				<doc>${Calibration Parameter}
 Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>0.225366682277809</eqn>
+				<eqn>0.213406215134492</eqn>
 				<range min="0.15" max="0.3"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="direct food demand\nper person per day 1980">
 				<doc>${Calibration Parameter}
 Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>1785.81663720181</eqn>
+				<eqn>1783.80266615326</eqn>
 				<range min="1500" max="2200"/>
 				<units>kCal/Person/Day</units>
 			</aux>
@@ -2142,7 +2166,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>Mha</units>
 			</aux>
-			<aux name="animal product calorie\nrequirements\nmet from feed">
+			<aux name="desired\nanimal product calorie\nrequirements\nmet from feed">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -2159,6 +2183,13 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 			<aux name="start year" access="input">
 				<eqn>2024</eqn>
 				<units>Year</units>
+			</aux>
+			<aux name="crop production" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>PCal/year</units>
 			</aux>
 		</variables>
 		<views>
@@ -2209,7 +2240,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="2" isee:page_rows="3" isee:scroll_y="356.25" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="2" isee:page_rows="3" isee:scroll_y="112.5" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2257,7 +2288,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<to>animal_products_demand</to>
 				</connector>
 				<connector uid="2" angle="140.787">
-					<from>animal_product_calorie_requirements_met_from_feed</from>
+					<from>desired_animal_product_calorie_requirements_met_from_feed</from>
 					<to>crop_demand</to>
 				</connector>
 				<aux x="434.75" y="402.323" name="crop demand for food"/>
@@ -2269,15 +2300,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>crop_demand_for_food</from>
 					<to>crop_demand</to>
 				</connector>
-				<aux x="520.25" y="231.323" name="fraction of crops\nfor animal products"/>
-				<connector uid="5" angle="90">
-					<from>crop_demand</from>
-					<to>fraction_of_crops_for_animal_products</to>
-				</connector>
-				<connector uid="6" angle="119.011">
-					<from>animal_product_calorie_requirements_met_from_feed</from>
-					<to>fraction_of_crops_for_animal_products</to>
-				</connector>
+				<aux x="434.75" y="241.948" name="fraction of crops\nfor animal products"/>
 				<aux font_style="italic" font_weight="bold" label_side="bottom" x="223" y="1089.56" name="food demand policy"/>
 				<aux font_style="italic" font_weight="bold" x="268.5" y="1158" name="switch food demand\npolicy"/>
 				<aux font_style="italic" font_weight="bold" x="398.75" y="1229.25" name="policy start year"/>
@@ -2383,14 +2406,14 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>grazing_land</from>
 					<to>animal_products_calorie_requirements_met_via_grazing</to>
 				</connector>
-				<aux label_side="bottom" x="618.5" y="408.49" name="animal product calorie\nrequirements\nmet from feed"/>
+				<aux label_side="bottom" x="618.5" y="408.49" name="desired\nanimal product calorie\nrequirements\nmet from feed"/>
 				<connector uid="35" angle="90">
 					<from>animal_products_calorie_requirements</from>
-					<to>animal_product_calorie_requirements_met_from_feed</to>
+					<to>desired_animal_product_calorie_requirements_met_from_feed</to>
 				</connector>
 				<connector uid="36" angle="198.538">
 					<from>animal_products_calorie_requirements_met_via_grazing</from>
-					<to>animal_product_calorie_requirements_met_from_feed</to>
+					<to>desired_animal_product_calorie_requirements_met_from_feed</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="623.5" y="881.875" name="average yearly\ndemand per capita"/>
 				<connector uid="37" angle="149.47">
@@ -2409,6 +2432,15 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<connector uid="40" angle="188.297">
 					<from>start_year</from>
 					<to>animal_products_demand_per_capita</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="244.375" y="280.625" name="crop production"/>
+				<connector uid="41" angle="11.484">
+					<from>crop_production</from>
+					<to>fraction_of_crops_for_animal_products</to>
+				</connector>
+				<connector uid="42" angle="90">
+					<from>crop_demand_for_food</from>
+					<to>fraction_of_crops_for_animal_products</to>
 				</connector>
 			</view>
 		</views>
@@ -2543,14 +2575,14 @@ The available water supply is recharged at a natural constant rate (safe assumpt
 			<aux name="elasticity of\nnon agricultural water withdrawal\nper capita to GDP per person">
 				<doc>${Calibration Parameter}
 Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>0.10064818857795</eqn>
+				<eqn>0.107322812079965</eqn>
 				<range min="0.01" max="0.5"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="non agricultural water\nwithdrawal 1980">
 				<doc>${Calibration Parameter}
 Calibration Parameter: fertilizer use &amp; crop production</doc>
-				<eqn>145517795.105666</eqn>
+				<eqn>146639383.545891</eqn>
 				<range min="50000000" max="400000000"/>
 				<units>m^3/Mp/year</units>
 			</aux>
@@ -2598,7 +2630,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 			<aux name="rate of change\nin irrigation efficiency">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.00726859215890623</eqn>
+				<eqn>0.00726860895520116</eqn>
 				<range min="0" max="0.01"/>
 				<units>1/year</units>
 			</aux>
@@ -2629,7 +2661,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 			<aux name="water withdrawal per\nMHa irrigated 1980">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>10307343498.794</eqn>
+				<eqn>10332560864.9584</eqn>
 				<range min="1000000000" max="100000000000"/>
 				<units>m^3/MHa/year</units>
 			</aux>
@@ -2658,7 +2690,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 			<aux name="sensitivity of effect of available\nwater supply on land\nirrigated">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.619805583161473</eqn>
+				<eqn>0.54784726853926</eqn>
 				<range min="0.5" max="1.5"/>
 				<units>dmnl</units>
 			</aux>
@@ -2673,14 +2705,14 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 			<aux name="technological water\ndiscovery 1980">
 				<doc>${Calibration Parameter}
 Old value from calibration: 164600402563.243</doc>
-				<eqn>38852196611.6795</eqn>
+				<eqn>38880001706.0783</eqn>
 				<range min="10000000000" max="1000000000000"/>
 				<units>m^3/year</units>
 			</aux>
 			<aux name="rate of change\nin technological\nwater discovery">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>-0.00969596235789705</eqn>
+				<eqn>-0.00688956353130739</eqn>
 				<range min="-0.02" max="0"/>
 				<units>1/year</units>
 			</aux>
@@ -2701,14 +2733,14 @@ Old value from calibration: 164600402563.243</doc>
 			<aux name="sensitivity\nof pressure to expand\nwater supply to available\nwater supply">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>-2.99594144717831</eqn>
+				<eqn>-2.98921539510324</eqn>
 				<range min="-3" max="0"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial available water supply">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>48246124574682</eqn>
+				<eqn>48246125086758.9</eqn>
 				<range min="30000000000000" max="120000000000000"/>
 				<units>m^3</units>
 			</aux>
@@ -2763,14 +2795,14 @@ Old value from calibration: 164600402563.243</doc>
 			<aux name="sensitivity of fraction of cropland irrigated\nindicated to GDP per person">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.330663448799069</eqn>
+				<eqn>0.358220971104947</eqn>
 				<range min="0.01" max="1"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="base fraction of cropland irrigated">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.166758989246939</eqn>
+				<eqn>0.163016571447327</eqn>
 				<range min="0" max="0.3"/>
 				<units>dmnl</units>
 			</aux>
@@ -2821,7 +2853,7 @@ Old value from calibration: 164600402563.243</doc>
 			<aux name="initial fraction of\nunsustainable water withdrawal">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.0496738608893258</eqn>
+				<eqn>0.0500773609561844</eqn>
 				<range min="0" max="0.3"/>
 				<units>dmnl</units>
 			</aux>
@@ -3333,7 +3365,7 @@ Includes Manure and Technological</doc>
 			<aux name="elasticity of effect of animal products\non manure fertilizer use">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.0949727653126394</eqn>
+				<eqn>0.0974798168892134</eqn>
 				<range min="0.01" max="1.5"/>
 				<units>dmnl</units>
 			</aux>
@@ -3386,7 +3418,7 @@ Includes Manure and Technological</doc>
 			<aux name="sensitivity of fertilizer use to crop balance with reserves">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>-1.11841226662267</eqn>
+				<eqn>-1.11517961168076</eqn>
 				<range min="-1.2" max="-0.2"/>
 				<units>dmnl</units>
 			</aux>
@@ -3410,7 +3442,7 @@ Includes Manure and Technological</doc>
 				<units>dmnl</units>
 			</aux>
 			<aux name="sensitivity demand to relative\nuse">
-				<eqn>-0.0734821938779997</eqn>
+				<eqn>-0.0661808685440371</eqn>
 				<range min="-0.5" max="-0.001"/>
 				<units>dmnl</units>
 			</aux>
@@ -3699,7 +3731,7 @@ Lambin EF, Meyfroidt P. 2011. Global land use change, economic globalization, an
 			<aux name="fraction of new\ncropland\nfrom forests">
 				<doc>${Calibration Parameter}
 Calibration Parameter: forest land &amp; CO2 emissions from land cover change &amp; agricultural land</doc>
-				<eqn>0.341665312909883</eqn>
+				<eqn>0.341712006221272</eqn>
 				<range min="0.2" max="0.8"/>
 				<units>dmnl</units>
 			</aux>
@@ -3733,7 +3765,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="fraction of\ndepleting cropland\nto grassland">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.68641241447843</eqn>
+				<eqn>0.686505335404317</eqn>
 				<range min="0.2" max="0.8"/>
 				<units>dmnl</units>
 			</aux>
@@ -3756,7 +3788,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="fraction of grassland for grazing">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.750723834361212</eqn>
+				<eqn>0.755851163096719</eqn>
 				<range min="0.6" max="0.8"/>
 				<units>dmnl</units>
 			</aux>
@@ -3784,7 +3816,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="time to close\ngrassland gap">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>3.68705211036694</eqn>
+				<eqn>3.6855187063514</eqn>
 				<range min="2" max="5"/>
 				<units>years</units>
 			</aux>
@@ -3853,7 +3885,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="cropland\nexpansion time">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>2.407800673747</eqn>
+				<eqn>2.41146977280939</eqn>
 				<range min="1" max="5"/>
 				<units>years</units>
 			</aux>
@@ -3909,7 +3941,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="elasticity of effect of animal products\nyield on fraction\nof grassland degrading">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.770060905973548</eqn>
+				<eqn>0.765035580978418</eqn>
 				<range min="0.2" max="2"/>
 				<units>dmnl</units>
 			</aux>
@@ -3930,7 +3962,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="elasticity of effect of crop yield\non fraction cropland\ndegrading">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.890278788490359</eqn>
+				<eqn>0.886905344315547</eqn>
 				<range min="0.2" max="2"/>
 				<units>dmnl</units>
 			</aux>
@@ -3955,7 +3987,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="sensitivity of effect of crop\nbalance on crop land\nexpansion rate">
 				<doc>${Calibration Parameter}
 Calibration Parameter: forest land &amp; CO2 emissions from land cover change &amp; agricultural land &amp; crop production &amp; fertilizer use</doc>
-				<eqn>-0.192507444982975</eqn>
+				<eqn>-0.198650826974878</eqn>
 				<range min="-1" max="0"/>
 				<units>1</units>
 			</aux>
@@ -3983,7 +4015,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 			<aux name="sensitivity of effect of animal products\nbalance on grassland\nexpansion rate">
 				<doc>${Calibration Parameter}
 Calibration Parameter: forest land &amp; CO2 emissions from land cover change &amp; agricultural land &amp; crop production &amp; fertilizer use</doc>
-				<eqn>-0.244437940101428</eqn>
+				<eqn>-0.256071380359241</eqn>
 				<range min="-1" max="0"/>
 				<units>1</units>
 			</aux>
@@ -4107,7 +4139,7 @@ https://ourworldindata.org/world-lost-one-third-forests</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="3" isee:page_rows="2" isee:scroll_y="201" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="34" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4691,14 +4723,14 @@ https://ourworldindata.org/world-lost-one-third-forests</doc>
 			<aux name="climate response sensitivity">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.117686497668674</eqn>
+				<eqn>0.107510558575305</eqn>
 				<range min="0.1" max="0.4"/>
 				<units>deg C</units>
 			</aux>
 			<aux name="litter decay factor">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>4.28029411458939</eqn>
+				<eqn>4.20312524920982</eqn>
 				<range min="1" max="10"/>
 				<units>dmnl</units>
 			</aux>
