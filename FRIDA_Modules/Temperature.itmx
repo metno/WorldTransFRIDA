@@ -5,7 +5,7 @@
 		<name>Temperature</name>
 		<uuid>ccc7b89f-16df-41be-bd89-36c11a8e1898</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.1" isee:build_number="3377" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.2" isee:build_number="3414" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -303,6 +303,8 @@
 				<connect2 to="Sea_Level.Change_in_Surface_Temperature" from='Energy_Balance_Model."Change_in_Land_&amp;_Ocean_Surface_Temperature"'/>
 				<connect to="Sea_Level.Change_in_Upper_Ocean_Temperature" from="Energy_Balance_Model.Change_in_Thermocline_Ocean_Temperature"/>
 				<connect2 to="Sea_Level.Change_in_Upper_Ocean_Temperature" from="Energy_Balance_Model.Change_in_Thermocline_Ocean_Temperature"/>
+				<connect to="Climate_Risk_Perception.Climate_indices_with_record_breaking_exposure_per_person_per_year" from="Energy_Balance_Model.Climate_indices_with_record_breaking_exposure_per_person_per_year"/>
+				<connect2 to="Climate_Risk_Perception.Climate_indices_with_record_breaking_exposure_per_person_per_year" from="Energy_Balance_Model.Climate_indices_with_record_breaking_exposure_per_person_per_year"/>
 				<connect to="Sea_Level.Heat_Capacity_of_Surface" from='Energy_Balance_Model."Heat_Capacity_of_Land_&amp;_Ocean_Surface"'/>
 				<connect2 to="Sea_Level.Heat_Capacity_of_Surface" from='Energy_Balance_Model."Heat_Capacity_of_Land_&amp;_Ocean_Surface"'/>
 				<connect to="Sea_Level.Heat_Capacity_of_Deep_Ocean" from="Energy_Balance_Model.Heat_Capacity_of_Deep_Ocean"/>
@@ -317,6 +319,8 @@
 				<connect2 to="N2O_Forcing.Surface_Temperature" from="Energy_Balance_Model.Surface_Temperature"/>
 				<connect to="Ozone_Forcing.Surface_Temperature" from="Energy_Balance_Model.Surface_Temperature"/>
 				<connect2 to="Ozone_Forcing.Surface_Temperature" from="Energy_Balance_Model.Surface_Temperature"/>
+				<connect to="Climate_Risk_Perception.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Climate_Risk_Perception.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Crop.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Crop.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Demographics.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
@@ -6478,7 +6482,7 @@ kappa3 in Cummins et al 2020 https://doi.org/10.1175/JCLI-D-19-0589.1</doc>
 				<eqn>-0.04680587</eqn>
 				<units>Indices/(person*year*deg C^2)</units>
 			</aux>
-			<aux name="Climate indices with record breaking\nexposure per person per year">
+			<aux name="Climate indices with record breaking\nexposure per person per year" access="output">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -9639,7 +9643,10 @@ LN(1 + (Montreal_gases_equivalent_effective_stratospheric_chlorine - Montreal_ga
 				<units>Dimensionless</units>
 			</aux>
 			<aux name="CH4 lifetime factor\nfrom temperature">
-				<eqn>LN(1 + Surface_Temperature_1[1]*Sensitivity_of_CH4_lifetime_to_temperature)</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>LN(1 + Surface_Temperature_1*Sensitivity_of_CH4_lifetime_to_temperature)</eqn>
 				<units>Dimensionless</units>
 			</aux>
 			<aux name="Baseline CH4 lifetime">
@@ -9798,7 +9805,7 @@ LN(1 + (Montreal_gases_equivalent_effective_stratospheric_chlorine - Montreal_ga
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1369" page_height="956" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="242" isee:popup_graphs_are_comparative="false" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="14" isee:scroll_y="170" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -14685,14 +14692,17 @@ iirf uptake CO2 in Leach et al https://doi.org/10.5194/gmd-14-3007-2021</doc>
 				<units>kg/kt</units>
 			</aux>
 			<aux name="HFC134a eq Effective\nRadiative Forcing">
-				<eqn>Forcing_per_unit_HFC134a_eq_concentrations*Atmospheric_HFC134a_eq_Concentration[1]*UNIT_ppt_to_ppb</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Forcing_per_unit_HFC134a_eq_concentrations*Atmospheric_HFC134a_eq_Concentration*UNIT_ppt_to_ppb</eqn>
 				<units>W/(metre^2)</units>
 			</aux>
 			<aux name="Minor GHGs Effective\nRadiative Forcing" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(Montreal_Gases_Effective_Radiative_Forcing + HFC134a_eq_Effective_Radiative_Forcing)*Calibration_scaling_of_Minor_GHG_forcing[selected_climate_case[Run]]</eqn>
+				<eqn>(Montreal_Gases_Effective_Radiative_Forcing + HFC134a_eq_Effective_Radiative_Forcing[Run])*Calibration_scaling_of_Minor_GHG_forcing[selected_climate_case[Run]]</eqn>
 				<units>W/(metre^2)</units>
 			</aux>
 			<aux name="UNIT ppt to ppb" access="input">
@@ -15075,7 +15085,7 @@ iirf uptake CO2 in Leach et al https://doi.org/10.5194/gmd-14-3007-2021</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="576" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="false" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="143" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -17775,7 +17785,7 @@ iirf uptake CO2 in Leach et al https://doi.org/10.5194/gmd-14-3007-2021</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(Atmospheric_CH4_Concentration[1] - Atmospheric_CH4_Concentration_1750)*Ozone_forcing_per_unit_CH4_concentration_change[selected_climate_case_1[Run]] + (Atmospheric_N2O_Concentration[1] - Atmospheric_N2O_Concentration_1750)*Ozone_forcing_per_unit_N2O_concentration_change[selected_climate_case_1[Run]] + Ozone_forcing_from_Montreal_gases_equivalent_effective_stratospheric_chlorine[Run]</eqn>
+				<eqn>(Atmospheric_CH4_Concentration - Atmospheric_CH4_Concentration_1750)*Ozone_forcing_per_unit_CH4_concentration_change[selected_climate_case_1[Run]] + (Atmospheric_N2O_Concentration - Atmospheric_N2O_Concentration_1750)*Ozone_forcing_per_unit_N2O_concentration_change[selected_climate_case_1[Run]] + Ozone_forcing_from_Montreal_gases_equivalent_effective_stratospheric_chlorine[Run]</eqn>
 				<units>W/metre^2</units>
 			</aux>
 			<aux name="VOC emissions" access="input">
@@ -19116,7 +19126,7 @@ iirf uptake CO2 in Leach et al https://doi.org/10.5194/gmd-14-3007-2021</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="576" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="false" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
