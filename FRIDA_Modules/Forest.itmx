@@ -5,7 +5,7 @@
 		<name>Forest</name>
 		<uuid>24773b5f-7d2e-4d06-a181-d652befe84e6</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7" isee:build_number="3335" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.1" isee:build_number="3377" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="true" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -179,18 +179,6 @@
 		<unit name="TW">
 			<eqn>Million*MW</eqn>
 		</unit>
-		<unit name="G">
-			<eqn>Giga</eqn>
-		</unit>
-		<unit name="GtCO2">
-			<eqn>Giga*tCO2</eqn>
-		</unit>
-		<unit name="GtCH4">
-			<eqn>Giga*tCH4</eqn>
-		</unit>
-		<unit name="GtN2O">
-			<eqn>Giga*tN2O</eqn>
-		</unit>
 		<unit name="Year">
 			<eqn/>
 			<alias>yr</alias>
@@ -204,6 +192,18 @@
 		<unit name="Kelvin">
 			<eqn/>
 			<alias>K</alias>
+		</unit>
+		<unit name="G">
+			<eqn>Giga</eqn>
+		</unit>
+		<unit name="GtCO2">
+			<eqn>Giga*tCO2</eqn>
+		</unit>
+		<unit name="GtCH4">
+			<eqn>Giga*tCH4</eqn>
+		</unit>
+		<unit name="GtN2O">
+			<eqn>Giga*tN2O</eqn>
 		</unit>
 	</model_units>
 	<model name="Forest">
@@ -334,8 +334,9 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>ppm</units>
 			</aux>
-			<aux name="forest net primary\nproduction aboveground biomass share" access="output" isee:autocreated="true">
-				<eqn>0.3</eqn>
+			<aux name="forest net primary\nproduction aboveground\nbiomass share" access="output" isee:autocreated="true">
+				<doc>https://doi.org/10.1890/1051-0761(2001)011[1395:NPPACA]2.0.CO;2</doc>
+				<eqn>0.2</eqn>
 				<units>dmnl</units>
 			</aux>
 			<flow name="young forest growth" access="output" isee:autocreated="true">
@@ -364,7 +365,7 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>forest_aboveground_biomass_1980*(1-Young_forest_aboveground_biomass_historic_share)</eqn>
+				<eqn>forest_aboveground_biomass_1980-Young_forest_aboveground_biomass</eqn>
 				<format precision="full"/>
 				<inflow>maturing</inflow>
 				<outflow>cutting</outflow>
@@ -421,8 +422,10 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 				<eqn>522</eqn>
 				<units>GtC</units>
 			</aux>
-			<aux name="Young forest aboveground biomass\nhistoric share">
-				<eqn>0.2</eqn>
+			<aux name="Young mature forest biomass\nratio">
+				<doc>https://doi.org/10.1038/s41467-018-05132-5
+https://doi.org/10.1016/j.foreco.2021.119507</doc>
+				<eqn>0.5</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="tree cutting">
@@ -462,13 +465,19 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>forest_aboveground_biomass_1980*Young_forest_aboveground_biomass_historic_share</eqn>
+				<eqn>forest_aboveground_biomass_1980*Young_mature_forest_biomass_ratio*young_forest_share</eqn>
 				<format precision="full"/>
 				<inflow>young_forest_growth</inflow>
 				<outflow>maturing</outflow>
 				<non_negative/>
 				<units>GtC</units>
 			</stock>
+			<aux name="young forest share">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Young_Forest/(Mature_Forest+Young_Forest)</eqn>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -518,7 +527,7 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="427" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1097" page_height="763" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="628" isee:scroll_y="27" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -645,7 +654,7 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 					<from>young_forest_net_primary_production</from>
 					<to>young_forest_litter</to>
 				</connector>
-				<stock font_style="italic" font_weight="bold" x="591.798" y="641.083" name="Young Forest"/>
+				<stock font_style="italic" font_weight="bold" x="723.798" y="650.083" name="Young Forest"/>
 				<aux font_style="italic" font_weight="bold" x="887" y="1227.42" name="Surface Temperature Anomaly 1"/>
 				<connector uid="24" angle="184.899">
 					<from>Surface_Temperature_Anomaly_1</from>
@@ -660,11 +669,11 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 					<from>Atmospheric_CO2_Concentration_1</from>
 					<to>effect_of_CO2_on_tree_net_primary_production</to>
 				</connector>
-				<connector uid="27" angle="65.3809">
+				<connector uid="27" angle="77.5819">
 					<from>Young_Forest</from>
 					<to>young_forest_net_primary_production</to>
 				</connector>
-				<aux color="red" font_color="red" x="743.104" y="259.333" name="forest net primary\nproduction aboveground biomass share"/>
+				<aux color="blue" x="743.104" y="259.333" name="forest net primary\nproduction aboveground\nbiomass share"/>
 				<connector uid="28" angle="177.645">
 					<from>forest_net_primary_production_aboveground_biomass_share</from>
 					<to>young_forest_litter</to>
@@ -693,11 +702,11 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 					<from>young_forest_net_primary_production</from>
 					<to>young_forest_growth</to>
 				</connector>
-				<stock x="1255.13" y="411.333" name="Mature forest aboveground biomass"/>
-				<flow x="1128.39" y="411.333" name="maturing">
+				<stock x="1256" y="411.333" name="Mature forest aboveground biomass"/>
+				<flow x="1128.82" y="411.333" name="maturing">
 					<pts>
 						<pt x="1036.14" y="411.333"/>
-						<pt x="1232.63" y="411.333"/>
+						<pt x="1233.5" y="411.333"/>
 					</pts>
 				</flow>
 				<flow x="1256" y="302.417" name="cutting">
@@ -706,9 +715,9 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 						<pt x="1256" y="190"/>
 					</pts>
 				</flow>
-				<flow x="1397.81" y="411.333" name="clearing">
+				<flow x="1398.25" y="411.333" name="clearing">
 					<pts>
-						<pt x="1277.63" y="411.333"/>
+						<pt x="1278.5" y="411.333"/>
 						<pt x="1542" y="411.333"/>
 					</pts>
 				</flow>
@@ -727,12 +736,12 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 					<to>timber</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1084" y="255" name="forest recovery time"/>
-				<connector uid="36" angle="285.85">
+				<connector uid="36" angle="285.997">
 					<from>forest_recovery_time</from>
 					<to>maturing</to>
 				</connector>
 				<aux color="blue" x="853" y="123" name="forest aboveground biomass 1980"/>
-				<aux color="red" font_color="red" x="989" y="159" name="Young forest aboveground biomass\nhistoric share"/>
+				<aux color="blue" x="989" y="159" name="Young mature forest biomass\nratio"/>
 				<aux color="red" font_color="red" x="1142.5" y="173" name="tree cutting"/>
 				<connector uid="38" angle="352.763">
 					<from>tree_cutting</from>
@@ -782,6 +791,15 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 				<connector uid="43" angle="295.391">
 					<from>Young_forest_aboveground_biomass</from>
 					<to>forest_aboveground_biomass</to>
+				</connector>
+				<aux x="1160.5" y="484" name="young forest share"/>
+				<connector uid="49" angle="38.8593">
+					<from>Young_Forest</from>
+					<to>young_forest_share</to>
+				</connector>
+				<connector uid="50" angle="137.428">
+					<from>Mature_Forest</from>
+					<to>young_forest_share</to>
 				</connector>
 				<alias font_style="italic" uid="15" x="689.5" y="964.834" width="18" height="18">
 					<of>tree_net_primary_production_in_1980</of>
