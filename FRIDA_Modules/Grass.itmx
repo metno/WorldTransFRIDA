@@ -5,7 +5,7 @@
 		<name>Grass</name>
 		<uuid>9225849a-69aa-450e-b8f1-170250d720c3</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.1" isee:build_number="3377" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.2" isee:build_number="3414" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="true" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -212,14 +212,14 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>grass_net_primary_production_in_1980 + change_in_grass_net_primary_production_from_CO2+change_in_grass_net_primary_production_from_STA+change_in_grass_net_primary_production_from_STA_squared{+change_in_crop_yield_from_soil_carbon}</eqn>
+				<eqn>grass_net_primary_production_in_1980 + change_in_grass_net_primary_production_from_CO2+change_in_grass_net_primary_production_from_STA+change_in_grass_net_primary_production_from_STA_squared + change_in_net_primary_production_from_change_in_spatial_distribution_of_grassland{+change_in_crop_yield_from_soil_carbon}</eqn>
 				<units>GtC/(Mha*year)</units>
 			</aux>
 			<aux name="CO2 grass net primary production parameter">
 				<doc>${Calibration Parameter,Yield}
 </doc>
-				<eqn>0.00302894227675803</eqn>
-				<range min="1" max="1"/>
+				<eqn>0.00605065712153602</eqn>
+				<range min="0" max="0.1"/>
 				<units>1/ppm</units>
 			</aux>
 			<aux name="effect of CO2 on\ngrass net primary production">
@@ -256,7 +256,7 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>0.099391124602685</eqn>
+				<eqn>-0.00568737708227501</eqn>
 				<range min="-1" max="1"/>
 				<units>1/deg C</units>
 			</aux>
@@ -280,8 +280,8 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>-0.05</eqn>
-				<range min="-5" max="-1"/>
+				<eqn>-0.0233956295217886</eqn>
+				<range min="-5" max="0"/>
 				<units>1/(deg C^2)</units>
 			</aux>
 			<aux name="combined change in grass net primary production\nfrom STA">
@@ -302,7 +302,7 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>animal_products_calorie_requirements_met_via_grazing_1*UNIT_GtC_per_PCal</eqn>
+				<eqn>animal_products_calorie_requirements_met_via_grazing_1*effective_GtC_per_PCal_animal_grazing</eqn>
 				<units>GtC/Year</units>
 			</aux>
 			<aux name="grass net primary production\nin 1980">
@@ -348,6 +348,43 @@
 			<aux name="UNIT GtC per PCal" access="input">
 				<eqn>0.001756582675</eqn>
 				<units>GtC/PCal</units>
+			</aux>
+			<aux name="Terrestrial carbon balance" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>GtC/Year</units>
+			</aux>
+			<aux name="GtC per PCal of grazing\nmultiplier">
+				<eqn>0.05 {grass has 5% of the carbon per PCal}</eqn>
+				<range min="0" max="1"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effective GtC per PCal animal grazing">
+				<eqn>UNIT_GtC_per_PCal*GtC_per_PCal_of_grazing_multiplier</eqn>
+				<units>GtC/PCal</units>
+			</aux>
+			<aux name="change in net primary production\nfrom change in spatial\ndistribution of grassland">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>grass_net_primary_production_in_1980*effect_of_grassland_on_grass_net_primary_production</eqn>
+				<units>GtC/(Mha*year)</units>
+			</aux>
+			<aux name="grassland change grass net primary\nproduction parameter">
+				<doc>${Calibration Parameter,Yield}
+</doc>
+				<eqn>0.0105304374810873</eqn>
+				<range min="0" max="0.1"/>
+				<units>1/MHa</units>
+			</aux>
+			<aux name="effect of grassland on\ngrass net primary production">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(Grassland_1 - INIT(Grassland_1))*grassland_change_grass_net_primary_production_parameter</eqn>
+				<units>dmnl</units>
 			</aux>
 		</variables>
 		<views>
@@ -398,7 +435,54 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1097" page_height="763" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="164" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
+				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:sim_speed_slider color="black" background="white"/>
+				<isee:time_slider color="#E95F74" background="silver"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
+				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
+				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="46" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -546,11 +630,7 @@
 					<from>animal_products_calorie_requirements_met_via_grazing_1</from>
 					<to>animal_grazing</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1022" y="280" name="UNIT GtC per PCal"/>
-				<connector uid="37" angle="90">
-					<from>UNIT_GtC_per_PCal</from>
-					<to>animal_grazing</to>
-				</connector>
+				<aux font_style="italic" font_weight="bold" x="1022" y="278" name="UNIT GtC per PCal"/>
 				<connector uid="39" angle="286.044">
 					<from>grassland_net_primary_production</from>
 					<to>grassland_litter</to>
@@ -558,6 +638,44 @@
 				<connector uid="16" angle="268.247">
 					<from>animal_grazing</from>
 					<to>grassland_litter</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="576" y="60" name="Terrestrial carbon balance"/>
+				<aux x="1049.88" y="174.821" name="GtC per PCal of grazing\nmultiplier"/>
+				<aux x="933.25" y="174.821" name="effective GtC per PCal animal grazing"/>
+				<connector uid="42" angle="124.875">
+					<from>UNIT_GtC_per_PCal</from>
+					<to>effective_GtC_per_PCal_animal_grazing</to>
+				</connector>
+				<connector uid="43" angle="158.698">
+					<from>GtC_per_PCal_of_grazing_multiplier</from>
+					<to>effective_GtC_per_PCal_animal_grazing</to>
+				</connector>
+				<connector uid="44" angle="143.777">
+					<from>effective_GtC_per_PCal_animal_grazing</from>
+					<to>animal_grazing</to>
+				</connector>
+				<aux x="468" y="260" name="change in net primary production\nfrom change in spatial\ndistribution of grassland"/>
+				<connector uid="45" angle="340.145">
+					<from>change_in_net_primary_production_from_change_in_spatial_distribution_of_grassland</from>
+					<to>grass_net_primary_production</to>
+				</connector>
+				<aux x="113.88" y="141.5" name="grassland change grass net primary\nproduction parameter"/>
+				<aux x="256.25" y="221" name="effect of grassland on\ngrass net primary production"/>
+				<connector uid="46" angle="330.821">
+					<from>grassland_change_grass_net_primary_production_parameter</from>
+					<to>effect_of_grassland_on_grass_net_primary_production</to>
+				</connector>
+				<connector uid="47" angle="343.02">
+					<from>effect_of_grassland_on_grass_net_primary_production</from>
+					<to>change_in_net_primary_production_from_change_in_spatial_distribution_of_grassland</to>
+				</connector>
+				<connector uid="48" angle="80.8028">
+					<from>grass_net_primary_production_in_1980</from>
+					<to>change_in_net_primary_production_from_change_in_spatial_distribution_of_grassland</to>
+				</connector>
+				<connector uid="49" angle="165.964">
+					<from>Grassland_1</from>
+					<to>effect_of_grassland_on_grass_net_primary_production</to>
 				</connector>
 				<alias font_style="italic" uid="24" x="212" y="563.167" width="18" height="18">
 					<of>grass_net_primary_production_in_1980</of>
