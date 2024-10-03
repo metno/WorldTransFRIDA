@@ -220,18 +220,6 @@
 			<eqn/>
 			<alias>K</alias>
 		</unit>
-		<unit name="G">
-			<eqn>Giga</eqn>
-		</unit>
-		<unit name="GtCO2">
-			<eqn>Giga*tCO2</eqn>
-		</unit>
-		<unit name="GtCH4">
-			<eqn>Giga*tCH4</eqn>
-		</unit>
-		<unit name="GtN2O">
-			<eqn>Giga*tN2O</eqn>
-		</unit>
 	</model_units>
 	<model name="Energy" run="true">
 		<variables>
@@ -1291,7 +1279,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="581.667" isee:scroll_y="250" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="12" isee:page_rows="7" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -12126,14 +12114,6 @@ World Bank  2020 Minerals for climate action: The mineral intensity of the clean
 				<eqn>0.02</eqn>
 				<units>1/year</units>
 			</aux>
-			<flow name="Depreciation of\nNuclear Capacity">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Nuclear_Energy_Capacity*depreciation_rate_of_Nuclear_capital</eqn>
-				<non_negative/>
-				<units>GW/Year</units>
-			</flow>
 			<stock name="Nuclear Energy Capacity" access="output" isee:autocreated="true">
 				<doc>${Calibrated}
 </doc>
@@ -12142,8 +12122,8 @@ World Bank  2020 Minerals for climate action: The mineral intensity of the clean
 				</dimensions>
 				<eqn>Initial_Nuclear_Capacity</eqn>
 				<inflow>Installation_of_Nuclear_Capacity</inflow>
-				<outflow>Depreciation_of_Nuclear_Capacity</outflow>
-				<outflow>Nuclear_Energy_Capital_Damaged_due_to_STA</outflow>
+				<outflow>Depreciation_of_Nuclear_Energy_Capacity</outflow>
+				<outflow>Nuclear_Energy_Capacity_Damaged_due_to_STA</outflow>
 				<non_negative/>
 				<units>GW</units>
 			</stock>
@@ -12218,19 +12198,11 @@ World Bank  2020 Minerals for climate action: The mineral intensity of the clean
 				<range min="1000" max="5000"/>
 				<units>$/kW</units>
 			</aux>
-			<flow name="Nuclear Energy\nCapital Damaged due to STA">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Nuclear_Energy_Capacity*damage_rate_of_energy_capital_from_STA</eqn>
-				<non_negative/>
-				<units>GW/Year</units>
-			</flow>
 			<aux name="replacement cost of Nuclear Energy\nCapital Damaged due to STA" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Nuclear_Energy_Capital_Damaged_due_to_STA*Nuclear_Installation_Costs/kW_to_GW</eqn>
+				<eqn>Nuclear_Energy_Capacity_Damaged_due_to_STA*Nuclear_Installation_Costs/kW_to_GW</eqn>
 				<units>$/Year</units>
 			</aux>
 			<aux name="damage rate of energy\ncapital from STA" access="input">
@@ -12306,6 +12278,40 @@ tax_for_newly_installed_nuclear</eqn>
 					<ypts>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</ypts>
 				</gf>
 				<units>$/(kWh/Years)</units>
+			</aux>
+			<flow name="Depreciation of\nNuclear Energy Capacity">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MIN(Nuclear_Energy_Capacity/drain_time, Desired_Depreciation_of_Nuclear_Energy_Capacity)</eqn>
+				<non_negative/>
+				<units>GW/Year</units>
+			</flow>
+			<flow name="Nuclear Energy Capacity\nDamaged due to STA" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MIN(Nuclear_Energy_Capacity/drain_time, desired_Hydropower_Energy_Capacity_Damaged_due_to_STA)</eqn>
+				<non_negative/>
+				<units>GW/Year</units>
+			</flow>
+			<aux name="desired Hydropower Energy Capacity\nDamaged due to STA">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Nuclear_Energy_Capacity*damage_rate_of_energy_capital_from_STA</eqn>
+				<units>$/Year</units>
+			</aux>
+			<aux name="Desired Depreciation of\nNuclear Energy Capacity">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>depreciation_rate_of_Nuclear_capital*Nuclear_Energy_Capacity</eqn>
+				<units>$/Year</units>
+			</aux>
+			<aux name="drain time" access="output" isee:autocreated="true">
+				<eqn>1</eqn>
+				<units>year</units>
 			</aux>
 		</variables>
 		<views>
@@ -12396,22 +12402,8 @@ tax_for_newly_installed_nuclear</eqn>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
 				<aux color="black" font_color="black" x="171.55" y="180.6" name="kW to GW"/>
-				<aux color="black" font_color="black" x="492.41" y="338.99" name="depreciation rate of\nNuclear capital"/>
-				<flow x="448.245" y="396.13" name="Depreciation of\nNuclear Capacity">
-					<pts>
-						<pt x="407.05" y="396.13"/>
-						<pt x="513.44" y="396.13"/>
-					</pts>
-				</flow>
-				<connector uid="1" angle="232.299">
-					<from>depreciation_rate_of_Nuclear_capital</from>
-					<to>Depreciation_of_Nuclear_Capacity</to>
-				</connector>
+				<aux color="black" font_color="black" x="640.137" y="328.081" name="depreciation rate of\nNuclear capital"/>
 				<stock background="#FFAAFF" x="384.55" y="393.99" name="Nuclear Energy Capacity"/>
-				<connector uid="2" angle="23.0731">
-					<from>Nuclear_Energy_Capacity</from>
-					<to>Depreciation_of_Nuclear_Capacity</to>
-				</connector>
 				<aux background="#AAAAFF" x="384.55" y="425.44" name="Initial Nuclear Capacity"/>
 				<flow x="310.8" y="393.99" name="Installation of\nNuclear Capacity">
 					<pts>
@@ -12458,21 +12450,7 @@ tax_for_newly_installed_nuclear</eqn>
 					<from>Floor_of_Nuclear_Installation_Costs</from>
 					<to>Nuclear_Installation_Costs</to>
 				</connector>
-				<flow label_side="right" x="386.88" y="286.37" name="Nuclear Energy\nCapital Damaged due to STA">
-					<pts>
-						<pt x="386.88" y="376.49"/>
-						<pt x="386.88" y="175.25"/>
-					</pts>
-				</flow>
-				<connector uid="11" angle="55.8021">
-					<from>Nuclear_Energy_Capacity</from>
-					<to>Nuclear_Energy_Capital_Damaged_due_to_STA</to>
-				</connector>
 				<aux x="346.33" y="80" name="replacement cost of Nuclear Energy\nCapital Damaged due to STA"/>
-				<connector uid="12" angle="95.4045">
-					<from>Nuclear_Energy_Capital_Damaged_due_to_STA</from>
-					<to>replacement_cost_of_Nuclear_Energy_Capital_Damaged_due_to_STA</to>
-				</connector>
 				<connector uid="13" angle="65.0493">
 					<from>Nuclear_Installation_Costs</from>
 					<to>replacement_cost_of_Nuclear_Energy_Capital_Damaged_due_to_STA</to>
@@ -12481,11 +12459,7 @@ tax_for_newly_installed_nuclear</eqn>
 					<from>kW_to_GW</from>
 					<to>replacement_cost_of_Nuclear_Energy_Capital_Damaged_due_to_STA</to>
 				</connector>
-				<connector uid="15" angle="214.457">
-					<from>damage_rate_of_energy_capital_from_STA</from>
-					<to>Nuclear_Energy_Capital_Damaged_due_to_STA</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="510.41" y="233.447" name="damage rate of energy\ncapital from STA"/>
+				<aux font_style="italic" font_weight="bold" label_side="right" x="629.94" y="180.6" name="damage rate of energy\ncapital from STA"/>
 				<aux font_style="italic" font_weight="bold" x="191" y="465.5" name="Investments in\nNuclear Capacity"/>
 				<connector uid="16" angle="23.8602">
 					<from>Investments_in_Nuclear_Capacity</from>
@@ -12548,6 +12522,65 @@ tax_for_newly_installed_nuclear</eqn>
 				<connector uid="28" angle="195.255">
 					<from>tax_for_newly_installed_nuclear</from>
 					<to>Cost_of_Extra_Energy_Output_through_Capital_per_Unit</to>
+				</connector>
+				<flow label_side="bottom" x="448.211" y="395.394" name="Depreciation of\nNuclear Energy Capacity">
+					<pts>
+						<pt x="407.05" y="395.394"/>
+						<pt x="513.373" y="395.394"/>
+					</pts>
+				</flow>
+				<flow label_side="right" x="385.393" y="292.417" name="Nuclear Energy Capacity\nDamaged due to STA">
+					<pts>
+						<pt x="385.393" y="376.49"/>
+						<pt x="385.393" y="187.344"/>
+					</pts>
+				</flow>
+				<aux label_side="top" x="495.495" y="249.833" name="desired Hydropower Energy Capacity\nDamaged due to STA"/>
+				<connector uid="29" angle="201.145">
+					<from>desired_Hydropower_Energy_Capacity_Damaged_due_to_STA</from>
+					<to>Nuclear_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<aux label_side="top" x="495.495" y="363.1" name="Desired Depreciation of\nNuclear Energy Capacity"/>
+				<connector uid="30" angle="214.333">
+					<from>Desired_Depreciation_of_Nuclear_Energy_Capacity</from>
+					<to>Depreciation_of_Nuclear_Energy_Capacity</to>
+				</connector>
+				<aux x="611.94" y="254.071" name="drain time"/>
+				<connector uid="31" angle="189.607">
+					<from>drain_time</from>
+					<to>Nuclear_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="32" angle="205.899">
+					<from>drain_time</from>
+					<to>Depreciation_of_Nuclear_Energy_Capacity</to>
+				</connector>
+				<connector uid="33" angle="34.0033">
+					<from>Nuclear_Energy_Capacity</from>
+					<to>Desired_Depreciation_of_Nuclear_Energy_Capacity</to>
+				</connector>
+				<connector uid="34" angle="39.8977">
+					<from>Nuclear_Energy_Capacity</from>
+					<to>desired_Hydropower_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="35" angle="207.246">
+					<from>damage_rate_of_energy_capital_from_STA</from>
+					<to>desired_Hydropower_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="36" angle="202.218">
+					<from>depreciation_rate_of_Nuclear_capital</from>
+					<to>Desired_Depreciation_of_Nuclear_Energy_Capacity</to>
+				</connector>
+				<connector uid="37" angle="24.4087">
+					<from>Nuclear_Energy_Capacity</from>
+					<to>Depreciation_of_Nuclear_Energy_Capacity</to>
+				</connector>
+				<connector uid="38" angle="56.7976">
+					<from>Nuclear_Energy_Capacity</from>
+					<to>Nuclear_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="39" angle="103.558">
+					<from>Nuclear_Energy_Capacity_Damaged_due_to_STA</from>
+					<to>replacement_cost_of_Nuclear_Energy_Capital_Damaged_due_to_STA</to>
 				</connector>
 			</view>
 		</views>
@@ -12874,14 +12907,6 @@ IRENA 2012  Renewable Energy Technologies: Cost Analysis Series Volume 1: Power 
 				<eqn>0.01</eqn>
 				<units>1/year</units>
 			</aux>
-			<flow name="Depreciation of\nHydropower Capcity">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Hydropower_Energy_Capacity*depreciation_rate_of_hydropower_capital</eqn>
-				<non_negative/>
-				<units>GW/Year</units>
-			</flow>
 			<stock name="Hydropower Energy Capacity" access="output" isee:autocreated="true">
 				<doc>${Calibrated}
 </doc>
@@ -12890,8 +12915,8 @@ IRENA 2012  Renewable Energy Technologies: Cost Analysis Series Volume 1: Power 
 				</dimensions>
 				<eqn>Initial_Hydropower_Capacity</eqn>
 				<inflow>Installation_of_Hydropower_Capacity</inflow>
-				<outflow>Depreciation_of_Hydropower_Capcity</outflow>
-				<outflow>Hydropower_Energy_Capital_Damaged_due_to_STA</outflow>
+				<outflow>Depreciation_of_Hydropower_Energy_Capacity</outflow>
+				<outflow>Hydropower_Energy_Capacity_Damaged_due_to_STA</outflow>
 				<non_negative/>
 				<units>GW</units>
 			</stock>
@@ -12947,19 +12972,11 @@ Data from 2010 to 2021 specified on the range of 1600$/kW </doc>
 				<range min="1e-7" max="0.0001"/>
 				<units>$/kW^2</units>
 			</aux>
-			<flow name="Hydropower Energy\nCapital Damaged due to STA">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Hydropower_Energy_Capacity*damage_rate_of_energy_capital_from_STA</eqn>
-				<non_negative/>
-				<units>GW/Year</units>
-			</flow>
 			<aux name="replacement cost of Hydropower Energy\nCapital Damaged due to STA" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Hydropower_Energy_Capital_Damaged_due_to_STA*Hydropower_Installation_Costs/kW_to_GW</eqn>
+				<eqn>Hydropower_Energy_Capacity_Damaged_due_to_STA*Hydropower_Installation_Costs/kW_to_GW</eqn>
 				<units>$/Year</units>
 			</aux>
 			<aux name="damage rate of energy\ncapital from STA" access="input">
@@ -13035,6 +13052,40 @@ tax_for_newly_installed_hydropower_capacity</eqn>
 					<ypts>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</ypts>
 				</gf>
 				<units>$/(kWh/Years)</units>
+			</aux>
+			<flow name="Depreciation of\nHydropower Energy Capacity">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MIN(Hydropower_Energy_Capacity/drain_time, Desired_Depreciation_of_Hydropower_Energy_Capacity)</eqn>
+				<non_negative/>
+				<units>GW/Year</units>
+			</flow>
+			<flow name="Hydropower Energy Capacity\nDamaged due to STA" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MIN(Hydropower_Energy_Capacity/drain_time, desired_Hydropower_Energy_Capacity_Damaged_due_to_STA)</eqn>
+				<non_negative/>
+				<units>GW/Year</units>
+			</flow>
+			<aux name="desired Hydropower Energy Capacity\nDamaged due to STA">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Hydropower_Energy_Capacity*damage_rate_of_energy_capital_from_STA</eqn>
+				<units>$/Year</units>
+			</aux>
+			<aux name="Desired Depreciation of\nHydropower Energy Capacity">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>depreciation_rate_of_hydropower_capital*Hydropower_Energy_Capacity</eqn>
+				<units>$/Year</units>
+			</aux>
+			<aux name="drain time" access="output" isee:autocreated="true">
+				<eqn>1</eqn>
+				<units>year</units>
 			</aux>
 		</variables>
 		<views>
@@ -13124,22 +13175,8 @@ tax_for_newly_installed_hydropower_capacity</eqn>
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<aux color="black" background="white" font_color="black" x="517.82" y="313.65" name="depreciation rate of\nhydropower capital"/>
-				<flow x="473.655" y="370.79" name="Depreciation of\nHydropower Capcity">
-					<pts>
-						<pt x="432.46" y="370.79"/>
-						<pt x="538.85" y="370.79"/>
-					</pts>
-				</flow>
-				<connector uid="1" angle="232.299">
-					<from>depreciation_rate_of_hydropower_capital</from>
-					<to>Depreciation_of_Hydropower_Capcity</to>
-				</connector>
+				<aux color="black" background="white" font_color="black" label_side="right" x="596.666" y="294.419" name="depreciation rate of\nhydropower capital"/>
 				<stock background="#FFAAFF" x="409.96" y="368.65" name="Hydropower Energy Capacity"/>
-				<connector uid="2" angle="23.0731">
-					<from>Hydropower_Energy_Capacity</from>
-					<to>Depreciation_of_Hydropower_Capcity</to>
-				</connector>
 				<aux background="#AAAAFF" x="409.96" y="400.1" name="Initial Hydropower Capacity"/>
 				<flow x="336.21" y="368.65" name="Installation of\nHydropower Capacity">
 					<pts>
@@ -13184,35 +13221,17 @@ tax_for_newly_installed_hydropower_capacity</eqn>
 					<from>kW_to_GW</from>
 					<to>Hydropower_Installation_Costs</to>
 				</connector>
-				<flow label_side="right" x="408.12" y="269.075" name="Hydropower Energy\nCapital Damaged due to STA">
-					<pts>
-						<pt x="408.12" y="351.15"/>
-						<pt x="408.12" y="166"/>
-					</pts>
-				</flow>
-				<connector uid="11" angle="55.5891">
-					<from>Hydropower_Energy_Capacity</from>
-					<to>Hydropower_Energy_Capital_Damaged_due_to_STA</to>
-				</connector>
 				<aux x="378.46" y="86" name="replacement cost of Hydropower Energy\nCapital Damaged due to STA"/>
 				<connector uid="12" angle="63.5741">
 					<from>Hydropower_Installation_Costs</from>
-					<to>replacement_cost_of_Hydropower_Energy_Capital_Damaged_due_to_STA</to>
-				</connector>
-				<connector uid="13" angle="97.3046">
-					<from>Hydropower_Energy_Capital_Damaged_due_to_STA</from>
 					<to>replacement_cost_of_Hydropower_Energy_Capital_Damaged_due_to_STA</to>
 				</connector>
 				<connector uid="14" angle="57.8028">
 					<from>kW_to_GW</from>
 					<to>replacement_cost_of_Hydropower_Energy_Capital_Damaged_due_to_STA</to>
 				</connector>
-				<connector uid="15" angle="209.781">
-					<from>damage_rate_of_energy_capital_from_STA</from>
-					<to>Hydropower_Energy_Capital_Damaged_due_to_STA</to>
-				</connector>
 				<aux color="black" font_color="black" x="199.25" y="315.66" name="kW to GW"/>
-				<aux font_style="italic" font_weight="bold" x="530.974" y="198.769" name="damage rate of energy\ncapital from STA"/>
+				<aux font_style="italic" font_weight="bold" x="572.545" y="155.307" name="damage rate of energy\ncapital from STA"/>
 				<aux font_style="italic" font_weight="bold" x="199.25" y="429" name="Investments in Hydropower\nEnergy Capcity"/>
 				<connector uid="16" angle="23.7802">
 					<from>Investments_in_Hydropower_Energy_Capcity</from>
@@ -13276,6 +13295,65 @@ tax_for_newly_installed_hydropower_capacity</eqn>
 					<from>tax_for_newly_installed_hydropower_capacity</from>
 					<to>Cost_of_Extra_Energy_Output_through_Capital_per_Unit</to>
 				</connector>
+				<flow label_side="bottom" x="473.78" y="370.121" name="Depreciation of\nHydropower Energy Capacity">
+					<pts>
+						<pt x="432.46" y="370.121"/>
+						<pt x="539.1" y="370.121"/>
+					</pts>
+				</flow>
+				<flow label_side="right" x="411.12" y="267.11" name="Hydropower Energy Capacity\nDamaged due to STA">
+					<pts>
+						<pt x="411.12" y="351.15"/>
+						<pt x="411.12" y="162.071"/>
+					</pts>
+				</flow>
+				<aux label_side="top" x="521.222" y="224.56" name="desired Hydropower Energy Capacity\nDamaged due to STA"/>
+				<connector uid="35" angle="201.13">
+					<from>desired_Hydropower_Energy_Capacity_Damaged_due_to_STA</from>
+					<to>Hydropower_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<aux label_side="top" x="521.222" y="337.827" name="Desired Depreciation of\nHydropower Energy Capacity"/>
+				<connector uid="36" angle="214.244">
+					<from>Desired_Depreciation_of_Hydropower_Energy_Capacity</from>
+					<to>Depreciation_of_Hydropower_Energy_Capacity</to>
+				</connector>
+				<connector uid="37" angle="209.914">
+					<from>depreciation_rate_of_hydropower_capital</from>
+					<to>Desired_Depreciation_of_Hydropower_Energy_Capacity</to>
+				</connector>
+				<aux x="637.667" y="228.798" name="drain time"/>
+				<connector uid="39" angle="233.458">
+					<from>damage_rate_of_energy_capital_from_STA</from>
+					<to>desired_Hydropower_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="41" angle="52.3259">
+					<from>Hydropower_Energy_Capacity</from>
+					<to>desired_Hydropower_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="42" angle="36.3064">
+					<from>Hydropower_Energy_Capacity</from>
+					<to>Desired_Depreciation_of_Hydropower_Energy_Capacity</to>
+				</connector>
+				<connector uid="43" angle="58.4429">
+					<from>Hydropower_Energy_Capacity</from>
+					<to>Hydropower_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="44" angle="18.2119">
+					<from>Hydropower_Energy_Capacity</from>
+					<to>Depreciation_of_Hydropower_Energy_Capacity</to>
+				</connector>
+				<connector uid="45" angle="191.254">
+					<from>drain_time</from>
+					<to>Hydropower_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="46" angle="205.899">
+					<from>drain_time</from>
+					<to>Depreciation_of_Hydropower_Energy_Capacity</to>
+				</connector>
+				<connector uid="47" angle="120.595">
+					<from>Hydropower_Energy_Capacity_Damaged_due_to_STA</from>
+					<to>replacement_cost_of_Hydropower_Energy_Capital_Damaged_due_to_STA</to>
+				</connector>
 			</view>
 		</views>
 	</model>
@@ -13293,14 +13371,6 @@ Default 5% rate</doc>
 				<eqn>0.05</eqn>
 				<units>1/year</units>
 			</aux>
-			<flow name="Depreciation of\nother Capcity">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Other_Energy_Capacity*depreciation_rate_of_other_capital</eqn>
-				<non_negative/>
-				<units>GW/Year</units>
-			</flow>
 			<stock name="Other Energy Capacity" access="output" isee:autocreated="true">
 				<doc>${Calibrated}
 </doc>
@@ -13309,8 +13379,8 @@ Default 5% rate</doc>
 				</dimensions>
 				<eqn>Initial_Other_Capacity</eqn>
 				<inflow>Installation_of_Other_Capacity</inflow>
-				<outflow>Depreciation_of_other_Capcity</outflow>
-				<outflow>Other_Energy_Capital_Damaged_due_to_STA</outflow>
+				<outflow>Depreciation_of_Other_Energy_Capacity</outflow>
+				<outflow>Other_Energy_Capacity_Damaged_due_to_STA</outflow>
 				<non_negative/>
 				<units>GW</units>
 			</stock>
@@ -13371,19 +13441,11 @@ Default 5% rate</doc>
 				<range min="-1000" max="1000"/>
 				<units>$/KW/Year</units>
 			</aux>
-			<flow name="Other Energy\nCapital Damaged due to STA">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Other_Energy_Capacity*damage_rate_of_energy_capital_from_STA</eqn>
-				<non_negative/>
-				<units>GW/Year</units>
-			</flow>
 			<aux name="replacement cost of Other Energy\nCapital Damaged due to STA" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Other_Energy_Capital_Damaged_due_to_STA*Other_Installation_Costs/kW_to_GW</eqn>
+				<eqn>Other_Energy_Capacity_Damaged_due_to_STA*Other_Installation_Costs/kW_to_GW</eqn>
 				<units>$/Year</units>
 			</aux>
 			<aux name="damage rate of energy\ncapital from STA" access="input">
@@ -13448,6 +13510,40 @@ tax_for_newly_installed_other_energy_capacity</eqn>
 					<ypts>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</ypts>
 				</gf>
 				<units>$/(kWh/Years)</units>
+			</aux>
+			<flow name="Depreciation of\nOther Energy Capacity">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MIN(Other_Energy_Capacity/drain_time, Desired_Depreciation_of_Other_Energy_Capacity)</eqn>
+				<non_negative/>
+				<units>GW/Year</units>
+			</flow>
+			<flow name="Other Energy Capacity\nDamaged due to STA" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MIN(Other_Energy_Capacity/drain_time, desired_Other_Energy_Capacity_Damaged_due_to_STA)</eqn>
+				<non_negative/>
+				<units>GW/Year</units>
+			</flow>
+			<aux name="desired Other Energy Capacity\nDamaged due to STA">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Other_Energy_Capacity*damage_rate_of_energy_capital_from_STA</eqn>
+				<units>$/Year</units>
+			</aux>
+			<aux name="Desired Depreciation of\nOther Energy Capacity">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Other_Energy_Capacity*depreciation_rate_of_other_capital</eqn>
+				<units>$/Year</units>
+			</aux>
+			<aux name="drain time" access="output" isee:autocreated="true">
+				<eqn>1</eqn>
+				<units>year</units>
 			</aux>
 		</variables>
 		<views>
@@ -13537,22 +13633,8 @@ tax_for_newly_installed_other_energy_capacity</eqn>
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<aux color="black" background="white" font_color="black" x="503.49" y="317.48" name="depreciation rate of\nother capital"/>
-				<flow x="459.325" y="374.62" name="Depreciation of\nother Capcity">
-					<pts>
-						<pt x="418.13" y="374.62"/>
-						<pt x="524.52" y="374.62"/>
-					</pts>
-				</flow>
-				<connector uid="1" angle="232.299">
-					<from>depreciation_rate_of_other_capital</from>
-					<to>Depreciation_of_other_Capcity</to>
-				</connector>
+				<aux color="black" background="white" font_color="black" x="647.49" y="289.98" name="depreciation rate of\nother capital"/>
 				<stock background="#FFAAFF" x="395.63" y="372.48" name="Other Energy Capacity"/>
-				<connector uid="2" angle="23.0731">
-					<from>Other_Energy_Capacity</from>
-					<to>Depreciation_of_other_Capcity</to>
-				</connector>
 				<aux background="#AAAAFF" x="395.63" y="403.93" name="Initial Other Capacity"/>
 				<flow x="321.88" y="372.48" name="Installation of\nOther Capacity">
 					<pts>
@@ -13594,35 +13676,17 @@ tax_for_newly_installed_other_energy_capacity</eqn>
 					<from>Slope_of_Other_Installation_Costs</from>
 					<to>Other_Installation_Costs</to>
 				</connector>
-				<flow label_side="right" x="395.63" y="266.49" name="Other Energy\nCapital Damaged due to STA">
-					<pts>
-						<pt x="395.63" y="354.98"/>
-						<pt x="395.63" y="157"/>
-					</pts>
-				</flow>
-				<connector uid="10" angle="60.8351">
-					<from>Other_Energy_Capacity</from>
-					<to>Other_Energy_Capital_Damaged_due_to_STA</to>
-				</connector>
 				<aux x="339.88" y="114" name="replacement cost of Other Energy\nCapital Damaged due to STA"/>
 				<connector uid="11" angle="64.9684">
 					<from>kW_to_GW</from>
-					<to>replacement_cost_of_Other_Energy_Capital_Damaged_due_to_STA</to>
-				</connector>
-				<connector uid="12" angle="107.432">
-					<from>Other_Energy_Capital_Damaged_due_to_STA</from>
 					<to>replacement_cost_of_Other_Energy_Capital_Damaged_due_to_STA</to>
 				</connector>
 				<connector uid="13" angle="63.8398">
 					<from>Other_Installation_Costs</from>
 					<to>replacement_cost_of_Other_Energy_Capital_Damaged_due_to_STA</to>
 				</connector>
-				<connector uid="14" angle="212.041">
-					<from>damage_rate_of_energy_capital_from_STA</from>
-					<to>Other_Energy_Capital_Damaged_due_to_STA</to>
-				</connector>
 				<aux color="black" font_color="black" x="261.59" y="339.74" name="kW to GW"/>
-				<aux font_style="italic" font_weight="bold" x="485.49" y="199.666" name="damage rate of energy\ncapital from STA"/>
+				<aux font_style="italic" font_weight="bold" x="629.49" y="172.166" name="damage rate of energy\ncapital from STA"/>
 				<aux font_style="italic" font_weight="bold" x="155" y="458" name="Investments in\nOther Capacity"/>
 				<connector uid="15" angle="7.85331">
 					<from>Investments_in_Other_Capacity</from>
@@ -13675,6 +13739,65 @@ tax_for_newly_installed_other_energy_capacity</eqn>
 				<connector uid="25" angle="201.501">
 					<from>tax_for_newly_installed_other_energy_capacity</from>
 					<to>Cost_of_Extra_Energy_Output_through_Capital_per_Unit</to>
+				</connector>
+				<flow label_side="bottom" x="457.365" y="373.121" name="Depreciation of\nOther Energy Capacity">
+					<pts>
+						<pt x="418.13" y="373.121"/>
+						<pt x="520.6" y="373.121"/>
+					</pts>
+				</flow>
+				<flow label_side="right" x="392.62" y="270.526" name="Other Energy Capacity\nDamaged due to STA">
+					<pts>
+						<pt x="392.62" y="354.98"/>
+						<pt x="392.62" y="165.071"/>
+					</pts>
+				</flow>
+				<aux label_side="top" x="502.722" y="227.56" name="desired Other Energy Capacity\nDamaged due to STA"/>
+				<connector uid="26" angle="201.317">
+					<from>desired_Other_Energy_Capacity_Damaged_due_to_STA</from>
+					<to>Other_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<aux label_side="top" x="502.722" y="340.827" name="Desired Depreciation of\nOther Energy Capacity"/>
+				<connector uid="27" angle="215.451">
+					<from>Desired_Depreciation_of_Other_Energy_Capacity</from>
+					<to>Depreciation_of_Other_Energy_Capacity</to>
+				</connector>
+				<aux x="619.167" y="231.798" name="drain time"/>
+				<connector uid="28" angle="189.701">
+					<from>drain_time</from>
+					<to>Other_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="29" angle="205.899">
+					<from>drain_time</from>
+					<to>Depreciation_of_Other_Energy_Capacity</to>
+				</connector>
+				<connector uid="30" angle="209.882">
+					<from>depreciation_rate_of_other_capital</from>
+					<to>Desired_Depreciation_of_Other_Energy_Capacity</to>
+				</connector>
+				<connector uid="31" angle="188.085">
+					<from>damage_rate_of_energy_capital_from_STA</from>
+					<to>desired_Other_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="32" angle="43.7388">
+					<from>Other_Energy_Capacity</from>
+					<to>desired_Other_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="33" angle="36.8346">
+					<from>Other_Energy_Capacity</from>
+					<to>Desired_Depreciation_of_Other_Energy_Capacity</to>
+				</connector>
+				<connector uid="34" angle="19.4971">
+					<from>Other_Energy_Capacity</from>
+					<to>Depreciation_of_Other_Energy_Capacity</to>
+				</connector>
+				<connector uid="35" angle="67.0296">
+					<from>Other_Energy_Capacity</from>
+					<to>Other_Energy_Capacity_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="36" angle="109.815">
+					<from>Other_Energy_Capacity_Damaged_due_to_STA</from>
+					<to>replacement_cost_of_Other_Energy_Capital_Damaged_due_to_STA</to>
 				</connector>
 			</view>
 		</views>
