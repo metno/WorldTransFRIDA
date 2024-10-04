@@ -157,15 +157,6 @@
 			<eqn/>
 			<alias>orders</alias>
 		</unit>
-		<unit name="Dimensionless">
-			<eqn>1</eqn>
-			<alias>dmnl</alias>
-			<alias>unitless</alias>
-		</unit>
-		<unit name="Kelvin">
-			<eqn/>
-			<alias>K</alias>
-		</unit>
 		<unit name="Day">
 			<eqn/>
 			<alias>Days</alias>
@@ -187,6 +178,20 @@
 		</unit>
 		<unit name="TW">
 			<eqn>Million*MW</eqn>
+		</unit>
+		<unit name="Year">
+			<eqn/>
+			<alias>yr</alias>
+			<alias>years</alias>
+		</unit>
+		<unit name="Dimensionless">
+			<eqn>1</eqn>
+			<alias>dmnl</alias>
+			<alias>unitless</alias>
+		</unit>
+		<unit name="Kelvin">
+			<eqn/>
+			<alias>K</alias>
 		</unit>
 		<unit name="G">
 			<eqn>Giga</eqn>
@@ -384,7 +389,7 @@
 				<units>years</units>
 			</aux>
 			<aux name="average daily demand\nper capita in 1980">
-				<eqn>379.999925919562</eqn>
+				<eqn>378</eqn>
 				<units>kcal/person/day</units>
 			</aux>
 			<aux name="total yearly\nconsumption">
@@ -843,6 +848,20 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>average_yearly_demand_per_capita*Population_1</eqn>
 				<units>PCal/Year</units>
 			</aux>
+			<aux name="demand accessibility check">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF Average_Demand_per_capita &gt;indicated_demand_from_accessibility THEN 1 ELSE 0</eqn>
+				<units>dmnl</units>
+				<event_poster>
+					<threshold direction="increasing" value="0.5" repeat="once">
+						<event sim_action="stop" isee:kind="model_only">
+							<text_box>ERROR! Animal Product Demand is higher than what people can afford!</text_box>
+						</event>
+					</threshold>
+				</event_poster>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -892,7 +911,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="3" isee:page_rows="3" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="70" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1494,6 +1513,25 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<connector uid="9" angle="118.301">
 					<from>average_yearly_demand_per_capita</from>
 					<to>total_yearly_demand</to>
+				</connector>
+				<stacked_container uid="110" x="1473.89" y="83.429" width="1223" height="732">
+					<graph width="1223" height="732" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="average_consumption_per_capita[1]"/>
+						</plot>
+						<plot color="red" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="indicated_demand_from_accessibility[1]"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<aux label_side="bottom" x="529.262" y="297.572" name="demand accessibility check"/>
+				<connector uid="111" angle="112.66">
+					<from>Average_Demand_per_capita</from>
+					<to>demand_accessibility_check</to>
+				</connector>
+				<connector uid="112" angle="51.0311">
+					<from>indicated_demand_from_accessibility</from>
+					<to>demand_accessibility_check</to>
 				</connector>
 				<alias font_style="italic" uid="38" x="1278.14" y="709.429" width="18" height="18">
 					<of>UNIT_days_per_year</of>
