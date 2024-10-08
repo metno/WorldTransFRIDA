@@ -5,7 +5,7 @@
 		<name>Energy</name>
 		<uuid>dda966fe-252b-44a1-a101-0c3526293b30</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.2" isee:build_number="3414" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.1" isee:build_number="3377" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="1.5" isee:run_prefix="Run" isee:simulation_delay="0.125" isee:restore_on_start="false" isee:save_interval="2" method="Euler" time_units="Months" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
 		<start>0</start>
@@ -219,18 +219,6 @@
 		<unit name="Kelvin">
 			<eqn/>
 			<alias>K</alias>
-		</unit>
-		<unit name="G">
-			<eqn>Giga</eqn>
-		</unit>
-		<unit name="GtCO2">
-			<eqn>Giga*tCO2</eqn>
-		</unit>
-		<unit name="GtCH4">
-			<eqn>Giga*tCH4</eqn>
-		</unit>
-		<unit name="GtN2O">
-			<eqn>Giga*tN2O</eqn>
 		</unit>
 	</model_units>
 	<model name="Energy" run="true">
@@ -7268,7 +7256,9 @@ value in MIND: 3.85</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>TFP_Ramp{0.146904707405383</eqn>
+				<eqn>TFP_Ramp * (
+share_of_secondary_fossil_energy_affected_by_STA * effect_of_STA_on_thermal_power_energy_capacity_efficiency 
++ (1-share_of_secondary_fossil_energy_affected_by_STA) )</eqn>
 				<units>zJ/Year</units>
 			</aux>
 			<aux name="share of primary energy\nin fossil energy">
@@ -7744,11 +7734,7 @@ tax_for_newly_installed_coal_extraction_capacity</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(share_of_thermal_power_in_secondary_fossil_energy*
-effect_of_STA_on_thermal_power_energy_capacity_efficiency + 
-(1-share_of_thermal_power_in_secondary_fossil_energy) *1)
-*
-LOGISTICBOUND(TFP_in_1980, TFP_Max, TIME, TFP_Max_Ramp_Year, TFP_Ramp_Speed, TFP_Slope_Start)</eqn>
+				<eqn>LOGISTICBOUND(TFP_in_1980, TFP_Max, TIME, TFP_Max_Ramp_Year, TFP_Ramp_Speed, TFP_Slope_Start)</eqn>
 				<units>zJ/Year</units>
 			</aux>
 			<aux name="TFP in 1980" access="output" isee:autocreated="true">
@@ -8029,6 +8015,22 @@ ELSE
 				<eqn>depreciation_rate_of_fossil_energy_capital*Fossil_Energy_Capital</eqn>
 				<units>$/Year</units>
 			</aux>
+			<aux name="share of thermal power in\nsecondary fossil\nenergy affected by STA">
+				<doc>Based on paper: https://www.nature.com/articles/nclimate2903
+
+Based on all thermoelectric power plants for which the
+cooling system is reported we found that 7.9% use dry (air) cooling, 21.9% use sea water
+cooling and the remaining 70.2% use fresh water resources for cooling. For the power plants
+using freshwater, the largest part (95.5%) uses river water and a small part uses cooling lakes
+or ponds (4.1%) or groundwater (0.4%). In our study we focused on 1,427 thermoelectric
+power plants using river water for cooling...</doc>
+				<eqn>.702</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="share of secondary fossil energy affected by STA">
+				<eqn>share_of_thermal_power_in_secondary_fossil_energy * share_of_thermal_power_in_secondary_fossil_energy_affected_by_STA</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -8078,7 +8080,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="380" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="680" isee:scroll_y="257.143" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -8119,7 +8121,7 @@ ELSE
 				</style>
 				<aux background="#FFAAFF" label_angle="81.3674" x="1348.54" y="747.737" name="Secondary Fossil Energy Output"/>
 				<aux color="black" font_color="black" x="1589.71" y="266.75" name="depreciation rate of fossil energy capital"/>
-				<aux color="blue" x="1245.96" y="641.307" name="Total Factor Productivity\nFossil Energy"/>
+				<aux color="blue" x="1271.83" y="649.375" name="Total Factor Productivity\nFossil Energy"/>
 				<aux color="black" font_color="black" x="1366.54" y="795.827" name="share of primary energy\nin fossil energy"/>
 				<stock x="761.39" y="753.627" name="Extracted Carbon in Fossil\nEnergy Resources"/>
 				<flow label_side="bottom" x="681.889" y="753.627" name="Fossil Fuel Extraction Carbon">
@@ -8141,7 +8143,7 @@ ELSE
 					<from>share_of_primary_energy_in_fossil_energy</from>
 					<to>Secondary_Fossil_Energy_Output</to>
 				</connector>
-				<connector uid="5" angle="313.945">
+				<connector uid="5" angle="307.95">
 					<from>Total_Factor_Productivity_Fossil_Energy</from>
 					<to>Secondary_Fossil_Energy_Output</to>
 				</connector>
@@ -8520,14 +8522,14 @@ ELSE
 						</plot>
 					</graph>
 				</stacked_container>
-				<aux x="1221.88" y="576.25" name="TFP Slope Start"/>
-				<aux x="1211.25" y="621.967" name="TFP Ramp"/>
+				<aux x="1174.74" y="541.25" name="TFP Slope Start"/>
+				<aux x="1164.11" y="586.967" name="TFP Ramp"/>
 				<connector uid="141" angle="250.665">
 					<from>TFP_Slope_Start</from>
 					<to>TFP_Ramp</to>
 				</connector>
-				<aux x="1145" y="576.25" name="TFP in 1980"/>
-				<aux x="1127" y="621.967" name="TFP Max"/>
+				<aux x="1097.86" y="541.25" name="TFP in 1980"/>
+				<aux x="1079.86" y="586.967" name="TFP Max"/>
 				<connector uid="143" angle="335.48">
 					<from>TFP_in_1980</from>
 					<to>TFP_Ramp</to>
@@ -8536,17 +8538,17 @@ ELSE
 					<from>TFP_Max</from>
 					<to>TFP_Ramp</to>
 				</connector>
-				<aux x="1289.83" y="594.25" name="TFP Ramp Speed"/>
+				<aux x="1242.69" y="559.25" name="TFP Ramp Speed"/>
 				<connector uid="145" angle="191.407">
 					<from>TFP_Ramp_Speed</from>
 					<to>TFP_Ramp</to>
 				</connector>
-				<aux x="1163" y="649.375" name="TFP Max Ramp Year"/>
+				<aux x="1115.86" y="614.375" name="TFP Max Ramp Year"/>
 				<connector uid="146" angle="21.7298">
 					<from>TFP_Max_Ramp_Year</from>
 					<to>TFP_Ramp</to>
 				</connector>
-				<connector uid="147" angle="336.518">
+				<connector uid="147" angle="329.915">
 					<from>TFP_Ramp</from>
 					<to>Total_Factor_Productivity_Fossil_Energy</to>
 				</connector>
@@ -8732,16 +8734,8 @@ ELSE
 					</from>
 					<to>SO2_tax_burden_of_extra_energy_output_through_fuel_extraction_per_unit</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1175.75" y="461.367" name="effect of STA on thermal power\nenergy capacity efficiency"/>
-				<aux x="1286.25" y="513.125" name="share of thermal power in secondary fossil energy"/>
-				<connector uid="196" angle="296.436">
-					<from>effect_of_STA_on_thermal_power_energy_capacity_efficiency</from>
-					<to>TFP_Ramp</to>
-				</connector>
-				<connector uid="197" angle="228.504">
-					<from>share_of_thermal_power_in_secondary_fossil_energy</from>
-					<to>TFP_Ramp</to>
-				</connector>
+				<aux font_style="italic" font_weight="bold" x="1409.25" y="493.571" name="effect of STA on thermal power\nenergy capacity efficiency"/>
+				<aux x="1416.76" y="424.796" name="share of thermal power in secondary fossil energy"/>
 				<aux font_style="italic" font_weight="bold" x="1077.49" y="1325" name="tax for newly installed\ncoal extraction capacity"/>
 				<connector uid="198" angle="4.23389">
 					<from>tax_for_newly_installed_coal_extraction_capacity</from>
@@ -8858,6 +8852,24 @@ ELSE
 					</from>
 					<to>Depreciation_of_Fossil_Energy_Capital</to>
 				</connector>
+				<aux label_side="bottom" x="1271.83" y="419.286" name="share of thermal power in\nsecondary fossil\nenergy affected by STA"/>
+				<aux x="1282.86" y="488.571" name="share of secondary fossil energy affected by STA"/>
+				<connector uid="223" angle="279.814">
+					<from>share_of_thermal_power_in_secondary_fossil_energy_affected_by_STA</from>
+					<to>share_of_secondary_fossil_energy_affected_by_STA</to>
+				</connector>
+				<connector uid="224" angle="185.082">
+					<from>share_of_thermal_power_in_secondary_fossil_energy</from>
+					<to>share_of_secondary_fossil_energy_affected_by_STA</to>
+				</connector>
+				<connector uid="225" angle="216.617">
+					<from>effect_of_STA_on_thermal_power_energy_capacity_efficiency</from>
+					<to>Total_Factor_Productivity_Fossil_Energy</to>
+				</connector>
+				<connector uid="226" angle="260.272">
+					<from>share_of_secondary_fossil_energy_affected_by_STA</from>
+					<to>Total_Factor_Productivity_Fossil_Energy</to>
+				</connector>
 				<alias uid="47" x="1550.59" y="78.583" width="18" height="18">
 					<of>damage_rate_of_energy_capital_from_STA</of>
 				</alias>
@@ -8906,7 +8918,10 @@ value in MIND: 3.85</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>TFP_Ramp{0.2425465429032</eqn>
+				<eqn>TFP_Ramp * (
+share_of_secondary_fossil_energy_affected_by_STA * effect_of_STA_on_thermal_power_energy_capacity_efficiency +
+(1-share_of_secondary_fossil_energy_affected_by_STA) 
+)</eqn>
 				<units>zJ/Year</units>
 			</aux>
 			<aux name="share of primary energy\nin fossil energy">
@@ -9349,11 +9364,7 @@ tax_for_newly_installed_gas_extraction_capacity</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(share_of_thermal_power_in_secondary_fossil_energy*
-effect_of_STA_on_thermal_power_energy_capacity_efficiency + 
-(1-share_of_thermal_power_in_secondary_fossil_energy) *1)
-*
-LOGISTICBOUND(TFP_in_1980, TFP_Max, TIME, TFP_Max_Ramp_Year, TFP_Ramp_Speed, TFP_Slope_Start)</eqn>
+				<eqn>LOGISTICBOUND(TFP_in_1980, TFP_Max, TIME, TFP_Max_Ramp_Year, TFP_Ramp_Speed, TFP_Slope_Start)</eqn>
 				<units>zJ/Year</units>
 			</aux>
 			<aux name="TFP in 1980" access="output" isee:autocreated="true">
@@ -9667,6 +9678,22 @@ ELSE
 				<eqn>1</eqn>
 				<units>year</units>
 			</aux>
+			<aux name="share of thermal power in\nsecondary fossil\nenergy affected by STA">
+				<doc>Based on paper: https://www.nature.com/articles/nclimate2903
+
+Based on all thermoelectric power plants for which the
+cooling system is reported we found that 7.9% use dry (air) cooling, 21.9% use sea water
+cooling and the remaining 70.2% use fresh water resources for cooling. For the power plants
+using freshwater, the largest part (95.5%) uses river water and a small part uses cooling lakes
+or ponds (4.1%) or groundwater (0.4%). In our study we focused on 1,427 thermoelectric
+power plants using river water for cooling...</doc>
+				<eqn>.702</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="share of secondary fossil energy affected by STA">
+				<eqn>share_of_thermal_power_in_secondary_fossil_energy * share_of_thermal_power_in_secondary_fossil_energy_affected_by_STA</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -9716,7 +9743,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="385.714" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="685" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -10309,16 +10336,8 @@ ELSE
 					</from>
 					<to>SO2_tax_burden_of_extra_energy_output_through_fuel_extraction_per_unit</to>
 				</connector>
-				<aux color="black" font_color="black" x="1293.69" y="497.375" name="share of thermal power in\nsecondary fossil energy"/>
-				<aux font_style="italic" font_weight="bold" x="1150" y="448.5" name="effect of STA on thermal power\nenergy capacity efficiency"/>
-				<connector uid="172" angle="290.189">
-					<from>effect_of_STA_on_thermal_power_energy_capacity_efficiency</from>
-					<to>TFP_Ramp</to>
-				</connector>
-				<connector uid="173" angle="245.049">
-					<from>share_of_thermal_power_in_secondary_fossil_energy</from>
-					<to>TFP_Ramp</to>
-				</connector>
+				<aux color="black" font_color="black" x="1490.16" y="422.232" name="share of thermal power in\nsecondary fossil energy"/>
+				<aux font_style="italic" font_weight="bold" x="1613.21" y="440.232" name="effect of STA on thermal power\nenergy capacity efficiency"/>
 				<aux font_style="italic" font_weight="bold" x="1086.5" y="1322" name="tax for newly installed\ngas extraction capacity"/>
 				<connector uid="174" angle="27.4744">
 					<from>tax_for_newly_installed_gas_extraction_capacity</from>
@@ -10475,6 +10494,24 @@ ELSE
 					<from>Fossil_Energy_Capital</from>
 					<to>Depreciation_of_Fossil_Energy_Capital</to>
 				</connector>
+				<aux label_side="bottom" x="1356.59" y="419.524" name="share of thermal power in\nsecondary fossil\nenergy affected by STA"/>
+				<aux x="1374.59" y="487.142" name="share of secondary fossil energy affected by STA"/>
+				<connector uid="203" angle="284.906">
+					<from>share_of_thermal_power_in_secondary_fossil_energy_affected_by_STA</from>
+					<to>share_of_secondary_fossil_energy_affected_by_STA</to>
+				</connector>
+				<connector uid="204" angle="199.512">
+					<from>share_of_thermal_power_in_secondary_fossil_energy</from>
+					<to>share_of_secondary_fossil_energy_affected_by_STA</to>
+				</connector>
+				<connector uid="205" angle="233.893">
+					<from>share_of_secondary_fossil_energy_affected_by_STA</from>
+					<to>Total_Factor_Productivity_Fossil_Energy</to>
+				</connector>
+				<connector uid="206" angle="209.662">
+					<from>effect_of_STA_on_thermal_power_energy_capacity_efficiency</from>
+					<to>Total_Factor_Productivity_Fossil_Energy</to>
+				</connector>
 				<alias uid="47" x="1578.5" y="122.976" width="18" height="18">
 					<of>damage_rate_of_energy_capital_from_STA</of>
 				</alias>
@@ -10522,7 +10559,10 @@ value in MIND: 3.85</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>TFP_Ramp{0.143831091500067</eqn>
+				<eqn>TFP_Ramp * (
+share_of_secondary_fossil_energy_affected_by_STA * effect_of_STA_on_thermal_power_energy_capacity_efficiency +
+(1-share_of_secondary_fossil_energy_affected_by_STA) 
+)</eqn>
 				<units>zJ/Year</units>
 			</aux>
 			<aux name="share of primary energy\nin fossil energy">
@@ -10965,11 +11005,7 @@ tax_for_newly_installed_oil_extraction_capacity</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(share_of_thermal_power_in_secondary_fossil_energy*
-effect_of_STA_on_thermal_power_energy_capacity_efficiency + 
-(1-share_of_thermal_power_in_secondary_fossil_energy) *1)
-*
-LOGISTICBOUND(TFP_in_1980, TFP_Max, TIME, TFP_Max_Ramp_Year, TFP_Ramp_Speed, TFP_Slope_Start)</eqn>
+				<eqn>LOGISTICBOUND(TFP_in_1980, TFP_Max, TIME, TFP_Max_Ramp_Year, TFP_Ramp_Speed, TFP_Slope_Start)</eqn>
 				<units>zJ/Year</units>
 			</aux>
 			<aux name="TFP in 1980" access="output" isee:autocreated="true">
@@ -11283,6 +11319,22 @@ ELSE
 				<eqn>1</eqn>
 				<units>year</units>
 			</aux>
+			<aux name="share of thermal power in\nsecondary fossil\nenergy affected by STA">
+				<doc>Based on paper: https://www.nature.com/articles/nclimate2903
+
+Based on all thermoelectric power plants for which the
+cooling system is reported we found that 7.9% use dry (air) cooling, 21.9% use sea water
+cooling and the remaining 70.2% use fresh water resources for cooling. For the power plants
+using freshwater, the largest part (95.5%) uses river water and a small part uses cooling lakes
+or ponds (4.1%) or groundwater (0.4%). In our study we focused on 1,427 thermoelectric
+power plants using river water for cooling...</doc>
+				<eqn>.702</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="share of secondary fossil energy affected by STA">
+				<eqn>share_of_thermal_power_in_secondary_fossil_energy * share_of_thermal_power_in_secondary_fossil_energy_affected_by_STA</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -11332,7 +11384,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="416.667" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="416.667" isee:scroll_y="100" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -11932,16 +11984,8 @@ ELSE
 					</from>
 					<to>SO2_tax_burden_of_extra_energy_output_through_fuel_extraction_per_unit</to>
 				</connector>
-				<aux color="black" font_color="black" x="1256.25" y="501.875" name="share of thermal power in secondary fossil energy"/>
-				<aux font_style="italic" font_weight="bold" x="1132.5" y="463.125" name="effect of STA on thermal power\nenergy capacity efficiency"/>
-				<connector uid="183" angle="300.801">
-					<from>effect_of_STA_on_thermal_power_energy_capacity_efficiency</from>
-					<to>TFP_Ramp</to>
-				</connector>
-				<connector uid="184" angle="266.73">
-					<from>share_of_thermal_power_in_secondary_fossil_energy</from>
-					<to>TFP_Ramp</to>
-				</connector>
+				<aux color="black" font_color="black" x="1479.09" y="406.875" name="share of thermal power in secondary fossil energy"/>
+				<aux font_style="italic" font_weight="bold" x="1571.21" y="474.708" name="effect of STA on thermal power\nenergy capacity efficiency"/>
 				<aux font_style="italic" font_weight="bold" x="1110" y="1277.5" name="tax for newly installed\noil extraction capacity"/>
 				<connector uid="185" angle="9.2726">
 					<from>tax_for_newly_installed_oil_extraction_capacity</from>
@@ -12098,6 +12142,24 @@ ELSE
 					</from>
 					<to>Depreciation_of_Fossil_Energy_Capital</to>
 				</connector>
+				<aux label_side="bottom" x="1370.16" y="420.953" name="share of thermal power in\nsecondary fossil\nenergy affected by STA"/>
+				<aux x="1388.16" y="488.571" name="share of secondary fossil energy affected by STA"/>
+				<connector uid="220" angle="284.906">
+					<from>share_of_thermal_power_in_secondary_fossil_energy_affected_by_STA</from>
+					<to>share_of_secondary_fossil_energy_affected_by_STA</to>
+				</connector>
+				<connector uid="223" angle="227.045">
+					<from>share_of_secondary_fossil_energy_affected_by_STA</from>
+					<to>Total_Factor_Productivity_Fossil_Energy</to>
+				</connector>
+				<connector uid="224" angle="209.843">
+					<from>share_of_thermal_power_in_secondary_fossil_energy</from>
+					<to>share_of_secondary_fossil_energy_affected_by_STA</to>
+				</connector>
+				<connector uid="225" angle="189.623">
+					<from>effect_of_STA_on_thermal_power_energy_capacity_efficiency</from>
+					<to>Total_Factor_Productivity_Fossil_Energy</to>
+				</connector>
 				<alias uid="47" x="1544.21" y="139.333" width="18" height="18">
 					<of>damage_rate_of_energy_capital_from_STA</of>
 				</alias>
@@ -12157,7 +12219,11 @@ World Bank  2020 Minerals for climate action: The mineral intensity of the clean
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>baseline_nuclear_energy_capacity_efficiency*effect_of_STA_on_thermal_power_energy_capacity_efficiency</eqn>
+				<eqn>baseline_nuclear_energy_capacity_efficiency*
+(share_of_thermal_power_in_nuclear_energy_affected_by_STA*effect_of_STA_on_thermal_power_energy_capacity_efficiency
++
+(1-share_of_thermal_power_in_nuclear_energy_affected_by_STA)
+)</eqn>
 				<units>(TWh/year)/GW</units>
 			</aux>
 			<aux name="Nuclear Energy Output" access="output" isee:autocreated="true">
@@ -12325,6 +12391,18 @@ tax_for_newly_installed_nuclear</eqn>
 				<eqn>1</eqn>
 				<units>year</units>
 			</aux>
+			<aux name="share of thermal power in\nnuclear\nenergy affected by STA">
+				<doc>Based on paper: https://www.nature.com/articles/nclimate2903
+
+Based on all thermoelectric power plants for which the
+cooling system is reported we found that 7.9% use dry (air) cooling, 21.9% use sea water
+cooling and the remaining 70.2% use fresh water resources for cooling. For the power plants
+using freshwater, the largest part (95.5%) uses river water and a small part uses cooling lakes
+or ponds (4.1%) or groundwater (0.4%). In our study we focused on 1,427 thermoelectric
+power plants using river water for cooling...</doc>
+				<eqn>.702</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -12374,7 +12452,7 @@ tax_for_newly_installed_nuclear</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="211.818" isee:scroll_y="31.3636" zoom="220" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="129.545" isee:scroll_y="249.091" zoom="220" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -12593,6 +12671,11 @@ tax_for_newly_installed_nuclear</eqn>
 				<connector uid="39" angle="103.558">
 					<from>Nuclear_Energy_Capacity_Damaged_due_to_STA</from>
 					<to>replacement_cost_of_Nuclear_Energy_Capital_Damaged_due_to_STA</to>
+				</connector>
+				<aux label_side="bottom" x="731.226" y="506.545" name="share of thermal power in\nnuclear\nenergy affected by STA"/>
+				<connector uid="41" angle="174.22">
+					<from>share_of_thermal_power_in_nuclear_energy_affected_by_STA</from>
+					<to>Nuclear_Energy_Capacity_Efficiency</to>
 				</connector>
 			</view>
 		</views>
