@@ -5,7 +5,7 @@
 		<name>Energy</name>
 		<uuid>dda966fe-252b-44a1-a101-0c3526293b30</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.2" isee:build_number="3414" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.1" isee:build_number="3377" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="1.5" isee:run_prefix="Run" isee:simulation_delay="0.125" isee:restore_on_start="false" isee:save_interval="2" method="Euler" time_units="Months" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
 		<start>0</start>
@@ -25,6 +25,7 @@
 			<elem name="Hydropower"/>
 			<elem name="Other"/>
 			<elem name="Nuclear"/>
+			<elem name="Bio"/>
 		</dim>
 		<dim name="FossilFuelTypes">
 			<elem name="Gas"/>
@@ -184,15 +185,6 @@
 			<eqn/>
 			<alias>orders</alias>
 		</unit>
-		<unit name="Dimensionless">
-			<eqn>1</eqn>
-			<alias>dmnl</alias>
-			<alias>unitless</alias>
-		</unit>
-		<unit name="Kelvin">
-			<eqn/>
-			<alias>K</alias>
-		</unit>
 		<unit name="Day">
 			<eqn/>
 			<alias>Days</alias>
@@ -215,17 +207,19 @@
 		<unit name="TW">
 			<eqn>Million*MW</eqn>
 		</unit>
-		<unit name="G">
-			<eqn>Giga</eqn>
+		<unit name="Year">
+			<eqn/>
+			<alias>yr</alias>
+			<alias>years</alias>
 		</unit>
-		<unit name="GtCO2">
-			<eqn>Giga*tCO2</eqn>
+		<unit name="Dimensionless">
+			<eqn>1</eqn>
+			<alias>dmnl</alias>
+			<alias>unitless</alias>
 		</unit>
-		<unit name="GtCH4">
-			<eqn>Giga*tCH4</eqn>
-		</unit>
-		<unit name="GtN2O">
-			<eqn>Giga*tN2O</eqn>
+		<unit name="Kelvin">
+			<eqn/>
+			<alias>K</alias>
 		</unit>
 	</model_units>
 	<model name="Energy" run="true">
@@ -335,7 +329,7 @@
 				<eqn>PERCENTILE(Investments_in_Renewables,  PCTILE5(PCTILE), PCTILE5(PCTILE-1))</eqn>
 				<units>$/Year</units>
 			</aux>
-			<aux name="Investments in Hydropower\nEnergy Capcity by PCTILE">
+			<aux name="Investments in Hydropower\nEnergy capacity by PCTILE">
 				<dimensions>
 					<dim name="PCTILE"/>
 				</dimensions>
@@ -472,14 +466,16 @@
 				<connect2 to="historical_cost_adjustment_smoothing_time" from="energy_investments.historical_cost_adjustment_smoothing_time"/>
 				<connect to="Energy.initial_relative_supply_missmatch" from="energy_investments.initial_relative_supply_missmatch"/>
 				<connect2 to="initial_relative_supply_missmatch" from="energy_investments.initial_relative_supply_missmatch"/>
-				<connect to="Energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_Capcity"/>
-				<connect2 to="Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_Capcity"/>
-				<connect to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_Capcity"/>
-				<connect2 to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_Capcity"/>
+				<connect to="Energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_capacity"/>
+				<connect2 to="Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_capacity"/>
+				<connect to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_capacity"/>
+				<connect2 to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_capacity"/>
 				<connect to="Energy.Investments_in_Nuclear_Capacity" from="energy_investments.Investments_in_Nuclear_Capacity"/>
 				<connect2 to="Investments_in_Nuclear_Capacity" from="energy_investments.Investments_in_Nuclear_Capacity"/>
 				<connect to="nuclear_energy.Investments_in_Nuclear_Capacity" from="energy_investments.Investments_in_Nuclear_Capacity"/>
 				<connect2 to="nuclear_energy.Investments_in_Nuclear_Capacity" from="energy_investments.Investments_in_Nuclear_Capacity"/>
+				<connect to="bio_energy.Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
+				<connect2 to="bio_energy.Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
 				<connect to="Energy.Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
 				<connect2 to="Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
 				<connect to="other_energy.Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
@@ -522,6 +518,8 @@
 				<connect2 to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_5" from="other_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
 				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_6" from="nuclear_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
 				<connect2 to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_6" from="nuclear_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
+				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_7" from="bio_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
+				<connect2 to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_7" from="bio_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
 				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit" from="fossil_energy_coal.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
 				<connect2 to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit" from="fossil_energy_coal.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
 				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_1" from="fossil_energy_gas.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
@@ -737,6 +735,14 @@
 				<connect2 to="Renewable_Energy_Output" from="renewable_energy.Renewable_Energy_Output"/>
 				<connect to="Energy.Total_Renewable_Energy_Capacity" from="renewable_energy.Total_Renewable_Energy_Capacity"/>
 				<connect2 to="Total_Renewable_Energy_Capacity" from="renewable_energy.Total_Renewable_Energy_Capacity"/>
+				<connect to="Food_Demand.bio_matter_needed_for_bio_energy" from="bio_energy.bio_matter_needed_for_bio_energy"/>
+				<connect2 to="Food_Demand.bio_matter_needed_for_bio_energy" from="bio_energy.bio_matter_needed_for_bio_energy"/>
+				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_7" from="bio_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
+				<connect2 to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_7" from="bio_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
+				<connect to="bio_energy.Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
+				<connect2 to="bio_energy.Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
+				<connect to="bio_energy.tax_for_newly_installed_other_energy_capacity" from="Government_Regulations.tax_for_newly_installed_other_energy_capacity"/>
+				<connect2 to="bio_energy.tax_for_newly_installed_other_energy_capacity" from="Government_Regulations.tax_for_newly_installed_other_energy_capacity"/>
 				<connect to='Energy."Slope_of_Hydropwer_Instllation_Costs_wrt._Capacity"' from='hydropower_energy."Slope_of_Hydropwer_Instllation_Costs_wrt._Capacity"'/>
 				<connect2 to='"Slope_of_Hydropwer_Instllation_Costs_wrt._Capacity"' from='hydropower_energy."Slope_of_Hydropwer_Instllation_Costs_wrt._Capacity"'/>
 				<connect to="Energy.Base_Hydropower_Installation_Costs" from="hydropower_energy.Base_Hydropower_Installation_Costs"/>
@@ -749,8 +755,8 @@
 				<connect2 to="Hydropower_Energy_Output" from="hydropower_energy.Hydropower_Energy_Output"/>
 				<connect to="Sea_Level.Installation_of_Hydropower_Capacity" from="hydropower_energy.Installation_of_Hydropower_Capacity"/>
 				<connect2 to="Sea_Level.Installation_of_Hydropower_Capacity" from="hydropower_energy.Installation_of_Hydropower_Capacity"/>
-				<connect to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_Capcity"/>
-				<connect2 to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_Capcity"/>
+				<connect to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_capacity"/>
+				<connect2 to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_capacity"/>
 				<connect to="hydropower_energy.tax_for_newly_installed_hydropower_capacity" from="Government_Regulations.tax_for_newly_installed_hydropower_capacity"/>
 				<connect2 to="hydropower_energy.tax_for_newly_installed_hydropower_capacity" from="Government_Regulations.tax_for_newly_installed_hydropower_capacity"/>
 				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_5" from="other_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
@@ -1284,7 +1290,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="2581.67" isee:scroll_y="250" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="281.667" isee:scroll_y="200" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1490,7 +1496,7 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 				<aux x="2341.88" y="80.6667" name="Investment in Fossil\nEnergy Capital by PCTILE"/>
 				<aux x="2341.88" y="129.917" name="Investments in\nSolar and Wind\nEnergy Capacity by PCTILE"/>
 				<aux x="2343.13" y="356.042" name="Investments in\nRenewables by PCTILE"/>
-				<aux x="2341.88" y="189.792" name="Investments in Hydropower\nEnergy Capcity by PCTILE"/>
+				<aux x="2341.88" y="189.792" name="Investments in Hydropower\nEnergy capacity by PCTILE"/>
 				<aux x="2341.88" y="243.792" name="Investments in\nNuclear Capacity by PCTILE"/>
 				<aux x="2341.88" y="294.792" name="Investments in\nOther Capacity by PCTILE"/>
 				<aux x="2344.38" y="451.542" name="Installation Cost\nof S&amp;W capacity by PCTILE"/>
@@ -1714,7 +1720,7 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 					<from>
 						<alias uid="1233"/>
 					</from>
-					<to>Investments_in_Hydropower_Energy_Capcity_by_PCTILE</to>
+					<to>Investments_in_Hydropower_Energy_capacity_by_PCTILE</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1491.88" y="422.5" name="Investments in\nNuclear Capacity"/>
 				<connector uid="1234" angle="22.2875" isee:autocreated="true">
@@ -1865,7 +1871,7 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 							<entity name="energy_investments.Investments_in_Solar_and_Wind_Energy_Capacity[1]"/>
 						</plot>
 						<plot color="#00AAFF" isee:keep_zero_visible="true" pen_width="1" index="7" show_y_axis="true">
-							<entity name="energy_investments.Investments_in_Hydropower_Energy_Capcity[1]"/>
+							<entity name="energy_investments.Investments_in_Hydropower_Energy_capacity[1]"/>
 						</plot>
 						<plot color="#FF55FF" isee:keep_zero_visible="true" pen_width="1" index="8" show_y_axis="true">
 							<entity name="energy_investments.Investments_in_Nuclear_Capacity[1]"/>
@@ -2110,7 +2116,7 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 				<stacked_container uid="1316" x="6737.92" y="446.858">
 					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="energy_investments.Investments_in_Hydropower_Energy_Capcity[1]"/>
+							<entity name="energy_investments.Investments_in_Hydropower_Energy_capacity[1]"/>
 						</plot>
 					</graph>
 				</stacked_container>
@@ -3111,7 +3117,7 @@ Negative values of P causes compensation of differences, positive values would c
 				<eqn>investment_by_source[Run,Nuclear]</eqn>
 				<units>$/Year</units>
 			</aux>
-			<aux name="Investments in\nHydropower\nEnergy Capcity" access="output" isee:autocreated="true">
+			<aux name="Investments in\nHydropower\nEnergy capacity" access="output" isee:autocreated="true">
 				<doc>${Calibrated}
 </doc>
 				<dimensions>
@@ -3146,7 +3152,8 @@ Negative values of P causes compensation of differences, positive values would c
 				</dimensions>
 				<eqn>share_of_GDP_invested_in_hydropower+
 share_of_GDP_invested_in_other_power+
-share_of_GDP_invested_in_solar_and_wind</eqn>
+share_of_GDP_invested_in_solar_and_wind+
+share_of_GDP_invested_in_bio_power</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="share of GDP invested in Fossil Energy and Fuel">
@@ -3241,7 +3248,7 @@ All_Energy_Investments*EXP(-Social_Discount_Rate*(TIME-Policy_Start_Year_1))</eq
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Investments_in_Hydropower_Energy_Capcity/All_Energy_Investments</eqn>
+				<eqn>Investments_in_Hydropower_Energy_capacity/All_Energy_Investments</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Share of Energy Expenditure\ninvested in Solar and Wind">
@@ -3283,7 +3290,7 @@ All_Energy_Investments*EXP(-Social_Discount_Rate*(TIME-Policy_Start_Year_1))</eq
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Investments_in_Hydropower_Energy_Capcity/World_GDP</eqn>
+				<eqn>Investments_in_Hydropower_Energy_capacity/World_GDP</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="share of GDP invested\nin solar and wind">
@@ -3322,7 +3329,7 @@ All_Energy_Investments*EXP(-Social_Discount_Rate*(TIME-Policy_Start_Year_1))</eq
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Investments_in_Solar_and_Wind_Energy_Capacity+Investments_in_Hydropower_Energy_Capcity+Investments_in_Other_Capacity</eqn>
+				<eqn>Investments_in_Solar_and_Wind_Energy_Capacity+Investments_in_Hydropower_Energy_capacity+Investments_in_Other_Capacity+Investments_in_Bio_Capacity</eqn>
 				<units>$/Year</units>
 			</aux>
 			<aux name="Investments in Fossil Energy">
@@ -3496,6 +3503,9 @@ adaptive_energy_investments_differntiating_factor * Differentiating_Relative_Ene
 				</element>
 				<element subscript="1, Nuclear">
 					<eqn>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_6[Run]</eqn>
+				</element>
+				<element subscript="1, Bio">
+					<eqn>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_7[Run]</eqn>
 				</element>
 				<units>$*Years/kWh</units>
 			</aux>
@@ -3982,6 +3992,33 @@ ELSE
 				<element subscript="Nuclear, 9">
 					<eqn>0.505805546887287</eqn>
 				</element>
+				<element subscript="Bio, 1">
+					<eqn>0.29</eqn>
+				</element>
+				<element subscript="Bio, 2">
+					<eqn>0.4</eqn>
+				</element>
+				<element subscript="Bio, 3">
+					<eqn>0.45</eqn>
+				</element>
+				<element subscript="Bio, 4">
+					<eqn>0.9</eqn>
+				</element>
+				<element subscript="Bio, 5">
+					<eqn>1.25</eqn>
+				</element>
+				<element subscript="Bio, 6">
+					<eqn>2.1</eqn>
+				</element>
+				<element subscript="Bio, 7">
+					<eqn>2.1</eqn>
+				</element>
+				<element subscript="Bio, 8">
+					<eqn>2.04</eqn>
+				</element>
+				<element subscript="Bio, 9">
+					<eqn>1.93</eqn>
+				</element>
 				<range min="0.000001" max="2000"/>
 				<units>dmnl</units>
 			</aux>
@@ -4053,6 +4090,36 @@ ELSE
 				<eqn>2050</eqn>
 				<units>Year</units>
 			</aux>
+			<aux name="Investments in\nBio Capacity" access="output" isee:autocreated="true">
+				<doc>${Calibrated}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>investment_by_source[Run,Bio]</eqn>
+				<units>$/Year</units>
+			</aux>
+			<aux name="Share of Energy Expenditure\ninvested in bio energy">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Investments_in_Bio_Capacity/All_Energy_Investments</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="share of GDP invested\nin bio power">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Investments_in_Bio_Capacity/World_GDP</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="Cost of Extra Energy Output\nthrough Capital per Unit 7" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>$*Years/kWh</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -4102,7 +4169,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="7" isee:page_rows="8" isee:scroll_y="1540" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="7" isee:page_rows="8" isee:scroll_x="1000" isee:scroll_y="1206.67" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4142,9 +4209,9 @@ ELSE
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
 				<aux x="359.524" y="1849.15" name="adaptive energy\ninvestments proportional factor"/>
-				<aux background="#FFAAFF" x="1464.79" y="728.388" name="Investments in\nOther Capacity"/>
-				<aux background="#FFAAFF" x="1660.59" y="735.768" name="Investments in\nNuclear Capacity"/>
-				<aux background="#FFAAFF" x="1270.37" y="740.638" name="Investments in\nHydropower\nEnergy Capcity"/>
+				<aux background="#FFAAFF" x="1634.23" y="721.166" name="Investments in\nOther Capacity"/>
+				<aux background="#FFAAFF" x="1830.03" y="728.546" name="Investments in\nNuclear Capacity"/>
+				<aux background="#FFAAFF" x="1270.37" y="740.638" name="Investments in\nHydropower\nEnergy capacity"/>
 				<aux background="#FFAAFF" x="1072.3" y="744.138" name="Investments in\nSolar and Wind\nEnergy Capacity"/>
 				<aux x="1397.16" y="311.095" name="World GDP"/>
 				<aux x="1351.66" y="244.785" name="2017b$ to 2017$"/>
@@ -4192,26 +4259,26 @@ ELSE
 					<from>Social_Discount_Rate</from>
 					<to>Discounted_Expenditure_on_Energy</to>
 				</connector>
-				<aux x="1661.71" y="848.691" name="Share of Energy Expenditure\ninvested in nuclear energy"/>
-				<aux x="1464.79" y="861.192" name="Share of Energy Expenditure\ninvested in other energy"/>
+				<aux x="1831.15" y="841.469" name="Share of Energy Expenditure\ninvested in nuclear energy"/>
+				<aux x="1634.23" y="853.97" name="Share of Energy Expenditure\ninvested in other energy"/>
 				<aux x="1265.37" y="866.192" name="Share of Energy Expenditure\ninvested in hydropower"/>
 				<aux x="1072.3" y="891.192" name="Share of Energy Expenditure\ninvested in Solar and Wind"/>
 				<aux x="477.358" y="653.858" name="Share of Energy Expenditure invested in fuel extraction"/>
-				<aux x="1458.79" y="614.858" name="share of GDP invested\nin other power"/>
-				<connector uid="179" angle="281.469">
+				<aux x="1628.23" y="607.636" name="share of GDP invested\nin other power"/>
+				<connector uid="179" angle="307.927">
 					<from>World_GDP</from>
 					<to>share_of_GDP_invested_in_other_power</to>
 				</connector>
-				<connector uid="180" angle="117.601">
+				<connector uid="180" angle="133.894">
 					<from>share_of_GDP_invested_in_other_power</from>
 					<to>share_of_GDP_invested_in_Renewable_Energy</to>
 				</connector>
-				<aux x="1650.21" y="587.524" name="share of GDP invested\nin nuclear power"/>
-				<connector uid="181" angle="312.472">
+				<aux x="1819.65" y="580.302" name="share of GDP invested\nin nuclear power"/>
+				<connector uid="181" angle="327.495">
 					<from>World_GDP</from>
 					<to>share_of_GDP_invested_in_nuclear_power</to>
 				</connector>
-				<connector uid="182" angle="116.773">
+				<connector uid="182" angle="130.52">
 					<from>share_of_GDP_invested_in_nuclear_power</from>
 					<to>share_of_GDP_invested_in_Energy</to>
 				</connector>
@@ -4256,12 +4323,12 @@ ELSE
 					<from>Policy_Start_Year_1</from>
 					<to>Discounted_Expenditure_on_Energy</to>
 				</connector>
-				<aux x="844.563" y="1118.18" name="All Energy Investments"/>
-				<connector uid="205" angle="270.944">
+				<aux x="850.674" y="1115.96" name="All Energy Investments"/>
+				<connector uid="205" angle="268.934">
 					<from>All_Energy_Investments</from>
 					<to>Expenditure_on_Energy</to>
 				</connector>
-				<connector uid="206" angle="269.96">
+				<connector uid="206" angle="268.341">
 					<from>All_Energy_Investments</from>
 					<to>Discounted_Expenditure_on_Energy</to>
 				</connector>
@@ -4277,11 +4344,11 @@ ELSE
 					<to>Share_of_Energy_Expenditure_invested_in_Solar_and_Wind</to>
 				</connector>
 				<connector uid="215" angle="91.8261">
-					<from>Investments_in_Hydropower_Energy_Capcity</from>
+					<from>Investments_in_Hydropower_Energy_capacity</from>
 					<to>share_of_GDP_invested_in_hydropower</to>
 				</connector>
 				<connector uid="216" angle="267.719">
-					<from>Investments_in_Hydropower_Energy_Capcity</from>
+					<from>Investments_in_Hydropower_Energy_capacity</from>
 					<to>Share_of_Energy_Expenditure_invested_in_hydropower</to>
 				</connector>
 				<connector uid="217" angle="93.0252">
@@ -4305,10 +4372,10 @@ ELSE
 					<to>Investments_in_Renewables</to>
 				</connector>
 				<connector uid="224" angle="107.38">
-					<from>Investments_in_Hydropower_Energy_Capcity</from>
+					<from>Investments_in_Hydropower_Energy_capacity</from>
 					<to>Investments_in_Renewables</to>
 				</connector>
-				<connector uid="225" angle="135.408">
+				<connector uid="225" angle="148.875">
 					<from>Investments_in_Other_Capacity</from>
 					<to>Investments_in_Renewables</to>
 				</connector>
@@ -4445,7 +4512,7 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 							<entity name="Investments_in_Solar_and_Wind_Energy_Capacity[1]"/>
 						</plot>
 						<plot color="#00AAFF" isee:keep_zero_visible="true" pen_width="1" index="7" show_y_axis="true">
-							<entity name="Investments_in_Hydropower_Energy_Capcity[1]"/>
+							<entity name="Investments_in_Hydropower_Energy_capacity[1]"/>
 						</plot>
 						<plot color="#FF55FF" isee:keep_zero_visible="true" pen_width="1" index="8" show_y_axis="true">
 							<entity name="Investments_in_Nuclear_Capacity[1]"/>
@@ -4568,10 +4635,10 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<aux font_style="italic" font_weight="bold" x="1277.42" y="1661.61" name="Cost of Extra Energy Output through Capital per Unit 1"/>
 				<aux font_style="italic" font_weight="bold" x="1066.75" y="1581.61" name="cost of extra energy output through fuel extraction per unit 2"/>
 				<aux font_style="italic" font_weight="bold" x="1066.75" y="1661.61" name="Cost of Extra Energy Output through Capital per Unit 2"/>
-				<aux font_style="italic" font_weight="bold" x="1525.91" y="1581.61" name="Cost of Extra Energy Output\nthrough Capital per Unit 3"/>
-				<aux font_style="italic" font_weight="bold" x="1525.91" y="1661.61" name="Cost of Extra Energy Output\nthrough Capital per Unit 4"/>
-				<aux font_style="italic" font_weight="bold" x="1525.91" y="1743.51" name="Cost of Extra Energy Output\nthrough Capital per Unit 5"/>
-				<aux font_style="italic" font_weight="bold" x="1805.58" y="1581.61" name="Cost of Extra Energy Output\nthrough Capital per Unit 6"/>
+				<aux font_style="italic" font_weight="bold" x="1568.13" y="1582.17" name="Cost of Extra Energy Output\nthrough Capital per Unit 3"/>
+				<aux font_style="italic" font_weight="bold" x="1568.13" y="1662.17" name="Cost of Extra Energy Output\nthrough Capital per Unit 4"/>
+				<aux font_style="italic" font_weight="bold" x="1568.13" y="1744.07" name="Cost of Extra Energy Output\nthrough Capital per Unit 5"/>
+				<aux font_style="italic" font_weight="bold" x="1833.91" y="1582.17" name="Cost of Extra Energy Output\nthrough Capital per Unit 6"/>
 				<connector uid="348" angle="19.7351">
 					<from>cost_of_extra_energy_output_through_fuel_extraction_per_unit</from>
 					<to>cost_to_build_per_unit</to>
@@ -4596,19 +4663,19 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_1</from>
 					<to>cost_to_build_per_unit</to>
 				</connector>
-				<connector uid="354" angle="154.205">
+				<connector uid="354" angle="152.027">
 					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_3</from>
 					<to>cost_to_build_per_unit</to>
 				</connector>
-				<connector uid="355" angle="133.65">
+				<connector uid="355" angle="140.894">
 					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_4</from>
 					<to>cost_to_build_per_unit</to>
 				</connector>
-				<connector uid="356" angle="129.565">
+				<connector uid="356" angle="132.241">
 					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_5</from>
 					<to>cost_to_build_per_unit</to>
 				</connector>
-				<connector uid="358" angle="163.924">
+				<connector uid="358" angle="164.659">
 					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_6</from>
 					<to>cost_to_build_per_unit</to>
 				</connector>
@@ -4731,12 +4798,12 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 					<from>Gas_Investments_in_Fossil_Energy_Capital</from>
 					<to>Investments_in_Fossil_Energy_Capital_oil_and_gas</to>
 				</connector>
-				<connector uid="409" angle="56.9518">
+				<connector uid="409" angle="56.4997">
 					<from>adaptive_change_in_investments</from>
 					<to>All_Energy_Investments</to>
 				</connector>
 				<aux x="672.263" y="1118.18" name="baseline energy investments"/>
-				<connector uid="411" angle="0">
+				<connector uid="411" angle="0.713618">
 					<from>baseline_energy_investments</from>
 					<to>All_Energy_Investments</to>
 				</connector>
@@ -4752,11 +4819,11 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 					<from>Oil_Investments_in_Fossil_Fuel_Extraction_Capital</from>
 					<to>&quot;Share_of_Energy_Expenditure_invested_in_fuel_extraction,_oil&quot;</to>
 				</connector>
-				<connector uid="425" angle="359.45">
+				<connector uid="425" angle="359.125">
 					<from>All_Energy_Investments</from>
 					<to>investment_by_source</to>
 				</connector>
-				<connector uid="426" angle="344.298">
+				<connector uid="426" angle="343.708">
 					<from>All_Energy_Investments</from>
 					<to>desired_investment_by_source</to>
 				</connector>
@@ -4790,61 +4857,61 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				</connector>
 				<connector uid="434" angle="87.3438">
 					<from>investment_by_source</from>
-					<to>Investments_in_Hydropower_Energy_Capcity</to>
+					<to>Investments_in_Hydropower_Energy_capacity</to>
 				</connector>
-				<connector uid="435" angle="61.6857">
+				<connector uid="435" angle="46.418">
 					<from>investment_by_source</from>
 					<to>Investments_in_Other_Capacity</to>
 				</connector>
-				<connector uid="436" angle="164.115">
+				<connector uid="436" angle="164.501">
 					<from>All_Energy_Investments</from>
 					<to>&quot;Share_of_Energy_Expenditure_invested_in_fuel_extraction,_coal&quot;</to>
 				</connector>
-				<connector uid="437" angle="154.32">
+				<connector uid="437" angle="154.903">
 					<from>All_Energy_Investments</from>
 					<to>&quot;Share_of_Energy_Expenditure_invested_in_fossil_energy,_coal&quot;</to>
 				</connector>
-				<connector uid="438" angle="151.139">
+				<connector uid="438" angle="151.987">
 					<from>All_Energy_Investments</from>
 					<to>&quot;Share_of_Energy_Expenditure_invested_in_fuel_extraction,_oil&quot;</to>
 				</connector>
-				<connector uid="439" angle="129.861">
+				<connector uid="439" angle="131.271">
 					<from>All_Energy_Investments</from>
 					<to>&quot;Share_of_Energy_Expenditure_invested_in_fossil_energy,_oil&quot;</to>
 				</connector>
-				<connector uid="440" angle="105.196">
+				<connector uid="440" angle="107.477">
 					<from>All_Energy_Investments</from>
 					<to>&quot;Share_of_Energy_Expenditure_invested_in_fuel_extraction,_gas&quot;</to>
 				</connector>
-				<connector uid="441" angle="69.4317">
+				<connector uid="441" angle="70.8097">
 					<from>All_Energy_Investments</from>
 					<to>&quot;Share_of_Energy_Expenditure_invested_in_fossil_energy,_gas&quot;</to>
 				</connector>
-				<connector uid="442" angle="44.9056">
+				<connector uid="442" angle="45.403">
 					<from>All_Energy_Investments</from>
 					<to>Share_of_Energy_Expenditure_invested_in_Solar_and_Wind</to>
 				</connector>
-				<connector uid="443" angle="30.914">
+				<connector uid="443" angle="31.06">
 					<from>All_Energy_Investments</from>
 					<to>Share_of_Energy_Expenditure_invested_in_hydropower</to>
 				</connector>
-				<connector uid="444" angle="22.5064">
+				<connector uid="444" angle="18.4877">
 					<from>All_Energy_Investments</from>
 					<to>Share_of_Energy_Expenditure_invested_in_other_energy</to>
 				</connector>
-				<connector uid="445" angle="18.2521">
+				<connector uid="445" angle="15.6398">
 					<from>All_Energy_Investments</from>
 					<to>Share_of_Energy_Expenditure_invested_in_nuclear_energy</to>
 				</connector>
-				<connector uid="446" angle="128.338">
+				<connector uid="446" angle="128.934">
 					<from>All_Energy_Investments</from>
 					<to>Share_of_Energy_Expenditure_invested_in_fuel_extraction</to>
 				</connector>
-				<connector uid="447" angle="117.515">
+				<connector uid="447" angle="118.145">
 					<from>All_Energy_Investments</from>
 					<to>Share_of_Energy_Expenditure_invested_in_fossil_energy</to>
 				</connector>
-				<connector uid="448" angle="43.443">
+				<connector uid="448" angle="34.2799">
 					<from>investment_by_source</from>
 					<to>Investments_in_Nuclear_Capacity</to>
 				</connector>
@@ -4987,7 +5054,7 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<stacked_container uid="473" x="3402.5" y="748.858">
 					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="Investments_in_Hydropower_Energy_Capcity[1]"/>
+							<entity name="Investments_in_Hydropower_Energy_capacity[1]"/>
 						</plot>
 					</graph>
 				</stacked_container>
@@ -5096,6 +5163,42 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 					<from>Moratorium_on_fossil_energy_year</from>
 					<to>desired_investment_by_source</to>
 				</connector>
+				<aux background="#FFAAFF" label_side="bottom" x="1456.45" y="728.944" name="Investments in\nBio Capacity"/>
+				<aux x="1456.45" y="861.748" name="Share of Energy Expenditure\ninvested in bio energy"/>
+				<aux x="1450.45" y="615.414" name="share of GDP invested\nin bio power"/>
+				<connector uid="500" angle="93.0252">
+					<from>Investments_in_Bio_Capacity</from>
+					<to>share_of_GDP_invested_in_bio_power</to>
+				</connector>
+				<connector uid="501" angle="270">
+					<from>Investments_in_Bio_Capacity</from>
+					<to>Share_of_Energy_Expenditure_invested_in_bio_energy</to>
+				</connector>
+				<connector uid="502" angle="127.568">
+					<from>Investments_in_Bio_Capacity</from>
+					<to>Investments_in_Renewables</to>
+				</connector>
+				<connector uid="503" angle="114.911">
+					<from>share_of_GDP_invested_in_bio_power</from>
+					<to>share_of_GDP_invested_in_Renewable_Energy</to>
+				</connector>
+				<connector uid="504" angle="286.709">
+					<from>World_GDP</from>
+					<to>share_of_GDP_invested_in_bio_power</to>
+				</connector>
+				<connector uid="505" angle="66.3917">
+					<from>investment_by_source</from>
+					<to>Investments_in_Bio_Capacity</to>
+				</connector>
+				<connector uid="506" angle="25.6911">
+					<from>All_Energy_Investments</from>
+					<to>Share_of_Energy_Expenditure_invested_in_bio_energy</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1564.44" y="1823.89" name="Cost of Extra Energy Output\nthrough Capital per Unit 7"/>
+				<connector uid="507" angle="122.784">
+					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_7</from>
+					<to>cost_to_build_per_unit</to>
+				</connector>
 				<alias font_style="italic" font_weight="bold" uid="482" x="1407.67" y="1329.34" width="18" height="18">
 					<of>Policy_Start_Year_1</of>
 				</alias>
@@ -5118,6 +5221,18 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="Energy.Total_Renewable_Energy_Capacity" from="renewable_energy.Total_Renewable_Energy_Capacity"/>
 				<connect to="energy_supply.Wind_and_Solar_Energy_Output" from="renewable_energy.Wind_and_Solar_Energy_Output"/>
 				<connect2 to="Wind_and_Solar_Energy_Output" from="renewable_energy.Wind_and_Solar_Energy_Output"/>
+				<connect to="Food_Demand.bio_matter_needed_for_bio_energy" from="bio_energy.bio_matter_needed_for_bio_energy"/>
+				<connect2 to="Food_Demand.bio_matter_needed_for_bio_energy" from="bio_energy.bio_matter_needed_for_bio_energy"/>
+				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_7" from="bio_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
+				<connect2 to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_7" from="bio_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
+				<connect to="bio_energy.damage_rate_of_energy_capital_from_STA" from="Damages.damage_rate_of_energy_capital_from_STA"/>
+				<connect2 to="bio_energy.damage_rate_of_energy_capital_from_STA" from="Damages.damage_rate_of_energy_capital_from_STA"/>
+				<connect to="bio_energy.deltaEnergy_for_costs" from="energy_supply.deltaEnergy_for_costs"/>
+				<connect2 to="bio_energy.deltaEnergy_for_costs" from="deltaEnergy_for_costs"/>
+				<connect to="bio_energy.Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
+				<connect2 to="bio_energy.Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
+				<connect to="bio_energy.tax_for_newly_installed_other_energy_capacity" from="Government_Regulations.tax_for_newly_installed_other_energy_capacity"/>
+				<connect2 to="bio_energy.tax_for_newly_installed_other_energy_capacity" from="Government_Regulations.tax_for_newly_installed_other_energy_capacity"/>
 				<connect to='Energy."Slope_of_Hydropwer_Instllation_Costs_wrt._Capacity"' from='hydropower_energy."Slope_of_Hydropwer_Instllation_Costs_wrt._Capacity"'/>
 				<connect2 to='Energy."Slope_of_Hydropwer_Instllation_Costs_wrt._Capacity"' from='hydropower_energy."Slope_of_Hydropwer_Instllation_Costs_wrt._Capacity"'/>
 				<connect to="Energy.Base_Hydropower_Installation_Costs" from="hydropower_energy.Base_Hydropower_Installation_Costs"/>
@@ -5136,8 +5251,8 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="hydropower_energy.deltaEnergy_for_costs" from="deltaEnergy_for_costs"/>
 				<connect to="hydropower_energy.effect_of_STA_on_hydropower_energy_capacity_efficiency" from="efficiency_reduction_in_power_plants.effect_of_STA_on_hydropower_energy_capacity_efficiency"/>
 				<connect2 to="hydropower_energy.effect_of_STA_on_hydropower_energy_capacity_efficiency" from="efficiency_reduction_in_power_plants.effect_of_STA_on_hydropower_energy_capacity_efficiency"/>
-				<connect to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_Capcity"/>
-				<connect2 to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_Capcity"/>
+				<connect to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_capacity"/>
+				<connect2 to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_capacity"/>
 				<connect to="hydropower_energy.tax_for_newly_installed_hydropower_capacity" from="Government_Regulations.tax_for_newly_installed_hydropower_capacity"/>
 				<connect2 to="hydropower_energy.tax_for_newly_installed_hydropower_capacity" from="Government_Regulations.tax_for_newly_installed_hydropower_capacity"/>
 				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_5" from="other_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
@@ -5197,6 +5312,8 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 			</aux>
 			<module name="Damages" isee:label="">
 				<format scale_by="auto"/>
+				<connect to="bio_energy.damage_rate_of_energy_capital_from_STA" from="Damages.damage_rate_of_energy_capital_from_STA"/>
+				<connect2 to="bio_energy.damage_rate_of_energy_capital_from_STA" from="Damages.damage_rate_of_energy_capital_from_STA"/>
 				<connect to="fossil_energy_coal.damage_rate_of_energy_capital_from_STA" from="Damages.damage_rate_of_energy_capital_from_STA"/>
 				<connect2 to="fossil_energy_coal.damage_rate_of_energy_capital_from_STA" from="Damages.damage_rate_of_energy_capital_from_STA"/>
 				<connect to="fossil_energy_gas.damage_rate_of_energy_capital_from_STA" from="Damages.damage_rate_of_energy_capital_from_STA"/>
@@ -12095,7 +12212,7 @@ Calibrate to energy provision from renewable sources</doc>
 				</dimensions>
 				<eqn>Wind_and_Solar_Energy_Output
 +Hydropower_Energy_Output
-+Other_Energy_Output</eqn>
++Other_Energy_Output+bio_Energy_Output</eqn>
 				<units>TWh/Years</units>
 			</aux>
 			<aux name="Total Renewable\nEnergy Capacity" access="output" isee:autocreated="true">
@@ -12104,7 +12221,7 @@ Calibrate to energy provision from renewable sources</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Wind_and_Solar_Energy_Capacity+Hydropower_Energy_Capacity+Other_Energy_Capacity</eqn>
+				<eqn>Wind_and_Solar_Energy_Capacity+Hydropower_Energy_Capacity+Other_Energy_Capacity+bio_Energy_Capacity</eqn>
 				<units>GW</units>
 			</aux>
 			<module name="wind and solar energy" isee:label="">
@@ -12183,8 +12300,8 @@ Calibrate to energy provision from renewable sources</doc>
 				<connect2 to="hydropower_energy.deltaEnergy_for_costs" from="energy_supply.deltaEnergy_for_costs"/>
 				<connect to="hydropower_energy.effect_of_STA_on_hydropower_energy_capacity_efficiency" from="efficiency_reduction_in_power_plants.effect_of_STA_on_hydropower_energy_capacity_efficiency"/>
 				<connect2 to="hydropower_energy.effect_of_STA_on_hydropower_energy_capacity_efficiency" from="efficiency_reduction_in_power_plants.effect_of_STA_on_hydropower_energy_capacity_efficiency"/>
-				<connect to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_Capcity"/>
-				<connect2 to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_Capcity"/>
+				<connect to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_capacity"/>
+				<connect2 to="hydropower_energy.Investments_in_Hydropower_Energy_Capcity" from="energy_investments.Investments_in_Hydropower_Energy_capacity"/>
 				<connect to="hydropower_energy.tax_for_newly_installed_hydropower_capacity" from="Government_Regulations.tax_for_newly_installed_hydropower_capacity"/>
 				<connect2 to="hydropower_energy.tax_for_newly_installed_hydropower_capacity" from="Government_Regulations.tax_for_newly_installed_hydropower_capacity"/>
 			</module>
@@ -12243,6 +12360,40 @@ Calibrate to energy provision from renewable sources</doc>
 				<non_negative/>
 				<units>GW</units>
 			</stock>
+			<module name="bio energy" isee:label="">
+				<format scale_by="auto"/>
+				<connect to="renewable_energy.bio_Energy_Capacity" from="bio_energy.bio_Energy_Capacity"/>
+				<connect2 to="bio_Energy_Capacity" from="bio_energy.bio_Energy_Capacity"/>
+				<connect to="renewable_energy.bio_Energy_Output" from="bio_energy.bio_Energy_Output"/>
+				<connect2 to="bio_Energy_Output" from="bio_energy.bio_Energy_Output"/>
+				<connect to="Food_Demand.bio_matter_needed_for_bio_energy" from="bio_energy.bio_matter_needed_for_bio_energy"/>
+				<connect2 to="Food_Demand.bio_matter_needed_for_bio_energy" from="bio_energy.bio_matter_needed_for_bio_energy"/>
+				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_7" from="bio_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
+				<connect2 to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_7" from="bio_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit"/>
+				<connect to="bio_energy.damage_rate_of_energy_capital_from_STA" from="Damages.damage_rate_of_energy_capital_from_STA"/>
+				<connect2 to="bio_energy.damage_rate_of_energy_capital_from_STA" from="Damages.damage_rate_of_energy_capital_from_STA"/>
+				<connect to="bio_energy.deltaEnergy_for_costs" from="energy_supply.deltaEnergy_for_costs"/>
+				<connect2 to="bio_energy.deltaEnergy_for_costs" from="energy_supply.deltaEnergy_for_costs"/>
+				<connect to="bio_energy.Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
+				<connect2 to="bio_energy.Investments_in_Other_Capacity" from="energy_investments.Investments_in_Other_Capacity"/>
+				<connect to="bio_energy.tax_for_newly_installed_other_energy_capacity" from="Government_Regulations.tax_for_newly_installed_other_energy_capacity"/>
+				<connect2 to="bio_energy.tax_for_newly_installed_other_energy_capacity" from="Government_Regulations.tax_for_newly_installed_other_energy_capacity"/>
+			</module>
+			<aux name="bio Energy Output" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>TWh/Year</units>
+			</aux>
+			<stock name="bio Energy Capacity" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<non_negative/>
+				<units>GW</units>
+			</stock>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -12292,7 +12443,7 @@ Calibrate to energy provision from renewable sources</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:scroll_x="75" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:scroll_x="150" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -12331,15 +12482,15 @@ Calibrate to energy provision from renewable sources</doc>
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<aux background="#FFAAFF" label_side="bottom" x="652.37" y="387.2" name="Renewable Energy\nOutput"/>
-				<aux background="#FFAAFF" x="652.37" y="309.448" name="Total Renewable\nEnergy Capacity"/>
+				<aux background="#FFAAFF" label_side="bottom" x="480.495" y="674.7" name="Renewable Energy\nOutput"/>
+				<aux background="#FFAAFF" x="480.495" y="596.948" name="Total Renewable\nEnergy Capacity"/>
 				<module x="268.95" y="207.158" name="wind and solar energy"/>
 				<aux label_side="left" x="243.07" y="258.363" name="Wind and Solar Energy Output"/>
 				<connector uid="2" angle="243.192" isee:autocreated="true">
 					<from>wind_and_solar_energy</from>
 					<to>Wind_and_Solar_Energy_Output</to>
 				</connector>
-				<connector uid="4" angle="342.527">
+				<connector uid="4" angle="299.695">
 					<from>Wind_and_Solar_Energy_Output</from>
 					<to>Renewable_Energy_Output</to>
 				</connector>
@@ -12348,7 +12499,7 @@ Calibrate to energy provision from renewable sources</doc>
 					<from>wind_and_solar_energy</from>
 					<to>Wind_and_Solar_Energy_Capacity</to>
 				</connector>
-				<connector uid="6" angle="351.829">
+				<connector uid="6" angle="298.512">
 					<from>Wind_and_Solar_Energy_Capacity</from>
 					<to>Total_Renewable_Energy_Capacity</to>
 				</connector>
@@ -12363,29 +12514,466 @@ Calibrate to energy provision from renewable sources</doc>
 					<from>hydropower_energy</from>
 					<to>Hydropower_Energy_Output</to>
 				</connector>
-				<connector uid="9" angle="292.098">
+				<connector uid="9" angle="253.977">
 					<from>Hydropower_Energy_Output</from>
 					<to>Renewable_Energy_Output</to>
 				</connector>
 				<stock label_side="right" x="652.37" y="258.363" name="Hydropower Energy Capacity"/>
-				<connector uid="10" angle="270">
+				<connector uid="10" angle="243.086">
 					<from>Hydropower_Energy_Capacity</from>
 					<to>Total_Renewable_Energy_Capacity</to>
 				</connector>
-				<module x="961.43" y="207.158" name="other energy"/>
-				<aux label_side="left" x="948.31" y="258.363" name="Other Energy Output"/>
+				<module x="857.055" y="354.658" name="other energy"/>
+				<aux label_side="left" x="843.935" y="405.863" name="Other Energy Output"/>
 				<connector uid="12" angle="255.623" isee:autocreated="true">
 					<from>other_energy</from>
 					<to>Other_Energy_Output</to>
 				</connector>
-				<stock label_side="right" x="997.93" y="258.988" name="Other Energy Capacity"/>
-				<connector uid="13" angle="203.526">
+				<stock label_side="right" x="893.555" y="406.488" name="Other Energy Capacity"/>
+				<connector uid="13" angle="216.49">
 					<from>Other_Energy_Output</from>
 					<to>Renewable_Energy_Output</to>
 				</connector>
-				<connector uid="14" angle="188.308">
+				<connector uid="14" angle="204.754">
 					<from>Other_Energy_Capacity</from>
 					<to>Total_Renewable_Energy_Capacity</to>
+				</connector>
+				<module x="446.43" y="361.533" name="bio energy"/>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="430.625" y="415.625" name="bio Energy Output"/>
+				<connector uid="15" angle="278.712" isee:autocreated="true">
+					<from>bio_energy</from>
+					<to>bio_Energy_Output</to>
+				</connector>
+				<stock font_style="italic" font_weight="bold" label_side="right" x="521.875" y="396.488" name="bio Energy Capacity"/>
+				<connector uid="16" angle="275.356">
+					<from>bio_Energy_Output</from>
+					<to>Renewable_Energy_Output</to>
+				</connector>
+				<connector uid="17" angle="258.337">
+					<from>bio_Energy_Capacity</from>
+					<to>Total_Renewable_Energy_Capacity</to>
+				</connector>
+			</view>
+		</views>
+	</model>
+	<model name="bio_energy" run="true">
+		<variables>
+			<aux name="kW to GW">
+				<doc>${Assumption}
+</doc>
+				<eqn>0.000001</eqn>
+				<units>GW/kW</units>
+			</aux>
+			<aux name="depreciation rate of\nbio capital">
+				<doc>${Assumption}
+Default 5% rate</doc>
+				<eqn>0.05</eqn>
+				<units>1/year</units>
+			</aux>
+			<flow name="Depreciation of\nbio capacity">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>bio_Energy_Capacity*depreciation_rate_of_bio_capital</eqn>
+				<non_negative/>
+				<units>GW/Year</units>
+			</flow>
+			<stock name="bio Energy Capacity" access="output" isee:autocreated="true">
+				<doc>${Calibrated}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Initial_bio_Capacity</eqn>
+				<inflow>Installation_of_bio_Capacity</inflow>
+				<outflow>Depreciation_of_bio_capacity</outflow>
+				<outflow>bio_Energy_Capital_Damaged_due_to_STA</outflow>
+				<non_negative/>
+				<units>GW</units>
+			</stock>
+			<aux name="Initial bio Capacity">
+				<eqn>8.83829724631003</eqn>
+				<units>GW</units>
+			</aux>
+			<flow name="Installation of\nbio Capacity">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Investments_in_Other_Capacity/bio_Installation_Costs*kW_to_GW</eqn>
+				<non_negative/>
+				<units>GW/Year</units>
+			</flow>
+			<aux name="bio Energy\nCapacity Efficiency">
+				<eqn>5.92790244874951</eqn>
+				<units>(TWh/year)/GW</units>
+			</aux>
+			<aux name="bio\nInstallation Costs">
+				<doc>Data from 2010 to 2021 specified on the range of 1600$/kW </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MAX(Initial_bio_Installation_Costs+
+(Slope_of_bio_Installation_Costs*(TIME-STARTTIME)), Floor_of_bio_Installation_Costs)</eqn>
+				<units>$/kW</units>
+			</aux>
+			<aux name="bio Energy Output" access="output" isee:autocreated="true">
+				<doc>${Calibrated}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>bio_Energy_Capacity_Efficiency*bio_Energy_Capacity</eqn>
+				<units>TWh/Year</units>
+			</aux>
+			<aux name="Initial bio Installation Costs" access="output" isee:autocreated="true">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>5099.3276064817</eqn>
+				<format precision="1"/>
+				<range min="500" max="10000"/>
+				<units>$/kW</units>
+			</aux>
+			<aux name="Floor of bio\nInstallation Costs">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>1760.94192061063</eqn>
+				<range min="100" max="10000"/>
+				<units>$/kW</units>
+			</aux>
+			<aux name="Slope of bio Installation Costs" access="output" isee:autocreated="true">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>-39.3251754244523</eqn>
+				<format precision="0.01"/>
+				<range min="-1000" max="1000"/>
+				<units>$/KW/Year</units>
+			</aux>
+			<flow name="bio Energy\nCapital Damaged due to STA">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>bio_Energy_Capacity*damage_rate_of_energy_capital_from_STA</eqn>
+				<non_negative/>
+				<units>GW/Year</units>
+			</flow>
+			<aux name="replacement cost of bio Energy\nCapital Damaged due to STA" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>bio_Energy_Capital_Damaged_due_to_STA*bio_Installation_Costs/kW_to_GW</eqn>
+				<units>$/Year</units>
+			</aux>
+			<aux name="damage rate of energy\ncapital from STA" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="Investments in\nOther Capacity" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>$/Year</units>
+			</aux>
+			<aux name="extra capacity needed\nfor delta Energy">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>((deltaEnergy_for_costs) 
+/(bio_Energy_Capacity_Efficiency))*GW_to_TW</eqn>
+				<units>TW</units>
+			</aux>
+			<aux name="deltaEnergy for costs" access="input">
+				<eqn>1</eqn>
+				<units>TWh/Year</units>
+			</aux>
+			<aux name="cost of extra capacity needed for delta Energy">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(bio_Installation_Costs/kW_to_TW)*extra_capacity_needed_for_delta_Energy</eqn>
+				<units>$</units>
+			</aux>
+			<aux name="kW to TW">
+				<eqn>1e-9</eqn>
+				<units>TW/kW</units>
+			</aux>
+			<aux name="Cost of Extra Energy Output\nthrough Capital per Unit" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>cost_of_extra_capacity_needed_for_delta_Energy/(deltaEnergy_for_costs*TWh_to_kWh)
++
+tax_for_newly_installed_other_energy_capacity</eqn>
+				<units>$*Years/kWh</units>
+			</aux>
+			<aux name="GW to TW">
+				<eqn>0.001</eqn>
+				<units>TW/GW</units>
+			</aux>
+			<aux name="TWh to kWh">
+				<eqn>1000000000</eqn>
+				<units>kWh/TWh</units>
+			</aux>
+			<aux name="tax for newly installed\nother energy capacity" access="input">
+				<eqn>TIME</eqn>
+				<gf>
+					<xscale min="1980" max="2100"/>
+					<yscale min="0" max="100"/>
+					<ypts>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</ypts>
+				</gf>
+				<units>$/(kWh/Years)</units>
+			</aux>
+			<aux name="amount of bio matter needed per energy output">
+				<doc>kcal to TWh</doc>
+				<eqn>0.8604</eqn>
+				<units>Pcal/TWh</units>
+			</aux>
+			<aux name="bio matter needed for bio energy" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>amount_of_bio_matter_needed_per_energy_output * bio_Energy_Output</eqn>
+				<units>PCal/Year</units>
+			</aux>
+		</variables>
+		<views>
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
+				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:sim_speed_slider color="black" background="white"/>
+				<isee:time_slider color="#E95F74" background="silver"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
+				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
+				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="90" zoom="200" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
+						<shape type="rectangle" width="45" height="35"/>
+					</stock>
+					<flow color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</flow>
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="11pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
+						<shape type="rectangle" width="67" height="55"/>
+					</module>
+					<aux color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</aux>
+					<group color="red" background="white" font_color="red" font_size="11pt"/>
+					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
+					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+					<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+						<isee:series_styles>
+							<isee:series_style color="blue" thickness="1"/>
+							<isee:series_style color="red" thickness="1"/>
+							<isee:series_style color="fuchsia" thickness="1"/>
+							<isee:series_style color="#008F44" thickness="1"/>
+							<isee:series_style color="#FF7F00" thickness="1"/>
+							<isee:series_style color="#7F00FF" thickness="1"/>
+							<isee:series_style color="#0CA0FF" thickness="1"/>
+							<isee:series_style color="lime" thickness="1"/>
+							<isee:series_style color="#FF007F" thickness="1"/>
+							<isee:series_style color="aqua" thickness="1"/>
+							<isee:series_style color="#F586FF" thickness="1"/>
+							<isee:series_style color="black" thickness="1"/>
+							<isee:series_style color="#C8C8C8" thickness="1"/>
+						</isee:series_styles>
+					</graph>
+					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				</style>
+				<aux color="black" background="white" font_color="black" x="503.49" y="317.48" name="depreciation rate of\nbio capital"/>
+				<flow x="459.325" y="374.62" name="Depreciation of\nbio capacity">
+					<pts>
+						<pt x="418.13" y="374.62"/>
+						<pt x="524.52" y="374.62"/>
+					</pts>
+				</flow>
+				<connector uid="1" angle="232.299">
+					<from>depreciation_rate_of_bio_capital</from>
+					<to>Depreciation_of_bio_capacity</to>
+				</connector>
+				<stock background="#FFAAFF" x="395.63" y="372.48" name="bio Energy Capacity"/>
+				<connector uid="2" angle="23.0731">
+					<from>bio_Energy_Capacity</from>
+					<to>Depreciation_of_bio_capacity</to>
+				</connector>
+				<aux background="#AAAAFF" x="395.63" y="403.93" name="Initial bio Capacity"/>
+				<flow x="321.88" y="372.48" name="Installation of\nbio Capacity">
+					<pts>
+						<pt x="270.63" y="372.48"/>
+						<pt x="373.13" y="372.48"/>
+					</pts>
+				</flow>
+				<aux background="#AAAAFF" x="489.42" y="489.98" name="bio Energy\nCapacity Efficiency"/>
+				<aux color="blue" background="white" x="261.59" y="282.533" name="bio\nInstallation Costs"/>
+				<connector uid="3" angle="303.833">
+					<from>bio_Installation_Costs</from>
+					<to>Installation_of_bio_Capacity</to>
+				</connector>
+				<aux background="#FFAAFF" x="394.21" y="489.98" name="bio Energy Output"/>
+				<connector uid="4" angle="180">
+					<from>bio_Energy_Capacity_Efficiency</from>
+					<to>bio_Energy_Output</to>
+				</connector>
+				<connector uid="5" angle="269.308">
+					<from>bio_Energy_Capacity</from>
+					<to>bio_Energy_Output</to>
+				</connector>
+				<connector uid="6" angle="331.496">
+					<from>kW_to_GW</from>
+					<to>Installation_of_bio_Capacity</to>
+				</connector>
+				<aux x="197.29" y="199.666" name="Initial bio Installation Costs"/>
+				<aux x="193.13" y="331.6" name="Floor of bio\nInstallation Costs"/>
+				<connector uid="7" angle="307.809">
+					<from>Initial_bio_Installation_Costs</from>
+					<to>bio_Installation_Costs</to>
+				</connector>
+				<connector uid="8" angle="35.6301">
+					<from>Floor_of_bio_Installation_Costs</from>
+					<to>bio_Installation_Costs</to>
+				</connector>
+				<aux x="197.29" y="272.075" name="Slope of bio Installation Costs"/>
+				<connector uid="9" angle="350.762">
+					<from>Slope_of_bio_Installation_Costs</from>
+					<to>bio_Installation_Costs</to>
+				</connector>
+				<flow label_side="right" x="395.63" y="266.49" name="bio Energy\nCapital Damaged due to STA">
+					<pts>
+						<pt x="395.63" y="354.98"/>
+						<pt x="395.63" y="157"/>
+					</pts>
+				</flow>
+				<connector uid="10" angle="60.8351">
+					<from>bio_Energy_Capacity</from>
+					<to>bio_Energy_Capital_Damaged_due_to_STA</to>
+				</connector>
+				<aux x="339.88" y="114" name="replacement cost of bio Energy\nCapital Damaged due to STA"/>
+				<connector uid="11" angle="64.9684">
+					<from>kW_to_GW</from>
+					<to>replacement_cost_of_bio_Energy_Capital_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="12" angle="107.432">
+					<from>bio_Energy_Capital_Damaged_due_to_STA</from>
+					<to>replacement_cost_of_bio_Energy_Capital_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="13" angle="63.8398">
+					<from>bio_Installation_Costs</from>
+					<to>replacement_cost_of_bio_Energy_Capital_Damaged_due_to_STA</to>
+				</connector>
+				<connector uid="14" angle="212.041">
+					<from>damage_rate_of_energy_capital_from_STA</from>
+					<to>bio_Energy_Capital_Damaged_due_to_STA</to>
+				</connector>
+				<aux color="black" font_color="black" x="261.59" y="339.74" name="kW to GW"/>
+				<aux font_style="italic" font_weight="bold" x="485.49" y="199.666" name="damage rate of energy\ncapital from STA"/>
+				<aux font_style="italic" font_weight="bold" x="155" y="458" name="Investments in\nOther Capacity"/>
+				<connector uid="15" angle="7.85331">
+					<from>Investments_in_Other_Capacity</from>
+					<to>Installation_of_bio_Capacity</to>
+				</connector>
+				<aux x="554.04" y="597" name="extra capacity needed\nfor delta Energy"/>
+				<aux font_style="italic" font_weight="bold" x="720.167" y="591.5" name="deltaEnergy for costs"/>
+				<connector uid="16" angle="194.29">
+					<from>deltaEnergy_for_costs</from>
+					<to>extra_capacity_needed_for_delta_Energy</to>
+				</connector>
+				<aux x="459.5" y="658.5" name="cost of extra capacity needed for delta Energy"/>
+				<aux x="451.14" y="615" name="kW to TW"/>
+				<connector uid="17" angle="281.415">
+					<from>kW_to_TW</from>
+					<to>cost_of_extra_capacity_needed_for_delta_Energy</to>
+				</connector>
+				<connector uid="18" angle="233.839">
+					<from>extra_capacity_needed_for_delta_Energy</from>
+					<to>cost_of_extra_capacity_needed_for_delta_Energy</to>
+				</connector>
+				<aux x="666.28" y="658.5" name="Cost of Extra Energy Output\nthrough Capital per Unit"/>
+				<connector uid="19" angle="346.715">
+					<from>cost_of_extra_capacity_needed_for_delta_Energy</from>
+					<to>Cost_of_Extra_Energy_Output_through_Capital_per_Unit</to>
+				</connector>
+				<connector uid="20" angle="234.825">
+					<from>deltaEnergy_for_costs</from>
+					<to>Cost_of_Extra_Energy_Output_through_Capital_per_Unit</to>
+				</connector>
+				<aux x="619.045" y="557.545" name="GW to TW"/>
+				<connector uid="21" angle="216.754">
+					<from>GW_to_TW</from>
+					<to>extra_capacity_needed_for_delta_Energy</to>
+				</connector>
+				<connector uid="22" angle="301.124">
+					<from>bio_Energy_Capacity_Efficiency</from>
+					<to>extra_capacity_needed_for_delta_Energy</to>
+				</connector>
+				<connector uid="23" angle="237.392">
+					<from>bio_Installation_Costs</from>
+					<to>cost_of_extra_capacity_needed_for_delta_Energy</to>
+				</connector>
+				<aux x="787.67" y="730.11" name="TWh to kWh"/>
+				<connector uid="24" angle="130.529">
+					<from>TWh_to_kWh</from>
+					<to>Cost_of_Extra_Energy_Output_through_Capital_per_Unit</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="857.5" y="627.5" name="tax for newly installed\nother energy capacity"/>
+				<connector uid="25" angle="201.501">
+					<from>tax_for_newly_installed_other_energy_capacity</from>
+					<to>Cost_of_Extra_Energy_Output_through_Capital_per_Unit</to>
+				</connector>
+				<aux x="633.045" y="385.93" name="amount of bio matter needed per energy output"/>
+				<aux x="633.045" y="455" name="bio matter needed for bio energy"/>
+				<connector uid="26" angle="23.8895">
+					<from>bio_Energy_Output</from>
+					<to>bio_matter_needed_for_bio_energy</to>
+				</connector>
+				<connector uid="27" angle="265.041">
+					<from>amount_of_bio_matter_needed_per_energy_output</from>
+					<to>bio_matter_needed_for_bio_energy</to>
 				</connector>
 			</view>
 		</views>
@@ -12405,7 +12993,7 @@ IRENA 2012  Renewable Energy Technologies: Cost Analysis Series Volume 1: Power 
 				<eqn>0.01</eqn>
 				<units>1/year</units>
 			</aux>
-			<flow name="Depreciation of\nHydropower Capcity">
+			<flow name="Depreciation of\nHydropower capacity">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -12421,7 +13009,7 @@ IRENA 2012  Renewable Energy Technologies: Cost Analysis Series Volume 1: Power 
 				</dimensions>
 				<eqn>Initial_Hydropower_Capacity</eqn>
 				<inflow>Installation_of_Hydropower_Capacity</inflow>
-				<outflow>Depreciation_of_Hydropower_Capcity</outflow>
+				<outflow>Depreciation_of_Hydropower_capacity</outflow>
 				<outflow>Hydropower_Energy_Capital_Damaged_due_to_STA</outflow>
 				<non_negative/>
 				<units>GW</units>
@@ -12656,7 +13244,7 @@ tax_for_newly_installed_hydropower_capacity</eqn>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
 				<aux color="black" background="white" font_color="black" x="517.82" y="313.65" name="depreciation rate of\nhydropower capital"/>
-				<flow x="473.655" y="370.79" name="Depreciation of\nHydropower Capcity">
+				<flow x="473.655" y="370.79" name="Depreciation of\nHydropower capacity">
 					<pts>
 						<pt x="432.46" y="370.79"/>
 						<pt x="538.85" y="370.79"/>
@@ -12664,12 +13252,12 @@ tax_for_newly_installed_hydropower_capacity</eqn>
 				</flow>
 				<connector uid="1" angle="232.299">
 					<from>depreciation_rate_of_hydropower_capital</from>
-					<to>Depreciation_of_Hydropower_Capcity</to>
+					<to>Depreciation_of_Hydropower_capacity</to>
 				</connector>
 				<stock background="#FFAAFF" x="409.96" y="368.65" name="Hydropower Energy Capacity"/>
 				<connector uid="2" angle="23.0731">
 					<from>Hydropower_Energy_Capacity</from>
-					<to>Depreciation_of_Hydropower_Capcity</to>
+					<to>Depreciation_of_Hydropower_capacity</to>
 				</connector>
 				<aux background="#AAAAFF" x="409.96" y="400.1" name="Initial Hydropower Capacity"/>
 				<flow x="336.21" y="368.65" name="Installation of\nHydropower Capacity">
@@ -12824,7 +13412,7 @@ Default 5% rate</doc>
 				<eqn>0.05</eqn>
 				<units>1/year</units>
 			</aux>
-			<flow name="Depreciation of\nother Capcity">
+			<flow name="Depreciation of\nother capacity">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -12840,7 +13428,7 @@ Default 5% rate</doc>
 				</dimensions>
 				<eqn>Initial_Other_Capacity</eqn>
 				<inflow>Installation_of_Other_Capacity</inflow>
-				<outflow>Depreciation_of_other_Capcity</outflow>
+				<outflow>Depreciation_of_other_capacity</outflow>
 				<outflow>Other_Energy_Capital_Damaged_due_to_STA</outflow>
 				<non_negative/>
 				<units>GW</units>
@@ -13029,7 +13617,7 @@ tax_for_newly_installed_other_energy_capacity</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" zoom="200" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:scroll_x="30" isee:scroll_y="100.5" zoom="200" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -13069,7 +13657,7 @@ tax_for_newly_installed_other_energy_capacity</eqn>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
 				<aux color="black" background="white" font_color="black" x="503.49" y="317.48" name="depreciation rate of\nother capital"/>
-				<flow x="459.325" y="374.62" name="Depreciation of\nother Capcity">
+				<flow x="459.325" y="374.62" name="Depreciation of\nother capacity">
 					<pts>
 						<pt x="418.13" y="374.62"/>
 						<pt x="524.52" y="374.62"/>
@@ -13077,12 +13665,12 @@ tax_for_newly_installed_other_energy_capacity</eqn>
 				</flow>
 				<connector uid="1" angle="232.299">
 					<from>depreciation_rate_of_other_capital</from>
-					<to>Depreciation_of_other_Capcity</to>
+					<to>Depreciation_of_other_capacity</to>
 				</connector>
 				<stock background="#FFAAFF" x="395.63" y="372.48" name="Other Energy Capacity"/>
 				<connector uid="2" angle="23.0731">
 					<from>Other_Energy_Capacity</from>
-					<to>Depreciation_of_other_Capcity</to>
+					<to>Depreciation_of_other_capacity</to>
 				</connector>
 				<aux background="#AAAAFF" x="395.63" y="403.93" name="Initial Other Capacity"/>
 				<flow x="321.88" y="372.48" name="Installation of\nOther Capacity">
