@@ -3100,6 +3100,9 @@ Lorem ipsum dolor sit amet</text_box>
 	<model name="Concrete">
 		<variables>
 			<stock name="Concrete Stock in\nNew Residential and Service\nBuildings">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>INIT_CONCRETE_IN_NEW_BUILDINGS</eqn>
 				<inflow>&quot;new_R&amp;S_construction&quot;</inflow>
 				<inflow>&quot;New_R&amp;S_maintenance&quot;</inflow>
@@ -3108,6 +3111,9 @@ Lorem ipsum dolor sit amet</text_box>
 				<units>Mtonne</units>
 			</stock>
 			<stock name="Concrete Stock in\nOld Residential and Service\nBuildings">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>INIT_CONCRETE_IN_OLD_BUILDINGS</eqn>
 				<inflow>&quot;R&amp;S_aging&quot;</inflow>
 				<inflow>&quot;Old_R&amp;S_maintenance&quot;</inflow>
@@ -3116,6 +3122,9 @@ Lorem ipsum dolor sit amet</text_box>
 				<units>Mtonne</units>
 			</stock>
 			<stock name="Concrete Stock in new\nInfrastructure">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>INIT_CONCRETE_IN_NEW_INFRASTRUCTURE</eqn>
 				<inflow>new_infrastructure_construction</inflow>
 				<inflow>new_infrastructure_maintenance</inflow>
@@ -3124,6 +3133,9 @@ Lorem ipsum dolor sit amet</text_box>
 				<units>Mtonne</units>
 			</stock>
 			<stock name="Concrete Stock in old\nInfrastructure">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>INIT_CONCRETE_IN_OLD_INFRASTRUCTURE</eqn>
 				<inflow>infrastructure_aging</inflow>
 				<inflow>old_infrastructure_maintenance</inflow>
@@ -3132,33 +3144,54 @@ Lorem ipsum dolor sit amet</text_box>
 				<units>Mtonne</units>
 			</stock>
 			<flow name="new R&amp;S\nconstruction">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>gap_in_useful_floor_area*CONCRETE_PER_m2_UFA/GAP_ADJUSTMENT_TIME_FOR_BUILDINGS</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<flow name="new infrastructure\nconstruction">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>MAX(0, 
 ALT_infrastructure_gap/
 GAP_ADJUSTMENT_TIME_FOR_INFRASTRUCTURE)</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<flow name="R&amp;S\naging">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Concrete_Stock_in_New_Residential_and_Service_Buildings/AVERAGE_LIFETIME_OF_BUILDINGS*0.5</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<flow name="infrastructure\naging">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Concrete_Stock_in_new_Infrastructure/AVERAGE_LIFETIME_OF_INFRASTRUCTURE/2</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<flow name="decommissioning\nR&amp;S buildings">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Concrete_Stock_in_Old_Residential_and_Service_Buildings/AVERAGE_LIFETIME_OF_BUILDINGS*0.5</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<flow name="decommissioning\ninfrastructure">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Concrete_Stock_in_old_Infrastructure/AVERAGE_LIFETIME_OF_INFRASTRUCTURE/2</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<aux name="desired useful\nfloor area">
-				<eqn>SMTH3(indicated_desired_per_capita_floor_area[Run] * population, 
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>SMTH3(indicated_desired_per_capita_floor_area[Run] * population[Run], 
 TIME_TO_ADJUST_DESIRED_FLOOR_AREA)</eqn>
 				<isee:delay_aux/>
 				<units>Mm2</units>
@@ -3178,10 +3211,16 @@ TIME_TO_ADJUST_DESIRED_FLOOR_AREA)</eqn>
 				<units>b$/Mp/year</units>
 			</aux>
 			<aux name="actual useful\nfloor area">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(Concrete_Stock_in_Old_Residential_and_Service_Buildings+Concrete_Stock_in_New_Residential_and_Service_Buildings)/CONCRETE_PER_m2_UFA</eqn>
 				<units>Mm2</units>
 			</aux>
 			<aux name="gap in useful\nfloor area">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>MAX(0, desired_useful_floor_area-actual_useful_floor_area)</eqn>
 				<units>Mm2</units>
 			</aux>
@@ -3223,6 +3262,9 @@ UFA_alpha*LN(&quot;GDP/cap&quot;*1000) + UFA_intercept)</eqn>
 			<aux name="residential\nconcrete stock in use">
 				<doc>${Calibrated}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Concrete_Stock_in_New_Residential_and_Service_Buildings + Concrete_Stock_in_Old_Residential_and_Service_Buildings</eqn>
 				<isee:summing/>
 				<units>Mtonne</units>
@@ -3244,6 +3286,9 @@ UFA_alpha*LN(&quot;GDP/cap&quot;*1000) + UFA_intercept)</eqn>
 			<aux name="total yearly concrete use">
 				<doc>${Calibrated}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;New_R&amp;S_maintenance&quot; + &quot;Old_R&amp;S_maintenance&quot; + new_infrastructure_maintenance + old_infrastructure_maintenance + new_infrastructure_construction + &quot;new_R&amp;S_construction&quot;</eqn>
 				<isee:summing/>
 				<units>Mtonne/year</units>
@@ -3251,17 +3296,26 @@ UFA_alpha*LN(&quot;GDP/cap&quot;*1000) + UFA_intercept)</eqn>
 			<aux name="In-use concrete stock">
 				<doc>${Calibrated}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Concrete_Stock_in_New_Residential_and_Service_Buildings + Concrete_Stock_in_Old_Residential_and_Service_Buildings + Concrete_Stock_in_new_Infrastructure + Concrete_Stock_in_old_Infrastructure</eqn>
 				<isee:summing/>
 				<units>Mtonne</units>
 			</aux>
 			<aux name="recycled concrete">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0</eqn>
 				<units>Mtonne/year</units>
 			</aux>
 			<aux name="concrete waste generation">
 				<doc>${Calibrated}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;New_R&amp;S_deterioration&quot; + new_infrastructure_deterioration + &quot;Old_R&amp;S_deterioration&quot; + &quot;decommissioning_R&amp;S_buildings&quot; + decommissioning_infrastructure + old_infrastructure_deterioration</eqn>
 				<isee:summing/>
 				<units>Mtonne/year</units>
@@ -3281,6 +3335,9 @@ UFA_alpha*LN(&quot;GDP/cap&quot;*1000) + UFA_intercept)</eqn>
 				<units>Mtonne</units>
 			</aux>
 			<aux name="actual useful\ninfrastructure">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(Concrete_Stock_in_old_Infrastructure+Concrete_Stock_in_new_Infrastructure)</eqn>
 				<units>Mtonne</units>
 			</aux>
@@ -3342,6 +3399,9 @@ In quantitative terms, while exact historical percentages are difficult to pinpo
 These percentages illustrate the dynamic nature of cement consumption patterns influenced by global economic and developmental trends.
 
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>new_infrastructure_construction/(new_infrastructure_construction+&quot;new_R&amp;S_construction&quot;)</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -3361,6 +3421,9 @@ Link: https://cdn.gihub.org/outlook/live/methodology/Global+Infrastructure+Outlo
 				<units>year</units>
 			</aux>
 			<aux name="Infrastructure concrete stock in use">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Concrete_Stock_in_new_Infrastructure + Concrete_Stock_in_old_Infrastructure</eqn>
 				<isee:summing/>
 				<units>Mtonne</units>
@@ -3376,11 +3439,17 @@ Link: https://cdn.gihub.org/outlook/live/methodology/Global+Infrastructure+Outlo
 				<units>Mm2/Mp</units>
 			</aux>
 			<flow name="Old\nR&amp;S maintenance">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;Old_R&amp;S_deterioration&quot;*
 &quot;R&amp;S_MAINTENANCE_EFFICIENCY&quot;</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<flow name="old infrastructure\nmaintenance">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>old_infrastructure_deterioration*
 infrastructure_maintenance_efficiency</eqn>
 				<units>Mtonne/year</units>
@@ -3391,11 +3460,17 @@ infrastructure_maintenance_efficiency</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="infrastructure maintenance efficiency">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>NORMAL_INFRASTRUCTURE_MAINTENANCE_EFFICIENCY *
 &quot;&lt;infrastructure_maintenance_policy&gt;&quot;</eqn>
 				<units>dmnl</units>
 			</aux>
 			<flow name="Old R&amp;S\ndeterioration">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Concrete_Stock_in_Old_Residential_and_Service_Buildings*
 &quot;R&amp;S_DETERIORATION_RATE&quot;</eqn>
 				<units>Mtonne/year</units>
@@ -3406,30 +3481,48 @@ infrastructure_maintenance_efficiency</eqn>
 				<units>dmnl/year</units>
 			</aux>
 			<flow name="old infrastructure\ndeterioration">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Concrete_Stock_in_old_Infrastructure*
 infrastructure_deterioration_rate</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<aux name="infrastructure deterioration rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>NORMAL_CONCRETE_DETERIORATION_RATE *
 &quot;&lt;climate_damage_multiplier&gt;&quot;</eqn>
 				<units>dmnl/year</units>
 			</aux>
 			<flow name="New R&amp;S deterioration">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Concrete_Stock_in_New_Residential_and_Service_Buildings*
 &quot;R&amp;S_DETERIORATION_RATE&quot;</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<flow name="new infrastructure\ndeterioration">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>Concrete_Stock_in_new_Infrastructure*
 infrastructure_deterioration_rate</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<flow name="New R&amp;S maintenance">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;New_R&amp;S_deterioration&quot;</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<flow name="new infrastructure\nmaintenance">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>new_infrastructure_deterioration</eqn>
 				<units>Mtonne/year</units>
 			</flow>
@@ -3461,6 +3554,9 @@ infrastructure_deterioration_rate</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="CO2 emissions\nfrom concrete for H&amp;S">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;CO2_INTENSITY_OF_H&amp;S_CONCRETE&quot;* 
 (&quot;new_R&amp;S_construction&quot;+
 &quot;New_R&amp;S_maintenance&quot;+
@@ -3468,6 +3564,9 @@ infrastructure_deterioration_rate</eqn>
 				<units>Mt CO/Years</units>
 			</aux>
 			<aux name="CO2 emissions from concrete for Infrastructure">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>CO2_INTENSITY_OF_INFRASTRUCTURE_CONCRETE*
 (new_infrastructure_construction+
 new_infrastructure_maintenance+
@@ -3485,21 +3584,33 @@ old_infrastructure_maintenance)</eqn>
 				<units>Mt CO/Mtonne</units>
 			</aux>
 			<aux name="CO2 emissions">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>&quot;CO2_emissions_from_concrete_for_H&amp;S&quot;+
 CO2_emissions_from_concrete_for_Infrastructure</eqn>
 				<units>Mt CO/Years</units>
 			</aux>
 			<aux name="ALT desired infra">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>SMTH3(indicated_desired_infrastructure, 
 TIME_TO_ADJUST_DESIRED_INFRASTRUCTURE_AREA)</eqn>
 				<isee:delay_aux/>
 				<units>Mtonne</units>
 			</aux>
 			<aux name="ALT infrastructure gap">
-				<eqn>MAX(0, ALT_desired_infra-actual_useful_infrastructure)</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MAX(0, ALT_desired_infra - actual_useful_infrastructure)</eqn>
 				<units>Mtonne</units>
 			</aux>
 			<aux name="indicated desired infrastructure">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>MAX(0, 
 INTERCEPT2 + INFRA_ALPHA*&quot;GDP/cap&quot; +  INFRA_BETA*population + INFRA_GAMMA*&quot;GDP/cap&quot;*population)</eqn>
 				<units>Mtonne</units>
@@ -3569,7 +3680,7 @@ INTERCEPT2 + INFRA_ALPHA*&quot;GDP/cap&quot; +  INFRA_BETA*population + INFRA_GA
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="4" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="4" isee:scroll_y="540" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3741,12 +3852,16 @@ Based on data only from the US and Japan.
 				<aux x="1159" y="677.214" name="INIT CONCRETE IN\nOLD BUILDINGS"/>
 				<stacked_container uid="21" x="28.92" y="281.286" width="351.667" height="250">
 					<graph background="#FFFBC5" isee:graph_area_color="white" width="351.667" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true"/>
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="total_yearly_concrete_use[MEAN]"/>
+						</plot>
 					</graph>
 				</stacked_container>
 				<stacked_container uid="22" x="29.753" y="25.4575" width="350" height="247.501">
 					<graph width="350" height="247.501" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true"/>
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name='"In-use_concrete_stock"[MEAN]'/>
+						</plot>
 					</graph>
 				</stacked_container>
 				<graphics_frame fill="none" uid="23" x="1606" y="892" width="411.667" height="286.094">
@@ -3757,7 +3872,7 @@ Based on data only from the US and Japan.
 
 Source: https://www.gihub.org/infrastructure-monitor/insights/infrastructure-consumes-more-than-half-of-the-world-s-materials/</text_box>
 				<aux x="447.571" y="145.035" name="In-use concrete stock"/>
-				<aux x="447.571" y="923.166" name="recycled concrete"/>
+				<aux x="436.571" y="930.416" name="recycled concrete"/>
 				<aux x="447.571" y="670.25" name="concrete waste generation"/>
 				<aux x="899.7" y="1117.09" name="INIT CONCRETE IN\nNEW INFRASTRUCTURE"/>
 				<aux x="1206.71" y="1120.21" name="INIT CONCRETE IN\nOLD INFRASTRUCTURE"/>
@@ -3816,7 +3931,9 @@ Source: https://www.gihub.org/infrastructure-monitor/insights/infrastructure-con
 				</connector>
 				<stacked_container uid="36" x="28.92" y="541.286" width="351.667" height="250">
 					<graph width="351.667" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true"/>
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="concrete_waste_generation[MEAN]"/>
+						</plot>
 					</graph>
 				</stacked_container>
 				<stacked_container uid="37" x="25.587" y="804.619" width="351.667" height="250">
@@ -3826,12 +3943,16 @@ Source: https://www.gihub.org/infrastructure-monitor/insights/infrastructure-con
 				</stacked_container>
 				<stacked_container uid="38" x="559.753" y="25.4575" width="350" height="247.501">
 					<graph width="350" height="247.501" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true"/>
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="residential_concrete_stock_in_use[MEAN]"/>
+						</plot>
 					</graph>
 				</stacked_container>
 				<stacked_container uid="39" x="1027" y="34.285" width="350" height="247.501">
 					<graph width="350" height="247.501" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true"/>
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Infrastructure_concrete_stock_in_use[MEAN]"/>
+						</plot>
 					</graph>
 				</stacked_container>
 				<flow label_side="right" x="1214.25" y="570.232" name="Old\nR&amp;S maintenance">
@@ -4100,9 +4221,11 @@ Energy:
 					</from>
 					<to>indicated_desired_infrastructure</to>
 				</connector>
-				<stacked_container uid="91" x="295.274" y="1747">
+				<stacked_container uid="91" x="220.274" y="1285">
 					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true"/>
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Infrastructure_concrete_stock_in_use[MEAN]"/>
+						</plot>
 						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true"/>
 					</graph>
 				</stacked_container>
@@ -4166,7 +4289,7 @@ Energy:
 				<alias color="black" background="#FFAAFF" font_style="italic" font_color="black" uid="90" x="837.57" y="844.25" width="18" height="18">
 					<of>population</of>
 				</alias>
-				<alias font_style="italic" uid="97" x="334.5" y="1559.25" width="18" height="18">
+				<alias font_style="italic" uid="97" x="464.5" y="1284.25" width="18" height="18">
 					<of>Infrastructure_concrete_stock_in_use</of>
 				</alias>
 			</view>
