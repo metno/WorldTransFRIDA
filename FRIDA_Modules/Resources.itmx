@@ -211,10 +211,16 @@
 		<variables>
 			<module name="Concrete" isee:label="">
 				<format scale_by="auto"/>
+				<connect to="Emissions.CO2_emissions" from="Concrete.CO2_emissions"/>
+				<connect2 to="Emissions.CO2_emissions" from="Concrete.CO2_emissions"/>
 				<connect to='Concrete."GDP/cap"' from="Demographics.GDP_per_person"/>
 				<connect2 to='Concrete."GDP/cap"' from="Demographics.GDP_per_person"/>
+				<connect to="Concrete.infrastructure_maintenance_policy" from="Government_Regulations.concrete_infrastructure_maintenance_policy"/>
+				<connect2 to="Concrete.infrastructure_maintenance_policy" from="Government_Regulations.concrete_infrastructure_maintenance_policy"/>
 				<connect to="Concrete.population" from="Demographics.Population"/>
 				<connect2 to="Concrete.population" from="Demographics.Population"/>
+				<connect to="Concrete.RS_maintenance_policy" from="Government_Regulations.concrete_residential_and_service_maintenance_policy"/>
+				<connect2 to="Concrete.RS_maintenance_policy" from="Government_Regulations.concrete_residential_and_service_maintenance_policy"/>
 			</module>
 		</variables>
 		<views>
@@ -315,10 +321,10 @@
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>INIT_CONCRETE_IN_NEW_BUILDINGS</eqn>
-				<inflow>&quot;new_R&amp;S_construction&quot;</inflow>
-				<inflow>&quot;New_R&amp;S_maintenance&quot;</inflow>
-				<outflow>&quot;R&amp;S_aging&quot;</outflow>
-				<outflow>&quot;New_R&amp;S_deterioration&quot;</outflow>
+				<inflow>new_RS_construction</inflow>
+				<inflow>New_RS_maintenance</inflow>
+				<outflow>RS_aging</outflow>
+				<outflow>New_RS_deterioration</outflow>
 				<units>Mtonne</units>
 			</stock>
 			<stock name="Concrete Stock in\nOld Residential and Service\nBuildings">
@@ -326,10 +332,10 @@
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>INIT_CONCRETE_IN_OLD_BUILDINGS</eqn>
-				<inflow>&quot;R&amp;S_aging&quot;</inflow>
-				<inflow>&quot;Old_R&amp;S_maintenance&quot;</inflow>
-				<outflow>&quot;decommissioning_R&amp;S_buildings&quot;</outflow>
-				<outflow>&quot;Old_R&amp;S_deterioration&quot;</outflow>
+				<inflow>RS_aging</inflow>
+				<inflow>Old_RS_maintenance</inflow>
+				<outflow>decommissioning_RS_buildings</outflow>
+				<outflow>Old_RS_deterioration</outflow>
 				<units>Mtonne</units>
 			</stock>
 			<stock name="Concrete Stock in new\nInfrastructure">
@@ -354,7 +360,7 @@
 				<outflow>old_infrastructure_deterioration</outflow>
 				<units>Mtonne</units>
 			</stock>
-			<flow name="new R&amp;S\nconstruction">
+			<flow name="new RS\nconstruction">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -370,7 +376,7 @@ ALT_infrastructure_gap/
 GAP_ADJUSTMENT_TIME_FOR_INFRASTRUCTURE)</eqn>
 				<units>Mtonne/year</units>
 			</flow>
-			<flow name="R&amp;S\naging">
+			<flow name="RS\naging">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -384,7 +390,7 @@ GAP_ADJUSTMENT_TIME_FOR_INFRASTRUCTURE)</eqn>
 				<eqn>Concrete_Stock_in_new_Infrastructure/AVERAGE_LIFETIME_OF_INFRASTRUCTURE/2</eqn>
 				<units>Mtonne/year</units>
 			</flow>
-			<flow name="decommissioning\nR&amp;S buildings">
+			<flow name="decommissioning\nRS buildings">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -500,11 +506,11 @@ UFA_alpha*LN(&quot;GDP/cap&quot;*1000) + UFA_intercept)</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>&quot;New_R&amp;S_maintenance&quot; + &quot;Old_R&amp;S_maintenance&quot; + new_infrastructure_maintenance + old_infrastructure_maintenance + new_infrastructure_construction + &quot;new_R&amp;S_construction&quot;</eqn>
+				<eqn>New_RS_maintenance + Old_RS_maintenance + new_infrastructure_maintenance + old_infrastructure_maintenance + new_infrastructure_construction + new_RS_construction</eqn>
 				<isee:summing/>
 				<units>Mtonne/year</units>
 			</aux>
-			<aux name="In-use concrete stock">
+			<aux name="In use concrete stock">
 				<doc>${Calibrated}
 </doc>
 				<dimensions>
@@ -527,7 +533,7 @@ UFA_alpha*LN(&quot;GDP/cap&quot;*1000) + UFA_intercept)</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>&quot;New_R&amp;S_deterioration&quot; + new_infrastructure_deterioration + &quot;Old_R&amp;S_deterioration&quot; + &quot;decommissioning_R&amp;S_buildings&quot; + decommissioning_infrastructure + old_infrastructure_deterioration</eqn>
+				<eqn>New_RS_deterioration + new_infrastructure_deterioration + Old_RS_deterioration + decommissioning_RS_buildings + decommissioning_infrastructure + old_infrastructure_deterioration</eqn>
 				<isee:summing/>
 				<units>Mtonne/year</units>
 			</aux>
@@ -613,7 +619,7 @@ These percentages illustrate the dynamic nature of cement consumption patterns i
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>new_infrastructure_construction/(new_infrastructure_construction+&quot;new_R&amp;S_construction&quot;)</eqn>
+				<eqn>new_infrastructure_construction/(new_infrastructure_construction+new_RS_construction)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="GAP ADJUSTMENT TIME FOR INFRASTRUCTURE">
@@ -649,12 +655,12 @@ Link: https://cdn.gihub.org/outlook/live/methodology/Global+Infrastructure+Outlo
 19.5957751018727</eqn>
 				<units>Mm2/Mp</units>
 			</aux>
-			<flow name="Old\nR&amp;S maintenance">
+			<flow name="Old\nRS maintenance">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>&quot;Old_R&amp;S_deterioration&quot;*
-&quot;R&amp;S_MAINTENANCE_EFFICIENCY&quot;</eqn>
+				<eqn>Old_RS_deterioration*
+RS_MAINTENANCE_EFFICIENCY</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<flow name="old infrastructure\nmaintenance">
@@ -665,9 +671,9 @@ Link: https://cdn.gihub.org/outlook/live/methodology/Global+Infrastructure+Outlo
 infrastructure_maintenance_efficiency</eqn>
 				<units>Mtonne/year</units>
 			</flow>
-			<aux name="R&amp;S MAINTENANCE EFFICIENCY">
-				<eqn>&quot;NORMAL_R&amp;S_MAINTENANCE_EFFICIENCY&quot; *
-&quot;&lt;R&amp;S_maintenance_policy&gt;&quot;</eqn>
+			<aux name="RS MAINTENANCE EFFICIENCY">
+				<eqn>NORMAL_RS_MAINTENANCE_EFFICIENCY *
+RS_maintenance_policy</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="infrastructure maintenance efficiency">
@@ -675,20 +681,20 @@ infrastructure_maintenance_efficiency</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>NORMAL_INFRASTRUCTURE_MAINTENANCE_EFFICIENCY *
-&quot;&lt;infrastructure_maintenance_policy&gt;&quot;</eqn>
+infrastructure_maintenance_policy</eqn>
 				<units>dmnl</units>
 			</aux>
-			<flow name="Old R&amp;S\ndeterioration">
+			<flow name="Old RS\ndeterioration">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>Concrete_Stock_in_Old_Residential_and_Service_Buildings*
-&quot;R&amp;S_DETERIORATION_RATE&quot;</eqn>
+RS_DETERIORATION_RATE</eqn>
 				<units>Mtonne/year</units>
 			</flow>
-			<aux name="R&amp;S DETERIORATION\nRATE">
+			<aux name="RS DETERIORATION\nRATE">
 				<eqn>NORMAL_CONCRETE_DETERIORATION_RATE *
-&quot;&lt;climate_damage_multiplier&gt;&quot;</eqn>
+climate_damage_multiplier</eqn>
 				<units>dmnl/year</units>
 			</aux>
 			<flow name="old infrastructure\ndeterioration">
@@ -704,15 +710,15 @@ infrastructure_deterioration_rate</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>NORMAL_CONCRETE_DETERIORATION_RATE *
-&quot;&lt;climate_damage_multiplier&gt;&quot;</eqn>
+climate_damage_multiplier</eqn>
 				<units>dmnl/year</units>
 			</aux>
-			<flow name="New R&amp;S deterioration">
+			<flow name="New RS deterioration">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>Concrete_Stock_in_New_Residential_and_Service_Buildings*
-&quot;R&amp;S_DETERIORATION_RATE&quot;</eqn>
+RS_DETERIORATION_RATE</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<flow name="new infrastructure\ndeterioration">
@@ -723,11 +729,11 @@ infrastructure_deterioration_rate</eqn>
 infrastructure_deterioration_rate</eqn>
 				<units>Mtonne/year</units>
 			</flow>
-			<flow name="New R&amp;S maintenance">
+			<flow name="New RS maintenance">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>&quot;New_R&amp;S_deterioration&quot;</eqn>
+				<eqn>New_RS_deterioration</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<flow name="new infrastructure\nmaintenance">
@@ -748,30 +754,30 @@ infrastructure_deterioration_rate</eqn>
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="&lt;infrastructure maintenance policy&gt;">
+			<aux name="infrastructure\nmaintenance policy" access="input">
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="&lt;climate damage multiplier&gt;">
+			<aux name="climate damage multiplier">
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="&lt;R&amp;S maintenance policy&gt;">
+			<aux name="RS maintenance policy" access="input">
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="NORMAL R&amp;S MAINTENANCE EFFICIENCY">
+			<aux name="NORMAL RS\nMAINTENANCE EFFICIENCY">
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="CO2 emissions\nfrom concrete for H&amp;S">
+			<aux name="CO2 emissions\nfrom concrete for HS">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>&quot;CO2_INTENSITY_OF_H&amp;S_CONCRETE&quot;* 
-(&quot;new_R&amp;S_construction&quot;+
-&quot;New_R&amp;S_maintenance&quot;+
-&quot;Old_R&amp;S_maintenance&quot;)</eqn>
+				<eqn>CO2_INTENSITY_OF_HS_CONCRETE* 
+(new_RS_construction+
+New_RS_maintenance+
+Old_RS_maintenance)</eqn>
 				<units>Mt CO/Years</units>
 			</aux>
 			<aux name="CO2 emissions from concrete for Infrastructure">
@@ -784,21 +790,21 @@ new_infrastructure_maintenance+
 old_infrastructure_maintenance)</eqn>
 				<units>Mt CO/Years</units>
 			</aux>
-			<aux name="CO2 INTENSITY OF\nH&amp;S CONCRETE">
-				<eqn>0.1
-{PLACEHOLDER VALUE}</eqn>
+			<aux name="CO2 INTENSITY OF\nHS CONCRETE">
+				<eqn>0.065</eqn>
+				<range min="0" max="0.1"/>
 				<units>Mt CO/Mtonne</units>
 			</aux>
 			<aux name="CO2 INTENSITY OF\nINFRASTRUCTURE CONCRETE">
-				<eqn>0.2
-{PLACEHOLDER VALUE}</eqn>
+				<eqn>0.08</eqn>
+				<range min="0" max="0.1"/>
 				<units>Mt CO/Mtonne</units>
 			</aux>
-			<aux name="CO2 emissions">
+			<aux name="CO2 emissions" access="output">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>&quot;CO2_emissions_from_concrete_for_H&amp;S&quot;+
+				<eqn>CO2_emissions_from_concrete_for_HS+
 CO2_emissions_from_concrete_for_Infrastructure</eqn>
 				<units>Mt CO/Years</units>
 			</aux>
@@ -891,7 +897,7 @@ INTERCEPT2 + INFRA_ALPHA*&quot;GDP/cap&quot; +  INFRA_BETA*population + INFRA_GA
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="410" isee:scroll_y="301" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="854" isee:scroll_y="900" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -934,7 +940,7 @@ INTERCEPT2 + INFRA_ALPHA*&quot;GDP/cap&quot; +  INFRA_BETA*population + INFRA_GA
 				<stock label_side="center" x="1085.17" y="613.214" width="155" height="53.75" name="Concrete Stock in\nOld Residential and Service\nBuildings"/>
 				<stock label_side="center" x="817.2" y="1051.84" width="165" height="56.25" name="Concrete Stock in new\nInfrastructure"/>
 				<stock label_side="center" x="1114.83" y="1052.46" width="183.75" height="58.75" name="Concrete Stock in old\nInfrastructure"/>
-				<flow x="762.42" y="649.75" name="new R&amp;S\nconstruction">
+				<flow x="762.42" y="649.75" name="new RS\nconstruction">
 					<pts>
 						<pt x="695.17" y="649.75"/>
 						<pt x="817.67" y="649.75"/>
@@ -946,7 +952,7 @@ INTERCEPT2 + INFRA_ALPHA*&quot;GDP/cap&quot; +  INFRA_BETA*population + INFRA_GA
 						<pt x="817.2" y="1078.38"/>
 					</pts>
 				</flow>
-				<flow x="1030.17" y="650.089" name="R&amp;S\naging">
+				<flow x="1030.17" y="650.089" name="RS\naging">
 					<pts>
 						<pt x="975.17" y="650.089"/>
 						<pt x="1085.17" y="650.089"/>
@@ -958,7 +964,7 @@ INTERCEPT2 + INFRA_ALPHA*&quot;GDP/cap&quot; +  INFRA_BETA*population + INFRA_GA
 						<pt x="1114.83" y="1081.84"/>
 					</pts>
 				</flow>
-				<flow x="1304.59" y="637" name="decommissioning\nR&amp;S buildings">
+				<flow x="1304.59" y="637" name="decommissioning\nRS buildings">
 					<pts>
 						<pt x="1240.17" y="637"/>
 						<pt x="1381" y="637"/>
@@ -1003,12 +1009,12 @@ INTERCEPT2 + INFRA_ALPHA*&quot;GDP/cap&quot; +  INFRA_BETA*population + INFRA_GA
 				</connector>
 				<connector uid="9" angle="220.601">
 					<from>gap_in_useful_floor_area</from>
-					<to>&quot;new_R&amp;S_construction&quot;</to>
+					<to>new_RS_construction</to>
 				</connector>
 				<aux background="yellow" label_side="top" x="698.92" y="578.982" name="GAP ADJUSTMENT TIME\nFOR BUILDINGS"/>
 				<connector uid="10" angle="288.276">
 					<from>GAP_ADJUSTMENT_TIME_FOR_BUILDINGS</from>
-					<to>&quot;new_R&amp;S_construction&quot;</to>
+					<to>new_RS_construction</to>
 				</connector>
 				<aux background="yellow" label_side="top" x="867.2" y="363.786" name="TIME TO ADJUST\nDESIRED FLOOR AREA"/>
 				<connector uid="11" angle="257.546">
@@ -1038,25 +1044,25 @@ Based on data only from the US and Japan.
 				</connector>
 				<connector uid="16" angle="202.33">
 					<from>CONCRETE_PER_m2_UFA</from>
-					<to>&quot;new_R&amp;S_construction&quot;</to>
+					<to>new_RS_construction</to>
 				</connector>
 				<aux x="1588.5" y="318" name="global concrete production"/>
 				<aux background="yellow" x="1105.83" y="759.428" name="AVERAGE LIFETIME OF BUILDINGS"/>
 				<connector uid="17" angle="329.557">
 					<from>Concrete_Stock_in_New_Residential_and_Service_Buildings</from>
-					<to>&quot;R&amp;S_aging&quot;</to>
+					<to>RS_aging</to>
 				</connector>
 				<connector uid="18" angle="329.572">
 					<from>Concrete_Stock_in_Old_Residential_and_Service_Buildings</from>
-					<to>&quot;decommissioning_R&amp;S_buildings&quot;</to>
+					<to>decommissioning_RS_buildings</to>
 				</connector>
 				<connector uid="19" angle="159.198">
 					<from>AVERAGE_LIFETIME_OF_BUILDINGS</from>
-					<to>&quot;R&amp;S_aging&quot;</to>
+					<to>RS_aging</to>
 				</connector>
 				<connector uid="20" angle="349.062">
 					<from>AVERAGE_LIFETIME_OF_BUILDINGS</from>
-					<to>&quot;decommissioning_R&amp;S_buildings&quot;</to>
+					<to>decommissioning_RS_buildings</to>
 				</connector>
 				<aux x="970.67" y="134.208" name="residential\nconcrete stock in use"/>
 				<aux x="896.42" y="684.714" name="INIT CONCRETE IN\nNEW BUILDINGS"/>
@@ -1071,7 +1077,7 @@ Based on data only from the US and Japan.
 				<stacked_container uid="22" x="29.753" y="25.4575" width="350" height="247.501">
 					<graph width="350" height="247.501" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name='"In-use_concrete_stock"[MEAN]'/>
+							<entity name="In_use_concrete_stock[MEAN]"/>
 						</plot>
 					</graph>
 				</stacked_container>
@@ -1082,7 +1088,7 @@ Based on data only from the US and Japan.
 				<text_box border_width="1.1" uid="24" x="1566.88" y="1211.58" width="312.5" height="91.75">Infrastructure consumed about 52% of the world&apos;s annual material use in 2020.
 
 Source: https://www.gihub.org/infrastructure-monitor/insights/infrastructure-consumes-more-than-half-of-the-world-s-materials/</text_box>
-				<aux x="447.571" y="145.035" name="In-use concrete stock"/>
+				<aux x="447.571" y="145.035" name="In use concrete stock"/>
 				<aux x="436.571" y="930.416" name="recycled concrete"/>
 				<aux x="447.571" y="670.25" name="concrete waste generation"/>
 				<aux x="899.7" y="1117.09" name="INIT CONCRETE IN\nNEW INFRASTRUCTURE"/>
@@ -1122,7 +1128,7 @@ Source: https://www.gihub.org/infrastructure-monitor/insights/infrastructure-con
 					<to>decommissioning_infrastructure</to>
 				</connector>
 				<connector uid="32" angle="200.999">
-					<from>&quot;new_R&amp;S_construction&quot;</from>
+					<from>new_RS_construction</from>
 					<to>fraction_of_concrete_used_for_infrastructure</to>
 				</connector>
 				<connector uid="33" angle="160.177">
@@ -1166,7 +1172,7 @@ Source: https://www.gihub.org/infrastructure-monitor/insights/infrastructure-con
 						</plot>
 					</graph>
 				</stacked_container>
-				<flow label_side="right" x="1214.25" y="570.232" name="Old\nR&amp;S maintenance">
+				<flow label_side="right" x="1214.25" y="570.232" name="Old\nRS maintenance">
 					<pts>
 						<pt x="1214.25" y="518.25"/>
 						<pt x="1214.25" y="613.214"/>
@@ -1178,34 +1184,34 @@ Source: https://www.gihub.org/infrastructure-monitor/insights/infrastructure-con
 						<pt x="1262.25" y="1052.46"/>
 					</pts>
 				</flow>
-				<aux background="white" label_side="right" x="1290.25" y="523.321" name="R&amp;S MAINTENANCE EFFICIENCY"/>
+				<aux background="white" label_side="right" x="1290.25" y="523.321" name="RS MAINTENANCE EFFICIENCY"/>
 				<connector uid="40" angle="211.685">
-					<from>&quot;R&amp;S_MAINTENANCE_EFFICIENCY&quot;</from>
-					<to>&quot;Old_R&amp;S_maintenance&quot;</to>
+					<from>RS_MAINTENANCE_EFFICIENCY</from>
+					<to>Old_RS_maintenance</to>
 				</connector>
 				<aux background="white" label_side="right" x="1322.25" y="930.416" name="infrastructure maintenance efficiency"/>
 				<connector uid="41" angle="229.425">
 					<from>infrastructure_maintenance_efficiency</from>
 					<to>old_infrastructure_maintenance</to>
 				</connector>
-				<flow label_side="right" x="1121" y="565.232" name="Old R&amp;S\ndeterioration">
+				<flow label_side="right" x="1121" y="565.232" name="Old RS\ndeterioration">
 					<pts>
 						<pt x="1121" y="613.214"/>
 						<pt x="1121" y="508.25"/>
 					</pts>
 				</flow>
-				<aux background="white" label_side="right" x="1171.58" y="495.821" name="R&amp;S DETERIORATION\nRATE"/>
+				<aux background="white" label_side="right" x="1171.58" y="495.821" name="RS DETERIORATION\nRATE"/>
 				<connector uid="42" angle="233.922">
-					<from>&quot;R&amp;S_DETERIORATION_RATE&quot;</from>
-					<to>&quot;Old_R&amp;S_deterioration&quot;</to>
+					<from>RS_DETERIORATION_RATE</from>
+					<to>Old_RS_deterioration</to>
 				</connector>
 				<connector uid="43" angle="93.1482">
 					<from>Concrete_Stock_in_Old_Residential_and_Service_Buildings</from>
-					<to>&quot;Old_R&amp;S_deterioration&quot;</to>
+					<to>Old_RS_deterioration</to>
 				</connector>
 				<connector uid="44" angle="30.2603">
-					<from>&quot;Old_R&amp;S_deterioration&quot;</from>
-					<to>&quot;Old_R&amp;S_maintenance&quot;</to>
+					<from>Old_RS_deterioration</from>
+					<to>Old_RS_maintenance</to>
 				</connector>
 				<flow label_side="right" x="1154.75" y="997.98" name="old infrastructure\ndeterioration">
 					<pts>
@@ -1250,7 +1256,7 @@ Energy:
 
 
 </text_box>
-				<flow x="837.25" y="721.857" name="New R&amp;S deterioration">
+				<flow x="837.25" y="721.857" name="New RS deterioration">
 					<pts>
 						<pt x="837.25" y="675.714"/>
 						<pt x="837.25" y="777"/>
@@ -1258,7 +1264,7 @@ Energy:
 				</flow>
 				<connector uid="49" angle="201.357">
 					<from>Concrete_Stock_in_New_Residential_and_Service_Buildings</from>
-					<to>&quot;New_R&amp;S_deterioration&quot;</to>
+					<to>New_RS_deterioration</to>
 				</connector>
 				<flow x="837.25" y="1172.42" name="new infrastructure\ndeterioration">
 					<pts>
@@ -1270,21 +1276,21 @@ Energy:
 					<from>Concrete_Stock_in_new_Infrastructure</from>
 					<to>new_infrastructure_deterioration</to>
 				</connector>
-				<flow x="961" y="725.607" name="New R&amp;S maintenance">
+				<flow x="961" y="725.607" name="New RS maintenance">
 					<pts>
 						<pt x="961" y="784.5"/>
 						<pt x="961" y="675.714"/>
 					</pts>
 				</flow>
 				<connector uid="51" angle="334.903">
-					<from>&quot;New_R&amp;S_deterioration&quot;</from>
-					<to>&quot;New_R&amp;S_maintenance&quot;</to>
+					<from>New_RS_deterioration</from>
+					<to>New_RS_maintenance</to>
 				</connector>
 				<connector uid="52" angle="5.54214">
 					<from>
 						<alias uid="53"/>
 					</from>
-					<to>&quot;New_R&amp;S_deterioration&quot;</to>
+					<to>New_RS_deterioration</to>
 				</connector>
 				<flow x="966" y="1177.42" name="new infrastructure\nmaintenance">
 					<pts>
@@ -1312,57 +1318,57 @@ Energy:
 					<from>NORMAL_INFRASTRUCTURE_MAINTENANCE_EFFICIENCY</from>
 					<to>infrastructure_maintenance_efficiency</to>
 				</connector>
-				<aux label_side="right" x="1426" y="888.25" name="&lt;infrastructure maintenance policy&gt;"/>
+				<aux font_style="italic" font_weight="bold" label_side="right" x="1426" y="888.25" name="infrastructure\nmaintenance policy"/>
 				<connector uid="59" angle="203.499">
-					<from>&quot;&lt;infrastructure_maintenance_policy&gt;&quot;</from>
+					<from>infrastructure_maintenance_policy</from>
 					<to>infrastructure_maintenance_efficiency</to>
 				</connector>
-				<aux label_side="top" x="1097.08" y="864.667" name="&lt;climate damage multiplier&gt;"/>
+				<aux label_side="top" x="1097.08" y="864.667" name="climate damage multiplier"/>
 				<connector uid="60" angle="325.708">
-					<from>&quot;&lt;climate_damage_multiplier&gt;&quot;</from>
+					<from>climate_damage_multiplier</from>
 					<to>infrastructure_deterioration_rate</to>
 				</connector>
 				<connector uid="61" angle="243.925">
 					<from>
 						<alias uid="62"/>
 					</from>
-					<to>&quot;R&amp;S_DETERIORATION_RATE&quot;</to>
+					<to>RS_DETERIORATION_RATE</to>
 				</connector>
 				<connector uid="63" angle="298.625">
 					<from>
 						<alias uid="64"/>
 					</from>
-					<to>&quot;R&amp;S_DETERIORATION_RATE&quot;</to>
+					<to>RS_DETERIORATION_RATE</to>
 				</connector>
-				<aux label_side="top" x="1386" y="490.321" name="&lt;R&amp;S maintenance policy&gt;"/>
-				<aux background="#FFAAFF" label_side="top" x="1322.25" y="452.036" name="NORMAL R&amp;S MAINTENANCE EFFICIENCY"/>
+				<aux font_style="italic" font_weight="bold" label_side="top" x="1461.17" y="486.357" name="RS maintenance policy"/>
+				<aux background="#FFAAFF" label_side="top" x="1322.25" y="452.036" name="NORMAL RS\nMAINTENANCE EFFICIENCY"/>
 				<connector uid="65" angle="246.759">
-					<from>&quot;NORMAL_R&amp;S_MAINTENANCE_EFFICIENCY&quot;</from>
-					<to>&quot;R&amp;S_MAINTENANCE_EFFICIENCY&quot;</to>
+					<from>NORMAL_RS_MAINTENANCE_EFFICIENCY</from>
+					<to>RS_MAINTENANCE_EFFICIENCY</to>
 				</connector>
-				<connector uid="66" angle="191.613">
-					<from>&quot;&lt;R&amp;S_maintenance_policy&gt;&quot;</from>
-					<to>&quot;R&amp;S_MAINTENANCE_EFFICIENCY&quot;</to>
+				<connector uid="66" angle="192.203">
+					<from>RS_maintenance_policy</from>
+					<to>RS_MAINTENANCE_EFFICIENCY</to>
 				</connector>
-				<aux x="1105.83" y="1492" name="CO2 emissions\nfrom concrete for H&amp;S"/>
+				<aux x="1105.83" y="1492" name="CO2 emissions\nfrom concrete for HS"/>
 				<aux x="1227.75" y="1488.25" name="CO2 emissions from concrete for Infrastructure"/>
 				<connector uid="67" angle="340.727">
 					<from>
 						<alias uid="68"/>
 					</from>
-					<to>&quot;CO2_emissions_from_concrete_for_H&amp;S&quot;</to>
+					<to>CO2_emissions_from_concrete_for_HS</to>
 				</connector>
 				<connector uid="69" angle="357.707">
 					<from>
 						<alias uid="70"/>
 					</from>
-					<to>&quot;CO2_emissions_from_concrete_for_H&amp;S&quot;</to>
+					<to>CO2_emissions_from_concrete_for_HS</to>
 				</connector>
 				<connector uid="71" angle="17.0645">
 					<from>
 						<alias uid="72"/>
 					</from>
-					<to>&quot;CO2_emissions_from_concrete_for_H&amp;S&quot;</to>
+					<to>CO2_emissions_from_concrete_for_HS</to>
 				</connector>
 				<connector uid="73" angle="202.055">
 					<from>
@@ -1382,11 +1388,11 @@ Energy:
 					</from>
 					<to>CO2_emissions_from_concrete_for_Infrastructure</to>
 				</connector>
-				<aux background="yellow" x="1105.83" y="1559.5" name="CO2 INTENSITY OF\nH&amp;S CONCRETE"/>
+				<aux background="yellow" x="1066.51" y="1559.5" name="CO2 INTENSITY OF\nHS CONCRETE"/>
 				<aux background="yellow" x="1227.75" y="1559.5" name="CO2 INTENSITY OF\nINFRASTRUCTURE CONCRETE"/>
-				<connector uid="79" angle="90">
-					<from>&quot;CO2_INTENSITY_OF_H&amp;S_CONCRETE&quot;</from>
-					<to>&quot;CO2_emissions_from_concrete_for_H&amp;S&quot;</to>
+				<connector uid="79" angle="59.7784">
+					<from>CO2_INTENSITY_OF_HS_CONCRETE</from>
+					<to>CO2_emissions_from_concrete_for_HS</to>
 				</connector>
 				<connector uid="80" angle="90">
 					<from>CO2_INTENSITY_OF_INFRASTRUCTURE_CONCRETE</from>
@@ -1394,7 +1400,7 @@ Energy:
 				</connector>
 				<aux x="1166" y="1413.25" name="CO2 emissions"/>
 				<connector uid="81" angle="54.4883">
-					<from>&quot;CO2_emissions_from_concrete_for_H&amp;S&quot;</from>
+					<from>CO2_emissions_from_concrete_for_HS</from>
 					<to>CO2_emissions</to>
 				</connector>
 				<connector uid="82" angle="129.946">
@@ -1465,7 +1471,7 @@ Energy:
 					<to>ALT_desired_infra</to>
 				</connector>
 				<alias background="#FFAAFF" font_style="italic" uid="53" x="769.07" y="732.428" width="18" height="18">
-					<of>&quot;R&amp;S_DETERIORATION_RATE&quot;</of>
+					<of>RS_DETERIORATION_RATE</of>
 				</alias>
 				<alias background="#FFAAFF" font_style="italic" uid="55" x="758.09" y="1188.92" width="18" height="18">
 					<of>infrastructure_deterioration_rate</of>
@@ -1474,16 +1480,16 @@ Energy:
 					<of>NORMAL_CONCRETE_DETERIORATION_RATE</of>
 				</alias>
 				<alias font_style="italic" label_side="top" uid="64" x="1114.83" y="421.75" width="18" height="18">
-					<of>&quot;&lt;climate_damage_multiplier&gt;&quot;</of>
+					<of>climate_damage_multiplier</of>
 				</alias>
 				<alias font_style="italic" label_side="left" uid="68" x="1003.17" y="1450.25" width="18" height="18">
-					<of>&quot;new_R&amp;S_construction&quot;</of>
+					<of>new_RS_construction</of>
 				</alias>
 				<alias font_style="italic" label_side="left" uid="70" x="1003.17" y="1479.25" width="18" height="18">
-					<of>&quot;New_R&amp;S_maintenance&quot;</of>
+					<of>New_RS_maintenance</of>
 				</alias>
 				<alias font_style="italic" label_side="left" uid="72" x="1003.17" y="1511.75" width="18" height="18">
-					<of>&quot;Old_R&amp;S_maintenance&quot;</of>
+					<of>Old_RS_maintenance</of>
 				</alias>
 				<alias font_style="italic" label_side="right" uid="74" x="1290.33" y="1450.25" width="18" height="18">
 					<of>new_infrastructure_construction</of>
