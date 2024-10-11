@@ -578,16 +578,28 @@
 				<connect2 to="Freshwater.GDP_per_person" from="Demographics.GDP_per_person"/>
 				<connect to="Freshwater.GDP_per_person_1" from="Demographics.GDP_per_person"/>
 				<connect2 to="Freshwater.GDP_per_person_1" from="Demographics.GDP_per_person"/>
+				<connect to="Freshwater.irrigation_efficiency_multiplier" from="Government_Regulations.irrigation_efficiency_multiplier"/>
+				<connect2 to="Freshwater.irrigation_efficiency_multiplier" from="Government_Regulations.irrigation_efficiency_multiplier"/>
+				<connect to="Freshwater.irrigation_fraction_policy" from="Government_Regulations.irrigation_fraction_policy"/>
+				<connect2 to="Freshwater.irrigation_fraction_policy" from="Government_Regulations.irrigation_fraction_policy"/>
 				<connect to="Freshwater.Land_water_storage_from_water_impoundment" from="Sea_Level.Land_water_storage_from_water_impoundment"/>
 				<connect2 to="Freshwater.Land_water_storage_from_water_impoundment" from="Sea_Level.Land_water_storage_from_water_impoundment"/>
+				<connect to="Freshwater.on_agricultural_water_use_policy" from="Government_Regulations.on_agricultural_water_use_policy"/>
+				<connect2 to="Freshwater.on_agricultural_water_use_policy" from="Government_Regulations.on_agricultural_water_use_policy"/>
 				<connect to="Freshwater.Population_1" from="Demographics.Population"/>
 				<connect2 to="Freshwater.Population_1" from="Demographics.Population"/>
 				<connect to="Freshwater.SLR_from_LWS" from="Sea_Level.SLR_from_LWS"/>
 				<connect2 to="Freshwater.SLR_from_LWS" from="Sea_Level.SLR_from_LWS"/>
+				<connect to="Freshwater.start_year" from="Government_Regulations.start_year"/>
+				<connect2 to="Freshwater.start_year" from="Government_Regulations.start_year"/>
 				<connect to="Freshwater.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Freshwater.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Freshwater.switch_for_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect2 to="Freshwater.switch_for_climate_damage" from="Climate.switch_for_all_climate_damage"/>
+				<connect to="Freshwater.switch_irrigation_fraction_policy" from="Government_Regulations.switch_irrigation_fraction_policy"/>
+				<connect2 to="Freshwater.switch_irrigation_fraction_policy" from="Government_Regulations.switch_irrigation_fraction_policy"/>
+				<connect to="Freshwater.switch_non_agricultural_water_use_policy" from="Government_Regulations.switch_non_agricultural_water_use_policy"/>
+				<connect2 to="Freshwater.switch_non_agricultural_water_use_policy" from="Government_Regulations.switch_non_agricultural_water_use_policy"/>
 			</module>
 			<module name="Soil" isee:label="" url="/Users/bschoenberg/code/WorldTrans/Frida/FRIDA_Modules/Soil.itmx">
 				<format scale_by="auto"/>
@@ -1886,7 +1898,7 @@ average_animal_product_growth_efficiency</eqn>
 					<to>change_in_grazing_land_animal_products_yield</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1247" y="262" name="switch aquatic animal products\nfraction policy"/>
-				<aux font_style="italic" font_weight="bold" x="1424" y="287" name="aquatic animal products\nfraction policy"/>
+				<aux font_style="italic" font_weight="bold" x="1421" y="276" name="aquatic animal products\nfraction policy"/>
 				<aux font_style="italic" font_weight="bold" x="1343" y="376" name="start year"/>
 				<connector uid="25" angle="260.838">
 					<from>switch_aquatic_animal_products_fraction_policy</from>
@@ -3202,7 +3214,9 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>((GDP_per_person/INIT(GDP_per_person))^elasticity_of_non_agricultural_water_withdrawal_per_capita_to_GDP_per_person)*non_agricultural_water_withdrawal_1980</eqn>
+				<eqn>IF switch_non_agricultural_water_use_policy AND TIME &gt; start_year THEN on_agricultural_water_use_policy
+ELSE
+((GDP_per_person/INIT(GDP_per_person))^elasticity_of_non_agricultural_water_withdrawal_per_capita_to_GDP_per_person)*non_agricultural_water_withdrawal_1980</eqn>
 				<units>m^3/Mp/year</units>
 			</aux>
 			<aux name="non agricultural\nwater withdrawl">
@@ -3249,7 +3263,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>EXP(-(rate_of_change_in_irrigation_efficiency)*(TIME-1980))</eqn>
+				<eqn>EXP(-(rate_of_change_in_irrigation_efficiency)*(TIME-1980))*policy_multiplier</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="sensitivity of surface temperature\nanomaly on water used per\nMtcrop">
@@ -3288,7 +3302,9 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>fraction_of_cropland_irrigated_indicated_by_GDP_per_person*effect_of_available_water_supply_on_land_irrigated</eqn>
+				<eqn>IF switch_irrigation_fraction_policy AND TIME &gt; start_year THEN irrigation_fraction_policy
+ELSE
+fraction_of_cropland_irrigated_indicated_by_GDP_per_person*effect_of_available_water_supply_on_land_irrigated</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of available\nwater supply on land\nirrigated">
@@ -3489,6 +3505,51 @@ Old value from calibration: 164600402563.243</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>deg C</units>
 			</aux>
+			<aux name="switch irrigation fraction policy" access="input">
+				<eqn>0</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="irrigation fraction policy" access="input">
+				<eqn>TIME</eqn>
+				<gf>
+					<xscale min="1980" max="2100"/>
+					<yscale min="0" max="100"/>
+					<ypts>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</ypts>
+				</gf>
+				<units>dmnl</units>
+			</aux>
+			<aux name="start year" access="input">
+				<eqn>2024</eqn>
+				<units>Year</units>
+			</aux>
+			<aux name="on agricultural water use policy" access="input">
+				<eqn>TIME</eqn>
+				<gf>
+					<xscale min="1980" max="2100"/>
+					<yscale min="0" max="100"/>
+					<ypts>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</ypts>
+				</gf>
+				<units>m^3/Mp/year</units>
+			</aux>
+			<aux name="switch non agricultural water use policy" access="input">
+				<eqn>0</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="irrigation efficiency multiplier" access="input">
+				<eqn>TIME</eqn>
+				<gf>
+					<xscale min="1980" max="2100"/>
+					<yscale min="0" max="100"/>
+					<ypts>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</ypts>
+				</gf>
+				<units>dmnl</units>
+			</aux>
+			<aux name="policy multiplier">
+				<eqn>IF TIME &gt; start_year THEN irrigation_efficiency_multiplier
+ELSE
+1</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -3538,7 +3599,7 @@ Old value from calibration: 164600402563.243</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="309" isee:scroll_y="480" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3584,14 +3645,14 @@ Old value from calibration: 164600402563.243</doc>
 						<pt x="740.5" y="650"/>
 					</pts>
 				</flow>
-				<aux label_side="bottom" x="581.083" y="1027.17" name="elasticity of\nnon agricultural water withdrawal\nper capita to GDP per person"/>
-				<aux label_side="bottom" x="887.209" y="1018.75" name="non agricultural water\nwithdrawal 1980"/>
+				<aux label_side="bottom" x="740.083" y="1203.17" name="elasticity of\nnon agricultural water withdrawal\nper capita to GDP per person"/>
+				<aux label_side="bottom" x="943.209" y="1116" name="non agricultural water\nwithdrawal 1980"/>
 				<aux label_side="right" label_angle="45" x="719" y="961.42" name="non agricultural\nwater withdrawal\nper million person"/>
-				<connector uid="1" angle="25.4888">
+				<connector uid="1" angle="94.9842">
 					<from>elasticity_of_non_agricultural_water_withdrawal_per_capita_to_GDP_per_person</from>
 					<to>non_agricultural_water_withdrawal_per_million_person</to>
 				</connector>
-				<connector uid="2" angle="161.18">
+				<connector uid="2" angle="145.416">
 					<from>non_agricultural_water_withdrawal_1980</from>
 					<to>non_agricultural_water_withdrawal_per_million_person</to>
 				</connector>
@@ -3624,9 +3685,9 @@ Old value from calibration: 164600402563.243</doc>
 					<from>total_water_withdrawal</from>
 					<to>fraction_of_water_withdrawal_for_agriculture</to>
 				</connector>
-				<aux background="white" label_side="bottom" x="1137.95" y="335.25" name="rate of change\nin irrigation efficiency"/>
-				<aux label_side="bottom" x="955.417" y="292.47" name="effect of technology\non irrigation efficiency"/>
-				<connector uid="8" angle="166.81">
+				<aux background="white" label_side="bottom" x="1200.08" y="292.47" name="rate of change\nin irrigation efficiency"/>
+				<aux label_side="bottom" x="1038.42" y="292.47" name="effect of technology\non irrigation efficiency"/>
+				<connector uid="8" angle="180">
 					<from>rate_of_change_in_irrigation_efficiency</from>
 					<to>effect_of_technology_on_irrigation_efficiency</to>
 				</connector>
@@ -3646,7 +3707,7 @@ Old value from calibration: 164600402563.243</doc>
 					<from>water_withdrawal_per_MHa_irrigated_1980</from>
 					<to>water_withdrawal_per_MHa_irrigated</to>
 				</connector>
-				<connector uid="12" angle="221.075">
+				<connector uid="12" angle="208.496">
 					<from>effect_of_technology_on_irrigation_efficiency</from>
 					<to>water_withdrawal_per_MHa_irrigated</to>
 				</connector>
@@ -3715,8 +3776,8 @@ Old value from calibration: 164600402563.243</doc>
 					<from>Population_1</from>
 					<to>non_agricultural_water_withdrawl</to>
 				</connector>
-				<aux x="748" y="1050" name="GDP per person"/>
-				<connector uid="26" angle="111.801">
+				<aux x="883" y="1207" name="GDP per person"/>
+				<connector uid="26" angle="123.735">
 					<from>GDP_per_person</from>
 					<to>non_agricultural_water_withdrawal_per_million_person</to>
 				</connector>
@@ -3752,7 +3813,7 @@ Old value from calibration: 164600402563.243</doc>
 				</connector>
 				<text_box border_width="thin" border_style="solid" uid="33" x="62.825" y="1068" width="260" height="58">the more technological water discovery
 the less future investment due to crowding out of more profitable forms of investment</text_box>
-				<text_box border_width="thin" border_style="solid" uid="34" x="964.417" y="197" width="260" height="58">do we need to represent the cost of this technological development in investment?</text_box>
+				<text_box border_width="thin" border_style="solid" uid="34" x="1172.42" y="158" width="260" height="58">do we need to represent the cost of this technological development in investment?</text_box>
 				<stock x="1231.58" y="687.197" name="total groundwater anomaly"/>
 				<flow label_side="left" x="1231.58" y="767.682" name="unsustainable\ngroundwater withdrawal">
 					<pts>
@@ -3831,11 +3892,64 @@ the less future investment due to crowding out of more profitable forms of inves
 					<from>Surface_Temperature_Anomaly</from>
 					<to>effect_of_surface_temperature_anomaly_on_water_lost_to_evapotranspiration</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" x="444" y="139" name="switch irrigation fraction policy"/>
+				<aux font_style="italic" font_weight="bold" x="576" y="142" name="irrigation fraction policy"/>
+				<aux font_style="italic" font_weight="bold" x="517.417" y="72" name="start year"/>
+				<connector uid="50" angle="278.13">
+					<from>switch_irrigation_fraction_policy</from>
+					<to>fraction_of_cropland_irrigated</to>
+				</connector>
+				<connector uid="51" angle="271.113">
+					<from>start_year</from>
+					<to>fraction_of_cropland_irrigated</to>
+				</connector>
+				<connector uid="52" angle="246.371">
+					<from>irrigation_fraction_policy</from>
+					<to>fraction_of_cropland_irrigated</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="533" y="873.5" name="on agricultural water use policy"/>
+				<aux font_style="italic" font_weight="bold" x="485" y="1078" name="switch non agricultural water use policy"/>
+				<connector uid="54" angle="19.8552">
+					<from>switch_non_agricultural_water_use_policy</from>
+					<to>non_agricultural_water_withdrawal_per_million_person</to>
+				</connector>
+				<connector uid="55" angle="352.093">
+					<from>
+						<alias uid="53"/>
+					</from>
+					<to>non_agricultural_water_withdrawal_per_million_person</to>
+				</connector>
+				<connector uid="56" angle="332.802">
+					<from>on_agricultural_water_use_policy</from>
+					<to>non_agricultural_water_withdrawal_per_million_person</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="959" y="163" name="irrigation efficiency multiplier"/>
+				<aux x="1001.25" y="238.541" name="policy multiplier"/>
+				<connector uid="57" angle="299.218">
+					<from>irrigation_efficiency_multiplier</from>
+					<to>policy_multiplier</to>
+				</connector>
+				<connector uid="58" angle="226.914">
+					<from>
+						<alias uid="59"/>
+					</from>
+					<to>policy_multiplier</to>
+				</connector>
+				<connector uid="60" angle="304.574">
+					<from>policy_multiplier</from>
+					<to>effect_of_technology_on_irrigation_efficiency</to>
+				</connector>
 				<alias font_style="italic" uid="36" x="1328.66" y="844.667" width="18" height="18">
 					<of>total_water_withdrawal</of>
 				</alias>
 				<alias font_style="italic" uid="47" x="306" y="548" width="18" height="18">
 					<of>natural_water_recharge</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="53" x="524" y="948" width="18" height="18">
+					<of>start_year</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="59" x="1076" y="140" width="18" height="18">
+					<of>start_year</of>
 				</alias>
 			</view>
 		</views>
@@ -4716,7 +4830,7 @@ https://ourworldindata.org/world-lost-one-third-forests</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="168" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
