@@ -5,7 +5,7 @@
 		<name>Temperature</name>
 		<uuid>ccc7b89f-16df-41be-bd89-36c11a8e1898</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.2" isee:build_number="3414" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.1" isee:build_number="3377" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -195,18 +195,6 @@
 		<unit name="Kelvin">
 			<eqn/>
 			<alias>K</alias>
-		</unit>
-		<unit name="G">
-			<eqn>Giga</eqn>
-		</unit>
-		<unit name="GtCO2">
-			<eqn>Giga*tCO2</eqn>
-		</unit>
-		<unit name="GtCH4">
-			<eqn>Giga*tCH4</eqn>
-		</unit>
-		<unit name="GtN2O">
-			<eqn>Giga*tN2O</eqn>
 		</unit>
 		<unit name="Dimensionless">
 			<eqn>1</eqn>
@@ -521,6 +509,10 @@
 				<connect2 to="CH4_Forcing.VOC_emissions" from="Emissions.VOC_emissions"/>
 				<connect to="Ozone_Forcing.VOC_emissions" from="Emissions.VOC_emissions"/>
 				<connect2 to="Ozone_Forcing.VOC_emissions" from="Emissions.VOC_emissions"/>
+				<connect to="Emissions.bio_fuel_primary_energy" from="bio_fuel_energy.bio_fuel_primary_energy"/>
+				<connect2 to="Emissions.bio_fuel_primary_energy" from="bio_fuel_energy.bio_fuel_primary_energy"/>
+				<connect to="Emissions.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
+				<connect2 to="Emissions.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
 				<connect to="Emissions.CDD" from="energy_demand.CDD"/>
 				<connect2 to="Emissions.CDD" from="energy_demand.CDD"/>
 				<connect to="Emissions.CDD_preindustrial" from="energy_demand.CDD_preindustrial"/>
@@ -831,7 +823,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="22" isee:scroll_y="134" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="22" isee:scroll_y="134" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1705,7 +1697,7 @@ Calibration from FRIDA 0.1 , but in principle should be equal to extracted carbo
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>CO2_emissions_from_coal+CO2_emissions_from_oil+CO2_emissions_from_gas</eqn>
+				<eqn>CO2_emissions_from_coal+CO2_emissions_from_oil+CO2_emissions_from_gas+CO2_emissions_from_biofuels</eqn>
 				<units>MtCO2/Year</units>
 			</aux>
 			<aux name="SO2 emissions from Energy">
@@ -2050,7 +2042,40 @@ GtC_to_MtCO2</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>Mt CO/Years</units>
+				<units>MtCO2/Year</units>
+			</aux>
+			<aux name="bio fuel primary energy" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>zJ/Year</units>
+			</aux>
+			<aux name="relative carbon intensity of biofuels to petroleum fuels">
+				<eqn>0.65</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="Carbon Intensity" access="input">
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>GtC/ZJ</units>
+			</aux>
+			<aux name="carbon intensity of biofuels">
+				<eqn>relative_carbon_intensity_of_biofuels_to_petroleum_fuels * Carbon_Intensity</eqn>
+				<units>GtC/ZJ</units>
+			</aux>
+			<aux name="bio fuel carbon content">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>bio_fuel_primary_energy * carbon_intensity_of_biofuels</eqn>
+				<units>GtC/Year</units>
+			</aux>
+			<aux name="CO2 emissions from biofuels">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>GtC_to_MtCO2 * bio_fuel_carbon_content</eqn>
+				<units>MtCO2/Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -2101,7 +2126,7 @@ GtC_to_MtCO2</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="659" isee:scroll_y="367" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="3" isee:page_rows="4" isee:scroll_y="67" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2570,10 +2595,10 @@ GtC_to_MtCO2</eqn>
 					<to>NOx_AFOLU_emissions</to>
 				</connector>
 				<aux background="#FFAA00" x="476.083" y="937.603" name="N2O emissions from Energy"/>
-				<aux color="blue" background="#FFAA00" x="471.875" y="696.793" name="CO2 emissions from Energy"/>
+				<aux color="blue" background="#FFAA00" x="472.333" y="695.75" name="CO2 emissions from Energy"/>
 				<aux background="#FFAA00" x="472.333" y="1043.75" name="SO2 emissions from Energy"/>
 				<aux background="white" label_side="right" x="472.333" y="995.163" name="SO2 emissions by gas"/>
-				<text_box uid="106" x="147.569" y="598.253" width="260" height="74.714">emissions connected to extraction comes from the assumption that everything extracted is burnt and ends up as emissions. Alternatively from a process persp. it should be linked to secondary fossil energy creation</text_box>
+				<text_box uid="106" x="146.569" y="553.253" width="260" height="74.714">emissions connected to extraction comes from the assumption that everything extracted is burnt and ends up as emissions. Alternatively from a process persp. it should be linked to secondary fossil energy creation</text_box>
 				<aux x="197.166" y="982.673" name="Initial Fossil Energy\nSulfur Intensity"/>
 				<aux background="white" x="476.416" y="773.423" name="CH4 emissions by gas"/>
 				<aux background="white" x="476.083" y="886.923" name="N2O emissions by gas"/>
@@ -2621,19 +2646,19 @@ GtC_to_MtCO2</eqn>
 					<from>coupling_factor_of_fossil_fuels_and_CH4_emissions</from>
 					<to>CH4_emissions_by_gas</to>
 				</connector>
-				<aux color="black" font_color="black" x="345.725" y="700.926" name="GtC to MtCO2"/>
-				<aux font_style="italic" font_weight="bold" x="696.813" y="786.103" name="Fossil Energy Extraction 1"/>
-				<aux font_style="italic" font_weight="bold" x="696.813" y="836.893" name="Fossil Energy Extraction 2"/>
-				<aux font_style="italic" font_weight="bold" x="701.813" y="885.143" name="Fossil Energy Extraction 3"/>
-				<connector uid="116" angle="213.071">
+				<aux color="black" font_color="black" x="476.416" y="575.5" name="GtC to MtCO2"/>
+				<aux font_style="italic" font_weight="bold" x="704.813" y="731.75" name="Fossil Energy Extraction 1"/>
+				<aux font_style="italic" font_weight="bold" x="704.813" y="859.583" name="Fossil Energy Extraction 2"/>
+				<aux font_style="italic" font_weight="bold" x="704.813" y="955.603" name="Fossil Energy Extraction 3"/>
+				<connector uid="116" angle="189.657">
 					<from>Fossil_Energy_Extraction_3</from>
 					<to>SO2_emissions_by_gas</to>
 				</connector>
-				<connector uid="117" angle="149.931">
+				<connector uid="117" angle="141.423">
 					<from>Fossil_Energy_Extraction_3</from>
 					<to>CH4_emissions_by_gas</to>
 				</connector>
-				<connector uid="118" angle="180">
+				<connector uid="118" angle="163.287">
 					<from>Fossil_Energy_Extraction_3</from>
 					<to>N2O_emissions_by_gas</to>
 				</connector>
@@ -2758,42 +2783,42 @@ GtC_to_MtCO2</eqn>
 					</from>
 					<to>Total_SO2_Emissions</to>
 				</connector>
-				<aux x="437.429" y="671.455" name="CO2 emissions from coal"/>
-				<aux x="539.476" y="671.455" name="CO2 emissions from oil"/>
-				<aux background="white" x="485.143" y="694.011" name="CO2 emissions from gas"/>
-				<connector uid="157" angle="11.2315">
+				<aux x="436.429" y="626.455" name="CO2 emissions from coal"/>
+				<aux x="553.5" y="611.5" name="CO2 emissions from oil"/>
+				<aux background="white" x="484.143" y="649.011" name="CO2 emissions from gas"/>
+				<connector uid="157" angle="231.877">
 					<from>GtC_to_MtCO2</from>
 					<to>CO2_emissions_from_coal</to>
 				</connector>
-				<connector uid="158" angle="4.7064">
+				<connector uid="158" angle="276.001">
 					<from>GtC_to_MtCO2</from>
 					<to>CO2_emissions_from_gas</to>
 				</connector>
-				<connector uid="159" angle="10.0517">
+				<connector uid="159" angle="334.966">
 					<from>GtC_to_MtCO2</from>
 					<to>CO2_emissions_from_oil</to>
 				</connector>
-				<connector uid="160" angle="159.796">
+				<connector uid="160" angle="158.578">
 					<from>Fossil_Energy_Extraction_1</from>
 					<to>CO2_emissions_from_coal</to>
 				</connector>
-				<connector uid="161" angle="136.931">
+				<connector uid="161" angle="121.38">
 					<from>Fossil_Energy_Extraction_2</from>
 					<to>CO2_emissions_from_oil</to>
 				</connector>
-				<connector uid="162" angle="129.36">
+				<connector uid="162" angle="125.745">
 					<from>Fossil_Energy_Extraction_3</from>
 					<to>CO2_emissions_from_gas</to>
 				</connector>
-				<connector uid="163" angle="51.8872">
+				<connector uid="163" angle="279.346">
 					<from>CO2_emissions_from_coal</from>
 					<to>CO2_emissions_from_Energy</to>
 				</connector>
-				<connector uid="164" angle="145.01">
+				<connector uid="164" angle="232.352">
 					<from>CO2_emissions_from_oil</from>
 					<to>CO2_emissions_from_Energy</to>
 				</connector>
-				<connector uid="165" angle="99.9258">
+				<connector uid="165" angle="249.679">
 					<from>CO2_emissions_from_gas</from>
 					<to>CO2_emissions_from_Energy</to>
 				</connector>
@@ -2839,6 +2864,40 @@ GtC_to_MtCO2</eqn>
 				<connector uid="179" angle="323.746">
 					<from>CO2_emissions</from>
 					<to>CO2_Emissions_from_Other</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="700" y="627.6" name="bio fuel primary energy"/>
+				<aux label_side="right" x="780.5" y="512" name="relative carbon intensity of biofuels to petroleum fuels"/>
+				<aux font_style="italic" font_weight="bold" x="700" y="445" name="Carbon Intensity"/>
+				<aux x="700" y="512" name="carbon intensity of biofuels"/>
+				<connector uid="180" angle="270">
+					<from>Carbon_Intensity</from>
+					<to>carbon_intensity_of_biofuels</to>
+				</connector>
+				<connector uid="181" angle="180">
+					<from>relative_carbon_intensity_of_biofuels_to_petroleum_fuels</from>
+					<to>carbon_intensity_of_biofuels</to>
+				</connector>
+				<aux x="700" y="572" name="bio fuel carbon content"/>
+				<connector uid="182" angle="270">
+					<from>carbon_intensity_of_biofuels</from>
+					<to>bio_fuel_carbon_content</to>
+				</connector>
+				<connector uid="183" angle="90">
+					<from>bio_fuel_primary_energy</from>
+					<to>bio_fuel_carbon_content</to>
+				</connector>
+				<aux x="557.476" y="526.6" name="CO2 emissions from biofuels"/>
+				<connector uid="184" angle="148.782">
+					<from>bio_fuel_carbon_content</from>
+					<to>CO2_emissions_from_biofuels</to>
+				</connector>
+				<connector uid="185" angle="35.871">
+					<from>GtC_to_MtCO2</from>
+					<to>CO2_emissions_from_biofuels</to>
+				</connector>
+				<connector uid="187" angle="259.605">
+					<from>CO2_emissions_from_biofuels</from>
+					<to>CO2_emissions_from_Energy</to>
 				</connector>
 				<alias font_style="italic" uid="33" x="380.167" y="26" width="18" height="18">
 					<of>CO2_emissions_from_Food_and_Land_Use</of>
