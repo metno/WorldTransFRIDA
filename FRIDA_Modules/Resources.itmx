@@ -214,6 +214,14 @@
 				<format scale_by="auto"/>
 				<connect to="Emissions.Leakage" from="CCS.CO2_emissions_from_Leakage"/>
 				<connect2 to="Emissions.Leakage" from="CCS.CO2_emissions_from_Leakage"/>
+				<connect to="bio_fuel_energy.cost_of_storing_CO2_per_unit" from="CCS.cost_of_storing_CO2_per_unit"/>
+				<connect2 to="bio_fuel_energy.cost_of_storing_CO2_per_unit" from="CCS.cost_of_storing_CO2_per_unit"/>
+				<connect to="fossil_energy_coal.cost_of_storing_CO2_per_unit" from="CCS.cost_of_storing_CO2_per_unit"/>
+				<connect2 to="fossil_energy_coal.cost_of_storing_CO2_per_unit" from="CCS.cost_of_storing_CO2_per_unit"/>
+				<connect to="fossil_energy_gas.cost_of_storing_CO2_per_unit" from="CCS.cost_of_storing_CO2_per_unit"/>
+				<connect2 to="fossil_energy_gas.cost_of_storing_CO2_per_unit" from="CCS.cost_of_storing_CO2_per_unit"/>
+				<connect to="fossil_energy_oil.cost_of_storing_CO2_per_unit" from="CCS.cost_of_storing_CO2_per_unit"/>
+				<connect2 to="fossil_energy_oil.cost_of_storing_CO2_per_unit" from="CCS.cost_of_storing_CO2_per_unit"/>
 				<connect to="CCS.CO2_emissions_from_biofuels" from="Emissions.CO2_emissions_from_biofuels"/>
 				<connect2 to="CCS.CO2_emissions_from_biofuels" from="Emissions.CO2_emissions_from_biofuels"/>
 				<connect to="CCS.CO2_emissions_from_coal" from="Emissions.CO2_emissions_from_coal"/>
@@ -346,11 +354,11 @@
 				<non_negative/>
 				<units>MtCO2/Year</units>
 			</flow>
-			<aux name="cost of storing carbon per unit">
+			<aux name="cost of storing carbon per unit" access="output" isee:autocreated="true">
 				<doc>https://www.iea.org/commentaries/is-carbon-capture-too-expensive
 middle of power generation storing cost</doc>
 				<eqn>75</eqn>
-				<units>$/tC</units>
+				<units>$/(tC/year)</units>
 			</aux>
 			<aux name="share of coal emissions stored" access="input">
 				<eqn>0</eqn>
@@ -449,12 +457,12 @@ middle of power generation storing cost</doc>
 				<eqn>0</eqn>
 				<units>dmnl/year</units>
 			</aux>
-			<aux name="cost of storing CO2">
+			<aux name="cost of storing CO2" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Storing_CO2*GtC_to_tC / GtC_to_MtCO2 * cost_of_storing_carbon_per_unit</eqn>
-				<units>$/Year</units>
+				<eqn>Storing_CO2 * cost_of_storing_CO2_per_unit</eqn>
+				<units>$</units>
 			</aux>
 			<aux name="GtC to tC">
 				<eqn>1e9</eqn>
@@ -477,6 +485,10 @@ middle of power generation storing cost</doc>
 				</dimensions>
 				<eqn>stored_CO2 / GtC_to_MtCO2</eqn>
 				<units>GtC</units>
+			</aux>
+			<aux name="cost of storing CO2 per unit" access="output" isee:autocreated="true">
+				<eqn>GtC_to_tC / GtC_to_MtCO2 * cost_of_storing_carbon_per_unit</eqn>
+				<units>$/(MtCO2/year)</units>
 			</aux>
 		</variables>
 		<views>
@@ -573,7 +585,7 @@ middle of power generation storing cost</doc>
 						<pt x="1019.17" y="240"/>
 					</pts>
 				</flow>
-				<aux x="804.167" y="386.667" name="cost of storing carbon per unit"/>
+				<aux x="940" y="506.667" name="cost of storing carbon per unit"/>
 				<aux font_style="italic" font_weight="bold" x="233.333" y="121.667" name="share of coal emissions stored"/>
 				<aux font_style="italic" font_weight="bold" x="368.333" y="121.667" name="share of oil\nemissions stored"/>
 				<aux font_style="italic" font_weight="bold" x="527.5" y="121.667" name="share of gas\nemissions stored"/>
@@ -636,20 +648,12 @@ middle of power generation storing cost</doc>
 					<from>stored_CO2</from>
 					<to>CO2_emissions_from_Leakage</to>
 				</connector>
-				<aux x="940" y="386.667" name="cost of storing CO2"/>
-				<connector uid="23" angle="269.512">
+				<aux x="941.25" y="321.667" name="cost of storing CO2"/>
+				<connector uid="23" angle="270">
 					<from>Storing_CO2</from>
 					<to>cost_of_storing_CO2</to>
 				</connector>
-				<connector uid="24" angle="0">
-					<from>cost_of_storing_carbon_per_unit</from>
-					<to>cost_of_storing_CO2</to>
-				</connector>
-				<aux x="940" y="442.5" name="GtC to tC"/>
-				<connector uid="25" angle="90">
-					<from>GtC_to_tC</from>
-					<to>cost_of_storing_CO2</to>
-				</connector>
+				<aux x="800" y="444.167" name="GtC to tC"/>
 				<aux x="368.333" y="238.667" name="storing carbon from oil\nemissions"/>
 				<connector uid="18" angle="359.867">
 					<from>storing_carbon_from_oil_emissions</from>
@@ -664,10 +668,6 @@ middle of power generation storing cost</doc>
 					<to>storing_carbon_from_oil_emissions</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1042.5" y="442.5" name="GtC to MtCO2"/>
-				<connector uid="26" angle="151.422">
-					<from>GtC_to_MtCO2</from>
-					<to>cost_of_storing_CO2</to>
-				</connector>
 				<aux x="1041.67" y="314.167" name="stored Carbon"/>
 				<connector uid="27" angle="275.389">
 					<from>stored_CO2</from>
@@ -676,6 +676,23 @@ middle of power generation storing cost</doc>
 				<connector uid="28" angle="90.372">
 					<from>GtC_to_MtCO2</from>
 					<to>stored_Carbon</to>
+				</connector>
+				<aux label_side="top" x="940" y="444.167" name="cost of storing CO2 per unit"/>
+				<connector uid="29" angle="90">
+					<from>cost_of_storing_carbon_per_unit</from>
+					<to>cost_of_storing_CO2_per_unit</to>
+				</connector>
+				<connector uid="30" angle="0">
+					<from>GtC_to_tC</from>
+					<to>cost_of_storing_CO2_per_unit</to>
+				</connector>
+				<connector uid="31" angle="180.932">
+					<from>GtC_to_MtCO2</from>
+					<to>cost_of_storing_CO2_per_unit</to>
+				</connector>
+				<connector uid="32" angle="89.4155">
+					<from>cost_of_storing_CO2_per_unit</from>
+					<to>cost_of_storing_CO2</to>
 				</connector>
 			</view>
 		</views>
