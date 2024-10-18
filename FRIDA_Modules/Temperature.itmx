@@ -493,6 +493,14 @@
 				<connect2 to="Minor_GHGs_Forcing.HFC134a_emissions" from="Emissions.HFC134a_eq_emissions"/>
 				<connect to="N2O_Forcing.N2O_Baseline_emissions" from="Emissions.N2O_Baseline_emissions"/>
 				<connect2 to="N2O_Forcing.N2O_Baseline_emissions" from="Emissions.N2O_Baseline_emissions"/>
+				<connect to="Energy.share_of_biofuel_emissions_stored" from="Emissions.share_of_biofuel_emissions_stored"/>
+				<connect2 to="Energy.share_of_biofuel_emissions_stored" from="Emissions.share_of_biofuel_emissions_stored"/>
+				<connect to="Energy.share_of_coal_emissions_stored" from="Emissions.share_of_coal_emissions_stored"/>
+				<connect2 to="Energy.share_of_coal_emissions_stored" from="Emissions.share_of_coal_emissions_stored"/>
+				<connect to="Energy.share_of_gas_emissions_stored" from="Emissions.share_of_gas_emissions_stored"/>
+				<connect2 to="Energy.share_of_gas_emissions_stored" from="Emissions.share_of_gas_emissions_stored"/>
+				<connect to="Energy.share_of_oil_emissions_stored" from="Emissions.share_of_oil_emissions_stored"/>
+				<connect2 to="Energy.share_of_oil_emissions_stored" from="Emissions.share_of_oil_emissions_stored"/>
 				<connect to="Aerosol_Forcing.SO2_Baseline_Emissions" from="Emissions.SO2_Baseline_Emissions"/>
 				<connect2 to="Aerosol_Forcing.SO2_Baseline_Emissions" from="Emissions.SO2_Baseline_Emissions"/>
 				<connect to="BC_on_Snow_Forcing.SO2_Baseline_Emissions_1" from="Emissions.SO2_Baseline_Emissions"/>
@@ -571,6 +579,8 @@
 				<connect2 to="Emissions.share_of_gas_emissions_stored" from="Government_Regulations.share_of_gas_emissions_stored"/>
 				<connect to="Emissions.share_of_oil_emissions_stored" from="Government_Regulations.share_of_oil_emissions_stored"/>
 				<connect2 to="Emissions.share_of_oil_emissions_stored" from="Government_Regulations.share_of_oil_emissions_stored"/>
+				<connect to="Emissions.start_year" from="Government_Regulations.start_year"/>
+				<connect2 to="Emissions.start_year" from="Government_Regulations.start_year"/>
 				<connect to="Emissions.UNIT_GtC_to_GtCO2" from="Climate_Units.UNIT_GtC_to_GtCO2"/>
 				<connect2 to="Emissions.UNIT_GtC_to_GtCO2" from="Climate_Units.UNIT_GtC_to_GtCO2"/>
 				<connect to="Emissions.UNIT_ktN2O_to_MtN2O" from="Climate_Units.UNIT_ktN2O_to_MtN2O"/>
@@ -1725,13 +1735,25 @@ Calibration from FRIDA 0.1 , but in principle should be equal to extracted carbo
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(1-share_of_coal_emissions_stored) * CO2_emissions_from_coal
+				<eqn>(1-(IF TIME &gt; start_year THEN
+share_of_coal_emissions_stored
+ELSE
+0)) * CO2_emissions_from_coal
 +
-(1-share_of_oil_emissions_stored) * CO2_emissions_from_oil
+(1-(IF TIME &gt; start_year THEN
+share_of_oil_emissions_stored
+ELSE
+0)) * CO2_emissions_from_oil
 +
-(1-share_of_gas_emissions_stored) * CO2_emissions_from_gas
+(1-(IF TIME &gt; start_year THEN
+share_of_gas_emissions_stored
+ELSE
+0)) * CO2_emissions_from_gas
 +
-(1-share_of_biofuel_emissions_stored) * CO2_emissions_from_biofuels</eqn>
+(1-(IF TIME &gt; start_year THEN
+share_of_biofuel_emissions_stored
+ELSE
+0)) * CO2_emissions_from_biofuels</eqn>
 				<units>MtCO2/Year</units>
 			</aux>
 			<aux name="SO2 emissions from Energy">
@@ -2120,7 +2142,7 @@ GtC_to_MtCO2</eqn>
 				</gf>
 				<units>dmnl</units>
 			</aux>
-			<aux name="share of gas\nemissions stored" access="input">
+			<aux name="share of gas\nemissions stored" access="output" throughput="true" isee:autocreated="true">
 				<eqn>0</eqn>
 				<gf>
 					<xscale min="0" max="2"/>
@@ -2129,7 +2151,7 @@ GtC_to_MtCO2</eqn>
 				</gf>
 				<units>dmnl</units>
 			</aux>
-			<aux name="share of oil\nemissions stored" access="input">
+			<aux name="share of oil\nemissions stored" access="output" throughput="true" isee:autocreated="true">
 				<eqn>0</eqn>
 				<gf>
 					<xscale min="0" max="2"/>
@@ -2138,7 +2160,7 @@ GtC_to_MtCO2</eqn>
 				</gf>
 				<units>dmnl</units>
 			</aux>
-			<aux name="share of biofuel\nemissions stored" access="input">
+			<aux name="share of biofuel\nemissions stored" access="output" throughput="true" isee:autocreated="true">
 				<eqn>0</eqn>
 				<gf>
 					<xscale min="0" max="2"/>
@@ -2153,6 +2175,10 @@ GtC_to_MtCO2</eqn>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>MtCO2/Year</units>
+			</aux>
+			<aux name="start year" access="input">
+				<eqn>2024</eqn>
+				<units>Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -3000,6 +3026,11 @@ GtC_to_MtCO2</eqn>
 				<connector uid="192" angle="358.774">
 					<from>Leakage</from>
 					<to>Total_CO2_Emissions</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="104.375" y="742.5" name="start year"/>
+				<connector uid="193" angle="355.601">
+					<from>start_year</from>
+					<to>CO2_emissions_from_Energy</to>
 				</connector>
 				<alias font_style="italic" uid="33" x="380.167" y="26" width="18" height="18">
 					<of>CO2_emissions_from_Food_and_Land_Use</of>
