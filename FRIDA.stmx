@@ -7,9 +7,9 @@
 		<vendor>isee systems, inc.</vendor>
 		<product version="3.7.2" isee:build_number="3414" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
-	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
+	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
-		<stop>2023</stop>
+		<stop>2100</stop>
 		<dt reciprocal="true">8</dt>
 	</sim_specs>
 	<dimensions>
@@ -82,6 +82,7 @@
 		<import enabled="false" isee:overwrite="false" isee:timevarying="true" resource="r../Data/forcings_1750_2300.csv"/>
 		<import enabled="false" frequency="on_demand" isee:overwrite="true" resource="r../Data/uncertainity_parameters.csv"/>
 		<import enabled="false" frequency="on_demand" isee:overwrite="true" resource="r../Data/FRIDA_climate_inputs_100_members.csv"/>
+		<import isee:overwrite="false" isee:timevarying="true" resource="r../Data/GDP per person.csv"/>
 	</data>
 	<isee:sensi_specs_list active_index="2">
 		<isee:sensi_specs name="External File Sensitivity" method="external" path="r../Data/external_sensi.csv">
@@ -113,7 +114,7 @@
 			<isee:variable starting_value="1" ending_value="100" type="incremental" min="1" max="100" seed="12345" name="Climate_Units.selected_climate_case[1]" num_samples="100"/>
 		</isee:sensi_specs>
 	</isee:sensi_specs_list>
-	<isee:optimizer_specs_list active_index="20">
+	<isee:optimizer_specs_list active_index="0">
 		<isee:optimizer_specs name="Demographics Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
 			<isee:parameter name="Demographics.infant_mortality_alpha" scaling="100000"/>
 			<isee:parameter name="Demographics.infant_mortality_gamma" scaling="100000"/>
@@ -480,15 +481,15 @@
 			<isee:parameter name="Land_Use.sensitivity_of_cutting_time_to_forest_size" scaling="10"/>
 			<isee:payoff name="Land Use and Agriculture Payoff" action="min"/>
 		</isee:optimizer_specs>
-		<isee:optimizer_specs name="Economy Calibration 2" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0" stoponerr="true">
-			<isee:parameter name="Circular_Flow_2.desired_savings_as_multiple_of_profits"/>
-			<isee:parameter name="Circular_Flow_2.time_to_consider_desired_savings"/>
-			<isee:parameter name="Circular_Flow_2.time_to_reach_savings_goal"/>
-			<isee:parameter name="Circular_Flow_2.desired_savings_as_multiple_of_wages"/>
+		<isee:optimizer_specs name="Economy Calibration 2" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" tolerance="0.000001" init_step="5" maxiter="0" stoponerr="true">
+			<isee:parameter name="Circular_Flow_2.desired_savings_as_multiple_of_profits" scaling="10"/>
+			<isee:parameter name="Circular_Flow_2.time_to_consider_desired_savings" scaling="10"/>
+			<isee:parameter name="Circular_Flow_2.time_to_reach_savings_goal" scaling="10"/>
+			<isee:parameter name="Circular_Flow_2.desired_savings_as_multiple_of_wages" scaling="10"/>
 			<isee:parameter name="Government_2.GDP_perception_time" scaling="10"/>
 			<isee:parameter name="Finance_2.initial_risk_premium" scaling="100"/>
 			<isee:parameter name="Finance_2.loan_maturation_time"/>
-			<isee:parameter name="Finance_2.elasticity_of_desired_bank_growth_rate_to_changes_in_lending_standards"/>
+			<isee:parameter name="Finance_2.elasticity_of_desired_bank_growth_rate_to_changes_in_lending_standards" scaling="10"/>
 			<isee:parameter name="Finance_2.time_to_change_lending_standards" scaling="10"/>
 			<isee:parameter name="Finance_2.max_change_in_lending_standards" scaling="100"/>
 			<isee:parameter name="Finance_2.normal_bank_investment_growth_target" scaling="100"/>
@@ -524,17 +525,16 @@
 			<isee:parameter name="Employment_2.threshold_unemployment_rate" scaling="100"/>
 			<isee:parameter name="Employment_2.Initial_Wage_Rate" scaling="0.001"/>
 			<isee:parameter name="Employment_2.time_seeking_employees" min="1" max="3" scaling="1000"/>
+			<isee:parameter name="Finance_2.initial_good_loans" scaling="0.01"/>
+			<isee:parameter name="Finance_2.Initial_safe_assets" scaling="0.01"/>
+			<isee:parameter name="Finance_2.initial_bad_loans"/>
+			<isee:parameter name="Finance_2.initial_bank_investment" scaling="0.1"/>
+			<isee:parameter name="Circular_Flow_2.initial_owner_savings" scaling="0.01"/>
+			<isee:parameter name="Circular_Flow_2.initial_firms_checking_accounts" scaling="0.01"/>
+			<isee:parameter name="Circular_Flow_2.initial_worker_savings" scaling="0.01"/>
+			<isee:parameter name="Government_2.initial_government_debt" scaling="0.01"/>
 			<isee:payoff name="Economic Payoff 2" action="min"/>
 			<isee:payoff name="Economic Payoff" action="min" inactive="true"/>
-		</isee:optimizer_specs>
-		<isee:optimizer_specs name="Optimization" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" init_step="0.1">
-			<isee:parameter name="Inflation.weight_of_cropland_inflation_contribution"/>
-			<isee:parameter name="Inflation.weight_of_feed_per_unit_of_animal_product_production"/>
-			<isee:parameter name="Inflation.weight_of_fertilizer_used_per_unit_of_crop_production"/>
-			<isee:parameter name="Inflation.weight_of_grazing_land_inflation_contribution"/>
-			<isee:parameter name="Inflation.weight_of_irrigation_water_used_per_unit_of_crop_production_inflation_contribution"/>
-			<isee:parameter name="Inflation.weight_of_marginal_energy_cost_inflation"/>
-			<isee:payoff name="Economic Payoff 2" action="min"/>
 		</isee:optimizer_specs>
 	</isee:optimizer_specs_list>
 	<isee:payoff_specs_list>
@@ -823,28 +823,28 @@
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Population Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Demographics.Population[1]" weight="0.0000485105" compare_name="Demographics.Population[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_0_years[1]" weight="0.105021" compare_name="Demographics.Aged_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_1_to_20_years[1]" weight="0.0030484" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_20_to_40_years[1]" weight="0.0198353" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_40_to_60_years[1]" weight="0.016909" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_60_to_65_years[1]" weight="0.172447" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_Over_75_years[1]" weight="0.00152429" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_0_years[1]" weight="12.3584" compare_name="Demographics.deaths_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_1_to_20_years[1]" weight="1.11742" compare_name="Demographics.deaths_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_20_to_40_years[1]" weight="35.3509" compare_name="Demographics.deaths_20_to_40_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_40_to_60_years[1]" weight="19.3681" compare_name="Demographics.deaths_40_to_60_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_60_to_65_years[1]" weight="1.12724" compare_name="Demographics.deaths_60_to_65_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_Over_75_years[1]" weight="0.234297" compare_name="Demographics.deaths_Over_75_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Births[1]" weight="0.0952199" compare_name="Demographics.Births[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.total_deaths[1]" weight="0.177886" compare_name="Demographics.total_deaths[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.female_population_literacy_percentage[1]" weight="0.831987">
+			<isee:payoff_element name="Demographics.Population[1]" weight="0.000841211" compare_name="Demographics.Population[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_0_years[1]" weight="0.0959182" compare_name="Demographics.Aged_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_1_to_20_years[1]" weight="0.00269848" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_20_to_40_years[1]" weight="0.0044923" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_40_to_60_years[1]" weight="0.00348746" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_60_to_65_years[1]" weight="0.24316" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_Over_75_years[1]" weight="0.00416482" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_0_years[1]" weight="4.94284" compare_name="Demographics.deaths_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_1_to_20_years[1]" weight="11.5604" compare_name="Demographics.deaths_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_20_to_40_years[1]" weight="37.3984" compare_name="Demographics.deaths_20_to_40_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_40_to_60_years[1]" weight="5.14535" compare_name="Demographics.deaths_40_to_60_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_60_to_65_years[1]" weight="12.6158" compare_name="Demographics.deaths_60_to_65_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_Over_75_years[1]" weight="1.3462" compare_name="Demographics.deaths_Over_75_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Births[1]" weight="0.0931265" compare_name="Demographics.Births[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.total_deaths[1]" weight="0.186255" compare_name="Demographics.total_deaths[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.female_population_literacy_percentage[1]" weight="0.153575">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Demographics.Aged_65_to_75_years[1]" weight="0.0104769">
+			<isee:payoff_element name="Demographics.Aged_65_to_75_years[1]" weight="0.153578">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Demographics.deaths_65_to_75_years[1]" weight="13.3411">
+			<isee:payoff_element name="Demographics.deaths_65_to_75_years[1]" weight="5.63671">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
@@ -989,10 +989,10 @@
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Fertility payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Demographics.fertility[1]" weight="133.836">
+			<isee:payoff_element name="Demographics.fertility[1]" weight="130.374">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Demographics.female_population_literacy_percentage[1]" weight="2.60703">
+			<isee:payoff_element name="Demographics.female_population_literacy_percentage[1]" weight="0.0606899">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
@@ -1485,31 +1485,31 @@
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Economic Payoff 2" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Circular_Flow_2.private_consumption[1]" weight="7.98444e-7">
+			<isee:payoff_element name="Circular_Flow_2.private_consumption[1]" weight="3.44223e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Employment_2.Employed[1]" weight="0.000194214">
+			<isee:payoff_element name="Employment_2.Employed[1]" weight="0.000192046">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Employment_2.Unemployed[1]" weight="0.00310444">
+			<isee:payoff_element name="Employment_2.Unemployed[1]" weight="0.00340981">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Employment_2.Wage_Rate[1]" weight="0.00000658972">
+			<isee:payoff_element name="Employment_2.Wage_Rate[1]" weight="0.00000247288">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Employment_2.unemployment_rate[1]" weight="13646">
+			<isee:payoff_element name="Employment_2.unemployment_rate[1]" weight="15687.5">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Finance_2.total_investment[1]" weight="6.57091e-7">
+			<isee:payoff_element name="Finance_2.total_investment[1]" weight="7.10473e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="GDP_2.Nominal_GDP[1]" weight="4.82319e-8">
+			<isee:payoff_element name="GDP_2.Nominal_GDP[1]" weight="3.12299e-8">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name='GDP_2."Real_GDP_in_2021$"[1]' weight="9.37382e-8">
+			<isee:payoff_element name='GDP_2."Real_GDP_in_2021$"[1]' weight="1.4164e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Government_2.government_consumption[1]" weight="0.00000313673">
+			<isee:payoff_element name="Government_2.government_consumption[1]" weight="0.00000111089">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
@@ -1942,8 +1942,6 @@
 				<connect2 to="Finance.switch_only_economy_energy_damage_1" from="Climate.switch_only_economy_energy_damage"/>
 				<connect to="Finance.technological_water_discovery" from="Freshwater.technological_water_discovery"/>
 				<connect2 to="Finance.technological_water_discovery" from="Freshwater.technological_water_discovery"/>
-				<connect to="Demographics.GDP" from="GDP.GDP"/>
-				<connect2 to="Demographics.GDP" from="GDP.GDP"/>
 				<connect to="energy_investments.GDP" from="GDP.GDP"/>
 				<connect2 to="energy_investments.GDP" from="GDP.GDP"/>
 				<connect to=".GDP" from="GDP.GDP"/>
@@ -2090,8 +2088,8 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 				<connect2 to="Freshwater.GDP_per_person_1" from="Demographics.GDP_per_person"/>
 				<connect to="Inflation.GDP_per_person" from="Demographics.GDP_per_person"/>
 				<connect2 to="Inflation.GDP_per_person" from="Demographics.GDP_per_person"/>
-				<connect to="Sea_level_rise_adaptation.GDP_per_person_in_1980" from="Demographics.GDP_per_person_in_1980"/>
-				<connect2 to="Sea_level_rise_adaptation.GDP_per_person_in_1980" from="Demographics.GDP_per_person_in_1980"/>
+				<connect to="Sea_level_rise_adaptation.GDP_per_person" from="Demographics.GDP_per_person"/>
+				<connect2 to="Sea_level_rise_adaptation.GDP_per_person" from="Demographics.GDP_per_person"/>
 				<connect to="Employment_2.Passing_66" from="Demographics.Passing_65"/>
 				<connect2 to="Employment_2.Passing_66" from="Demographics.Passing_65"/>
 				<connect to="Employment.Passing_65" from="Demographics.Passing_65"/>
@@ -2120,8 +2118,10 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 				<connect2 to="Employment_2.working_age_population_2" from="Demographics.working_age_population"/>
 				<connect to="Employment.working_age_population_1" from="Demographics.working_age_population"/>
 				<connect2 to="Employment.working_age_population_1" from="Demographics.working_age_population"/>
-				<connect to="Demographics.GDP" from="GDP.GDP"/>
-				<connect2 to="Demographics.GDP" from="GDP.GDP"/>
+				<connect to="Demographics.Nominal_GDP" from="GDP_2.Nominal_GDP"/>
+				<connect2 to="Demographics.Nominal_GDP" from="GDP_2.Nominal_GDP"/>
+				<connect to='Demographics."Real_GDP_in_2021$"' from='GDP_2."Real_GDP_in_2021$"'/>
+				<connect2 to='Demographics."Real_GDP_in_2021$"' from='GDP_2."Real_GDP_in_2021$"'/>
 				<connect to="Demographics.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Demographics.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Demographics.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
@@ -2171,8 +2171,8 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 				<connect2 to="Sea_level_rise_adaptation.Bank_Assets" from="Finance.Bank_Assets"/>
 				<connect to="Sea_level_rise_adaptation.GDP" from="GDP.GDP"/>
 				<connect2 to="Sea_level_rise_adaptation.GDP" from="GDP.GDP"/>
-				<connect to="Sea_level_rise_adaptation.GDP_per_person_in_1980" from="Demographics.GDP_per_person_in_1980"/>
-				<connect2 to="Sea_level_rise_adaptation.GDP_per_person_in_1980" from="Demographics.GDP_per_person_in_1980"/>
+				<connect to="Sea_level_rise_adaptation.GDP_per_person" from="Demographics.GDP_per_person"/>
+				<connect2 to="Sea_level_rise_adaptation.GDP_per_person" from="Demographics.GDP_per_person"/>
 				<connect to="Sea_level_rise_costs_and_impacts.Bank_Assets" from="Finance.Bank_Assets"/>
 				<connect2 to="Sea_level_rise_costs_and_impacts.Bank_Assets" from="Finance.Bank_Assets"/>
 				<connect to="Sea_level_rise_costs_and_impacts.Population" from="Demographics.Population"/>
@@ -2713,6 +2713,10 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 				<connect2 to="Finance_2.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect to="Finance_2.switch_only_economy_energy_damage_1" from="Climate.switch_only_economy_energy_damage"/>
 				<connect2 to="Finance_2.switch_only_economy_energy_damage_1" from="Climate.switch_only_economy_energy_damage"/>
+				<connect to="Demographics.Nominal_GDP" from="GDP_2.Nominal_GDP"/>
+				<connect2 to="Demographics.Nominal_GDP" from="GDP_2.Nominal_GDP"/>
+				<connect to='Demographics."Real_GDP_in_2021$"' from='GDP_2."Real_GDP_in_2021$"'/>
+				<connect2 to='Demographics."Real_GDP_in_2021$"' from='GDP_2."Real_GDP_in_2021$"'/>
 				<connect to='."Real_GDP_in_2021$"' from='Inflation."Real_GDP_in_2021$"'/>
 				<connect2 to='"Real_GDP_in_2021$"' from='Inflation."Real_GDP_in_2021$"'/>
 				<connect to="Inflation.animal_products_demand" from="Food_Demand.animal_products_demand"/>
@@ -2807,7 +2811,7 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="8" isee:scroll_x="49" isee:scroll_y="60" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="8" isee:scroll_x="49" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2961,7 +2965,7 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 				<stacked_container uid="85" x="1168.5" y="1980.5" width="568" height="300">
 					<graph font_size="24pt" legend_position="none" isee:hide_border="true" axis_title_font_size="18pt" axis_label_font_size="14pt" width="568" height="300" comparative="true" type="box" show_grid="true" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="9" num_y_grid_lines="5" num_x_labels="5" num_y_labels="5" title="e) GDP per Capita ($/Person/Yr)" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="Demographics.GDP_per_capita[*]"/>
+							<entity name="Demographics.real_GDP_per_capita[*]"/>
 						</plot>
 						<isee:time_points>
 							<isee:time_point>2030</isee:time_point>
@@ -3125,10 +3129,6 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 					<from>Demographics</from>
 					<to>Energy</to>
 				</connector>
-				<connector uid="106" color="#FF007F" isee:thickness="2" angle="35.0636" isee:autocreated="true">
-					<from>Economy</from>
-					<to>Demographics</to>
-				</connector>
 				<module label_side="center" x="406" y="190.25" name="Climate"/>
 				<module label_side="center" x="406" y="57.75" name="Land Use\nand\nAgriculture"/>
 				<connector uid="110" isee:thickness="2" angle="28.8866">
@@ -3269,6 +3269,10 @@ mountain glaciers (metre)} + Sea_Level.SLR_from_Greenland_Ice_Sheet_by_PCTILE[PC
 				<connector uid="144" angle="19.2287" isee:autocreated="true">
 					<from>Economy_2</from>
 					<to>&quot;Real_GDP_in_2021$&quot;</to>
+				</connector>
+				<connector uid="145" isee:thickness="2" angle="44.2495" isee:autocreated="true">
+					<from>Economy_2</from>
+					<to>Demographics</to>
 				</connector>
 			</view>
 			<view isee:template_view="template:1" isee:name="Landing Page without image" isee:original_design="Deluxe Prev-Next Blue Green Pastel" background="white" page_width="1066" page_height="600" home_view="true" type="interface">
@@ -3509,8 +3513,8 @@ Lorem ipsum dolor sit amet</text_box>
 				<connect2 to="Sea_level_rise_adaptation.Bank_Assets" from="Finance.Bank_Assets"/>
 				<connect to="Sea_level_rise_adaptation.GDP" from="GDP.GDP"/>
 				<connect2 to="Sea_level_rise_adaptation.GDP" from="GDP.GDP"/>
-				<connect to="Sea_level_rise_adaptation.GDP_per_person_in_1980" from="Demographics.GDP_per_person_in_1980"/>
-				<connect2 to="Sea_level_rise_adaptation.GDP_per_person_in_1980" from="Demographics.GDP_per_person_in_1980"/>
+				<connect to="Sea_level_rise_adaptation.GDP_per_person" from="Demographics.GDP_per_person"/>
+				<connect2 to="Sea_level_rise_adaptation.GDP_per_person" from="Demographics.GDP_per_person"/>
 				<connect to="Sea_level_rise_costs_and_impacts.Bank_Assets" from="Finance.Bank_Assets"/>
 				<connect2 to="Sea_level_rise_costs_and_impacts.Bank_Assets" from="Finance.Bank_Assets"/>
 				<connect to="Sea_level_rise_costs_and_impacts.Population" from="Demographics.Population"/>
@@ -3673,16 +3677,20 @@ Lorem ipsum dolor sit amet</text_box>
 			</aux>
 			<module name="GDP 2" isee:label="">
 				<format scale_by="auto"/>
-				<connect to="Finance_2.GDP_growth_rate_1" from="GDP_2.GDP_growth_rate"/>
-				<connect2 to="Finance_2.GDP_growth_rate_1" from="GDP_2.GDP_growth_rate"/>
-				<connect to="Finance_2.GDP_growth_rate" from="GDP_2.GDP_growth_rate"/>
-				<connect2 to="Finance_2.GDP_growth_rate" from="GDP_2.GDP_growth_rate"/>
+				<connect to="Demographics.Nominal_GDP" from="GDP_2.Nominal_GDP"/>
+				<connect2 to="Demographics.Nominal_GDP" from="GDP_2.Nominal_GDP"/>
 				<connect to="Economy_2.GDP_1" from="GDP_2.Nominal_GDP"/>
 				<connect2 to="GDP_1" from="GDP_2.Nominal_GDP"/>
 				<connect to="Employment_2.GDP" from="GDP_2.Nominal_GDP"/>
 				<connect2 to="Employment_2.GDP" from="GDP_2.Nominal_GDP"/>
 				<connect to="Government_2.GDP" from="GDP_2.Nominal_GDP"/>
 				<connect2 to="Government_2.GDP" from="GDP_2.Nominal_GDP"/>
+				<connect to="Finance_2.GDP_growth_rate_1" from="GDP_2.nominal_GDP_growth_rate"/>
+				<connect2 to="Finance_2.GDP_growth_rate_1" from="GDP_2.nominal_GDP_growth_rate"/>
+				<connect to="Finance_2.GDP_growth_rate" from="GDP_2.nominal_GDP_growth_rate"/>
+				<connect2 to="Finance_2.GDP_growth_rate" from="GDP_2.nominal_GDP_growth_rate"/>
+				<connect to='Demographics."Real_GDP_in_2021$"' from='GDP_2."Real_GDP_in_2021$"'/>
+				<connect2 to='Demographics."Real_GDP_in_2021$"' from='GDP_2."Real_GDP_in_2021$"'/>
 				<connect to='Inflation."Real_GDP_in_2021$"' from='GDP_2."Real_GDP_in_2021$"'/>
 				<connect2 to='Inflation."Real_GDP_in_2021$"' from='GDP_2."Real_GDP_in_2021$"'/>
 				<connect to="GDP_2.government_spending" from="Government_2.government_consumption"/>
@@ -3773,8 +3781,6 @@ Lorem ipsum dolor sit amet</text_box>
 				<connect2 to="Government_2.rent_tax_1" from="Circular_Flow_2.rent_tax"/>
 				<connect to="Government_2.wage_tax_1" from="Circular_Flow_2.wage_tax"/>
 				<connect2 to="Government_2.wage_tax_1" from="Circular_Flow_2.wage_tax"/>
-				<connect to="Employment_2.wages" from="Circular_Flow_2.wages"/>
-				<connect2 to="Employment_2.wages" from="Circular_Flow_2.wages"/>
 				<connect to="Inflation.wages_1" from="Circular_Flow_2.wages"/>
 				<connect2 to="Inflation.wages_1" from="Circular_Flow_2.wages"/>
 				<connect to="Finance_2.Worker_Savings_1" from="Circular_Flow_2.Worker_Savings"/>
@@ -3813,6 +3819,8 @@ Lorem ipsum dolor sit amet</text_box>
 				<connect2 to="Circular_Flow_2.safe_interest_3" from="Government_2.safe_interest"/>
 				<connect to="Circular_Flow_2.safe_bank_assets" from="Finance_2.private_safe_bank_assets"/>
 				<connect2 to="Circular_Flow_2.safe_bank_assets" from="Finance_2.private_safe_bank_assets"/>
+				<connect to="Circular_Flow_2.unemployment_rate" from="Employment_2.unemployment_rate"/>
+				<connect2 to="Circular_Flow_2.unemployment_rate" from="Employment_2.unemployment_rate"/>
 			</module>
 			<module name="Finance 2" isee:label="">
 				<format scale_by="auto"/>
@@ -3860,10 +3868,10 @@ Lorem ipsum dolor sit amet</text_box>
 				<connect2 to="Finance_2.Firms_Checking_Accounts" from="Circular_Flow_2.Firms_Checking_Accounts"/>
 				<connect to="Finance_2.Firms_Innovation_Orientation" from="Innovation.Firms_Innovation_Orientation"/>
 				<connect2 to="Finance_2.Firms_Innovation_Orientation" from="Innovation.Firms_Innovation_Orientation"/>
-				<connect to="Finance_2.GDP_growth_rate_1" from="GDP_2.GDP_growth_rate"/>
-				<connect2 to="Finance_2.GDP_growth_rate_1" from="GDP_2.GDP_growth_rate"/>
-				<connect to="Finance_2.GDP_growth_rate" from="GDP_2.GDP_growth_rate"/>
-				<connect2 to="Finance_2.GDP_growth_rate" from="GDP_2.GDP_growth_rate"/>
+				<connect to="Finance_2.GDP_growth_rate_1" from="GDP_2.nominal_GDP_growth_rate"/>
+				<connect2 to="Finance_2.GDP_growth_rate_1" from="GDP_2.nominal_GDP_growth_rate"/>
+				<connect to="Finance_2.GDP_growth_rate" from="GDP_2.nominal_GDP_growth_rate"/>
+				<connect2 to="Finance_2.GDP_growth_rate" from="GDP_2.nominal_GDP_growth_rate"/>
 				<connect to="Finance_2.Government_Debt" from="Government_2.Government_Debt"/>
 				<connect2 to="Finance_2.Government_Debt" from="Government_2.Government_Debt"/>
 				<connect to="Finance_2.initial_government_debt" from="Government_2.initial_government_debt"/>
@@ -3884,10 +3892,6 @@ Lorem ipsum dolor sit amet</text_box>
 				<connect2 to="Finance_2.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect to="Finance_2.switch_only_economy_energy_damage_1" from="Climate.switch_only_economy_energy_damage"/>
 				<connect2 to="Finance_2.switch_only_economy_energy_damage_1" from="Climate.switch_only_economy_energy_damage"/>
-				<connect to="Finance_2.Unemployed" from="Employment_2.Unemployed"/>
-				<connect2 to="Finance_2.Unemployed" from="Employment_2.Unemployed"/>
-				<connect to="Finance_2.unemployment_rate" from="Employment_2.unemployment_rate"/>
-				<connect2 to="Finance_2.unemployment_rate" from="Employment_2.unemployment_rate"/>
 				<connect to="Finance_2.Worker_Savings_1" from="Circular_Flow_2.Worker_Savings"/>
 				<connect2 to="Finance_2.Worker_Savings_1" from="Circular_Flow_2.Worker_Savings"/>
 			</module>
@@ -3924,10 +3928,8 @@ Lorem ipsum dolor sit amet</text_box>
 				<connect2 to="Inflation.productivity_growth_1" from="Employment_2.realised_productivity_growth"/>
 				<connect to="Circular_Flow_2.rent_3" from="Employment_2.rent"/>
 				<connect2 to="Circular_Flow_2.rent_3" from="Employment_2.rent"/>
-				<connect to="Finance_2.Unemployed" from="Employment_2.Unemployed"/>
-				<connect2 to="Finance_2.Unemployed" from="Employment_2.Unemployed"/>
-				<connect to="Finance_2.unemployment_rate" from="Employment_2.unemployment_rate"/>
-				<connect2 to="Finance_2.unemployment_rate" from="Employment_2.unemployment_rate"/>
+				<connect to="Circular_Flow_2.unemployment_rate" from="Employment_2.unemployment_rate"/>
+				<connect2 to="Circular_Flow_2.unemployment_rate" from="Employment_2.unemployment_rate"/>
 				<connect to="Government_2.unemployment_rate_1" from="Employment_2.unemployment_rate"/>
 				<connect2 to="Government_2.unemployment_rate_1" from="Employment_2.unemployment_rate"/>
 				<connect to="Employment_2.actual_safe_investment_failure" from="Finance_2.actual_safe_investment_failure"/>
@@ -3978,8 +3980,6 @@ Lorem ipsum dolor sit amet</text_box>
 				<connect2 to="Employment_2.Surface_Temperature_Anomaly_1" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Employment_2.total_investment_1" from="Finance_2.total_investment"/>
 				<connect2 to="Employment_2.total_investment_1" from="Finance_2.total_investment"/>
-				<connect to="Employment_2.wages" from="Circular_Flow_2.wages"/>
-				<connect2 to="Employment_2.wages" from="Circular_Flow_2.wages"/>
 				<connect to="Employment_2.working_age_population_2" from="Demographics.working_age_population"/>
 				<connect2 to="Employment_2.working_age_population_2" from="Demographics.working_age_population"/>
 			</module>
@@ -4122,7 +4122,7 @@ Lorem ipsum dolor sit amet</text_box>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="231" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="100" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4326,7 +4326,7 @@ Lorem ipsum dolor sit amet</text_box>
 					<to>GDP_2</to>
 				</connector>
 				<isee:placeholder x="1073" y="619" name="Economy 2 Outputs"/>
-				<stacked_container uid="37" x="252.583" y="728" width="572" height="430">
+				<stacked_container uid="37" x="253.583" y="729" width="572" height="430">
 					<graph width="572" height="430" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="false" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="false" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Economy_2_Outputs"/>
@@ -4338,10 +4338,6 @@ Lorem ipsum dolor sit amet</text_box>
 				<connector uid="38" angle="9.04413" isee:autocreated="true">
 					<from>Inflation</from>
 					<to>initial_inflation_index</to>
-				</connector>
-				<connector uid="39" isee:thickness="2" angle="156.421" isee:autocreated="true">
-					<from>Employment_2</from>
-					<to>Finance_2</to>
 				</connector>
 				<connector uid="40" isee:thickness="2" angle="328.371" isee:autocreated="true">
 					<from>GDP_2</from>
@@ -4407,7 +4403,7 @@ Lorem ipsum dolor sit amet</text_box>
 			<aux name="desired savings\nas multiple of\nprofits">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>9.5</eqn>
+				<eqn>9.49565804798565</eqn>
 				<range min="2" max="20"/>
 				<units>Years</units>
 			</aux>
@@ -4431,14 +4427,14 @@ SMTH1(net_owner_income*desired_savings_as_multiple_of_profits, time_to_consider_
 			<aux name="time to consider desired savings">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>1.99770222254464</eqn>
+				<eqn>2.0028996619696</eqn>
 				<range min="1" max="10"/>
 				<units>Years</units>
 			</aux>
 			<aux name="time to reach\nsavings goal">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>3.5104193195849</eqn>
+				<eqn>3.52636626567262</eqn>
 				<range min="1" max="5"/>
 				<units>year</units>
 			</aux>
@@ -4513,7 +4509,7 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 			<aux name="desired savings\nas multiple of\nwages">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>3.0059754789361</eqn>
+				<eqn>3.00047708226289</eqn>
 				<range min="1" max="5"/>
 				<units>Years</units>
 			</aux>
@@ -4562,14 +4558,14 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 			<aux name="wage tax rate">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.209027436545984</eqn>
-				<range min="1" max="3"/>
+				<eqn>0.210694443893274</eqn>
+				<range min="0.1" max="0.3"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="profit tax rate">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.322645121883201</eqn>
+				<eqn>0.325373441318832</eqn>
 				<range min="0" max="0.4"/>
 				<units>dmnl</units>
 			</aux>
@@ -4582,15 +4578,18 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 				<units>b$/year</units>
 			</flow>
 			<aux name="initial owner savings">
-				<eqn>49999.2642375135</eqn>
+				<eqn>49995.3705240978</eqn>
+				<range min="40000" max="60000"/>
 				<units>b$</units>
 			</aux>
 			<aux name="initial firms\nchecking accounts">
-				<eqn>5372</eqn>
+				<eqn>5353.8655045336</eqn>
+				<range min="4000" max="6000"/>
 				<units>b$</units>
 			</aux>
 			<aux name="initial worker savings">
-				<eqn>23785.6325868</eqn>
+				<eqn>23784.3647591285</eqn>
+				<range min="20000" max="30000"/>
 				<units>b$</units>
 			</aux>
 			<flow name="government spending" access="output" isee:autocreated="true">
@@ -4621,7 +4620,7 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 			<aux name="time to pay out profits">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>2.98052723024574</eqn>
+				<eqn>2.96521534901164</eqn>
 				<range min="1" max="5"/>
 				<units>year</units>
 			</aux>
@@ -4899,6 +4898,13 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<eqn>worker_consumption + owner_consumption + government_spending + private_investment</eqn>
 				<units>b$/year</units>
 			</aux>
+			<aux name="unemployment rate" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -4948,7 +4954,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="5" isee:scroll_y="54" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="548" isee:scroll_y="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -5561,6 +5567,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 					</from>
 					<to>firms_cash_outflow</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" x="1096" y="90" name="unemployment rate"/>
 				<alias label_side="top" uid="8" x="2058.75" y="594.617" width="18" height="18">
 					<of>time_to_reach_savings_goal</of>
 				</alias>
@@ -5666,7 +5673,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 	<model name="Employment_2">
 		<variables>
 			<aux name="initial unemployment rate">
-				<eqn>0.05</eqn>
+				<eqn>0.0849858022088494</eqn>
 				<range min="0" max="0.15"/>
 				<units>dmnl</units>
 			</aux>
@@ -5678,7 +5685,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<units>Mp</units>
 			</aux>
 			<aux name="Initial Wage Rate">
-				<eqn>7077.04811427262</eqn>
+				<eqn>7198.50316764533</eqn>
 				<range min="2000" max="10000"/>
 				<units>$/p</units>
 			</aux>
@@ -5940,10 +5947,6 @@ https://rshiny.ilo.org/dataexplorer32/?id=UNE_2EAP_SEX_AGE_RT_A&amp;ref_area=X01
 				<eqn>AGECOUNT(Aged_1_to_20_years_1, 14, 19)</eqn>
 				<units>Mp</units>
 			</aux>
-			<aux name="sensitivity of firing to missed profits">
-				<eqn>0.762270059097834</eqn>
-				<units>dmnl</units>
-			</aux>
 			<aux name="labour force\nparticipation rate" access="output" isee:autocreated="true">
 				<doc>https://rshiny.ilo.org/dataexplorer20/?id=EAP_2WAP_SEX_AGE_RT_A&amp;ref_area=X01&amp;sex=SEX_T&amp;classif1=AGE_AGGREGATE_TOTAL&amp;timefrom=1991</doc>
 				<dimensions>
@@ -6048,29 +6051,21 @@ https://rshiny.ilo.org/dataexplorer32/?id=UNE_2EAP_SEX_AGE_RT_A&amp;ref_area=X01
 				<units>dmnl</units>
 			</aux>
 			<aux name="time seeking\nemployees">
-				<eqn>1.41657694198054</eqn>
+				<eqn>1.41654230453043</eqn>
 				<units>year</units>
 			</aux>
 			<aux name="max change in\nfractional wage growth">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.102521564923899</eqn>
+				<eqn>0.102640892694752</eqn>
 				<range min="0" max="0.9"/>
 				<units>1/year</units>
 			</aux>
 			<aux name="labour force\nparticipation fixed">
 				<doc>${Calibration Parameter}
 https://rshiny.ilo.org/dataexplorer20/?id=EAP_2WAP_SEX_AGE_RT_A&amp;ref_area=X01&amp;sex=SEX_T&amp;classif1=AGE_AGGREGATE_TOTAL&amp;timefrom=1991</doc>
-				<eqn>64</eqn>
-				<range min="61.8" max="64.4"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="labour force participation percentage">
-				<eqn>63</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="initial labour participation rate">
-				<eqn>0.64</eqn>
+				<eqn>63.9991339291996</eqn>
+				<range min="61.8" max="66"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="percentage of working age that are active">
@@ -6083,7 +6078,7 @@ https://rshiny.ilo.org/dataexplorer20/?id=EAP_2WAP_SEX_AGE_RT_A&amp;ref_area=X01
 			<aux name="hiring to\ninvestment\nratio">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.214418389856824</eqn>
+				<eqn>0.214498065204271</eqn>
 				<range min="0.1" max="0.75"/>
 				<units>dmnl</units>
 			</aux>
@@ -6128,12 +6123,8 @@ https://rshiny.ilo.org/dataexplorer20/?id=EAP_2WAP_SEX_AGE_RT_A&amp;ref_area=X01
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SMTH1(total_investment_1, 1, initial_planned_investment)</eqn>
+				<eqn>SMTH1(total_investment_1, 1)</eqn>
 				<isee:delay_aux/>
-				<units>b$/year</units>
-			</aux>
-			<aux name="initial planned\ninvestment">
-				<eqn>4505.32271051257</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="max firing\npercentage">
@@ -6257,13 +6248,6 @@ https://rshiny.ilo.org/dataexplorer20/?id=EAP_2WAP_SEX_AGE_RT_A&amp;ref_area=X01
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>Mp/year</units>
-			</aux>
-			<aux name="wages" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/year</units>
 			</aux>
 			<aux name="total investment 1" access="input">
 				<dimensions>
@@ -6696,7 +6680,7 @@ Effect_of_climate_on_high_exposure_labour
 				<units>years</units>
 			</aux>
 			<aux name="threshold\nunemployment\nrate">
-				<eqn>0.08</eqn>
+				<eqn>0.0787979730472039</eqn>
 				<range min="0.04" max="0.15"/>
 				<units>dmnl</units>
 			</aux>
@@ -6806,10 +6790,6 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 				<eqn>1</eqn>
 				<units>years</units>
 			</aux>
-			<aux name="normalising firing rate">
-				<eqn>1</eqn>
-				<units>Mp/year</units>
-			</aux>
 			<aux name="ratio of missed profit\nto threshold">
 				<dimensions>
 					<dim name="Run"/>
@@ -6877,7 +6857,7 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="6" isee:scroll_x="57" isee:scroll_y="569" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="6" isee:scroll_x="355" isee:scroll_y="663" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -7181,7 +7161,6 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 					</from>
 					<to>annual_aggregate_wages</to>
 				</connector>
-				<aux label_side="left" x="508" y="940.961" name="sensitivity of firing to missed profits"/>
 				<stock label_side="center" x="1239.5" y="563.542" width="65" height="55" name="non active working age"/>
 				<flow label_side="bottom" x="1169.25" y="571" name="new\npotential labour\nforce entrants">
 					<pts>
@@ -7352,8 +7331,6 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 					<to>indicated_participation</to>
 				</connector>
 				<aux label_side="right" x="1549.92" y="699.086" name="labour force\nparticipation fixed"/>
-				<aux label_side="right" x="1683" y="763.542" name="labour force participation percentage"/>
-				<aux label_side="left" x="787.625" y="544" name="initial labour participation rate"/>
 				<aux x="2694.25" y="776.75" name="percentage of working age that are active"/>
 				<connector uid="89" angle="161.136">
 					<from>percentage_of_working_age_that_are_non_active</from>
@@ -7430,11 +7407,6 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 					<to>labour_balance</to>
 				</connector>
 				<aux label_side="bottom" x="1778.7" y="1354.58" name="planned\ninvestment"/>
-				<aux label_side="right" x="1857.41" y="1354.58" name="initial planned\ninvestment"/>
-				<connector uid="106" angle="180">
-					<from>initial_planned_investment</from>
-					<to>planned_investment</to>
-				</connector>
 				<connector uid="107" angle="90">
 					<from>
 						<alias uid="108"/>
@@ -7542,7 +7514,6 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 					<from>deaths_40_to_60_years</from>
 					<to>working_age_deaths</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="2666.25" y="718.25" name="wages"/>
 				<aux font_style="italic" font_weight="bold" label_side="right" x="1823.7" y="1288.54" name="total investment 1"/>
 				<stock font_style="italic" font_weight="bold" label_side="top" x="802.5" y="735.336" name="Safe\nLoans"/>
 				<connector uid="129" angle="270">
@@ -8130,7 +8101,6 @@ furthermore. The structure that was previously decided on had the productivity g
 					<from>time_to_fire_from_missed_profits</from>
 					<to>firing_from_missed_profits</to>
 				</connector>
-				<aux x="508" y="1008.41" name="normalising firing rate"/>
 				<aux label_side="left" label_angle="135" x="757" y="850.58" name="ratio of missed profit\nto threshold"/>
 				<connector uid="245" angle="213.65">
 					<from>profit_firing_threshold</from>
@@ -8380,7 +8350,7 @@ furthermore. The structure that was previously decided on had the productivity g
 			<aux name="loan maturation\ntime">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>4.57654673945424</eqn>
+				<eqn>4.2080305832128</eqn>
 				<range min="3" max="30"/>
 				<units>Years</units>
 			</aux>
@@ -8417,7 +8387,7 @@ furthermore. The structure that was previously decided on had the productivity g
 			<aux name="max change in lending\nstandards">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.355366790828848</eqn>
+				<eqn>0.316387000291187</eqn>
 				<range min="0.2" max="1"/>
 				<units>dmnl</units>
 			</aux>
@@ -8431,15 +8401,15 @@ furthermore. The structure that was previously decided on had the productivity g
 			<aux name="time to change\nlending standards">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>1.23204187829432</eqn>
+				<eqn>1.23742809861062</eqn>
 				<range min="0.5" max="1.5"/>
 				<units>year</units>
 			</aux>
 			<aux name="normal\nbank investment\ngrowth target">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.0396087872354768</eqn>
-				<range min="0.01" max="0.2"/>
+				<eqn>0.0461278556729589</eqn>
+				<range min="0.03" max="0.07"/>
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="bank investment\ngrowth rate">
@@ -8472,7 +8442,7 @@ furthermore. The structure that was previously decided on had the productivity g
 			<aux name="reporting\ndelay">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.262771743091839</eqn>
+				<eqn>0.261601519973887</eqn>
 				<range min="0.25" max="1"/>
 				<units>year</units>
 			</aux>
@@ -8501,7 +8471,7 @@ furthermore. The structure that was previously decided on had the productivity g
 			<aux name="normal\nfailure rate">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.0150004864351078</eqn>
+				<eqn>0.0155814776638817</eqn>
 				<range min="0.01" max="0.05"/>
 				<units>dmnl</units>
 			</aux>
@@ -8527,7 +8497,7 @@ furthermore. The structure that was previously decided on had the productivity g
 			<aux name="elasticity of\ndesired bank growth\nrate to changes in lending\nstandards">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>9.19143981712914</eqn>
+				<eqn>9.18389975633236</eqn>
 				<range min="1" max="10"/>
 				<units>dmnl</units>
 			</aux>
@@ -8576,14 +8546,14 @@ effect_of_energy_investment_vs_expectation_on_investment_growth)</eqn>
 			<aux name="max change\nin failure rate">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.0827751504693816</eqn>
+				<eqn>0.0894991115473044</eqn>
 				<range min="0.05" max="0.2"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="bank expectation\nformation time">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>2.01590787265093</eqn>
+				<eqn>2.65654320165488</eqn>
 				<range min="2" max="20"/>
 				<units>years</units>
 			</aux>
@@ -8604,14 +8574,14 @@ effect_of_energy_investment_vs_expectation_on_investment_growth)</eqn>
 			<aux name="elasticity of bankruptcy\nrate on risk premium">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>4.62732436181401</eqn>
+				<eqn>4.62320092029814</eqn>
 				<range min="0.5" max="10"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial risk premium">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.01</eqn>
+				<eqn>0.0138459091160295</eqn>
 				<range min="0.01" max="0.05"/>
 				<units>1/year</units>
 			</aux>
@@ -8623,19 +8593,23 @@ effect_of_energy_investment_vs_expectation_on_investment_growth)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial bank investment">
-				<eqn>4379</eqn>
+				<eqn>3560.57262922021</eqn>
+				<range min="3000" max="4000"/>
 				<units>b$/year</units>
 			</aux>
 			<aux name="initial good loans">
-				<eqn>7907.72155294686</eqn>
+				<eqn>7906.16569522471</eqn>
+				<range min="7500" max="8500"/>
 				<units>b$</units>
 			</aux>
 			<aux name="initial bad loans">
-				<eqn>204</eqn>
+				<eqn>204.0255416637</eqn>
+				<range min="180" max="300"/>
 				<units>b$</units>
 			</aux>
 			<aux name="Initial safe assets">
-				<eqn>72624</eqn>
+				<eqn>72631.9900327802</eqn>
+				<range min="60000" max="100000"/>
 				<units>b$</units>
 			</aux>
 			<aux name="energy and food adjusted\nbank investment\ngrowth target">
@@ -8692,7 +8666,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.960647701256923</eqn>
+					<eqn>0.589337376922665</eqn>
 				</element>
 				<range min="0.1" max="4"/>
 				<units>dmnl</units>
@@ -8822,7 +8796,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 			<aux name="sensitivity of failure rate to\ninvestment to gdp ratio">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.07</eqn>
+				<eqn>0.0712626383048181</eqn>
 				<range min="0.05" max="1"/>
 				<units>dmnl</units>
 			</aux>
@@ -8891,8 +8865,8 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<units>b$</units>
 			</stock>
 			<aux name="max change in\nbank investment\nas fraction of normal">
-				<eqn>0.1</eqn>
-				<range min="0.1" max="0.35"/>
+				<eqn>0.381855392860443</eqn>
+				<range min="0.1" max="1"/>
 				<units>dmnl</units>
 			</aux>
 			<flow name="safe loans\naffected innovation" access="output" isee:autocreated="true">
@@ -9048,8 +9022,8 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<units>b$/year</units>
 			</flow>
 			<aux name="time for safe loans that will fail to actually fail">
-				<eqn>20</eqn>
-				<range min="5" max="30"/>
+				<eqn>20.1540801426378</eqn>
+				<range min="3" max="30"/>
 				<units>years</units>
 			</aux>
 			<aux name="normal bank profit\npayment fraction">
@@ -9182,7 +9156,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="sensitivity of investment and GDP difference">
-				<eqn>10</eqn>
+				<eqn>3.6035392785117</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="desired asset to liability ratio">
@@ -9211,7 +9185,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="sensitivity\nof bank exploration\nto profit decline">
-				<eqn>1</eqn>
+				<eqn>1.96868000309268</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="investment fraction to\nexploration">
@@ -9250,20 +9224,6 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>growth_rate_of_GDP_growth/normal_growth_rate_of_GDP_growth_rate</eqn>
-				<units>dmnl</units>
-			</aux>
-			<stock name="Unemployed" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>Mp</units>
-			</stock>
-			<aux name="unemployment rate" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="GDP growth rate over the last year">
@@ -9322,7 +9282,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="751" isee:scroll_y="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="227" isee:scroll_y="660" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -10199,8 +10159,6 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>normalised_growth_rate_of_GDP_growht</from>
 					<to>effect_of_GDP_growth_on_exploratory_loan_failure</to>
 				</connector>
-				<stock font_style="italic" font_weight="bold" x="1271" y="132" name="Unemployed"/>
-				<aux font_style="italic" font_weight="bold" x="1448" y="104" name="unemployment rate"/>
 				<connector uid="172" angle="215.494">
 					<from>exploratory_loans_failure_rate</from>
 					<to>exploratory_loan_failure</to>
@@ -10268,6 +10226,9 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<alias font_style="italic" label_side="left" uid="152" x="359.167" y="111.875" width="18" height="18">
 					<of>investment_and_GDP_growth_difference</of>
 				</alias>
+				<alias font_style="italic" uid="175" x="724" y="1071" width="18" height="18">
+					<of>total_investment</of>
+				</alias>
 			</view>
 		</views>
 	</model>
@@ -10292,7 +10253,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<eqn>1</eqn>
 				<units>years</units>
 			</aux>
-			<aux name="GDP\ngrowth rate" access="output" isee:autocreated="true">
+			<aux name="nominal GDP\ngrowth rate" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -10315,13 +10276,6 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<eqn>(Nominal_GDP-Average_GDP)/time_to_measure_GDP_growth_rate</eqn>
 				<units>b$/year/years</units>
 			</flow>
-			<aux name="consumption share\nof GDP">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>private_consumption_1/Nominal_GDP</eqn>
-				<units>dmnl</units>
-			</aux>
 			<aux name="initial average GDP">
 				<dimensions>
 					<dim name="Run"/>
@@ -10369,6 +10323,13 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				</dimensions>
 				<eqn>Nominal_GDP/Inflation_Index</eqn>
 				<units>b$/year</units>
+			</aux>
+			<aux name="real GDP growth rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>TREND(&quot;Real_GDP_in_2021$&quot;, time_to_measure_GDP_growth_rate)</eqn>
+				<units>dmnl/year</units>
 			</aux>
 		</variables>
 		<views>
@@ -10419,7 +10380,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="34" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -10460,7 +10421,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				</style>
 				<aux x="185.07" y="246.42" name="Nominal GDP"/>
 				<aux x="369.02" y="278.96" name="time to measure\nGDP growth\nrate"/>
-				<aux label_side="top" x="293.14" y="306.96" name="GDP\ngrowth rate"/>
+				<aux label_side="top" x="293.14" y="306.96" name="nominal GDP\ngrowth rate"/>
 				<stock label_side="right" x="451.67" y="321.46" name="Average\nGDP"/>
 				<flow label_side="right" x="455" y="245.48" name="change in\naverage GDP">
 					<pts>
@@ -10470,7 +10431,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				</flow>
 				<connector uid="1" angle="259.87">
 					<from>Average_GDP</from>
-					<to>GDP_growth_rate</to>
+					<to>nominal_GDP_growth_rate</to>
 				</connector>
 				<connector uid="2" angle="127.011">
 					<from>Average_GDP</from>
@@ -10478,7 +10439,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				</connector>
 				<connector uid="3" angle="200.254">
 					<from>time_to_measure_GDP_growth_rate</from>
-					<to>GDP_growth_rate</to>
+					<to>nominal_GDP_growth_rate</to>
 				</connector>
 				<connector uid="4" angle="21.2756">
 					<from>time_to_measure_GDP_growth_rate</from>
@@ -10490,12 +10451,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				</connector>
 				<connector uid="6" angle="330.743">
 					<from>Nominal_GDP</from>
-					<to>GDP_growth_rate</to>
-				</connector>
-				<aux x="185.07" y="370.54" name="consumption share\nof GDP"/>
-				<connector uid="7" angle="270">
-					<from>Nominal_GDP</from>
-					<to>consumption_share_of_GDP</to>
+					<to>nominal_GDP_growth_rate</to>
 				</connector>
 				<aux x="708.14" y="102.42" name="initial average GDP"/>
 				<connector uid="8" angle="217.403">
@@ -10529,10 +10485,6 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 					<from>private_consumption_1</from>
 					<to>Nominal_GDP</to>
 				</connector>
-				<connector uid="15" angle="328.081">
-					<from>private_consumption_1</from>
-					<to>consumption_share_of_GDP</to>
-				</connector>
 				<stock font_style="italic" font_weight="bold" x="167" y="570" name="Inflation Index"/>
 				<aux x="301" y="493" name="Real GDP in 2021$"/>
 				<connector uid="23" angle="310.746">
@@ -10542,6 +10494,15 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<connector uid="24" angle="22.0113">
 					<from>Inflation_Index</from>
 					<to>&quot;Real_GDP_in_2021$&quot;</to>
+				</connector>
+				<aux x="455" y="493" name="real GDP growth rate"/>
+				<connector uid="25" angle="24.444">
+					<from>&quot;Real_GDP_in_2021$&quot;</from>
+					<to>real_GDP_growth_rate</to>
+				</connector>
+				<connector uid="26" angle="308.826">
+					<from>time_to_measure_GDP_growth_rate</from>
+					<to>real_GDP_growth_rate</to>
 				</connector>
 				<alias font_style="italic" label_side="top" uid="9" x="735" y="66" width="18" height="18">
 					<of>Nominal_GDP</of>
@@ -10639,12 +10600,13 @@ government_interest_payments</eqn>
 			<aux name="public\nconsumption to transfers\nratio">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.700005158689021</eqn>
+				<eqn>0.705011963485162</eqn>
 				<range min="0.7" max="1"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial government debt" access="output" isee:autocreated="true">
-				<eqn>19448</eqn>
+				<eqn>19450.9812554021</eqn>
+				<range min="15000" max="25000"/>
 				<units>B$</units>
 			</aux>
 			<aux name="government\nconsumption" access="output">
@@ -10673,7 +10635,7 @@ government_interest_payments</eqn>
 			<aux name="GDP\nperception time">
 				<doc>${Calibration,Calibration Parameter}
 </doc>
-				<eqn>2.00751831962944</eqn>
+				<eqn>2.00826471922504</eqn>
 				<range min="1" max="3"/>
 				<units>Years</units>
 			</aux>
@@ -10694,7 +10656,7 @@ government_interest_payments</eqn>
 			<aux name="investment share of\npublic expenditure">
 				<doc>${Assumption,Calibration Parameter}
 https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/component/e2ee1eb1-en</doc>
-				<eqn>0.0655715104221889</eqn>
+				<eqn>0.0634351251189547</eqn>
 				<range min="0.04" max="0.16"/>
 				<units>dmnl</units>
 			</aux>
@@ -10759,44 +10721,6 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 				<eqn>inflation-central_bank_goal_inflation</eqn>
 				<units>1/year</units>
 			</aux>
-			<stock name="safe interest test">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>0.02</eqn>
-				<inflow>change_in_safe_interest_test</inflow>
-				<units>1/year</units>
-			</stock>
-			<flow name="change in safe\ninterest test">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(central_bank_reactivity_test*inflation_target_discrepancy_1-safe_interest_test+baseline_interest_test)/central_bank_adjustment_time_test</eqn>
-				<units>1/year/Year</units>
-			</flow>
-			<aux name="inflation test">
-				<eqn>0.06</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="inflation\ntarget\ndiscrepancy 1">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>MAX(-baseline_interest_test, inflation_test-central_bank_goal_inflation)</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="central bank\nreactivity test">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="central bank adjustment time test">
-				<eqn>2</eqn>
-				<units>Years</units>
-			</aux>
-			<aux name="baseline interest test">
-				<eqn>0.02</eqn>
-				<units>1/year</units>
-			</aux>
 			<stock name="Central Bank\nSafe Interest">
 				<dimensions>
 					<dim name="Run"/>
@@ -10832,74 +10756,9 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 				<units>1/year</units>
 			</aux>
 			<aux name="initial safe interest">
-				<eqn>0.03</eqn>
+				<eqn>0.02998233384581</eqn>
 				<range min="0" max="0.2"/>
 				<units>1/year</units>
-			</aux>
-			<stock name="safe interest test 1">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>0.02</eqn>
-				<inflow>change_in_safe_interest_test_1</inflow>
-				<units>1/year</units>
-			</stock>
-			<flow name="change in safe\ninterest test 1">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(central_bank_reactivity_test_1*interest_rate_policy_discrepancy_adfadf-safe_interest_test_1+baseline_interest_test_1)/central_bank_adjustment_time_test_1</eqn>
-				<units>1/year/Year</units>
-			</flow>
-			<aux name="inflation test 1">
-				<eqn>0.06</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="inflation\ntarget\ndiscrepancy 2">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>inflation_test_1-central_bank_goal_inflation</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="central bank\nreactivity test 1">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="central bank adjustment time test 1">
-				<eqn>2</eqn>
-				<units>Years</units>
-			</aux>
-			<aux name="baseline interest test 1">
-				<eqn>0.02</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="central bank goal\nunemployment 2">
-				<eqn>0.05</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="unemployment test">
-				<eqn>0.06</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="unemployment\ntarget discrepancy 2">
-				<eqn>central_bank_goal_unemployment_2-unemployment_test</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="interest rate\npolicy discrepancy adfadf">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>MAX(-baseline_interest_test_1, inflation_target_discrepancy_2*inflation_weight_2+unemployment_target_discrepancy_2*unemployment_weight_2)</eqn>
-				<units>dmnl/year</units>
-			</aux>
-			<aux name="unemployment weight 2">
-				<eqn>0.25</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="inflation weight 2">
-				<eqn>0.75</eqn>
-				<units>dmnl</units>
 			</aux>
 			<aux name="unemployment\ntarget discrepancy">
 				<dimensions>
@@ -11013,7 +10872,7 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="4" isee:scroll_x="17" isee:scroll_y="600" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="4" isee:scroll_x="34" isee:scroll_y="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -11206,54 +11065,6 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 					<from>central_bank_goal_inflation</from>
 					<to>inflation_target_discrepancy</to>
 				</connector>
-				<stock x="418.797" y="1197.5" name="safe interest test"/>
-				<flow label_side="left" label_angle="135" x="418.797" y="1260.09" name="change in safe\ninterest test">
-					<pts>
-						<pt x="418.797" y="1314.17"/>
-						<pt x="418.797" y="1215"/>
-					</pts>
-				</flow>
-				<aux label_side="top" x="138.333" y="1215" name="inflation test"/>
-				<aux x="242.666" y="1263.83" name="inflation\ntarget\ndiscrepancy 1"/>
-				<connector uid="31" angle="30.1504">
-					<from>
-						<alias uid="32"/>
-					</from>
-					<to>inflation_target_discrepancy_1</to>
-				</connector>
-				<connector uid="33" angle="336.038">
-					<from>inflation_test</from>
-					<to>inflation_target_discrepancy_1</to>
-				</connector>
-				<aux label_side="right" x="498.167" y="1301.17" name="central bank\nreactivity test"/>
-				<aux label_side="right" x="498.167" y="1213.83" name="central bank adjustment time test"/>
-				<connector uid="34" angle="210.233">
-					<from>central_bank_adjustment_time_test</from>
-					<to>change_in_safe_interest_test</to>
-				</connector>
-				<connector uid="35" angle="152.632">
-					<from>central_bank_reactivity_test</from>
-					<to>change_in_safe_interest_test</to>
-				</connector>
-				<connector uid="36" angle="1.21807">
-					<from>inflation_target_discrepancy_1</from>
-					<to>change_in_safe_interest_test</to>
-				</connector>
-				<connector uid="37" angle="228.703">
-					<from>safe_interest_test</from>
-					<to>change_in_safe_interest_test</to>
-				</connector>
-				<aux label_side="right" x="498.167" y="1260.09" name="baseline interest test"/>
-				<connector uid="38" angle="179.996">
-					<from>baseline_interest_test</from>
-					<to>change_in_safe_interest_test</to>
-				</connector>
-				<connector uid="39" angle="269.438">
-					<from>
-						<alias uid="40"/>
-					</from>
-					<to>inflation_target_discrepancy_1</to>
-				</connector>
 				<stock label_side="top" x="535.797" y="815.167" name="Central Bank\nSafe Interest"/>
 				<flow label_side="left" label_angle="135" x="535.797" y="877.752" name="change in\nsafe interest">
 					<pts>
@@ -11294,84 +11105,6 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 					<to>inflation_target_discrepancy</to>
 				</connector>
 				<aux label_side="right" x="607.834" y="751.5" name="initial safe interest"/>
-				<stock x="714.63" y="1440.17" name="safe interest test 1"/>
-				<flow label_side="left" label_angle="135" x="714.63" y="1502.76" name="change in safe\ninterest test 1">
-					<pts>
-						<pt x="714.63" y="1556.84"/>
-						<pt x="714.63" y="1457.67"/>
-					</pts>
-				</flow>
-				<aux label_side="top" x="152.5" y="1456.83" name="inflation test 1"/>
-				<aux x="256.833" y="1505.67" name="inflation\ntarget\ndiscrepancy 2"/>
-				<connector uid="48" angle="30.1504">
-					<from>
-						<alias uid="49"/>
-					</from>
-					<to>inflation_target_discrepancy_2</to>
-				</connector>
-				<connector uid="50" angle="336.038">
-					<from>inflation_test_1</from>
-					<to>inflation_target_discrepancy_2</to>
-				</connector>
-				<aux label_side="right" x="794" y="1543.84" name="central bank\nreactivity test 1"/>
-				<aux label_side="right" x="794" y="1456.5" name="central bank adjustment time test 1"/>
-				<connector uid="51" angle="210.233">
-					<from>central_bank_adjustment_time_test_1</from>
-					<to>change_in_safe_interest_test_1</to>
-				</connector>
-				<connector uid="52" angle="152.632">
-					<from>central_bank_reactivity_test_1</from>
-					<to>change_in_safe_interest_test_1</to>
-				</connector>
-				<connector uid="53" angle="359.118">
-					<from>inflation_target_discrepancy_2</from>
-					<to>interest_rate_policy_discrepancy_adfadf</to>
-				</connector>
-				<connector uid="54" angle="228.703">
-					<from>safe_interest_test_1</from>
-					<to>change_in_safe_interest_test_1</to>
-				</connector>
-				<aux label_side="right" x="794" y="1502.75" name="baseline interest test 1"/>
-				<connector uid="55" angle="180.004">
-					<from>baseline_interest_test_1</from>
-					<to>change_in_safe_interest_test_1</to>
-				</connector>
-				<aux label_side="bottom" x="100.834" y="1689.67" name="central bank goal\nunemployment 2"/>
-				<aux label_side="top" x="100.834" y="1645" name="unemployment test"/>
-				<aux x="205.167" y="1671.67" name="unemployment\ntarget discrepancy 2"/>
-				<connector uid="56" angle="353.367">
-					<from>unemployment_test</from>
-					<to>unemployment_target_discrepancy_2</to>
-				</connector>
-				<connector uid="57" angle="7.42008">
-					<from>central_bank_goal_unemployment_2</from>
-					<to>unemployment_target_discrepancy_2</to>
-				</connector>
-				<aux x="484.167" y="1509.17" name="interest rate\npolicy discrepancy adfadf"/>
-				<connector uid="58" angle="356.151">
-					<from>
-						<alias uid="59"/>
-					</from>
-					<to>interest_rate_policy_discrepancy_adfadf</to>
-				</connector>
-				<connector uid="60" angle="355.567">
-					<from>unemployment_target_discrepancy_2</from>
-					<to>interest_rate_policy_discrepancy_adfadf</to>
-				</connector>
-				<aux label_side="top" x="427.963" y="1413.67" name="unemployment weight 2"/>
-				<aux label_side="top" x="532.5" y="1413.67" name="inflation weight 2"/>
-				<connector uid="61" angle="299.697">
-					<from>unemployment_weight_2</from>
-					<to>interest_rate_policy_discrepancy_adfadf</to>
-				</connector>
-				<connector uid="62" angle="243.156">
-					<from>inflation_weight_2</from>
-					<to>interest_rate_policy_discrepancy_adfadf</to>
-				</connector>
-				<connector uid="63" angle="350.074">
-					<from>interest_rate_policy_discrepancy_adfadf</from>
-					<to>change_in_safe_interest_test_1</to>
-				</connector>
 				<aux label_side="top" x="215.41" y="1005.83" name="unemployment\ntarget discrepancy"/>
 				<aux label_side="left" label_angle="225" x="355" y="909.833" name="interest rate\npolicy discrepancy"/>
 				<aux label_side="right" x="215.41" y="1061.67" name="central bank goal\nunemployment"/>
@@ -11434,22 +11167,8 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 					<from>required_last_resort_lending</from>
 					<to>bailing_out_banks</to>
 				</connector>
-				<alias color="blue" background="white" font_style="italic" uid="32" x="132.666" y="1313.5" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>central_bank_goal_inflation</of>
-				</alias>
-				<alias font_style="italic" label_side="top" uid="40" x="234.333" y="1186.83" width="18" height="18">
-					<of>baseline_interest_test</of>
-				</alias>
 				<alias font_style="italic" label_side="right" label_angle="315" uid="73" x="385.797" y="954.5" width="18" height="18">
 					<of>baseline_interest</of>
-				</alias>
-				<alias color="blue" background="white" font_style="italic" uid="49" x="146.833" y="1555.34" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>central_bank_goal_inflation</of>
-				</alias>
-				<alias font_style="italic" label_side="top" uid="59" x="248.5" y="1428.67" width="18" height="18">
-					<of>baseline_interest_test_1</of>
 				</alias>
 			</view>
 		</views>
@@ -11881,7 +11600,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 			<aux name="weight of marginal energy\ncost inflation">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.0226624867612089</eqn>
+				<eqn>0.0226968479699169</eqn>
 				<range min="0" max="5"/>
 				<units>dmnl</units>
 			</aux>
@@ -11909,7 +11628,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 			<aux name="weight of cropland inflation contribution">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.320138716204488</eqn>
+				<eqn>0.320112987772218</eqn>
 				<range min="0" max="5"/>
 				<units>dmnl</units>
 			</aux>
@@ -11941,7 +11660,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 			<aux name="weight of fertilizer used per unit of crop production">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0</eqn>
+				<eqn>0.000414628871023706</eqn>
 				<range min="0" max="5"/>
 				<units>dmnl</units>
 			</aux>
@@ -11969,7 +11688,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 			<aux name="weight of feed\nper unit of animal\nproduct production">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.286690835651075</eqn>
+				<eqn>0.286747270505357</eqn>
 				<range min="0" max="5"/>
 				<units>dmnl</units>
 			</aux>
@@ -11997,7 +11716,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 			<aux name="weight of grazing land inflation contribution">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0</eqn>
+				<eqn>0.000569889299466996</eqn>
 				<range min="0" max="5"/>
 				<units>dmnl</units>
 			</aux>
@@ -12029,17 +11748,17 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 			<aux name="weight of irrigation water used per unit of crop production inflation contribution">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.00671047384136781</eqn>
+				<eqn>0.00667254982984415</eqn>
 				<range min="0" max="5"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial inflation index" access="output" isee:autocreated="true">
-				<eqn>0.396528588695431</eqn>
+				<eqn>0.370308463270478</eqn>
 				<range min="0" max="1"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial inflation rate">
-				<eqn>0.0496964414354681</eqn>
+				<eqn>0.0497260393383785</eqn>
 				<range min="0" max="0.1"/>
 				<units>1/year</units>
 			</aux>
@@ -12631,7 +12350,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 			<aux name="normal time to decrease innovation orientation">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>10.0289433244788</eqn>
+				<eqn>10.0288238992584</eqn>
 				<range min="5" max="20"/>
 				<units>years</units>
 			</aux>
@@ -12703,7 +12422,7 @@ ELSE MAX(0, Firms_Innovation_Orientation//time_to_decrease_innovation_orientatio
 			<aux name="sensitivity of\nfirms innovation orientation\nto cash deceleration">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>1.00462946412577</eqn>
+				<eqn>1.00574046220132</eqn>
 				<range min="0" max="20"/>
 				<units>dmnl</units>
 			</aux>
@@ -12740,7 +12459,7 @@ ELSE MAX(0, Firms_Innovation_Orientation//time_to_decrease_innovation_orientatio
 			<aux name="sensitivity of innovation\ndecrease to cash growth">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>10</eqn>
+				<eqn>9.99929039943196</eqn>
 				<range min="0" max="20"/>
 				<units>dmnl</units>
 			</aux>
