@@ -474,6 +474,8 @@
 				<connect2 to="Finance.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect to="Finance.switch_only_economy_energy_damage_1" from="Climate.switch_only_economy_energy_damage"/>
 				<connect2 to="Finance.switch_only_economy_energy_damage_1" from="Climate.switch_only_economy_energy_damage"/>
+				<connect to="Finance.today" from="Climate.today"/>
+				<connect2 to="Finance.today" from="Climate.today"/>
 				<connect to="Finance.Worker_Savings_1" from="Circular_Flow.Worker_Savings"/>
 				<connect2 to="Finance.Worker_Savings_1" from="Circular_Flow.Worker_Savings"/>
 			</module>
@@ -692,7 +694,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="342" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2777,7 +2779,10 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>1+sensitivity_of_effect_of_sta_on_failure_rate*(Surface_Temperature_Anomaly)*switch_for_all_climate_damage*switch_only_economy_energy_damage_1</eqn>
+				<eqn>IF (switch_for_all_climate_damage = 0 OR switch_only_economy_energy_damage_1 = 0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+1+sensitivity_of_effect_of_sta_on_failure_rate*(Surface_Temperature_Anomaly)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="sensitivity of effect of sta on failure rate">
@@ -3191,6 +3196,10 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<eqn>1000000000</eqn>
 				<units>$/b$</units>
 			</aux>
+			<aux name="today" access="input">
+				<eqn>2025</eqn>
+				<units>year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -3240,7 +3249,7 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="2030" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="197" isee:scroll_y="516" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4129,6 +4138,11 @@ share_of_gdp_invested_in_energy_expectation_formation_time)</eqn>
 				<connector uid="124" angle="310.333">
 					<from>&quot;2017b$_to_2017$&quot;</from>
 					<to>all_energy_investments_in_billion_dollars</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1792" y="796" name="today"/>
+				<connector uid="176" angle="207.824">
+					<from>today</from>
+					<to>effect_of_STA_on_failure_rate</to>
 				</connector>
 				<alias label_side="right" uid="27" x="1661.17" y="996.547" width="18" height="18">
 					<of>loan_maturation_time</of>

@@ -221,20 +221,6 @@
 	</model_units>
 	<model name="Demographics">
 		<variables>
-			<aux name="GDP per person" access="output">
-				<doc>${Calibrated}
-Penn World Table version 10.01 (Friedlingstein et al. 2022)
-
-Feenstra RC, Inklaar R, Timmer MP. 2015. The Next Generation of the Penn World Table. American Economic Review 105(10): 3150-3182. DOI: 10.1257/aer.20130954, available for download at www.ggdc.net/pwt
-
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>NAN</eqn>
-				<format precision="full"/>
-				<units>b$/Mp/year</units>
-			</aux>
 			<stock name="Aged 20 to 40 years" access="output" isee:autocreated="true">
 				<doc>${Calibrated}
 </doc>
@@ -1397,7 +1383,10 @@ Calibration Parameter: fertility</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>1 + (&quot;Factor_for_hot_mortality_0-65&quot;*Temperature_impact_on_hot_mortality + &quot;Factor_for_cold_mortality_0-65&quot;*Temperature_impact_on_cold_mortality)*switch_for_all_climate_damage</eqn>
+				<eqn>IF (switch_for_all_climate_damage = 0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+1 + (&quot;Factor_for_hot_mortality_0-65&quot;*Temperature_impact_on_hot_mortality + &quot;Factor_for_cold_mortality_0-65&quot;*Temperature_impact_on_cold_mortality)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Factor for cold\nmortality 0-65">
@@ -1428,14 +1417,20 @@ Calibration Parameter: fertility</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>1 + (&quot;Factor_for_hot_mortality_65-75&quot;*Temperature_impact_on_hot_mortality + &quot;Factor_for_cold_mortality_65-75&quot;*Temperature_impact_on_cold_mortality)*switch_for_all_climate_damage</eqn>
+				<eqn>IF (switch_for_all_climate_damage = 0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+1 + (&quot;Factor_for_hot_mortality_65-75&quot;*Temperature_impact_on_hot_mortality + &quot;Factor_for_cold_mortality_65-75&quot;*Temperature_impact_on_cold_mortality)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Effect of Temperature on\nmortality 75 plus">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>1 + (Factor_for_hot_mortality_75_plus*Temperature_impact_on_hot_mortality + Factor_for_cold_mortality_75_plus*Temperature_impact_on_cold_mortality)*switch_for_all_climate_damage</eqn>
+				<eqn>IF (switch_for_all_climate_damage = 0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+1 + (Factor_for_hot_mortality_75_plus*Temperature_impact_on_hot_mortality + Factor_for_cold_mortality_75_plus*Temperature_impact_on_cold_mortality)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="60-65 cohort length">
@@ -1608,6 +1603,10 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<eqn>Nominal_GDP/Population</eqn>
 				<units>b$/Mp/year</units>
 			</aux>
+			<aux name="today" access="input">
+				<eqn>2025</eqn>
+				<units>year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -1657,7 +1656,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="5" isee:scroll_x="767.5" isee:scroll_y="1442.5" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="5" isee:scroll_x="1013.75" isee:scroll_y="1502.5" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1736,7 +1735,6 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<aux label_side="left" label_angle="135" x="904.999" y="1010.33" name="fraction women"/>
 				<aux label_side="right" x="1666.58" y="1569.67" name="death rate"/>
 				<stock label_side="top" x="530" y="1582.67" name="fertility"/>
-				<aux label_side="left" label_angle="135" x="1546.67" y="1899.5" name="GDP per person"/>
 				<aux label_side="left" label_angle="135" x="1599.33" y="1523.67" name="population growth rate"/>
 				<connector uid="1" angle="145.627">
 					<from>death_rate</from>
@@ -2528,6 +2526,19 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<connector uid="216" angle="197.857">
 					<from>average_relative_nominal_GDP_per_person</from>
 					<to>effect_of_GDP_on_change_in_fertility</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1858.75" y="2067.5" name="today"/>
+				<connector uid="217" angle="189.401">
+					<from>today</from>
+					<to>&quot;Effect_of_Temperature_on_mortality_0-65&quot;</to>
+				</connector>
+				<connector uid="218" angle="220.935">
+					<from>today</from>
+					<to>&quot;Effect_of_Temperature_on_mortality_65-75&quot;</to>
+				</connector>
+				<connector uid="219" angle="282.543">
+					<from>today</from>
+					<to>Effect_of_Temperature_on_mortality_75_plus</to>
 				</connector>
 				<alias font_style="italic" uid="46" x="1114.67" y="1688.83" width="18" height="18">
 					<of>average_relative_nominal_GDP_per_person</of>
