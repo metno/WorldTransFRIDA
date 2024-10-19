@@ -612,6 +612,8 @@
 				<connect2 to="Freshwater.switch_irrigation_fraction_policy" from="Government_Regulations.switch_irrigation_fraction_policy"/>
 				<connect to="Freshwater.switch_non_agricultural_water_use_policy" from="Government_Regulations.switch_non_agricultural_water_use_policy"/>
 				<connect2 to="Freshwater.switch_non_agricultural_water_use_policy" from="Government_Regulations.switch_non_agricultural_water_use_policy"/>
+				<connect to="Freshwater.today" from="Climate.today"/>
+				<connect2 to="Freshwater.today" from="Climate.today"/>
 			</module>
 			<module name="Soil" isee:label="">
 				<format scale_by="auto"/>
@@ -833,6 +835,8 @@
 				<connect2 to="Crop.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Crop.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect2 to="Crop.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
+				<connect to="Crop.today" from="Climate.today"/>
+				<connect2 to="Crop.today" from="Climate.today"/>
 			</module>
 			<aux name="man made fertilizer use" access="input">
 				<dimensions>
@@ -2091,7 +2095,10 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>initial_crop_yield*effect_of_STA_on_crop_yield*switch_for_all_climate_damage</eqn>
+				<eqn>IF (switch_for_all_climate_damage = 0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+initial_crop_yield*effect_of_STA_on_crop_yield</eqn>
 				<units>PCal/(Mha*year)</units>
 			</aux>
 			<aux name="effect of STA on\ncrop yield">
@@ -2115,7 +2122,10 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>initial_crop_yield*effect_of_STA_squared_on_crop_yield*switch_for_all_climate_damage</eqn>
+				<eqn>IF (switch_for_all_climate_damage = 0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
 				<units>PCal/(Mha*year)</units>
 			</aux>
 			<aux name="effect of STA squared on\ncrop yield">
@@ -2319,6 +2329,10 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<eqn>agricultural_water_withdrawal/crop_production</eqn>
 				<units>Million^3/PCal</units>
 			</aux>
+			<aux name="today" access="input">
+				<eqn>2025</eqn>
+				<units>year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -2368,7 +2382,7 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="4" isee:scroll_x="2006.43" isee:scroll_y="992.143" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="4" isee:scroll_x="1152.14" isee:scroll_y="1624.29" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2748,6 +2762,15 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<connector uid="76" angle="37.2348">
 					<from>agricultural_water_withdrawal</from>
 					<to>irrigation_water_used_per_unit_of_crop_production</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1480.71" y="1994.29" name="today"/>
+				<connector uid="78" angle="117.089">
+					<from>today</from>
+					<to>change_in_crop_yield_from_STA</to>
+				</connector>
+				<connector uid="79" angle="95.7825">
+					<from>today</from>
+					<to>change_in_crop_yield_from_STA_squared</to>
 				</connector>
 				<alias color="blue" background="white" font_style="italic" uid="33" x="1283.74" y="1482.07" width="18" height="18">
 					<shape type="circle" radius="18"/>
@@ -4001,7 +4024,10 @@ ELSE
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>1 + switch_for_climate_damage*sensitivity_of_surface_temperature_anomaly_on_water_used_per_Mtcrop * Surface_Temperature_Anomaly</eqn>
+				<eqn>IF (switch_for_climate_damage = 0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+1 + sensitivity_of_surface_temperature_anomaly_on_water_used_per_Mtcrop * Surface_Temperature_Anomaly</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="water withdrawal per\nMHa irrigated 1980">
@@ -4278,6 +4304,10 @@ ELSE
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/Mp/year</units>
 			</aux>
+			<aux name="today" access="input">
+				<eqn>2025</eqn>
+				<units>year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -4327,7 +4357,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="523" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4685,6 +4715,11 @@ the less future investment due to crowding out of more profitable forms of inves
 						<alias uid="67"/>
 					</from>
 					<to>fraction_of_cropland_irrigated_indicated_by_GDP_per_person</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1114" y="378" name="today"/>
+				<connector uid="70" angle="196.699">
+					<from>today</from>
+					<to>effect_of_surface_temperature_anomaly_on_water_lost_to_evapotranspiration</to>
 				</connector>
 				<alias font_style="italic" uid="36" x="1328.66" y="844.667" width="18" height="18">
 					<of>total_water_withdrawal</of>

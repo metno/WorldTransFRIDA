@@ -458,6 +458,8 @@
 				<connect2 to="energy_demand.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect to="energy_demand.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
 				<connect2 to="energy_demand.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
+				<connect to="energy_demand.today" from="Climate.today"/>
+				<connect2 to="energy_demand.today" from="Climate.today"/>
 			</module>
 			<module name="energy investments" isee:label="">
 				<format scale_by="auto"/>
@@ -594,12 +596,16 @@
 				<connect2 to="Damages.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect to="Damages.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
 				<connect2 to="Damages.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
+				<connect to="Damages.today" from="Climate.today"/>
+				<connect2 to="Damages.today" from="Climate.today"/>
 				<connect to="efficiency_reduction_in_power_plants.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="efficiency_reduction_in_power_plants.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="efficiency_reduction_in_power_plants.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect2 to="efficiency_reduction_in_power_plants.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect to="efficiency_reduction_in_power_plants.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
 				<connect2 to="efficiency_reduction_in_power_plants.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
+				<connect to="efficiency_reduction_in_power_plants.today" from="Climate.today"/>
+				<connect2 to="efficiency_reduction_in_power_plants.today" from="Climate.today"/>
 				<connect to="Energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy" from="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy"/>
 				<connect2 to="conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy" from="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy"/>
 				<connect to='Energy."Primary_Fossil_Energy_(FUEL)"' from="fossil_energy.Primary_Fossil_Energy_FUEL"/>
@@ -3106,9 +3112,12 @@ For Calibration of Heating/Cooling to
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>per_person_use_of_energy
+				<eqn>{IF (Climate.switch_for_all_climate_damage = 0 OR Climate.switch_only_economy_energy_damage = 0) AND TIME &gt; Climate.today THEN
+PREVIOUS(SELF, 0)
+ELSE}
+(per_person_use_of_energy
 +
-switch_for_all_climate_damage*switch_only_economy_energy_damage*total_change_in_energy_used_for_heating_and_cooling_due_to_climate_change</eqn>
+total_change_in_energy_used_for_heating_and_cooling_due_to_climate_change)</eqn>
 				<units>MWh/(p*year)</units>
 			</aux>
 			<aux name="demand for energy" access="output" isee:autocreated="true">
@@ -3299,6 +3308,10 @@ historical_demand_for_energy)</eqn>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/Mp/year</units>
 			</aux>
+			<aux name="today" access="input">
+				<eqn>2025</eqn>
+				<units>year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -3348,7 +3361,7 @@ historical_demand_for_energy)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_y="482.857" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="280" isee:scroll_y="355" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3567,14 +3580,6 @@ historical_demand_for_energy)</eqn>
 					<from>total_change_in_energy_used_for_heating_and_cooling_due_to_climate_change</from>
 					<to>climate_adjusted_per_person_use_of_energy</to>
 				</connector>
-				<connector uid="79" angle="287.966">
-					<from>switch_for_all_climate_damage</from>
-					<to>climate_adjusted_per_person_use_of_energy</to>
-				</connector>
-				<connector uid="80" angle="249.978">
-					<from>switch_only_economy_energy_damage</from>
-					<to>climate_adjusted_per_person_use_of_energy</to>
-				</connector>
 				<aux x="607.625" y="377.75" name="total change in energy used for\nheating and cooling\ndue to climate change in GJ"/>
 				<connector uid="81" angle="0">
 					<from>Change_in_energy_used_for_cooling_due_to_climate_change</from>
@@ -3608,6 +3613,7 @@ This affects the energy use per CCD, energy use per HDD variables. Any change in
 					<from>nominal_GDP_per_person</from>
 					<to>relative_GDP_per_person</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" x="771.429" y="667.857" name="today"/>
 			</view>
 		</views>
 	</model>
@@ -6091,6 +6097,8 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="Damages.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect to="Damages.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
 				<connect2 to="Damages.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
+				<connect to="Damages.today" from="Climate.today"/>
+				<connect2 to="Damages.today" from="Climate.today"/>
 			</module>
 			<module name="fossil energy" isee:label="">
 				<format scale_by="auto"/>
@@ -6502,6 +6510,8 @@ This is total energy production of both fossil and renewable</doc>
 				<connect2 to="efficiency_reduction_in_power_plants.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
 				<connect to="efficiency_reduction_in_power_plants.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
 				<connect2 to="efficiency_reduction_in_power_plants.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
+				<connect to="efficiency_reduction_in_power_plants.today" from="Climate.today"/>
+				<connect2 to="efficiency_reduction_in_power_plants.today" from="Climate.today"/>
 			</module>
 			<aux name="Bio Energy\nOutput Share">
 				<dimensions>
@@ -6566,7 +6576,7 @@ This is total energy production of both fossil and renewable</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="20.7143" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="20.7143" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -6852,8 +6862,10 @@ This is total energy production of both fossil and renewable</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SWITCH_energy_capital_damages_from_STA*switch_for_all_climate_damage*switch_only_economy_energy_damage*
-((Slope_of_Capital_Damage_Function*switched_surface_temperature_anomaly)^Exponent_of_Capital_Damage_Function)/time_for_STA_to_impact_energy_capital</eqn>
+				<eqn>IF (switch_for_all_climate_damage = 0 OR switch_only_economy_energy_damage = 0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+(SWITCH_energy_capital_damages_from_STA*((Slope_of_Capital_Damage_Function*switched_surface_temperature_anomaly)^Exponent_of_Capital_Damage_Function)/time_for_STA_to_impact_energy_capital)</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="Slope of Capital Damage Function">
@@ -6899,6 +6911,10 @@ historical_surface_temperature_anomaly</eqn>
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
+			<aux name="today" access="input">
+				<eqn>2025</eqn>
+				<units>year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -6948,7 +6964,7 @@ historical_surface_temperature_anomaly</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" zoom="300" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -6989,19 +7005,11 @@ historical_surface_temperature_anomaly</eqn>
 				</style>
 				<aux font_style="italic" font_weight="bold" x="219" y="234" name="switch for all climate damage"/>
 				<aux font_style="italic" font_weight="bold" x="353" y="258" name="switch only economy energy damage"/>
-				<aux font_style="italic" font_weight="bold" x="113" y="171" name="Surface Temperature Anomaly"/>
+				<aux font_style="italic" font_weight="bold" x="36.75" y="174.21" name="Surface Temperature Anomaly"/>
 				<aux x="438.25" y="179.25" name="time for STA to impact energy\ncapital"/>
 				<aux x="263.917" y="156.21" name="damage rate of energy\ncapital from STA"/>
 				<aux x="181.75" y="89.5" name="Slope of Capital Damage Function"/>
 				<aux x="329.5" y="89.5" name="Exponent of Capital Damage Function"/>
-				<connector uid="1" angle="90">
-					<from>switch_only_economy_energy_damage</from>
-					<to>damage_rate_of_energy_capital_from_STA</to>
-				</connector>
-				<connector uid="2" angle="74.0546">
-					<from>switch_for_all_climate_damage</from>
-					<to>damage_rate_of_energy_capital_from_STA</to>
-				</connector>
 				<connector uid="3" angle="171.87">
 					<from>time_for_STA_to_impact_energy_capital</from>
 					<to>damage_rate_of_energy_capital_from_STA</to>
@@ -7014,7 +7022,7 @@ historical_surface_temperature_anomaly</eqn>
 					<from>Slope_of_Capital_Damage_Function</from>
 					<to>damage_rate_of_energy_capital_from_STA</to>
 				</connector>
-				<aux x="69" y="133" name="historical surface temperature anomaly"/>
+				<aux label_side="bottom" x="14.625" y="89.5" name="historical surface temperature anomaly"/>
 				<aux font_style="italic" font_weight="bold" x="102" y="65" name="SWITCH couple energy and climate"/>
 				<aux x="138" y="146" name="switched surface temperature anomaly"/>
 				<connector uid="7" angle="70">
@@ -7038,6 +7046,19 @@ historical_surface_temperature_anomaly</eqn>
 					<from>SWITCH_energy_capital_damages_from_STA</from>
 					<to>damage_rate_of_energy_capital_from_STA</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" x="445" y="107.5" name="today"/>
+				<connector uid="13" angle="84.9973">
+					<from>switch_for_all_climate_damage</from>
+					<to>damage_rate_of_energy_capital_from_STA</to>
+				</connector>
+				<connector uid="14" angle="156.191">
+					<from>switch_only_economy_energy_damage</from>
+					<to>damage_rate_of_energy_capital_from_STA</to>
+				</connector>
+				<connector uid="15" angle="220.056">
+					<from>today</from>
+					<to>damage_rate_of_energy_capital_from_STA</to>
+				</connector>
 			</view>
 		</views>
 	</model>
@@ -7047,7 +7068,10 @@ historical_surface_temperature_anomaly</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>1+ SWITCH_effect_of_STA_on_thermal_power_efficiency*switch_for_all_climate_damage*switch_only_economy_energy_damage*(effect_of_STA_on_thermal_power_energy_capacity_efficiency_slope*Surface_Temperature_Anomaly+effect_of_STA_on_thermal_power_energy_capacity_efficiency_quadratic*Surface_Temperature_Anomaly^2)/100</eqn>
+				<eqn>{IF (Climate.switch_for_all_climate_damage = 0 OR Climate.switch_only_economy_energy_damage = 0) AND TIME &gt; Climate.today THEN
+PREVIOUS(SELF, 0)
+ELSE}
+1+ SWITCH_effect_of_STA_on_thermal_power_efficiency*(effect_of_STA_on_thermal_power_energy_capacity_efficiency_slope*Surface_Temperature_Anomaly+effect_of_STA_on_thermal_power_energy_capacity_efficiency_quadratic*Surface_Temperature_Anomaly^2)/100</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of STA on thermal power\nenergy capacity\nefficiency slope">
@@ -7075,7 +7099,10 @@ historical_surface_temperature_anomaly</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>1+ SWITCH_effect_of_STA_on_hydropower_efficiency*switch_for_all_climate_damage*switch_only_economy_energy_damage*(effect_of_STA_on_hydropower_energy_capacity_efficiency_slope*Surface_Temperature_Anomaly+effect_of_STA_on_hydropower_energy_capacity_efficiency_quadratic*Surface_Temperature_Anomaly^2)/100</eqn>
+				<eqn>{IF (Climate.switch_for_all_climate_damage = 0 OR Climate.switch_only_economy_energy_damage = 0) AND TIME &gt; Climate.today THEN
+PREVIOUS(SELF, 0)
+ELSE}
+1+ SWITCH_effect_of_STA_on_hydropower_efficiency*(effect_of_STA_on_hydropower_energy_capacity_efficiency_slope*Surface_Temperature_Anomaly+effect_of_STA_on_hydropower_energy_capacity_efficiency_quadratic*Surface_Temperature_Anomaly^2)/100</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="effect of STA on hydropower\nenergy capacity efficiency slope">
@@ -7099,6 +7126,10 @@ historical_surface_temperature_anomaly</eqn>
 			<aux name="switch only economy energy damage" access="input">
 				<eqn>1</eqn>
 				<units>dmnl</units>
+			</aux>
+			<aux name="today" access="input">
+				<eqn>2025</eqn>
+				<units>year</units>
 			</aux>
 		</variables>
 		<views>
@@ -7149,7 +7180,7 @@ historical_surface_temperature_anomaly</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" zoom="220" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="224.375" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -7191,24 +7222,8 @@ historical_surface_temperature_anomaly</eqn>
 				<aux x="280.165" y="308.956" name="effect of STA on thermal power\nenergy capacity efficiency"/>
 				<aux x="403.242" y="243.956" name="effect of STA on thermal power\nenergy capacity\nefficiency slope"/>
 				<aux x="429.011" y="326.956" name="effect of STA on thermal power\nenergy capacity\nefficiency quadratic"/>
-				<connector uid="1" angle="162.233">
-					<from>effect_of_STA_on_thermal_power_energy_capacity_efficiency_quadratic</from>
-					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
-				</connector>
-				<connector uid="2" angle="207.597">
-					<from>effect_of_STA_on_thermal_power_energy_capacity_efficiency_slope</from>
-					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
-				</connector>
 				<aux x="124.333" y="373.431" name="SWITCH effect of STA on\nthermal power efficiency"/>
-				<connector uid="4" angle="22.4771">
-					<from>SWITCH_effect_of_STA_on_thermal_power_efficiency</from>
-					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
-				</connector>
 				<aux font_style="italic" font_weight="bold" x="714.648" y="194.091" name="Surface Temperature Anomaly"/>
-				<connector uid="5" angle="203.443">
-					<from>Surface_Temperature_Anomaly</from>
-					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
-				</connector>
 				<aux x="432.308" y="562.385" name="effect of STA on hydropower\nenergy capacity efficiency"/>
 				<aux x="581.154" y="489.79" name="effect of STA on hydropower\nenergy capacity efficiency slope"/>
 				<aux x="581.154" y="580.385" name="effect of STA on hydropower\nenergy capacity efficiency quadratic"/>
@@ -7230,22 +7245,23 @@ historical_surface_temperature_anomaly</eqn>
 					<to>effect_of_STA_on_hydropower_energy_capacity_efficiency</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="165.455" y="490.455" name="switch for all climate damage"/>
-				<connector uid="10" angle="54.0193">
-					<from>switch_for_all_climate_damage</from>
-					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
-				</connector>
-				<connector uid="11" angle="347.391">
-					<from>switch_for_all_climate_damage</from>
-					<to>effect_of_STA_on_hydropower_energy_capacity_efficiency</to>
-				</connector>
 				<aux font_style="italic" font_weight="bold" x="267.273" y="458.182" name="switch only economy energy damage"/>
-				<connector uid="12" angle="82.875">
-					<from>switch_only_economy_energy_damage</from>
+				<aux font_style="italic" font_weight="bold" x="413.182" y="463.182" name="today"/>
+				<connector uid="5" angle="203.443">
+					<from>Surface_Temperature_Anomaly</from>
 					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
 				</connector>
-				<connector uid="13" angle="319.332">
-					<from>switch_only_economy_energy_damage</from>
-					<to>effect_of_STA_on_hydropower_energy_capacity_efficiency</to>
+				<connector uid="4" angle="22.4771">
+					<from>SWITCH_effect_of_STA_on_thermal_power_efficiency</from>
+					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
+				</connector>
+				<connector uid="2" angle="207.597">
+					<from>effect_of_STA_on_thermal_power_energy_capacity_efficiency_slope</from>
+					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
+				</connector>
+				<connector uid="1" angle="162.233">
+					<from>effect_of_STA_on_thermal_power_energy_capacity_efficiency_quadratic</from>
+					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
 				</connector>
 			</view>
 		</views>
@@ -8832,7 +8848,7 @@ GtC_to_MtCO2</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="362.5" isee:scroll_y="488.125" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="919.375" isee:scroll_y="356.25" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -13650,7 +13666,7 @@ Calibrate to energy provision from renewable sources</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -14501,7 +14517,7 @@ ELSE
 						<pt x="428.214" y="623.571"/>
 						<pt x="248.214" y="657.071"/>
 						<pt x="77.2143" y="620.571"/>
-						<pt x="66.5482" y="556.987"/>
+						<pt x="66.5507" y="556.987"/>
 					</pts>
 					<from>Installation_of_bio_Capacity</from>
 					<to>accumulating_Renewable_Energy_Construction</to>
@@ -15010,7 +15026,7 @@ tax_for_newly_installed_hydropower_capacity</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" zoom="260" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="310" isee:scroll_y="425.385" zoom="260" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -15707,7 +15723,7 @@ tax_for_newly_installed_other_energy_capacity</eqn>
 						<pt x="532.5" y="651"/>
 						<pt x="459" y="717.5"/>
 						<pt x="199" y="729.5"/>
-						<pt x="184.866" y="672.725"/>
+						<pt x="184.869" y="672.726"/>
 					</pts>
 					<from>Installation_of_Other_Capacity</from>
 					<to>accumulating_Renewable_Energy_Construction</to>
