@@ -3112,9 +3112,9 @@ For Calibration of Heating/Cooling to
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>{IF (Climate.switch_for_all_climate_damage = 0 OR Climate.switch_only_economy_energy_damage = 0) AND TIME &gt; Climate.today THEN
-PREVIOUS(SELF, 0)
-ELSE}
+				<eqn>IF (switch_for_all_climate_damage = 0 OR switch_only_economy_energy_damage = 0) AND TIME &gt; today THEN
+previous_climate_adjusted_per_person_use_of_energy
+ELSE
 (per_person_use_of_energy
 +
 total_change_in_energy_used_for_heating_and_cooling_due_to_climate_change)</eqn>
@@ -3312,6 +3312,14 @@ historical_demand_for_energy)</eqn>
 				<eqn>2025</eqn>
 				<units>year</units>
 			</aux>
+			<aux name="previous climate adjusted per person use of\nenergy">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>PREVIOUS(climate_adjusted_per_person_use_of_energy, 0)</eqn>
+				<isee:delay_aux/>
+				<units>MWh/(p*year)</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -3361,7 +3369,7 @@ historical_demand_for_energy)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="280" isee:scroll_y="355" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="280" isee:scroll_y="354.286" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3614,6 +3622,27 @@ This affects the energy use per CCD, energy use per HDD variables. Any change in
 					<to>relative_GDP_per_person</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="771.429" y="667.857" name="today"/>
+				<aux x="530.706" y="749.777" name="previous climate adjusted per person use of\nenergy"/>
+				<connector uid="93" angle="84.5534">
+					<from>climate_adjusted_per_person_use_of_energy</from>
+					<to>previous_climate_adjusted_per_person_use_of_energy</to>
+				</connector>
+				<connector uid="94" angle="254.952">
+					<from>previous_climate_adjusted_per_person_use_of_energy</from>
+					<to>climate_adjusted_per_person_use_of_energy</to>
+				</connector>
+				<connector uid="95" angle="312.433">
+					<from>switch_for_all_climate_damage</from>
+					<to>climate_adjusted_per_person_use_of_energy</to>
+				</connector>
+				<connector uid="96" angle="232.237">
+					<from>switch_only_economy_energy_damage</from>
+					<to>climate_adjusted_per_person_use_of_energy</to>
+				</connector>
+				<connector uid="97" angle="216.656">
+					<from>today</from>
+					<to>climate_adjusted_per_person_use_of_energy</to>
+				</connector>
 			</view>
 		</views>
 	</model>
@@ -7068,9 +7097,9 @@ historical_surface_temperature_anomaly</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>{IF (Climate.switch_for_all_climate_damage = 0 OR Climate.switch_only_economy_energy_damage = 0) AND TIME &gt; Climate.today THEN
-PREVIOUS(SELF, 0)
-ELSE}
+				<eqn>IF (switch_for_all_climate_damage = 0 OR switch_only_economy_energy_damage = 0) AND TIME &gt; today THEN
+previous_effect_of_STA_on_thermal_power_energy_capacity_efficiency
+ELSE
 1+ SWITCH_effect_of_STA_on_thermal_power_efficiency*(effect_of_STA_on_thermal_power_energy_capacity_efficiency_slope*Surface_Temperature_Anomaly+effect_of_STA_on_thermal_power_energy_capacity_efficiency_quadratic*Surface_Temperature_Anomaly^2)/100</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -7099,9 +7128,9 @@ ELSE}
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>{IF (Climate.switch_for_all_climate_damage = 0 OR Climate.switch_only_economy_energy_damage = 0) AND TIME &gt; Climate.today THEN
-PREVIOUS(SELF, 0)
-ELSE}
+				<eqn>IF (switch_for_all_climate_damage = 0 OR switch_only_economy_energy_damage = 0) AND TIME &gt; today THEN
+previous_effect_of_STA_on_hydropower_energy_capacity_efficiency
+ELSE
 1+ SWITCH_effect_of_STA_on_hydropower_efficiency*(effect_of_STA_on_hydropower_energy_capacity_efficiency_slope*Surface_Temperature_Anomaly+effect_of_STA_on_hydropower_energy_capacity_efficiency_quadratic*Surface_Temperature_Anomaly^2)/100</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -7130,6 +7159,22 @@ ELSE}
 			<aux name="today" access="input">
 				<eqn>2025</eqn>
 				<units>year</units>
+			</aux>
+			<aux name="previous effect of STA on thermal power\nenergy capacity efficiency">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>PREVIOUS(effect_of_STA_on_thermal_power_energy_capacity_efficiency, 0)</eqn>
+				<isee:delay_aux/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="previous effect of STA on hydropower\nenergy capacity efficiency">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>PREVIOUS(effect_of_STA_on_hydropower_energy_capacity_efficiency, 0)</eqn>
+				<isee:delay_aux/>
+				<units>dmnl</units>
 			</aux>
 		</variables>
 		<views>
@@ -7180,7 +7225,7 @@ ELSE}
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="224.375" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="189.375" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -7262,6 +7307,48 @@ ELSE}
 				<connector uid="1" angle="162.233">
 					<from>effect_of_STA_on_thermal_power_energy_capacity_efficiency_quadratic</from>
 					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
+				</connector>
+				<aux x="172.04" y="237.081" name="previous effect of STA on thermal power\nenergy capacity efficiency"/>
+				<connector uid="10" angle="107.265">
+					<from>effect_of_STA_on_thermal_power_energy_capacity_efficiency</from>
+					<to>previous_effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
+				</connector>
+				<connector uid="11" angle="293.261">
+					<from>previous_effect_of_STA_on_thermal_power_energy_capacity_efficiency</from>
+					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
+				</connector>
+				<connector uid="12" angle="60.256">
+					<from>switch_for_all_climate_damage</from>
+					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
+				</connector>
+				<connector uid="13" angle="89.5846">
+					<from>switch_only_economy_energy_damage</from>
+					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
+				</connector>
+				<connector uid="14" angle="136.698">
+					<from>today</from>
+					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
+				</connector>
+				<aux x="421.242" y="679.375" name="previous effect of STA on hydropower\nenergy capacity efficiency"/>
+				<connector uid="15" angle="218.68">
+					<from>effect_of_STA_on_hydropower_energy_capacity_efficiency</from>
+					<to>previous_effect_of_STA_on_hydropower_energy_capacity_efficiency</to>
+				</connector>
+				<connector uid="16" angle="54.932">
+					<from>previous_effect_of_STA_on_hydropower_energy_capacity_efficiency</from>
+					<to>effect_of_STA_on_hydropower_energy_capacity_efficiency</to>
+				</connector>
+				<connector uid="17" angle="337.673">
+					<from>switch_for_all_climate_damage</from>
+					<to>effect_of_STA_on_hydropower_energy_capacity_efficiency</to>
+				</connector>
+				<connector uid="18" angle="331.885">
+					<from>switch_only_economy_energy_damage</from>
+					<to>effect_of_STA_on_hydropower_energy_capacity_efficiency</to>
+				</connector>
+				<connector uid="19" angle="280.851">
+					<from>today</from>
+					<to>effect_of_STA_on_hydropower_energy_capacity_efficiency</to>
 				</connector>
 			</view>
 		</views>
@@ -14517,7 +14604,7 @@ ELSE
 						<pt x="428.214" y="623.571"/>
 						<pt x="248.214" y="657.071"/>
 						<pt x="77.2143" y="620.571"/>
-						<pt x="66.5507" y="556.987"/>
+						<pt x="66.551" y="556.987"/>
 					</pts>
 					<from>Installation_of_bio_Capacity</from>
 					<to>accumulating_Renewable_Energy_Construction</to>
