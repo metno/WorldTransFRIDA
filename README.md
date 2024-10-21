@@ -10,20 +10,24 @@ The model is being developed using <a href="https://www.iseesystems.com/store/pr
 ### Calibration Data
 <ul>
   <li>
-<a href="https://data.worldbank.org/indicator/SL.TLF.TOTL.IN![image](https://user-images.githubusercontent.com/836714/212984095-ef06b69a-27ef-4b88-9aa9-06915e44fcad.png)">World Bank</a>
+    World Bank
+    <ul>
+      <li><a href="https://data.worldbank.org/indicator/NY.GDP.MKTP.PP.CD">GDP, PPP (current international $)</a></li>
+      <li><a href="https://data.worldbank.org/indicator/NY.GDP.MKTP.PP.KD">GDP, PPP (constant 2021 international $)</a></li>
+      <li><a href="https://data.worldbank.org/indicator/NY.GDP.MKTP.CD">GDP (current US$)</a></li>
+    </ul>
   </li>
   <li>
-    <a href="https://www.rug.nl/ggdc/productivity/pwt/?lang=en)![image](https://user-images.githubusercontent.com/836714/212984275-e1900097-5d43-4ccc-bb23-04bcbf5f04fe.png)
-">Penn World Table</a>
+    <a href="https://www.rug.nl/ggdc/productivity/pwt/?lang=en">Penn World Table (GDP components)</a>
   </li>
   <li>
     <a href="https://population.un.org/wpp/Download/Standard/MostUsed/">UN Population Data</a>
   </li>
   <li>
-    <a href="https://www.climatewatchdata.org/ghg-emissions?end_year=2018&gases=co2&start_year=1990![image](https://user-images.githubusercontent.com/836714/212984806-f421a07c-c207-46da-9c49-83848be53cc5.png)">Climate Watch</a>
+    <a href="https://www.climatewatchdata.org/ghg-emissions?end_year=2018&gases=co2&start_year=1990">Climate Watch</a>
   </li>
   <li>
-      <a href="https://ourworldindata.org/grapher/labor-share-of-gdp?country=~OWID_WRL![image](https://user-images.githubusercontent.com/836714/212985048-65c83940-3824-4550-b22b-499d385889d0.png)">Our World in Data</a>
+      <a href="https://ourworldindata.org/grapher/labor-share-of-gdp?country=~OWID_WRL">Our World in Data</a>
   </li>
   <li>
     <a href="https://pris.iaea.org/PRIS/WorldStatistics/WorldTrendNuclearPowerCapacity.aspx">Power Reactor Information System (PRIS)</a> 
@@ -38,10 +42,11 @@ The model is being developed using <a href="https://www.iseesystems.com/store/pr
     <a href="https://zenodo.org/record/5705391#.Y9wBpS-l2Rs">IPCC Working Group 1 (WG1) Sixth Assessment Report (AR6)</a>
   </li>
   <li>
-  <a href="https://www.rcmip.org/">RCMIP</a>
+    <a href="https://www.rcmip.org/">RCMIP</a>
   </li>
   <li>
     <a href="https://github.com/chrisroadmap/ar6">IPCC AR6 WG1 Chapter 7</a>
+  </li>
 </ul>
 
 ### Initialization Data
@@ -50,7 +55,3 @@ The model is being developed using <a href="https://www.iseesystems.com/store/pr
     <a href="https://population.un.org/wpp/Download/Standard/MostUsed/">UN Population Data</a>
   </li>
 </ul>
-  
-
-
-
