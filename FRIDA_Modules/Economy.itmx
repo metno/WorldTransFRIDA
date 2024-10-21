@@ -314,14 +314,18 @@
 				<connect2 to="Government.GDP" from="GDP.Nominal_GDP"/>
 				<connect to="Government.inflation" from="Inflation.Inflation_Rate"/>
 				<connect2 to="Government.inflation" from="Inflation.Inflation_Rate"/>
-				<connect to="Government.net_government_expenses" from="Inflation.net_government_expenses"/>
-				<connect2 to="Government.net_government_expenses" from="Inflation.net_government_expenses"/>
+				<connect to="Government.inflation_goal_policy" from="Government_Regulations.inflation_goal_policy"/>
+				<connect2 to="Government.inflation_goal_policy" from="Government_Regulations.inflation_goal_policy"/>
 				<connect to="Government.profit_tax_1" from="Circular_Flow.profit_tax"/>
 				<connect2 to="Government.profit_tax_1" from="Circular_Flow.profit_tax"/>
 				<connect to="Government.rent_tax_1" from="Circular_Flow.rent_tax"/>
 				<connect2 to="Government.rent_tax_1" from="Circular_Flow.rent_tax"/>
 				<connect to="Government.required_last_resort_lending" from="Finance.required_government_solvency_support_lending"/>
 				<connect2 to="Government.required_last_resort_lending" from="Finance.required_government_solvency_support_lending"/>
+				<connect to="Government.start_year" from="Government_Regulations.start_year"/>
+				<connect2 to="Government.start_year" from="Government_Regulations.start_year"/>
+				<connect to="Government.unemployment_goal_policy" from="Government_Regulations.unemployment_goal_policy"/>
+				<connect2 to="Government.unemployment_goal_policy" from="Government_Regulations.unemployment_goal_policy"/>
 				<connect to="Government.unemployment_rate_1" from="Employment.unemployment_rate"/>
 				<connect2 to="Government.unemployment_rate_1" from="Employment.unemployment_rate"/>
 				<connect to="Government.wage_tax_1" from="Circular_Flow.wage_tax"/>
@@ -588,8 +592,6 @@
 				<connect2 to="Circular_Flow.Inflation_Rate" from="Inflation.Inflation_Rate"/>
 				<connect to="Government.inflation" from="Inflation.Inflation_Rate"/>
 				<connect2 to="Government.inflation" from="Inflation.Inflation_Rate"/>
-				<connect to="Government.net_government_expenses" from="Inflation.net_government_expenses"/>
-				<connect2 to="Government.net_government_expenses" from="Inflation.net_government_expenses"/>
 				<connect to="Inflation.animal_products_demand" from="Food_Demand.animal_products_demand"/>
 				<connect2 to="Inflation.animal_products_demand" from="Food_Demand.animal_products_demand"/>
 				<connect to="Inflation.animal_products_production" from="Animal_Products.animal_products_production"/>
@@ -4555,7 +4557,7 @@ ELSE
 				<inflow>bailing_out_banks</inflow>
 				<units>B$</units>
 			</stock>
-			<aux name="government\ninterest payments" access="output" isee:autocreated="true">
+			<aux name="government\ninterest payments">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -4699,19 +4701,15 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 				<eqn>3</eqn>
 				<units>year</units>
 			</aux>
-			<aux name="net\ngovernment\nexpenses" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/year</units>
-			</aux>
 			<aux name="initial smoothed total public tax income">
 				<eqn>2635.2</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="central bank\ngoal inflation">
-				<eqn>0.02</eqn>
+				<eqn>IF TIME &gt; start_year THEN
+inflation_goal_policy
+ELSE
+0.02</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="inflation\ntarget\ndiscrepancy">
@@ -4775,7 +4773,9 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 				<units>1/year</units>
 			</aux>
 			<aux name="central bank goal\nunemployment">
-				<eqn>0.05</eqn>
+				<eqn>IF TIME &gt; start_year THEN unemployment_goal_policy
+ELSE
+0.05</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="unemployment\nweight">
@@ -4822,6 +4822,18 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 			<aux name="solvency support adjustment time">
 				<eqn>1</eqn>
 				<units>years</units>
+			</aux>
+			<aux name="unemployment goal policy" access="input">
+				<eqn>.05</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="inflation goal policy" access="input">
+				<eqn>0.02</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="start year" access="input">
+				<eqn>2025</eqn>
+				<units>Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -4872,7 +4884,7 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="4" isee:scroll_x="34" isee:scroll_y="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="4" isee:scroll_y="300" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -5053,7 +5065,6 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 					<from>total_public_tax_income</from>
 					<to>government_taking_up_debt</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="235" y="455" name="net\ngovernment\nexpenses"/>
 				<aux label_side="right" x="610.833" y="70.8333" name="initial smoothed total public tax income"/>
 				<connector uid="29" angle="264.289">
 					<from>initial_smoothed_total_public_tax_income</from>
@@ -5126,7 +5137,7 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 					<from>interest_rate_policy_discrepancy</from>
 					<to>change_in_safe_interest</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="100.833" y="921.667" name="unemployment rate 1"/>
+				<aux font_style="italic" font_weight="bold" x="91.833" y="972.667" name="unemployment rate 1"/>
 				<connector uid="68" angle="5.5722">
 					<from>unemployment_rate_1</from>
 					<to>unemployment_target_discrepancy</to>
@@ -5166,6 +5177,25 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 				<connector uid="75" angle="143.812">
 					<from>required_last_resort_lending</from>
 					<to>bailing_out_banks</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="215.41" y="1152" name="unemployment goal policy"/>
+				<aux font_style="italic" font_weight="bold" x="151" y="643" name="inflation goal policy"/>
+				<aux font_style="italic" font_weight="bold" x="121" y="905" name="start year"/>
+				<connector uid="76" angle="302.905">
+					<from>inflation_goal_policy</from>
+					<to>central_bank_goal_inflation</to>
+				</connector>
+				<connector uid="77" angle="53.9417">
+					<from>start_year</from>
+					<to>central_bank_goal_inflation</to>
+				</connector>
+				<connector uid="78" angle="301.073">
+					<from>start_year</from>
+					<to>central_bank_goal_unemployment</to>
+				</connector>
+				<connector uid="79" angle="111.884">
+					<from>unemployment_goal_policy</from>
+					<to>central_bank_goal_unemployment</to>
 				</connector>
 				<alias font_style="italic" label_side="right" label_angle="315" uid="73" x="385.797" y="954.5" width="18" height="18">
 					<of>baseline_interest</of>
