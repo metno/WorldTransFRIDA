@@ -292,7 +292,7 @@ Wigley and Raper (2005): &quot;Extended scenarios for glacier melt due to anthro
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>UNIT_Celsius_to_Kelvin* Surface_Temperature_Anomaly</eqn>
+				<eqn>UNIT_Celsius_to_Kelvin* Surface_Temperature_Anomaly_1</eqn>
 				<units>K</units>
 			</aux>
 			<aux name="MG Tdep rate min">
@@ -776,13 +776,6 @@ ELSE
 				<eqn>1</eqn>
 				<units>1/metre</units>
 			</aux>
-			<aux name="Surface Temperature Anomaly" access="output" throughput="true">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>deg C</units>
-			</aux>
 			<aux name="UNIT Celsius\nto Kelvin">
 				<eqn>1</eqn>
 				<units>K/deg C</units>
@@ -1101,6 +1094,10 @@ Include_MICI_behaviour * MICI_AntIS_disintegration * AntIS_initial_volume / AntI
 				<connect2 to="Sea_level_rise_adaptation.Nominal_GDP" from="GDP.Nominal_GDP"/>
 				<connect to="Sea_level_rise_adaptation.nominal_GDP_per_person" from="Demographics.nominal_GDP_per_person"/>
 				<connect2 to="Sea_level_rise_adaptation.nominal_GDP_per_person" from="Demographics.nominal_GDP_per_person"/>
+				<connect to="Sea_level_rise_adaptation.switch_sea_level_impact" from="Climate.switch_sea_level_impact"/>
+				<connect2 to="Sea_level_rise_adaptation.switch_sea_level_impact" from="Climate.switch_sea_level_impact"/>
+				<connect to="Sea_level_rise_adaptation.today" from="Climate.today"/>
+				<connect2 to="Sea_level_rise_adaptation.today" from="Climate.today"/>
 				<connect to="Sea_level_rise_adaptation.Willingness_to_invest_in_flood_protection_1" from="Sea_Level.Willingness_to_invest_in_flood_protection"/>
 				<connect2 to="Sea_level_rise_adaptation.Willingness_to_invest_in_flood_protection_1" from="Willingness_to_invest_in_flood_protection"/>
 			</module>
@@ -1429,7 +1426,7 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="7" isee:page_rows="4" isee:scroll_x="3051.43" isee:scroll_y="385.714" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="7" isee:page_rows="4" isee:scroll_x="3124.29" isee:scroll_y="136.429" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2117,11 +2114,6 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					</from>
 					<to>AntIS_fac1</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="top" x="578.786" y="412.833" name="Surface Temperature Anomaly"/>
-				<connector uid="312" angle="285.014">
-					<from>Surface_Temperature_Anomaly</from>
-					<to>T_anomaly_for_SLR</to>
-				</connector>
 				<text_box font_weight="bold" text_decoration="underline" font_size="14pt" uid="313" x="107.803" y="237.514" width="174.368" height="20">Thermosteric sea-level rise</text_box>
 				<text_box font_weight="bold" text_decoration="underline" font_size="14pt" uid="314" x="52.8693" y="759.54" width="279.271" height="20">Sea-level rise from mountain glaciers</text_box>
 				<text_box font_weight="bold" text_decoration="underline" font_size="14pt" uid="316" x="843.319" y="580.98" width="285.969" height="20">Sea-level rise from Antarctic ice sheet</text_box>
@@ -2710,6 +2702,12 @@ From SSP data, it seems that in SSP5-8.5 the well protected population grows unt
 					<from>Total_CO2_Emissions</from>
 					<to>Expected_global_SLR_in_50_years</to>
 				</connector>
+				<connector uid="568" angle="303.996">
+					<from>
+						<alias uid="569"/>
+					</from>
+					<to>T_anomaly_for_SLR</to>
+				</connector>
 				<alias font_style="italic" label_side="top" uid="151" x="227.286" y="857.611" width="18" height="18">
 					<of>T_anomaly_for_SLR</of>
 				</alias>
@@ -2844,6 +2842,9 @@ From SSP data, it seems that in SSP5-8.5 the well protected population grows unt
 				</alias>
 				<alias font_style="italic" uid="565" x="1490.35" y="233.679" width="18" height="18">
 					<of>SLR_from_LWS</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="569" x="538.143" y="410.286" width="18" height="18">
+					<of>Surface_Temperature_Anomaly_1</of>
 				</alias>
 			</view>
 		</views>
@@ -4860,7 +4861,10 @@ and Geotechnical Engineering 1
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>(global_SLR[Run]- INIT(global_SLR[Run])) * coastal_SLR_factors[Coastal_Protection_level]</eqn>
+				<eqn>IF (switch_sea_level_impact =0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+(global_SLR[Run]- INIT(global_SLR[Run])) * coastal_SLR_factors[Coastal_Protection_level]</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="coastal SLR factors">
@@ -4934,6 +4938,14 @@ and Geotechnical Engineering 1
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/year</units>
 			</aux>
+			<aux name="today" access="input">
+				<eqn>2025</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="switch sea level impact" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -4983,7 +4995,7 @@ and Geotechnical Engineering 1
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="295.833" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="882.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -5435,6 +5447,16 @@ and Geotechnical Engineering 1
 				<connector uid="154" angle="263.047">
 					<from>Nominal_GDP</from>
 					<to>Global_gdp_to_asset_ratio</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="495.833" y="1286.67" name="today"/>
+				<aux font_style="italic" font_weight="bold" x="428.333" y="1317.5" name="switch sea level impact"/>
+				<connector uid="155" angle="147.875">
+					<from>switch_sea_level_impact</from>
+					<to>global_coastal_SLR_since_1980</to>
+				</connector>
+				<connector uid="156" angle="175.365">
+					<from>today</from>
+					<to>global_coastal_SLR_since_1980</to>
 				</connector>
 				<alias font_style="italic" label_side="left" label_angle="135" uid="41" x="657.75" y="230.667" width="18" height="18">
 					<of>GDP_per_capita_in_coastal_zones</of>
