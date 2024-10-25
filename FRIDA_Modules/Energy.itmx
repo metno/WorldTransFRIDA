@@ -441,12 +441,10 @@
 				<connect2 to="energy_demand.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="energy_demand.SWITCH_couple_energy_and_climate" from="Energy.SWITCH_couple_energy_and_climate"/>
 				<connect2 to="energy_demand.SWITCH_couple_energy_and_climate" from="SWITCH_couple_energy_and_climate"/>
+				<connect to="energy_demand.switch_energy_damage" from="Climate.switch_energy_damage"/>
+				<connect2 to="energy_demand.switch_energy_damage" from="Climate.switch_energy_damage"/>
 				<connect to="energy_demand.switch_energy_demand_policy" from="Behavioral_Choices.switch_energy_demand_policy"/>
 				<connect2 to="energy_demand.switch_energy_demand_policy" from="Behavioral_Choices.switch_energy_demand_policy"/>
-				<connect to="energy_demand.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
-				<connect2 to="energy_demand.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
-				<connect to="energy_demand.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
-				<connect2 to="energy_demand.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
 				<connect to="energy_demand.today" from="Climate.today"/>
 				<connect2 to="energy_demand.today" from="Climate.today"/>
 			</module>
@@ -647,18 +645,14 @@
 				<connect2 to="energy_supply.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
 				<connect to="Damages.SWITCH_couple_energy_and_climate" from="Energy.SWITCH_couple_energy_and_climate"/>
 				<connect2 to="Damages.SWITCH_couple_energy_and_climate" from="SWITCH_couple_energy_and_climate"/>
-				<connect to="Damages.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
-				<connect2 to="Damages.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
-				<connect to="Damages.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
-				<connect2 to="Damages.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
+				<connect to="Damages.switch_energy_damage" from="Climate.switch_energy_damage"/>
+				<connect2 to="Damages.switch_energy_damage" from="Climate.switch_energy_damage"/>
 				<connect to="Damages.today" from="Climate.today"/>
 				<connect2 to="Damages.today" from="Climate.today"/>
 				<connect to="efficiency_reduction_in_power_plants.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="efficiency_reduction_in_power_plants.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
-				<connect to="efficiency_reduction_in_power_plants.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
-				<connect2 to="efficiency_reduction_in_power_plants.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
-				<connect to="efficiency_reduction_in_power_plants.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
-				<connect2 to="efficiency_reduction_in_power_plants.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
+				<connect to="efficiency_reduction_in_power_plants.switch_energy_damage" from="Climate.switch_energy_damage"/>
+				<connect2 to="efficiency_reduction_in_power_plants.switch_energy_damage" from="Climate.switch_energy_damage"/>
 				<connect to="efficiency_reduction_in_power_plants.today" from="Climate.today"/>
 				<connect2 to="efficiency_reduction_in_power_plants.today" from="Climate.today"/>
 				<connect to="Energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy" from="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy"/>
@@ -3156,7 +3150,7 @@ For Calibration of Heating/Cooling to
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>IF (switch_for_all_climate_damage = 0 OR switch_only_economy_energy_damage = 0) AND TIME &gt; today THEN
+				<eqn>IF (switch_energy_damage=0) AND TIME &gt; today THEN
 previous_climate_adjusted_per_person_use_of_energy
 ELSE
 (per_person_use_of_energy
@@ -3178,10 +3172,6 @@ ELSE
 historical_demand_for_energy)</eqn>
 				<units>TWh/year</units>
 			</aux>
-			<aux name="switch for all climate damage" access="input">
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>dmnl</units>
-			</aux>
 			<aux name="switch energy demand policy" access="input">
 				<eqn>0</eqn>
 				<format precision="1" scale_by="auto"/>
@@ -3191,10 +3181,6 @@ historical_demand_for_energy)</eqn>
 			<aux name="Policy Start Year" access="input">
 				<eqn>2024</eqn>
 				<units>Year</units>
-			</aux>
-			<aux name="switch only economy energy damage" access="input">
-				<eqn>1</eqn>
-				<units>dmnl</units>
 			</aux>
 			<aux name="fudge">
 				<eqn>initial_fudge_amount-RAMP(initial_fudge_amount/initial_fudge_duration, 1980, 1980+initial_fudge_duration)</eqn>
@@ -3362,6 +3348,10 @@ historical_demand_for_energy)</eqn>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/Mp/year</units>
 			</aux>
+			<aux name="switch energy damage" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -3411,7 +3401,7 @@ historical_demand_for_energy)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="440" isee:scroll_y="438.571" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="36.4286" isee:scroll_y="354.286" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3483,7 +3473,6 @@ historical_demand_for_energy)</eqn>
 					<from>climate_adjusted_per_person_use_of_energy</from>
 					<to>demand_for_energy</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="476.554" y="658.817" name="switch for all climate damage"/>
 				<aux font_style="italic" font_weight="bold" x="257.406" y="875.437" name="switch energy demand policy"/>
 				<connector uid="49" angle="17.4566">
 					<from>switch_energy_demand_policy</from>
@@ -3494,7 +3483,6 @@ historical_demand_for_energy)</eqn>
 					<from>Policy_Start_Year</from>
 					<to>per_person_use_of_energy</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="690.214" y="663.464" name="switch only economy energy damage"/>
 				<aux x="816.564" y="908.777" name="fudge"/>
 				<aux x="885.45" y="918.607" name="initial fudge amount"/>
 				<connector uid="51" angle="178.428">
@@ -3668,14 +3656,6 @@ This affects the energy use per CCD, energy use per HDD variables. Any change in
 					<from>previous_climate_adjusted_per_person_use_of_energy</from>
 					<to>climate_adjusted_per_person_use_of_energy</to>
 				</connector>
-				<connector uid="95" angle="312.433">
-					<from>switch_for_all_climate_damage</from>
-					<to>climate_adjusted_per_person_use_of_energy</to>
-				</connector>
-				<connector uid="96" angle="232.237">
-					<from>switch_only_economy_energy_damage</from>
-					<to>climate_adjusted_per_person_use_of_energy</to>
-				</connector>
 				<connector uid="97" angle="216.656">
 					<from>today</from>
 					<to>climate_adjusted_per_person_use_of_energy</to>
@@ -3684,6 +3664,11 @@ This affects the energy use per CCD, energy use per HDD variables. Any change in
 				<connector uid="98" angle="339.349">
 					<from>real_GDP_per_person</from>
 					<to>relative_GDP_per_person</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="662.857" y="667.857" name="switch energy damage"/>
+				<connector uid="99" angle="239.74">
+					<from>switch_energy_damage</from>
+					<to>climate_adjusted_per_person_use_of_energy</to>
 				</connector>
 			</view>
 		</views>
@@ -6535,10 +6520,8 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="Damages.Surface_Temperature_Anomaly" from="Surface_Temperature_Anomaly"/>
 				<connect to="Damages.SWITCH_couple_energy_and_climate" from="Energy.SWITCH_couple_energy_and_climate"/>
 				<connect2 to="Damages.SWITCH_couple_energy_and_climate" from="Energy.SWITCH_couple_energy_and_climate"/>
-				<connect to="Damages.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
-				<connect2 to="Damages.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
-				<connect to="Damages.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
-				<connect2 to="Damages.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
+				<connect to="Damages.switch_energy_damage" from="Climate.switch_energy_damage"/>
+				<connect2 to="Damages.switch_energy_damage" from="Climate.switch_energy_damage"/>
 				<connect to="Damages.today" from="Climate.today"/>
 				<connect2 to="Damages.today" from="Climate.today"/>
 			</module>
@@ -6964,10 +6947,8 @@ This is total energy production of both fossil and renewable</doc>
 				<connect2 to="nuclear_energy.effect_of_STA_on_thermal_power_energy_capacity_efficiency" from="efficiency_reduction_in_power_plants.effect_of_STA_on_thermal_power_energy_capacity_efficiency"/>
 				<connect to="efficiency_reduction_in_power_plants.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="efficiency_reduction_in_power_plants.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
-				<connect to="efficiency_reduction_in_power_plants.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
-				<connect2 to="efficiency_reduction_in_power_plants.switch_for_all_climate_damage" from="Climate.switch_for_all_climate_damage"/>
-				<connect to="efficiency_reduction_in_power_plants.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
-				<connect2 to="efficiency_reduction_in_power_plants.switch_only_economy_energy_damage" from="Climate.switch_only_economy_energy_damage"/>
+				<connect to="efficiency_reduction_in_power_plants.switch_energy_damage" from="Climate.switch_energy_damage"/>
+				<connect2 to="efficiency_reduction_in_power_plants.switch_energy_damage" from="Climate.switch_energy_damage"/>
 				<connect to="efficiency_reduction_in_power_plants.today" from="Climate.today"/>
 				<connect2 to="efficiency_reduction_in_power_plants.today" from="Climate.today"/>
 			</module>
@@ -7297,14 +7278,6 @@ This is total energy production of both fossil and renewable</doc>
 	</model>
 	<model name="Damages" run="true">
 		<variables>
-			<aux name="switch for all climate damage" access="input">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="switch only economy energy damage" access="input">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
 			<aux name="Surface Temperature Anomaly" access="input">
 				<dimensions>
 					<dim name="Run"/>
@@ -7320,7 +7293,7 @@ This is total energy production of both fossil and renewable</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>IF (switch_for_all_climate_damage = 0 OR switch_only_economy_energy_damage = 0) AND TIME &gt; today THEN
+				<eqn>IF (switch_energy_damage = 0) AND TIME &gt; today THEN
 PREVIOUS(SELF, 0)
 ELSE
 (SWITCH_energy_capital_damages_from_STA*((Slope_of_Capital_Damage_Function*switched_surface_temperature_anomaly)^Exponent_of_Capital_Damage_Function)/time_for_STA_to_impact_energy_capital)</eqn>
@@ -7365,6 +7338,10 @@ historical_surface_temperature_anomaly</eqn>
 				<eqn>2025</eqn>
 				<units>year</units>
 			</aux>
+			<aux name="switch energy damage" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -7414,7 +7391,7 @@ historical_surface_temperature_anomaly</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -7453,8 +7430,6 @@ historical_surface_temperature_anomaly</eqn>
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<aux font_style="italic" font_weight="bold" x="219" y="234" name="switch for all climate damage"/>
-				<aux font_style="italic" font_weight="bold" x="353" y="258" name="switch only economy energy damage"/>
 				<aux font_style="italic" font_weight="bold" x="36.75" y="174.21" name="Surface Temperature Anomaly"/>
 				<aux x="438.25" y="179.25" name="time for STA to impact energy\ncapital"/>
 				<aux x="263.917" y="156.21" name="damage rate of energy\ncapital from STA"/>
@@ -7497,16 +7472,13 @@ historical_surface_temperature_anomaly</eqn>
 					<to>damage_rate_of_energy_capital_from_STA</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="445" y="107.5" name="today"/>
-				<connector uid="13" angle="84.9973">
-					<from>switch_for_all_climate_damage</from>
-					<to>damage_rate_of_energy_capital_from_STA</to>
-				</connector>
-				<connector uid="14" angle="156.191">
-					<from>switch_only_economy_energy_damage</from>
-					<to>damage_rate_of_energy_capital_from_STA</to>
-				</connector>
 				<connector uid="15" angle="220.056">
 					<from>today</from>
+					<to>damage_rate_of_energy_capital_from_STA</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="263.917" y="247.5" name="switch energy damage"/>
+				<connector uid="16" angle="90">
+					<from>switch_energy_damage</from>
 					<to>damage_rate_of_energy_capital_from_STA</to>
 				</connector>
 			</view>
@@ -7518,7 +7490,7 @@ historical_surface_temperature_anomaly</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>IF (switch_for_all_climate_damage = 0 OR switch_only_economy_energy_damage = 0) AND TIME &gt; today THEN
+				<eqn>IF (switch_energy_damage = 0) AND TIME &gt; today THEN
 previous_effect_of_STA_on_thermal_power_energy_capacity_efficiency
 ELSE
 1+ SWITCH_effect_of_STA_on_thermal_power_efficiency*(effect_of_STA_on_thermal_power_energy_capacity_efficiency_slope*Surface_Temperature_Anomaly+effect_of_STA_on_thermal_power_energy_capacity_efficiency_quadratic*Surface_Temperature_Anomaly^2)/100</eqn>
@@ -7549,7 +7521,7 @@ ELSE
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>IF (switch_for_all_climate_damage = 0 OR switch_only_economy_energy_damage = 0) AND TIME &gt; today THEN
+				<eqn>IF (switch_energy_damage = 0) AND TIME &gt; today THEN
 previous_effect_of_STA_on_hydropower_energy_capacity_efficiency
 ELSE
 1+ SWITCH_effect_of_STA_on_hydropower_efficiency*(effect_of_STA_on_hydropower_energy_capacity_efficiency_slope*Surface_Temperature_Anomaly+effect_of_STA_on_hydropower_energy_capacity_efficiency_quadratic*Surface_Temperature_Anomaly^2)/100</eqn>
@@ -7566,14 +7538,6 @@ ELSE
 				<units>1/deg C^2</units>
 			</aux>
 			<aux name="SWITCH effect of STA on hydropower efficiency">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="switch for all climate damage" access="input">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="switch only economy energy damage" access="input">
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -7595,6 +7559,10 @@ ELSE
 				</dimensions>
 				<eqn>PREVIOUS(effect_of_STA_on_hydropower_energy_capacity_efficiency, 0)</eqn>
 				<isee:delay_aux/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="switch energy damage" access="input">
+				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
 		</variables>
@@ -7646,7 +7614,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="189.375" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="272.5" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -7710,8 +7678,6 @@ ELSE
 					<from>Surface_Temperature_Anomaly</from>
 					<to>effect_of_STA_on_hydropower_energy_capacity_efficiency</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="165.455" y="490.455" name="switch for all climate damage"/>
-				<aux font_style="italic" font_weight="bold" x="267.273" y="458.182" name="switch only economy energy damage"/>
 				<aux font_style="italic" font_weight="bold" x="413.182" y="463.182" name="today"/>
 				<connector uid="5" angle="203.443">
 					<from>Surface_Temperature_Anomaly</from>
@@ -7738,14 +7704,6 @@ ELSE
 					<from>previous_effect_of_STA_on_thermal_power_energy_capacity_efficiency</from>
 					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
 				</connector>
-				<connector uid="12" angle="60.256">
-					<from>switch_for_all_climate_damage</from>
-					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
-				</connector>
-				<connector uid="13" angle="89.5846">
-					<from>switch_only_economy_energy_damage</from>
-					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
-				</connector>
 				<connector uid="14" angle="136.698">
 					<from>today</from>
 					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
@@ -7759,17 +7717,18 @@ ELSE
 					<from>previous_effect_of_STA_on_hydropower_energy_capacity_efficiency</from>
 					<to>effect_of_STA_on_hydropower_energy_capacity_efficiency</to>
 				</connector>
-				<connector uid="17" angle="337.673">
-					<from>switch_for_all_climate_damage</from>
-					<to>effect_of_STA_on_hydropower_energy_capacity_efficiency</to>
-				</connector>
-				<connector uid="18" angle="331.885">
-					<from>switch_only_economy_energy_damage</from>
-					<to>effect_of_STA_on_hydropower_energy_capacity_efficiency</to>
-				</connector>
 				<connector uid="19" angle="280.851">
 					<from>today</from>
 					<to>effect_of_STA_on_hydropower_energy_capacity_efficiency</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="262.165" y="463.182" name="switch energy damage"/>
+				<connector uid="20" angle="329.755">
+					<from>switch_energy_damage</from>
+					<to>effect_of_STA_on_hydropower_energy_capacity_efficiency</to>
+				</connector>
+				<connector uid="21" angle="83.343">
+					<from>switch_energy_damage</from>
+					<to>effect_of_STA_on_thermal_power_energy_capacity_efficiency</to>
 				</connector>
 			</view>
 		</views>
