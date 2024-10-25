@@ -742,6 +742,10 @@
 				<connect2 to="grassland_soil_carbon.reforesting_grassland" from="Land_Use.reforesting_grassland"/>
 				<connect to="soil_carbon_decay.Absolute_Surface_Temperature" from="Energy_Balance_Model.Absolute_Surface_Temperature"/>
 				<connect2 to="soil_carbon_decay.Absolute_Surface_Temperature" from="Energy_Balance_Model.Absolute_Surface_Temperature"/>
+				<connect to="soil_carbon_decay.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
+				<connect2 to="soil_carbon_decay.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
+				<connect to="soil_carbon_decay.today" from="Climate.today"/>
+				<connect2 to="soil_carbon_decay.today" from="Climate.today"/>
 				<connect to="Terrestrial_carbon_balance.soil_carbon_emissions_GtC" from="soil_carbon_emissions.gross_soil_carbon_emissions_GtC"/>
 				<connect2 to="Terrestrial_carbon_balance.soil_carbon_emissions_GtC" from="soil_carbon_emissions.gross_soil_carbon_emissions_GtC"/>
 				<connect to="Terrestrial_carbon_balance.litter_emissions_GtC" from="soil_carbon_emissions.litter_emissions_GtC"/>
@@ -912,6 +916,10 @@
 				<connect2 to="Grass.Grassland_1" from="Land_Use.Grassland"/>
 				<connect to="Grass.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Grass.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Grass.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
+				<connect2 to="Grass.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
+				<connect to="Grass.today" from="Climate.today"/>
+				<connect2 to="Grass.today" from="Climate.today"/>
 				<connect to="Grass.UNIT_GtC_per_PCal" from="Crop.UNIT_GtC_per_PCal_crop"/>
 				<connect2 to="Grass.UNIT_GtC_per_PCal" from="Crop.UNIT_GtC_per_PCal_crop"/>
 			</module>
@@ -971,6 +979,10 @@
 				<connect2 to="Forest.Mature_Forest" from="Land_Use.Mature_Forest"/>
 				<connect to="Forest.Surface_Temperature_Anomaly_1" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Forest.Surface_Temperature_Anomaly_1" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Forest.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
+				<connect2 to="Forest.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
+				<connect to="Forest.today" from="Climate.today"/>
+				<connect2 to="Forest.today" from="Climate.today"/>
 				<connect to="Forest.Young_Forest" from="Land_Use.Young_Forest"/>
 				<connect2 to="Forest.Young_Forest" from="Land_Use.Young_Forest"/>
 				<connect to="Forest.young_forest_share" from="Land_Use.young_forest_share"/>
@@ -2365,7 +2377,7 @@ initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="5" isee:page_rows="4" isee:scroll_x="930" isee:scroll_y="1396.43" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="4" isee:scroll_x="1117.14" isee:scroll_y="1469.29" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3318,7 +3330,10 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(Surface_Temperature_Anomaly_1-INIT(Surface_Temperature_Anomaly_1))*STA_tree_net_primary_production_parameter</eqn>
+				<eqn>IF (switch_land_carbon_impact =0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+(Surface_Temperature_Anomaly_1-INIT(Surface_Temperature_Anomaly_1))*STA_tree_net_primary_production_parameter</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="STA tree net primary\nproduction parameter">
@@ -3339,7 +3354,10 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>((Surface_Temperature_Anomaly_1-INIT(Surface_Temperature_Anomaly_1))^2)*STA_squared_tree_net_primary_production</eqn>
+				<eqn>IF (switch_land_carbon_impact =0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+((Surface_Temperature_Anomaly_1-INIT(Surface_Temperature_Anomaly_1))^2)*STA_squared_tree_net_primary_production</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="STA squared tree net\nprimary production">
@@ -3547,6 +3565,14 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>dmnl</units>
 			</aux>
+			<aux name="switch land carbon\nimpact" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="today" access="input">
+				<eqn>2025</eqn>
+				<units>year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -3596,7 +3622,7 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="166" isee:scroll_y="799" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="274" isee:scroll_y="652" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3866,6 +3892,24 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 					<to>cutting</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1166" y="495" name="young forest share"/>
+				<aux font_style="italic" font_weight="bold" x="910.57" y="1109" name="switch land carbon\nimpact"/>
+				<aux font_style="italic" font_weight="bold" x="905" y="1059" name="today"/>
+				<connector uid="54" angle="208.755">
+					<from>today</from>
+					<to>effect_of_STA_on_tree_net_primary_production</to>
+				</connector>
+				<connector uid="55" angle="191.447">
+					<from>switch_land_carbon_impact</from>
+					<to>effect_of_STA_on_tree_net_primary_production</to>
+				</connector>
+				<connector uid="56" angle="345.351">
+					<from>switch_land_carbon_impact</from>
+					<to>effect_of_STA_squared_on_tree_net_primary_production</to>
+				</connector>
+				<connector uid="57" angle="329.296">
+					<from>today</from>
+					<to>effect_of_STA_squared_on_tree_net_primary_production</to>
+				</connector>
 				<alias font_style="italic" uid="15" x="689.5" y="964.834" width="18" height="18">
 					<of>tree_net_primary_production_in_1980</of>
 				</alias>
@@ -4326,7 +4370,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="233" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="495" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4755,7 +4799,10 @@ the less future investment due to crowding out of more profitable forms of inves
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(Surface_Temperature_Anomaly-INIT(Surface_Temperature_Anomaly))*STA_grass_net_primary_production_parameter</eqn>
+				<eqn>IF (switch_land_carbon_impact =0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+(Surface_Temperature_Anomaly-INIT(Surface_Temperature_Anomaly))*STA_grass_net_primary_production_parameter</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="STA grass net primary production parameter">
@@ -4776,7 +4823,10 @@ the less future investment due to crowding out of more profitable forms of inves
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>((Surface_Temperature_Anomaly-INIT(Surface_Temperature_Anomaly))^2)*STA_squared_grass_net_primary_production</eqn>
+				<eqn>IF (switch_land_carbon_impact =0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+((Surface_Temperature_Anomaly-INIT(Surface_Temperature_Anomaly))^2)*STA_squared_grass_net_primary_production</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="STA squared grass net primary production">
@@ -4865,6 +4915,14 @@ the less future investment due to crowding out of more profitable forms of inves
 				<eqn>0.00305433158697633</eqn>
 				<units>GtC/(Mha*year)</units>
 			</aux>
+			<aux name="switch land carbon\nimpact" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="today" access="input">
+				<eqn>2025</eqn>
+				<units>year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -4914,7 +4972,7 @@ the less future investment due to crowding out of more profitable forms of inves
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="340" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="229" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -5086,6 +5144,24 @@ the less future investment due to crowding out of more profitable forms of inves
 					<to>animal_grazing</to>
 				</connector>
 				<aux x="308.333" y="247" name="grass net primary production\nin 1981"/>
+				<aux font_style="italic" font_weight="bold" x="413" y="688" name="switch land carbon\nimpact"/>
+				<aux font_style="italic" font_weight="bold" x="515" y="687" name="today"/>
+				<connector uid="45" angle="211.218">
+					<from>switch_land_carbon_impact</from>
+					<to>effect_of_STA_on_grass_net_primary_production</to>
+				</connector>
+				<connector uid="46" angle="330.803">
+					<from>switch_land_carbon_impact</from>
+					<to>effect_of_STA_squared_on_grass_net_primary_production</to>
+				</connector>
+				<connector uid="47" angle="203.962">
+					<from>today</from>
+					<to>effect_of_STA_on_grass_net_primary_production</to>
+				</connector>
+				<connector uid="48" angle="320.528">
+					<from>today</from>
+					<to>effect_of_STA_squared_on_grass_net_primary_production</to>
+				</connector>
 				<alias font_style="italic" uid="24" x="212" y="563.167" width="18" height="18">
 					<of>grass_net_primary_production_in_1980</of>
 				</alias>
@@ -6551,6 +6627,10 @@ https://ourworldindata.org/world-lost-one-third-forests</doc>
 				<connect2 to="grassland_soil_carbon.slow_soil_carbon_historic_share_1" from="soil_carbon_decay.slow_soil_carbon_historic_share"/>
 				<connect to="soil_carbon_decay.Absolute_Surface_Temperature" from="Energy_Balance_Model.Absolute_Surface_Temperature"/>
 				<connect2 to="soil_carbon_decay.Absolute_Surface_Temperature" from="Energy_Balance_Model.Absolute_Surface_Temperature"/>
+				<connect to="soil_carbon_decay.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
+				<connect2 to="soil_carbon_decay.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
+				<connect to="soil_carbon_decay.today" from="Climate.today"/>
+				<connect2 to="soil_carbon_decay.today" from="Climate.today"/>
 			</module>
 			<module name="cropland soil carbon" isee:label="">
 				<format scale_by="auto"/>
@@ -7363,7 +7443,7 @@ slow_soil_carbon_cropland_to_degraded_land)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="612.857" isee:scroll_y="70.7143" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -7939,7 +8019,7 @@ forresting_degraded_land//Degraded_Land</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="454.167" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="1015.83" isee:scroll_y="200" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -8616,7 +8696,7 @@ slow_soil_carbon_forest_to_young_forest)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="375" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="1070" isee:scroll_y="350" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -9765,7 +9845,10 @@ slow_soil_carbon_grassland_to_degraded_land)</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>EXP(e0*(1.0/(temp_response+10)-1.0/(Absolute_Surface_Temperature*per_deg_C+temp_response)))</eqn>
+				<eqn>IF (switch_land_carbon_impact =0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+EXP(e0*(1.0/(temp_response+10)-1.0/(Absolute_Surface_Temperature*per_deg_C+temp_response)))</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="e0">
@@ -9786,6 +9869,14 @@ slow_soil_carbon_grassland_to_degraded_land)</eqn>
 			<aux name="per deg C">
 				<eqn>1</eqn>
 				<units>1/deg C</units>
+			</aux>
+			<aux name="switch land carbon\nimpact" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="today" access="input">
+				<eqn>2025</eqn>
+				<units>year</units>
 			</aux>
 		</variables>
 		<views>
@@ -9926,6 +10017,16 @@ slow_soil_carbon_grassland_to_degraded_land)</eqn>
 				<aux x="583.08" y="480" name="per deg C"/>
 				<connector uid="22" angle="123.402">
 					<from>per_deg_C</from>
+					<to>climate_response_term_lpjml</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="625" y="361.667" name="switch land carbon\nimpact"/>
+				<aux font_style="italic" font_weight="bold" x="684.167" y="304.167" name="today"/>
+				<connector uid="23" angle="197.592">
+					<from>today</from>
+					<to>climate_response_term_lpjml</to>
+				</connector>
+				<connector uid="24" angle="192.339">
+					<from>switch_land_carbon_impact</from>
 					<to>climate_response_term_lpjml</to>
 				</connector>
 			</view>
@@ -10109,7 +10210,7 @@ litter_to_soil_carbon_mature_forest + litter_to_soil_carbon_young_forest + grass
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="692.143" isee:scroll_y="140" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="540.714" isee:scroll_y="140" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -11095,7 +11196,7 @@ litter_to_soil_carbon_mature_forest + litter_to_soil_carbon_young_forest + grass
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="800" page_height="608" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
