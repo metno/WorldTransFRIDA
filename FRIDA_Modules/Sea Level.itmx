@@ -47,9 +47,6 @@
 	<isee:number_format_extenders/>
 	<default_format scale_by="1"/>
 	<model_units>
-		<unit name="G$">
-			<eqn>Giga*$</eqn>
-		</unit>
 		<unit name="Gh">
 			<eqn>Giga*h</eqn>
 		</unit>
@@ -206,6 +203,27 @@
 		</unit>
 		<unit name="GtN2O">
 			<eqn>Giga*tN2O</eqn>
+		</unit>
+		<unit name="Gc$">
+			<eqn>Giga*c$</eqn>
+		</unit>
+		<unit name="kc$">
+			<eqn>kilo*c$</eqn>
+		</unit>
+		<unit name="Mc$">
+			<eqn>Million*c$</eqn>
+		</unit>
+		<unit name="G$">
+			<eqn>Giga*$</eqn>
+		</unit>
+		<unit name="Gcc$">
+			<eqn>Giga*cc$</eqn>
+		</unit>
+		<unit name="kcc$">
+			<eqn>kilo*cc$</eqn>
+		</unit>
+		<unit name="Mcc$">
+			<eqn>Million*cc$</eqn>
 		</unit>
 	</model_units>
 	<model name="Sea_Level">
@@ -1092,8 +1110,8 @@ Include_MICI_behaviour * MICI_AntIS_disintegration * AntIS_initial_volume / AntI
 				<connect2 to="Sea_level_rise_adaptation.global_SLR" from="global_SLR"/>
 				<connect to="Sea_level_rise_adaptation.Nominal_GDP" from="GDP.Nominal_GDP"/>
 				<connect2 to="Sea_level_rise_adaptation.Nominal_GDP" from="GDP.Nominal_GDP"/>
-				<connect to="Sea_level_rise_adaptation.nominal_GDP_per_person" from="Demographics.nominal_GDP_per_person"/>
-				<connect2 to="Sea_level_rise_adaptation.nominal_GDP_per_person" from="Demographics.nominal_GDP_per_person"/>
+				<connect to="Sea_level_rise_adaptation.nominal_GDP_per_person" from="Demographics.real_GDP_per_person"/>
+				<connect2 to="Sea_level_rise_adaptation.nominal_GDP_per_person" from="Demographics.real_GDP_per_person"/>
 				<connect to="Sea_level_rise_adaptation.switch_sea_level_impact" from="Climate.switch_sea_level_impact"/>
 				<connect2 to="Sea_level_rise_adaptation.switch_sea_level_impact" from="Climate.switch_sea_level_impact"/>
 				<connect to="Sea_level_rise_adaptation.today" from="Climate.today"/>
@@ -1117,6 +1135,8 @@ Include_MICI_behaviour * MICI_AntIS_disintegration * AntIS_initial_volume / AntI
 				<connect2 to="Sea_level_rise_costs_and_impacts.Effective_annual_investment_in_flood_protection_height" from="Sea_level_rise_adaptation.Effective_annual_investment_in_flood_protection_height"/>
 				<connect to="Sea_level_rise_costs_and_impacts.GDP_per_capita_in_coastal_zones" from="Sea_level_rise_adaptation.GDP_per_capita_in_coastal_zones"/>
 				<connect2 to="Sea_level_rise_costs_and_impacts.GDP_per_capita_in_coastal_zones" from="Sea_level_rise_adaptation.GDP_per_capita_in_coastal_zones"/>
+				<connect to='Sea_level_rise_costs_and_impacts."inflation_adjustment_b$_per_bc$"' from='Inflation."inflation_adjustment_b$_per_bc$"'/>
+				<connect2 to='Sea_level_rise_costs_and_impacts."inflation_adjustment_b$_per_bc$"' from='Inflation."inflation_adjustment_b$_per_bc$"'/>
 				<connect to="Sea_level_rise_costs_and_impacts.Number_of_people_flooded_annually_in_storms" from="Coastal_population.Number_of_people_flooded_annually_in_storm_surges"/>
 				<connect2 to="Sea_level_rise_costs_and_impacts.Number_of_people_flooded_annually_in_storms" from="Coastal_population.Number_of_people_flooded_annually_in_storm_surges"/>
 				<connect to="Sea_level_rise_costs_and_impacts.Opportunity_costs_of_inundated_coastal_land" from="Sea_level_rise_adaptation.Annual_opportunity_costs_of_inundated_or_abandoned_coastal_land"/>
@@ -2861,7 +2881,7 @@ From SSP data, it seems that in SSP5-8.5 the well protected population grows unt
 				<outflow>Proactive_retreat_of_coastal_assets</outflow>
 				<outflow>Reactive_retreat_of_coastal_assets</outflow>
 				<outflow>Loss_of_coastal_assets_that_are_not_rebuild_after_storm_surge</outflow>
-				<units>b$</units>
+				<units>bc$</units>
 			</stock>
 			<flow name="Increase of coastal\nasset values\nthrough internal growth">
 				<dimensions>
@@ -2873,7 +2893,7 @@ Actual_coastal_asset_growth
 ELSE 
 Actual_coastal_asset_growth[Run,well_protected]+Investment_going_from_badly_to_well_protected_coastal_assets[Run]</eqn>
 				<format precision="full"/>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</flow>
 			<flow name="Proactive retreat\nof coastal assets" access="output" isee:autocreated="true">
 				<doc>Immobile assets can only be abandoned by people who still had some assets before they left. Assume that these are only the people which are retreating proactively.
@@ -2884,7 +2904,7 @@ Proactive retreat is in this model actually only happening after a retreat time 
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Coastal_assets* relative_annual_proactive_retreat_of_assets / (1.0 - Total_removed_fraction_of_original_asset_distribution )</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</flow>
 			<aux name="Flood damage function\nfor assets in coastal areas">
 				<dimensions>
@@ -2895,12 +2915,12 @@ Proactive retreat is in this model actually only happening after a retreat time 
 				<units>1/Year</units>
 			</aux>
 			<aux name="US GDP per capita in 2010" access="output" isee:autocreated="true">
-				<doc>WATCH OUT: Need to check what kind of GDP per capita is needed. Is it in US$ 2010 value or with current values?
+				<doc>WATCH OUT: Need to check what kind of GDP per capita is needed. Is it in USc$ 2010 value or with current values?
 
 Current value is from:
 https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD?locations=US</doc>
 				<eqn>54.51</eqn>
-				<units>b$/Mp</units>
+				<units>bc$/Mp</units>
 			</aux>
 			<aux name="Flood damage\nresilience" access="output" isee:autocreated="true">
 				<dimensions>
@@ -2928,7 +2948,7 @@ https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD?locations=US</doc>
 				<element subscript="well_protected">
 					<eqn>21955.1</eqn>
 				</element>
-				<units>b$</units>
+				<units>bc$</units>
 			</aux>
 			<aux name="Likelihood that people still\ninvest in\ncoastal zones">
 				<dimensions>
@@ -2948,7 +2968,7 @@ https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD?locations=US</doc>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Coastal_assets*Reference_growth_rate_for_coastal_assets[Run]</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Actual coastal asset growth">
 				<dimensions>
@@ -2956,7 +2976,7 @@ https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD?locations=US</doc>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Theoretical_coastal_asset_value_growth* Likelihood_that_people_still_invest_in_coastal_zones</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="GDP per capita\nin coastal zones" access="input">
 				<dimensions>
@@ -2964,7 +2984,7 @@ https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD?locations=US</doc>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/Mp</units>
+				<units>bc$/Mp</units>
 			</aux>
 			<aux name="reference flood depth for damage" access="output" isee:autocreated="true">
 				<eqn>1</eqn>
@@ -3044,7 +3064,7 @@ https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD?locations=US</doc>
 				</dimensions>
 				<eqn>(1.0 - Flood_damage_resilience) * Coastal_assets *
 Actually_susceptible_coastal_asset_fraction *  Flood_damage_function_for_assets_in_coastal_areas</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="asset inundation halfpoint">
 				<dimensions>
@@ -3088,7 +3108,7 @@ Actually_susceptible_coastal_asset_fraction *  Flood_damage_function_for_assets_
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Coastal_assets* MAX(0, (Inundated_fraction_of_original_coastal_assets_distribution + relative_annual_inundation_of_assets_due_to_SLR*time_over_which_coastal_assets_retreat) - Total_removed_fraction_of_original_asset_distribution) / (1.0 - Total_removed_fraction_of_original_asset_distribution) / time_over_which_coastal_assets_retreat</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</flow>
 			<stock name="Inundated fraction\nof original coastal assets distribution">
 				<dimensions>
@@ -3168,7 +3188,7 @@ Actually_susceptible_coastal_asset_fraction *  Flood_damage_function_for_assets_
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Fraction_of_storm_damages_that_is_not_rebuild*All_storm_damage</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</flow>
 			<aux name="Fraction of storm damages that is not rebuild">
 				<doc>Keep at 0 for the moment to stay in line with CIAM results.</doc>
@@ -3283,7 +3303,7 @@ THEN
 SUM(Theoretical_coastal_asset_value_growth[Run,*]) - SUM(Actual_coastal_asset_growth[Run,*])
 ELSE
 (SUM(Theoretical_coastal_asset_value_growth[Run,*]) - SUM(Actual_coastal_asset_growth[Run,*])) * 0.5</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Bank\nAssets 1" access="input">
 				<dimensions>
@@ -3341,7 +3361,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="192.5" isee:scroll_y="280" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="182.273" isee:scroll_y="358.182" zoom="220" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4489,7 +4509,7 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Average_flood_protection_construction_cost*Fraction_of_dike_construction_cost_for_maintenance_annually*Length_of_coastline[Coastal_Protection_level]*Average_flood_protection_height*Reference_fp_height_for_costs</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<stock name="Average flood\nprotection height" access="output" isee:autocreated="true">
 				<doc>First implementation: set this to 0 for the 1980 level of protection. If sea level increases, the current flood protection level gets negative, i.e. the protection is worse</doc>
@@ -4519,7 +4539,7 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>GDP_in_coastal_zones * Maximum_fraction_of_coastal_GDP_spent_for_flood_protection_annually</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Annual opportunity costs of flood protection" access="output" isee:autocreated="true">
 				<dimensions>
@@ -4527,7 +4547,7 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Length_of_coastline[Coastal_Protection_level]*reference_opportunity_cost_rate*Value_of_land_in_the_coastal_zone*(Average_flood_protection_height-INIT(Average_flood_protection_height))*1.7*kilometre_per_metre</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Average flood protection\nconstruction cost">
 				<doc>Made dependent on construction cost index as in CIAM</doc>
@@ -4536,7 +4556,7 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>reference_protection_cost*Flood_protection_construction_cost_index</eqn>
-				<units>b$/metre/metre/km</units>
+				<units>bc$/metre/metre/km</units>
 			</aux>
 			<aux name="Average flood protection\nheight in 1980" access="output" isee:autocreated="true">
 				<doc>Average flood protection height in DIVA for all segments with fp &gt; 0</doc>
@@ -4558,7 +4578,7 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 				</dimensions>
 				<eqn>MAX(0,  Average_flood_protection_construction_cost * Length_of_coastline[Coastal_Protection_level] * 
 ((Missing_protection_that_people_are_willing_to_build+Average_flood_protection_height)^2 - Average_flood_protection_height^2))</eqn>
-				<units>b$</units>
+				<units>bc$</units>
 			</aux>
 			<aux name="Time to increase flood protection height">
 				<eqn>10</eqn>
@@ -4570,7 +4590,7 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>MIN(Cost_of_reaching_desired_protection/Time_to_increase_flood_protection_height,  Money_available_for_new_flood_protection_investments)</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="kilometre per metre">
 				<eqn>0.001</eqn>
@@ -4611,7 +4631,7 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Coastal_assets*Global_gdp_to_asset_ratio[Run]</eqn>
-				<units>b$</units>
+				<units>bc$</units>
 			</aux>
 			<aux name="Missing protection to\nreach perfect protection\nunder expected SLR">
 				<dimensions>
@@ -4627,14 +4647,15 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>INIT(nominal_GDP_per_person[Run])
-* INIT(Coastal_assets[Run,Coastal_Protection_level]) / (INIT(Coastal_assets[Run,well_protected]) + INIT(Coastal_assets[Run,insufficient]))
+* INIT(Coastal_assets[Run,Coastal_Protection_level]) /
+ (INIT(Coastal_assets[Run,well_protected]) + INIT(Coastal_assets[Run,insufficient]))
 * (INIT(Coastal_population[Run,well_protected]) + INIT(Coastal_population[Run,insufficient])) / 
 INIT(Coastal_population[Run,Coastal_Protection_level])</eqn>
-				<units>b$/Mp/year</units>
+				<units>bc$/Mp/year</units>
 			</aux>
 			<aux name="Average value of land in coastal zones in 1980">
 				<eqn>0.005367</eqn>
-				<units>b$/km^2</units>
+				<units>bc$/km^2</units>
 			</aux>
 			<stock name="Coastal assets" access="input">
 				<dimensions>
@@ -4642,7 +4663,7 @@ INIT(Coastal_population[Run,Coastal_Protection_level])</eqn>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$</units>
+				<units>bc$</units>
 			</stock>
 			<stock name="Coastal\npopulation" access="input">
 				<dimensions>
@@ -4658,18 +4679,18 @@ INIT(Coastal_population[Run,Coastal_Protection_level])</eqn>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>GDP_in_coastal_zones/Coastal_population</eqn>
-				<units>b$/Mp</units>
+				<units>bc$/Mp</units>
 			</aux>
 			<aux name="flood protection\ncost index sensitivity to GDPpc">
 				<eqn>0.036853</eqn>
-				<units>Mp / b$</units>
+				<units>Mp / bc$</units>
 			</aux>
 			<aux name="reference\nprotection cost">
 				<doc>From CIAM (Wong et al., 2022)
 
 CIAM value : 0.00602
 
-For the beginning this is held constant in the absence of other information. Unit should theoretically be b$ per km coastline per m vertical elevation, but equation needs the &quot;m&quot; to be squared ?!
+For the beginning this is held constant in the absence of other information. Unit should theoretically be bc$ per km coastline per m vertical elevation, but equation needs the &quot;m&quot; to be squared ?!
 
 As described in CIAM documentation (https://github.com/delavane/CIAM) with reference to Hillen et al.: 
 
@@ -4677,7 +4698,7 @@ Hillen M, Jonkman S, Kanning W, Kok M, Geldenhuys M, Stive M (2010) Coastal defe
 and Geotechnical Engineering 1
 </doc>
 				<eqn>0.00602</eqn>
-				<units>b$/metre/metre/km</units>
+				<units>bc$/metre/metre/km</units>
 			</aux>
 			<aux name="flood protection\ncost index baseline">
 				<eqn>0.3786</eqn>
@@ -4698,7 +4719,7 @@ and Geotechnical Engineering 1
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Average_flood_protection_construction_cost*Fraction_of_dike_construction_cost_for_maintenance_annually*Length_of_coastline[Coastal_Protection_level]*Average_flood_protection_height_in_1980[Coastal_Protection_level]*Reference_fp_height_for_costs</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<stock name="Land appreciation parameter">
 				<dimensions>
@@ -4731,7 +4752,7 @@ and Geotechnical Engineering 1
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Effective_annual_investment_in_flood_protection_height * Time_horizon</eqn>
-				<units>b$</units>
+				<units>bc$</units>
 			</aux>
 			<aux name="Time horizon">
 				<eqn>50</eqn>
@@ -4751,7 +4772,7 @@ and Geotechnical Engineering 1
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>MAX(0,  Maximum_amount_of_money_spent_on_flood_protection_annually - Annual_costs_of_flood_protection_maintenance)</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Flood protection\nheight change since 1980" access="output" isee:autocreated="true">
 				<dimensions>
@@ -4772,7 +4793,7 @@ and Geotechnical Engineering 1
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Land_appreciation_parameter*Average_value_of_land_in_coastal_zones_in_1980</eqn>
-				<units>b$/km^2</units>
+				<units>bc$/km^2</units>
 			</aux>
 			<aux name="Inundated or abandoned coastal\narea">
 				<dimensions>
@@ -4837,7 +4858,7 @@ and Geotechnical Engineering 1
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Value_of_land_in_the_coastal_zone*Inundated_or_abandoned_coastal_area*reference_opportunity_cost_rate</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Expected net global\nflood height in 50 years" access="output" isee:autocreated="true">
 				<dimensions>
@@ -4922,7 +4943,7 @@ ELSE
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/Mp/year</units>
+				<units>bc$/Mp/year</units>
 			</aux>
 			<aux name="Bank\nAssets 1" access="input">
 				<dimensions>
@@ -4995,7 +5016,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="882.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="74.1667" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -5434,7 +5455,7 @@ ELSE
 					<to>Increase_of_average_flood_protection_height_through_investment</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="280" y="1039.17" name="nominal GDP per person"/>
-				<connector uid="152" angle="121.701">
+				<connector uid="152" angle="124.451">
 					<from>nominal_GDP_per_person</from>
 					<to>GDP_per_capita_in_coastal_zones_in_1980</to>
 				</connector>
@@ -5501,7 +5522,7 @@ ELSE
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>Total_investment_in_fp + Total_net_SLR_fp_maintenance_costs</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Total fp maintenance costs">
 				<dimensions>
@@ -5509,7 +5530,7 @@ ELSE
 				</dimensions>
 				<eqn>Annual_costs_of_flood_protection_maintenance[Run,well_protected] + Annual_costs_of_flood_protection_maintenance[Run,insufficient]</eqn>
 				<isee:summing/>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Total investment in fp" isee:derived_units="true">
 				<dimensions>
@@ -5517,7 +5538,7 @@ ELSE
 				</dimensions>
 				<eqn>Effective_annual_investment_in_flood_protection_height[Run,well_protected] + Effective_annual_investment_in_flood_protection_height[Run,insufficient]</eqn>
 				<isee:summing/>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Total reference fp maintenance costs">
 				<dimensions>
@@ -5525,7 +5546,7 @@ ELSE
 				</dimensions>
 				<eqn>Reference_maintenance_costs_without_adaptation[Run,well_protected] + Reference_maintenance_costs_without_adaptation[Run,insufficient]</eqn>
 				<isee:summing/>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="global death rate from coastal flooding" access="output" isee:autocreated="true">
 				<dimensions>
@@ -5555,7 +5576,7 @@ ELSE
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Asset_demolition_cost_factor*(1-Mobile_assets_fraction)*(Annual_retreat_of_coastal_assets)</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Asset relocation cost factor">
 				<eqn>0.1</eqn>
@@ -5571,7 +5592,7 @@ ELSE
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Asset_relocation_cost_factor*(Annual_retreat_of_coastal_assets) * Mobile_assets_fraction</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Annual retreat\nof coastal assets" isee:derived_units="true">
 				<dimensions>
@@ -5580,7 +5601,7 @@ ELSE
 				</dimensions>
 				<eqn>Proactive_retreat_of_coastal_assets + SLR_driven_retreat_of_coastal_assets_1</eqn>
 				<isee:summing/>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Loss of assets\nduring inundation">
 				<dimensions>
@@ -5588,13 +5609,13 @@ ELSE
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>(1.0 - Mobile_assets_fraction) *SLR_driven_retreat_of_coastal_assets_1</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Proportion of all assets\ndamaged due to SLR" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>time_over_which_assets_are_damaged*(Total_loss_of_assets_from_SLR)/Bank_Assets_1</eqn>
+				<eqn>time_over_which_assets_are_damaged*(Total_loss_of_assets_from_SLR)/Bank_Assets_1 *&quot;inflation_adjustment_b$_per_bc$&quot;</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="time over which\nassets are damaged">
@@ -5607,7 +5628,7 @@ ELSE
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Reference maintenance costs without adaptation" access="input">
 				<dimensions>
@@ -5615,7 +5636,7 @@ ELSE
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Effective annual\ninvestment in flood protection height" access="input">
 				<dimensions>
@@ -5623,7 +5644,7 @@ ELSE
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Increase factor for costs of reactive retreat">
 				<eqn>5</eqn>
@@ -5644,7 +5665,7 @@ ELSE
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>(Proactive_retreat_of_people_from_the_coast_1+Increase_factor_for_costs_of_reactive_retreat*SLR_driven_retreat_of_people_from_the_coast_1)*GDP_per_capita_in_coastal_zones</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="GDP per capita\nin coastal zones" access="input">
 				<dimensions>
@@ -5652,7 +5673,7 @@ ELSE
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/Mp</units>
+				<units>bc$/Mp</units>
 			</aux>
 			<aux name="SLR driven retreat of people from the coast 1" access="input">
 				<dimensions>
@@ -5668,7 +5689,7 @@ ELSE
 				</dimensions>
 				<eqn>SUM(People_retreat_costs[Run, *])</eqn>
 				<isee:summing/>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Annual fatalities due to\ncoastal floods" access="input">
 				<dimensions>
@@ -5692,7 +5713,7 @@ ELSE
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="SLR driven retreat of coastal assets 1" access="input">
 				<dimensions>
@@ -5700,7 +5721,7 @@ ELSE
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Total asset retreat costs">
 				<dimensions>
@@ -5708,7 +5729,7 @@ ELSE
 				</dimensions>
 				<eqn>SUM(Asset_relocation_costs[Run, *]) + SUM(Cost_to_demolish_abandoned_assets[Run, *])</eqn>
 				<isee:summing/>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Total relocation cost">
 				<dimensions>
@@ -5716,7 +5737,7 @@ ELSE
 				</dimensions>
 				<eqn>Total_asset_retreat_costs + Total_people_retreat_costs</eqn>
 				<isee:summing/>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Total flood costs">
 				<dimensions>
@@ -5724,7 +5745,7 @@ ELSE
 				</dimensions>
 				<eqn>SUM(Loss_of_assets_during_inundation[Run,*]) + SUM(Loss_of_assets_during_retreat[Run, *]) + SUM(Opportunity_costs_of_inundated_coastal_land[Run,*])</eqn>
 				<isee:summing/>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Opportunity costs of\ninundated coastal land" access="input">
 				<dimensions>
@@ -5732,7 +5753,7 @@ ELSE
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Loss of assets\nduring retreat">
 				<dimensions>
@@ -5740,7 +5761,7 @@ ELSE
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>Proactive_retreat_of_coastal_assets*(1.0 - Mobile_assets_fraction) * Not_depreciated_fraction_of_assets_at_time_of_retreat</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Not depreciated fraction of assets at time of retreat">
 				<eqn>0.1</eqn>
@@ -5752,7 +5773,7 @@ ELSE
 				</dimensions>
 				<eqn>SUM(Annual_opportunity_costs_of_flood_protection[Run,*]) + Total_investment_in_fp + Total_net_SLR_fp_maintenance_costs</eqn>
 				<isee:summing/>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Annual opportunity costs of flood protection" access="input">
 				<dimensions>
@@ -5760,7 +5781,7 @@ ELSE
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Total loss of assets from SLR">
 				<dimensions>
@@ -5768,7 +5789,7 @@ ELSE
 				</dimensions>
 				<eqn>SUM(Loss_of_assets_during_inundation[Run, *]) + SUM(Loss_of_assets_during_retreat[Run, *])</eqn>
 				<isee:summing/>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Total opportunity costs of SLR">
 				<dimensions>
@@ -5776,7 +5797,7 @@ ELSE
 				</dimensions>
 				<eqn>SUM(Annual_opportunity_costs_of_flood_protection[Run, *]) + SUM(Opportunity_costs_of_inundated_coastal_land[Run, *])</eqn>
 				<isee:summing/>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Total costs of storm\ndamages and retreat">
 				<dimensions>
@@ -5784,7 +5805,7 @@ ELSE
 				</dimensions>
 				<eqn>SUM(All_storm_damage[Run, *]) + Total_asset_retreat_costs + Total_people_retreat_costs</eqn>
 				<isee:summing/>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="All storm damage" access="input">
 				<dimensions>
@@ -5792,7 +5813,7 @@ ELSE
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Total asset storm costs">
 				<dimensions>
@@ -5800,14 +5821,14 @@ ELSE
 				</dimensions>
 				<eqn>SUM(All_storm_damage[Run, *])</eqn>
 				<isee:summing/>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Total net SLR fp maintenance costs">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>Total_fp_maintenance_costs-Total_reference_fp_maintenance_costs</eqn>
-				<units>b$/year</units>
+				<units>bc$/year</units>
 			</aux>
 			<aux name="Population" access="input">
 				<dimensions>
@@ -5822,6 +5843,13 @@ ELSE
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$</units>
+			</aux>
+			<aux name="inflation adjustment b$ per bc$" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/bc$</units>
 			</aux>
 		</variables>
 		<views>
@@ -5872,7 +5900,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_y="340" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="2" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -6063,6 +6091,11 @@ ELSE
 				<aux font_style="italic" font_weight="bold" x="74" y="771" name="Bank\nAssets 1"/>
 				<connector uid="44" angle="30.4655">
 					<from>Bank_Assets_1</from>
+					<to>Proportion_of_all_assets_damaged_due_to_SLR</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="178.125" y="836.25" name="inflation adjustment b$ per bc$"/>
+				<connector uid="45" angle="85.9858">
+					<from>&quot;inflation_adjustment_b$_per_bc$&quot;</from>
 					<to>Proportion_of_all_assets_damaged_due_to_SLR</to>
 				</connector>
 				<alias color="blue" font_style="italic" label_side="bottom" uid="20" x="1458.38" y="554.25" width="18" height="18">
