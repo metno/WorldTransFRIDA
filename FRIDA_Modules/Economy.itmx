@@ -5,7 +5,7 @@
 		<name>Economy</name>
 		<uuid>87c9d369-189f-4c9a-86f9-24635ff46796</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7" isee:build_number="3335" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.2" isee:build_number="3414" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -494,6 +494,8 @@
 				<connect2 to='Circular_Flow."inflation_adjustment_b$_per_bc$"' from='Inflation."inflation_adjustment_b$_per_bc$"'/>
 				<connect to="Circular_Flow.Inflation_Rate" from="Inflation.Inflation_Rate"/>
 				<connect2 to="Circular_Flow.Inflation_Rate" from="Inflation.Inflation_Rate"/>
+				<connect to="Circular_Flow.profit_tax_rate_policy" from="Government_Regulations.profit_tax_rate_policy"/>
+				<connect2 to="Circular_Flow.profit_tax_rate_policy" from="Government_Regulations.profit_tax_rate_policy"/>
 				<connect to="Circular_Flow.public_investment_1" from="Government.public_investment"/>
 				<connect2 to="Circular_Flow.public_investment_1" from="Government.public_investment"/>
 				<connect to="Circular_Flow.rent_3" from="Employment.rent"/>
@@ -510,12 +512,18 @@
 				<connect2 to="Circular_Flow.safe_interest_3" from="Government.safe_interest"/>
 				<connect to="Circular_Flow.safe_bank_assets" from="Finance.private_safe_bank_assets"/>
 				<connect2 to="Circular_Flow.safe_bank_assets" from="Finance.private_safe_bank_assets"/>
+				<connect to="Circular_Flow.start_year" from="Government_Regulations.start_year"/>
+				<connect2 to="Circular_Flow.start_year" from="Government_Regulations.start_year"/>
 				<connect to="Circular_Flow.sum_of_energy_taxes" from="Government.sum_of_energy_taxes_in_nominal_terms"/>
 				<connect2 to="Circular_Flow.sum_of_energy_taxes" from="Government.sum_of_energy_taxes_in_nominal_terms"/>
 				<connect to="Circular_Flow.sum_of_subsidies_spent" from="Government.sum_of_subsidies_spent"/>
 				<connect2 to="Circular_Flow.sum_of_subsidies_spent" from="Government.sum_of_subsidies_spent"/>
 				<connect to="Circular_Flow.Total_nominal_people_retreat_costs" from="Sea_level_rise_costs_and_impacts.Total_nominal_people_retreat_costs"/>
 				<connect2 to="Circular_Flow.Total_nominal_people_retreat_costs" from="Sea_level_rise_costs_and_impacts.Total_nominal_people_retreat_costs"/>
+				<connect to="Circular_Flow.switch_tax_policy" from="Government_Regulations.switch_tax_policy"/>
+				<connect2 to="Circular_Flow.switch_tax_policy" from="Government_Regulations.switch_tax_policy"/>
+				<connect to="Circular_Flow.wage_tax_policy" from="Government_Regulations.wage_tax_rate_policy"/>
+				<connect2 to="Circular_Flow.wage_tax_policy" from="Government_Regulations.wage_tax_rate_policy"/>
 			</module>
 			<module name="Finance" isee:label="">
 				<format scale_by="auto"/>
@@ -1268,7 +1276,7 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(wages)*wage_tax_rate</eqn>
+				<eqn>(wages)*actual_wage_tax_rate</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
@@ -1290,7 +1298,7 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>MAX(0, (non_bank_profits+bank_profits))*profit_tax_rate</eqn>
+				<eqn>MAX(0, (non_bank_profits+bank_profits))*actual_profit_tax_rate</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
@@ -1353,7 +1361,7 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>rent*profit_tax_rate</eqn>
+				<eqn>rent*actual_profit_tax_rate</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
@@ -1667,6 +1675,30 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/year</units>
 			</aux>
+			<aux name="wage tax policy" access="input">
+				<eqn>.1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="start year" access="input">
+				<eqn>2025</eqn>
+				<units>Year</units>
+			</aux>
+			<aux name="actual wage tax rate">
+				<eqn>IF TIME &gt; start_year AND switch_tax_policy = 1 THEN wage_tax_policy ELSE wage_tax_rate</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="switch tax policy" access="input">
+				<eqn>0</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="profit tax rate policy" access="input">
+				<eqn>.22</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="actual profit tax rate">
+				<eqn>IF TIME &gt; start_year AND switch_tax_policy = 1 THEN profit_tax_rate_policy ELSE profit_tax_rate</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -1793,8 +1825,8 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 					<from>time_to_consider_desired_savings</from>
 					<to>desired_owner_savings</to>
 				</connector>
-				<aux label_side="top" x="459.084" y="585.617" name="time to reach\nsavings goal"/>
-				<connector uid="5" angle="332.626">
+				<aux label_side="top" x="460.084" y="693.391" name="time to reach\nsavings goal"/>
+				<connector uid="5" angle="48.7636">
 					<from>time_to_reach_savings_goal</from>
 					<to>annual_owner_savings_to_reach_goal</to>
 				</connector>
@@ -1883,11 +1915,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 						<pt x="1909.75" y="552.75"/>
 					</pts>
 				</flow>
-				<aux label_side="bottom" x="1890.08" y="585.617" name="wage tax rate"/>
-				<connector uid="15" angle="150.012">
-					<from>wage_tax_rate</from>
-					<to>wage_tax</to>
-				</connector>
+				<aux label_side="bottom" x="2013.08" y="778" name="wage tax rate"/>
 				<connector uid="16" angle="219.138">
 					<from>
 						<alias uid="17"/>
@@ -1898,20 +1926,16 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 					<from>Worker_Savings</from>
 					<to>worker_savings_interest</to>
 				</connector>
-				<aux label_side="left" x="696.209" y="534.75" name="profit tax rate"/>
+				<aux label_side="left" x="442.084" y="556.75" name="profit tax rate"/>
 				<flow label_side="left" label_angle="225" x="696.209" y="484" name="profit tax">
 					<pts>
 						<pt x="757.417" y="484"/>
 						<pt x="611" y="484"/>
 					</pts>
 				</flow>
-				<connector uid="19" angle="90.0006">
-					<from>profit_tax_rate</from>
-					<to>profit_tax</to>
-				</connector>
 				<aux x="752.167" y="682.58" name="initial owner savings"/>
 				<aux label_side="right" x="1347.42" y="603.617" name="initial firms\nchecking accounts"/>
-				<aux x="1815.13" y="703.747" name="initial worker savings"/>
+				<aux x="1799.13" y="715.141" name="initial worker savings"/>
 				<flow label_side="left" label_angle="135" x="1234.63" y="388.267" name="government spending">
 					<pts>
 						<pt x="1234.63" y="270.25"/>
@@ -1942,10 +1966,6 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 						<pt x="611" y="591.5"/>
 					</pts>
 				</flow>
-				<connector uid="21" angle="269.999">
-					<from>profit_tax_rate</from>
-					<to>rent_tax</to>
-				</connector>
 				<connector uid="22" angle="338.199">
 					<from>
 						<alias uid="23"/>
@@ -2356,6 +2376,60 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 					<from>&quot;inflation_adjustment_b$_per_bc$&quot;</from>
 					<to>&quot;real_private_consumption_2021c$&quot;</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" x="1966.33" y="864" name="wage tax policy"/>
+				<aux font_style="italic" font_weight="bold" x="2122" y="764" name="start year"/>
+				<aux x="1902" y="679.141" name="actual wage tax rate"/>
+				<connector uid="130" angle="115.012">
+					<from>wage_tax_policy</from>
+					<to>actual_wage_tax_rate</to>
+				</connector>
+				<connector uid="131" angle="135.981">
+					<from>wage_tax_rate</from>
+					<to>actual_wage_tax_rate</to>
+				</connector>
+				<connector uid="132" angle="159.075">
+					<from>start_year</from>
+					<to>actual_wage_tax_rate</to>
+				</connector>
+				<connector uid="133" angle="106.791">
+					<from>actual_wage_tax_rate</from>
+					<to>wage_tax</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1845" y="857" name="switch tax policy"/>
+				<connector uid="134" angle="72.5528">
+					<from>switch_tax_policy</from>
+					<to>actual_wage_tax_rate</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="431" y="463" name="profit tax rate policy"/>
+				<aux x="588" y="529" name="actual profit tax rate"/>
+				<connector uid="135" angle="327.095">
+					<from>profit_tax_rate_policy</from>
+					<to>actual_profit_tax_rate</to>
+				</connector>
+				<connector uid="136" angle="12.5146">
+					<from>profit_tax_rate</from>
+					<to>actual_profit_tax_rate</to>
+				</connector>
+				<connector uid="137" angle="25.8664">
+					<from>actual_profit_tax_rate</from>
+					<to>profit_tax</to>
+				</connector>
+				<connector uid="138" angle="344.745">
+					<from>actual_profit_tax_rate</from>
+					<to>rent_tax</to>
+				</connector>
+				<connector uid="139" angle="20.9245">
+					<from>
+						<alias uid="140"/>
+					</from>
+					<to>actual_profit_tax_rate</to>
+				</connector>
+				<connector uid="141" angle="1.63658">
+					<from>
+						<alias uid="142"/>
+					</from>
+					<to>actual_profit_tax_rate</to>
+				</connector>
 				<aux x="1351" y="1039.83" name="Actual people retreat cost from SLR"/>
 				<aux x="1242.75" y="1048.71" name="Time to pay for SLR retreat costs"/>
 				<connector uid="130" angle="4.68961">
@@ -2477,6 +2551,12 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				</alias>
 				<alias font_style="italic" uid="128" x="1237" y="1170" width="18" height="18">
 					<of>net_worker_income</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="140" x="358" y="599" width="18" height="18">
+					<of>start_year</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="142" x="292" y="489" width="18" height="18">
+					<of>switch_tax_policy</of>
 				</alias>
 			</view>
 		</views>
