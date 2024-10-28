@@ -629,7 +629,7 @@
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/year</units>
 			</aux>
-			<module name="Employment" isee:label="" url="/Users/bschoenberg/code/WorldTrans/Frida/FRIDA_Modules/Employment.itmx">
+			<module name="Employment" isee:label="">
 				<format scale_by="auto"/>
 				<connect to="Circular_Flow.annual_aggregate_wages" from="Employment.annual_aggregate_wages"/>
 				<connect2 to="Circular_Flow.annual_aggregate_wages" from="Employment.annual_aggregate_wages"/>
@@ -2561,6 +2561,2639 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				</alias>
 				<alias font_style="italic" font_weight="bold" uid="142" x="292" y="489" width="18" height="18">
 					<of>switch_tax_policy</of>
+				</alias>
+			</view>
+		</views>
+	</model>
+	<model name="Employment">
+		<variables>
+			<aux name="initial unemployment rate">
+				<eqn>0.0760501165190791</eqn>
+				<range min="0.03" max="0.1"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="passing 15">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>AGECOUNT(Aged_1_to_20_years, 14, 15)</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="Initial Wage Rate">
+				<eqn>6240.73545677396</eqn>
+				<range min="2000" max="10000"/>
+				<units>$/p</units>
+			</aux>
+			<flow name="employment decline">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>firing</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="wage\nchange">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Wage_Rate*fractional_wage_growth</eqn>
+				<units>$/p/year</units>
+			</flow>
+			<flow name="employment growth">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>hiring
+{desired_additional_hires*effect_of_labour_balance_on_hiring</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="aging out\nof employed">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>aging_out*percentage_of_working_age_that_are_employed/one_year</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="employed\ndeaths">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>working_age_deaths*percentage_of_working_age_that_are_employed</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="unemployed\ndeaths">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>working_age_deaths*percentage_of_working_age_that_are_unemployed</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<stock name="Wage Rate">
+				<doc>${Calibrated}
+https://rshiny.ilo.org/dataexplorer17/?id=SDG_1041_NOC_RT_A&amp;ref_area=X01</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Initial_Wage_Rate</eqn>
+				<inflow>wage_change</inflow>
+				<units>$/p</units>
+			</stock>
+			<stock name="Employed" access="output" isee:autocreated="true">
+				<doc>${Calibrated}
+https://rshiny.ilo.org/dataexplorer15/?id=EMP_2EMP_SEX_AGE_NB_A&amp;ref_area=X01&amp;sex=SEX_T&amp;classif1=AGE_YTHADULT_YGE15&amp;timefrom=1991</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(working_age_population-non_active_working_age)*(1-initial_unemployment_rate)</eqn>
+				<inflow>employment_growth</inflow>
+				<outflow>employment_decline</outflow>
+				<outflow>aging_out_of_employed</outflow>
+				<outflow>employed_deaths</outflow>
+				<non_negative/>
+				<units>Mp</units>
+			</stock>
+			<aux name="profit firing\nthreshold">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Safe_Loans*safe_interest_1*profit_threshold_multiplier</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="missed\nprofits">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MAX(0, profit_firing_threshold-non_bank_profits_1)</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="firing from\nmissed profits">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>SMTH1(MAX(0, (missed_profits/wage_rate_in_billions_per_million_people)*effect_of_missed_profits), time_to_fire_from_missed_profits)</eqn>
+				<isee:delay_aux/>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="firing from\ndefaults">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>SMTH1(total_defaults*hiring_to_investment_ratio/wage_rate_in_billions_per_million_people, time_for_defaults_to_affect_firing)</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="dollars per billion">
+				<eqn>1000000000</eqn>
+				<units>$/B$</units>
+			</aux>
+			<aux name="wage rate\nin billions per\nmillion people">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Wage_Rate/dollars_per_billion*persons_per_million_people</eqn>
+				<units>B$/Mp</units>
+			</aux>
+			<aux name="desired\nadditional hires">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(planned_investment*hiring_to_investment_ratio)/wage_rate_in_billions_per_million_people</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="one year">
+				<eqn>1</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="persons per\nmillion people">
+				<eqn>1000000</eqn>
+				<units>p/Mp</units>
+			</aux>
+			<aux name="annual\naggregate wages" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>wage_rate_in_billions_per_million_people*Employed/one_year</eqn>
+				<units>b$/year</units>
+			</aux>
+			<flow name="aging out of\nunemployed">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>aging_out*percentage_of_working_age_that_are_unemployed/one_year</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="new labour\nforce entrants">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>aging_in*labour_force_participation_rate/one_year</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<stock name="Unemployed">
+				<doc>${Calibrated}
+https://rshiny.ilo.org/dataexplorer16/?id=UNE_2UNE_SEX_AGE_NB_A&amp;ref_area=X01&amp;sex=SEX_T&amp;classif1=AGE_YTHADULT_YGE15&amp;timefrom=1991</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(working_age_population-non_active_working_age)*initial_unemployment_rate</eqn>
+				<inflow>employment_decline</inflow>
+				<inflow>new_labour_force_entrants</inflow>
+				<inflow>Seeking_work</inflow>
+				<outflow>employment_growth</outflow>
+				<outflow>unemployed_deaths</outflow>
+				<outflow>aging_out_of_unemployed</outflow>
+				<units>Mp</units>
+			</stock>
+			<aux name="desired fractional\nwage growth from supply and demand">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>max_change_in_fractional_wage_growth*effect_of_labour_balance_on_fractional_wage_growth_rate
+
+{(max_change_in_fractional_wage_growth*effect_of_labour_balance_on_fractional_wage_growth_rate)</eqn>
+				<units>dmnl/year</units>
+			</aux>
+			<aux name="unemployment rate" access="output" isee:autocreated="true">
+				<doc>${Calibrated}
+https://rshiny.ilo.org/dataexplorer32/?id=UNE_2EAP_SEX_AGE_RT_A&amp;ref_area=X01&amp;sex=SEX_T&amp;classif1=AGE_YTHADULT_YGE15&amp;timefrom=1991</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Unemployed/(Unemployed+Employed)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="profit threshold\nmultiplier">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="deaths 15 to 20 years">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Aged_15_to_20 / Aged_1_to_20_years_1 * deaths_1_to_20_years_1</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="aging in">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>passing_15</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="aging out">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Passing_66*one_year</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="working age\ndeaths">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>deaths_20_to_40_years+deaths_40_to_60_years+deaths_15_to_20_years+deaths_60_to_65_years</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="Check">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(Employed+Unemployed+non_active_working_age)
+/(working_age_population)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="participating population">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Employed+Unemployed</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="percentage\nof working age that\nare employed">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Employed/working_age_population</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="percentage\nof working age that\nare unemployed">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Unemployed/working_age_population</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="working\nage population">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Aged_20_to_40_years_1+Aged_40_to_60_years_1+Aged_15_to_20+Aged_60_to_65_years_1</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="Aged 15 to 20">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>AGECOUNT(Aged_1_to_20_years_1, 14, 19)</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="labour force\nparticipation rate" access="output" isee:autocreated="true">
+				<doc>https://rshiny.ilo.org/dataexplorer20/?id=EAP_2WAP_SEX_AGE_RT_A&amp;ref_area=X01&amp;sex=SEX_T&amp;classif1=AGE_AGGREGATE_TOTAL&amp;timefrom=1991</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>labour_force_participation_fixed/100</eqn>
+				<units>dmnl</units>
+			</aux>
+			<stock name="non active working age">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>working_age_population*(1-labour_force_participation_rate)</eqn>
+				<inflow>new_potential_labour_force_entrants</inflow>
+				<outflow>aging_out_of_potential</outflow>
+				<outflow>potential_labour_deaths</outflow>
+				<outflow>Seeking_work</outflow>
+				<units>Mp</units>
+			</stock>
+			<flow name="new\npotential labour\nforce entrants">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>aging_in*(1-labour_force_participation_rate)/one_year</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="potential\nlabour deaths">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>working_age_deaths*percentage_of_working_age_that_are_non_active</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="aging out\nof potential">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>aging_out*percentage_of_working_age_that_are_non_active/one_year</eqn>
+				<non_negative/>
+				<units>Mp/year</units>
+			</flow>
+			<flow name="Seeking work">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>participation_gap/time_for_labour_participation_to_change</eqn>
+				<units>Mp/year</units>
+			</flow>
+			<aux name="time for labour\nparticipation to change">
+				<eqn>1</eqn>
+				<units>Years</units>
+			</aux>
+			<aux name="percentage\nof working age that\nare non active">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>non_active_working_age/working_age_population</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="indicated\nparticipation">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>working_age_population*labour_force_participation_rate</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="participation\ngap">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>indicated_participation-participating_labourers</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="participating\nlabourers">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Unemployed+Employed</eqn>
+				<units>Mp</units>
+			</aux>
+			<aux name="rent to\ninvestment ratio">
+				<eqn>0.25</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="rent" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>planned_investment*rent_to_investment_ratio</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="labour balance">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Unemployed/desired_additional_hires/time_seeking_employees</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="time seeking\nemployees">
+				<eqn>1.41629280756711</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="max change in\nfractional wage growth">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.116512056670808</eqn>
+				<range min="0" max="0.9"/>
+				<units>1/year</units>
+			</aux>
+			<aux name="labour force\nparticipation fixed">
+				<doc>${Calibration Parameter}
+https://rshiny.ilo.org/dataexplorer20/?id=EAP_2WAP_SEX_AGE_RT_A&amp;ref_area=X01&amp;sex=SEX_T&amp;classif1=AGE_AGGREGATE_TOTAL&amp;timefrom=1991</doc>
+				<eqn>63.9973665968967</eqn>
+				<range min="61.8" max="66"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="percentage of working age that are active">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>1-percentage_of_working_age_that_are_non_active</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="hiring to\ninvestment\nratio">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.204839223969682</eqn>
+				<range min="0.1" max="0.75"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sloshing around in\nthe firms checking">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>planned_investment*slosh_to_investment_ratio</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="slosh to\ninvestment ratio">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>1-rent_to_investment_ratio-hiring_to_investment_ratio</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of labour\nbalance on fractional wage growth rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>labour_balance-zero_point_in_wage_growth+1</eqn>
+				<gf>
+					<xscale min="0" max="2"/>
+					<yscale min="-1" max="1"/>
+					<ypts>1,0.778,0.59,0.429,0.307,0.207,0.126,0.077,0.038,0.015,0,-0.005,-0.01,-0.019,-0.027,-0.034,-0.042,-0.054,-0.069,-0.092,-0.123</ypts>
+				</gf>
+				<units>dmnl</units>
+			</aux>
+			<aux name="zero point in\nwage growth">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="fraction of pop that is working age">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>working_age_population/Population_1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="planned\ninvestment">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>SMTH1(total_investment_1, 1)</eqn>
+				<isee:delay_aux/>
+				<units>b$/year</units>
+			</aux>
+			<stock name="Wage Index">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Cumulative_inflation</eqn>
+				<inflow>change_in_wage_index</inflow>
+				<units>dmnl</units>
+			</stock>
+			<flow name="change in wage index">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>fractional_wage_growth*Wage_Index</eqn>
+				<units>dmnl/year</units>
+			</flow>
+			<aux name="wage growth\nrate gap">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Cumulative_inflation-Wage_Index</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="Urgency with which wage growth is demanded">
+				<eqn>2</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="desired fractional wage\ngrowth from inflation">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MAX(wage_growth_rate_gap/Urgency_with_which_wage_growth_is_demanded, 0)</eqn>
+				<units>dmnl/year</units>
+			</aux>
+			<aux name="initial recent\nwage growth rate">
+				<eqn>0.0138395245036886</eqn>
+				<units>dmnl/year</units>
+			</aux>
+			<aux name="initial average wage rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>INIT(Wage_Rate)*(1-initial_recent_wage_growth_rate*one_year)</eqn>
+				<units>$/p</units>
+			</aux>
+			<aux name="working age population 2" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mp</units>
+			</aux>
+			<stock name="Aged 20 to 40 years 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<conveyor/>
+				<units>Mp</units>
+			</stock>
+			<stock name="Aged 40 to 60 years 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<conveyor/>
+				<units>Mp</units>
+			</stock>
+			<stock name="Aged 60 to 65 years 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<conveyor/>
+				<units>Mp</units>
+			</stock>
+			<aux name="Population 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mp</units>
+			</aux>
+			<stock name="Aged 1 to 20 years 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<conveyor/>
+				<units>Mp</units>
+			</stock>
+			<aux name="deaths\n1 to 20 years 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="deaths\n60 to 65 years" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="deaths\n20 to 40 years" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="deaths\n40 to 60 years" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="total investment 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<stock name="Safe\nLoans" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$</units>
+			</stock>
+			<aux name="non bank profits 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="defaults 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<stock name="Cumulative inflation" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0</eqn>
+				<units>dmnl</units>
+			</stock>
+			<aux name="safe\ninterest 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>1/year</units>
+			</aux>
+			<stock name="Aged 1 to 20 years" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<conveyor/>
+				<units>Mp</units>
+			</stock>
+			<aux name="Passing 66" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="fractional wage growth">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>SMTH1(desired_fractional_wage_growth_from_supply_and_demand+agreed_wage_growth_from_inflation, wage_adjustment_negotiation_time)</eqn>
+				<isee:delay_aux/>
+				<units>1/year</units>
+			</aux>
+			<aux name="wage adjustment negotiation time">
+				<eqn>1.99971463266878</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="negotiation\neffectiveness">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="agreed wage growth from inflation">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>desired_fractional_wage_growth_from_inflation*negotiation_effectiveness</eqn>
+				<units>dmnl/year</units>
+			</aux>
+			<aux name="Surface Temperature\n1986 to 2005 offset\nrelative to 1850 to 1900">
+				<eqn>0.688948529</eqn>
+				<units>deg C</units>
+			</aux>
+			<aux name="Temperature effect on high exposure productivity">
+				<eqn>-12.76961116</eqn>
+				<units>1/(deg C)</units>
+			</aux>
+			<aux name="Temperature squared effect\non high exposure productivity">
+				<eqn>0.892955</eqn>
+				<units>1/(deg C^2)</units>
+			</aux>
+			<aux name="Effect of climate on high exposure labour">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF (switch_economy_damage =0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+1 + 0.01*(Temperature_effect_on_high_exposure_productivity*(Surface_Temperature_Anomaly_1 - Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900) + Temperature_squared_effect_on_high_exposure_productivity*(Surface_Temperature_Anomaly_1 - Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900)^2)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="Temperature effect on\nlow exposure productivity">
+				<eqn>-8.09887635</eqn>
+				<units>1/(deg C)</units>
+			</aux>
+			<aux name="Temperature squared effect on low exposure productivity">
+				<eqn>0.0841974</eqn>
+				<units>1/(deg C^2)</units>
+			</aux>
+			<aux name="Effect of climat\non low exposure\nlabour">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF (switch_economy_damage =0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+1 + 0.01*(Temperature_effect_on_low_exposure_productivity*( - Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900) + Temperature_squared_effect_on_low_exposure_productivity*(Surface_Temperature_Anomaly_1 - Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900)^2)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="raw share of\nemployment\nin agriculture">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MAX(0, 
+share_of_employment_in_agriculture_intercept+
+EXP(share_of_employment_in_agriculture_slope*real_GDP_per_person)
+)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="raw share of\nemployment\nin industry">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MAX(0, 
+share_of_employment_in_industry_intercept+share_of_employment_in_industry_slope*real_GDP_per_person
+)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="raw share of\nemployment\nin services">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MAX(0, 
+share_of_employment_in_services_intercept+share_of_employment_in_services_slope*real_GDP_per_person
+)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="share of\nemployment in agriculture intercept">
+				<eqn>66.850525614721</eqn>
+				<range min="-100" max="100"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="share of\nemployment in\nagriculture slope">
+				<eqn>-15.8153975163181</eqn>
+				<range min="-50" max="1"/>
+				<units>Million*Person*Years/bc$</units>
+			</aux>
+			<aux name="share of\nemployment in industry intercept">
+				<eqn>0.24841473283493</eqn>
+				<range min="-100" max="100"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="share of\nemployment in\nindustry slope">
+				<eqn>2.84169994702987</eqn>
+				<range min="0" max="10"/>
+				<units>Million*Person*Years/bc$</units>
+			</aux>
+			<aux name="share of\nemployment in services intercept">
+				<eqn>-25.3265314921532</eqn>
+				<range min="-100" max="100"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="share of\nemployment in\nservices slope">
+				<eqn>7.29955124748939</eqn>
+				<range min="0" max="10"/>
+				<units>Million*Person*Years/bc$</units>
+			</aux>
+			<aux name="share of\nemployment\nin agriculture">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>raw_share_of_employment_in_agriculture/(raw_share_of_employment_in_agriculture+raw_share_of_employment_in_industry+raw_share_of_employment_in_services)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="share of\nemployment\nin industry">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>raw_share_of_employment_in_industry/(raw_share_of_employment_in_agriculture+raw_share_of_employment_in_industry+raw_share_of_employment_in_services)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="share of\nemployment\nin services">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>raw_share_of_employment_in_services/(raw_share_of_employment_in_agriculture+raw_share_of_employment_in_industry+raw_share_of_employment_in_services)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="Employment to\nLabour Supply">
+				<eqn>1</eqn>
+				<units>MLabour/Mp</units>
+			</aux>
+			<aux name="Raw Labour Supply">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Employed*Employment_to_Labour_Supply</eqn>
+				<units>MLabour</units>
+			</aux>
+			<aux name="Raw Labour\nSupply agriculture">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Raw_Labour_Supply*share_of_employment_in_agriculture</eqn>
+				<units>MLabour</units>
+			</aux>
+			<aux name="Raw Labour\nSupply industry">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Raw_Labour_Supply*share_of_employment_in_industry</eqn>
+				<units>MLabour</units>
+			</aux>
+			<aux name="Raw Labour\nSupply services">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Raw_Labour_Supply*share_of_employment_in_services</eqn>
+				<units>MLabour</units>
+			</aux>
+			<aux name="Labour Supply\nagriculture with Climate Impacts">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Raw_Labour_Supply_agriculture*
+(
+labour_exposure_shares_in_agriculture[No_Exposure]*
+1
++
+labour_exposure_shares_in_agriculture[Low_Exposure]*
+Effect_of_climat_on_low_exposure_labour
++
+labour_exposure_shares_in_agriculture[High_Exposure]*
+Effect_of_climate_on_high_exposure_labour
+)</eqn>
+				<units>MLabour</units>
+			</aux>
+			<aux name="Labour Supply\nindustry with\nClimate Impacts">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Raw_Labour_Supply_industry*
+(
+labour_exposure_shares_in_industry[No_Exposure]*
+1
++
+labour_exposure_shares_in_industry[Low_Exposure]*
+Effect_of_climat_on_low_exposure_labour
++
+labour_exposure_shares_in_industry[High_Exposure]*
+Effect_of_climate_on_high_exposure_labour
+)</eqn>
+				<units>MLabour</units>
+			</aux>
+			<aux name="Labour Supply\nservices with\nClimate Impacts">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Raw_Labour_Supply_services*
+(
+labour_exposure_shares_in_services[No_Exposure]*
+1
++
+labour_exposure_shares_in_services[Low_Exposure]*
+Effect_of_climat_on_low_exposure_labour
++
+labour_exposure_shares_in_services[High_Exposure]*
+Effect_of_climate_on_high_exposure_labour
+)</eqn>
+				<units>MLabour</units>
+			</aux>
+			<aux name="Labour Supply with Climate Impacts">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Labour_Supply_agriculture_with_Climate_Impacts+Labour_Supply_industry_with_Climate_Impacts+Labour_Supply_services_with_Climate_Impacts</eqn>
+				<units>MLabour</units>
+			</aux>
+			<aux name="labour exposure shares in agriculture">
+				<dimensions>
+					<dim name="labouExposureLevel"/>
+				</dimensions>
+				<element subscript="No_Exposure">
+					<eqn>0</eqn>
+				</element>
+				<element subscript="Low_Exposure">
+					<eqn>0.1</eqn>
+				</element>
+				<element subscript="High_Exposure">
+					<eqn>0.9</eqn>
+				</element>
+				<units>dmnl</units>
+			</aux>
+			<aux name="labour exposure\nshares in industry">
+				<dimensions>
+					<dim name="labouExposureLevel"/>
+				</dimensions>
+				<element subscript="No_Exposure">
+					<eqn>0.25</eqn>
+				</element>
+				<element subscript="Low_Exposure">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="High_Exposure">
+					<eqn>0.25</eqn>
+				</element>
+				<units>dmnl</units>
+			</aux>
+			<aux name="labour exposure shares\nin services">
+				<dimensions>
+					<dim name="labouExposureLevel"/>
+				</dimensions>
+				<element subscript="No_Exposure">
+					<eqn>0.75</eqn>
+				</element>
+				<element subscript="Low_Exposure">
+					<eqn>0.25</eqn>
+				</element>
+				<element subscript="High_Exposure">
+					<eqn>0</eqn>
+				</element>
+				<units>dmnl</units>
+			</aux>
+			<aux name="Surface Temperature Anomaly 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>deg C</units>
+			</aux>
+			<aux name="realised\nproductivity" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Productivity*climate_impact_on_productivity</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="climate impact\non productivity">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>climate_impact_of_heat_on_productivity * Productivity_reduction_factor_from_coastal_flooding</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="fraction fired from\nproductivity gains">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>SMTH1(realised_productivity_growth*fraction_of_productivity_gains_translating_to_firing, time_for_productivity_to_affect_firing)</eqn>
+				<isee:delay_aux/>
+				<units>dmnl/year</units>
+			</aux>
+			<aux name="fraction of\nproductivity gains translating to firing">
+				<eqn>0.5</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="exploratory\nloan failure" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="actual safe\ninvestment failure" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="realised\nproductivity\ngrowth" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>TREND(realised_productivity, 1, initial_productivity_growth)</eqn>
+				<units>dmnl/Year</units>
+			</aux>
+			<aux name="initial\nproductivity\ngrowth">
+				<eqn>0.02</eqn>
+				<units>dmnl/Year</units>
+			</aux>
+			<stock name="Productivity">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>1</eqn>
+				<inflow>change_in_productivity</inflow>
+				<units>dmnl</units>
+			</stock>
+			<flow name="change in\nproductivity">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>productivity_under_development/average_development_completion_time</eqn>
+				<non_negative/>
+				<units>dmnl/Years</units>
+			</flow>
+			<stock name="productivity\nunder development">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Productivity*indicated_productivity_growth*average_development_completion_time</eqn>
+				<inflow>productivity_starting_development</inflow>
+				<outflow>change_in_productivity</outflow>
+				<units>dmnl</units>
+			</stock>
+			<flow name="productivity\nstarting development">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Productivity * indicated_productivity_growth</eqn>
+				<non_negative/>
+				<units>dmnl/Years</units>
+			</flow>
+			<aux name="average\ndevelopment\ncompletion time">
+				<eqn>5</eqn>
+				<units>years</units>
+			</aux>
+			<aux name="threshold\nunemployment\nrate">
+				<eqn>0.0900877815739811</eqn>
+				<range min="0.04" max="0.15"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of labour\nsupply on hiring">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MIN(1, unemployment_rate / threshold_unemployment_rate)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sensitivity\nof hiring to\nunemployment\nrate">
+				<eqn>1.85292398186416</eqn>
+				<range min="0.1" max="2"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="safe loans\nfinancing innovation" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="exploratory\nbank investment" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="GDP" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="non-bank innovation investment share of GDP">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>safe_loans_financing_innovation/GDP</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="productivity yield of\nnon-bank innovation">
+				<eqn>0.13266869511252</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="indicated productivity growth\nfrom non-bank innovation">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>&quot;non-bank_innovation_investment_share_of_GDP&quot;*&quot;productivity_yield_of_non-bank_innovation&quot;</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="exploratory bank investment share of GDP">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>exploratory_bank_investment/GDP</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="indicated productivity growth from bank exploration">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>exploratory_bank_investment_share_of_GDP*productivity_yield_of_exploratory_investment</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="productivity yield of exploratory investment">
+				<eqn>1.9473283132336</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="indicated productivity growth">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(
+
+
+indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity_growth_from_non-bank_innovation&quot;)</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="time for\nproductivity\nto affect firing">
+				<eqn>5</eqn>
+				<units>years</units>
+			</aux>
+			<aux name="time for defaults to affect firing">
+				<eqn>1</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="hiring">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>desired_additional_hires*effect_of_labour_supply_on_hiring^sensitivity_of_hiring_to_unemployment_rate</eqn>
+				<isee:delay_aux/>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="firing">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(MIN(max_firing_percentage*Employed, firing_from_defaults+firing_from_missed_profits+fraction_fired_from_productivity_gains*Employed))</eqn>
+				<units>Mp/year</units>
+			</aux>
+			<aux name="time to fire from missed profits">
+				<eqn>1</eqn>
+				<units>years</units>
+			</aux>
+			<aux name="ratio of missed profit\nto threshold">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MAX(1, profit_firing_threshold/non_bank_profits_1)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sensitivity of firing to profit discrepancy">
+				<eqn>0.5</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="effect of missed profits">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MIN(1, (ratio_of_missed_profit_to_threshold^sensitivity_of_firing_to_profit_discrepancy)-1)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="real GDP per person" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>bc$/Mp/year</units>
+			</aux>
+			<aux name="total defaults">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>defaults_1+exploratory_loan_failure+actual_safe_investment_failure</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="max firing\npercentage">
+				<eqn>0.0366297733693123</eqn>
+				<range min="0.03" max="0.1"/>
+				<units>1/year</units>
+			</aux>
+			<aux name="switch economy damage" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="today" access="input">
+				<eqn>2025</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="Productivity reduction factor from coastal flooding" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>1</units>
+			</aux>
+			<aux name="climate impact of heat on productivity">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Labour_Supply_with_Climate_Impacts/Raw_Labour_Supply</eqn>
+				<units>1</units>
+			</aux>
+		</variables>
+		<views>
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
+				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:sim_speed_slider color="black" background="white"/>
+				<isee:time_slider color="#E95F74" background="silver"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
+				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
+				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="6" isee:scroll_x="1200" isee:scroll_y="873" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
+						<shape type="rectangle" width="45" height="35"/>
+					</stock>
+					<flow color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</flow>
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="11pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
+						<shape type="rectangle" width="67" height="55"/>
+					</module>
+					<aux color="blue" background="white" font_color="blue" font_size="11pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</aux>
+					<group color="red" background="white" font_color="red" font_size="11pt"/>
+					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
+					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+					<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+						<isee:series_styles>
+							<isee:series_style color="blue" thickness="1"/>
+							<isee:series_style color="red" thickness="1"/>
+							<isee:series_style color="fuchsia" thickness="1"/>
+							<isee:series_style color="#008F44" thickness="1"/>
+							<isee:series_style color="#FF7F00" thickness="1"/>
+							<isee:series_style color="#7F00FF" thickness="1"/>
+							<isee:series_style color="#0CA0FF" thickness="1"/>
+							<isee:series_style color="lime" thickness="1"/>
+							<isee:series_style color="#FF007F" thickness="1"/>
+							<isee:series_style color="aqua" thickness="1"/>
+							<isee:series_style color="#F586FF" thickness="1"/>
+							<isee:series_style color="black" thickness="1"/>
+							<isee:series_style color="#C8C8C8" thickness="1"/>
+						</isee:series_styles>
+					</graph>
+					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				</style>
+				<aux label_side="left" x="787.625" y="494.666" name="initial unemployment rate"/>
+				<aux label_side="bottom" x="3281.75" y="1516.5" name="passing 15"/>
+				<aux label_side="left" x="2081.75" y="1318.58" name="Initial Wage Rate"/>
+				<flow label_side="bottom" x="1140.63" y="1062.17" name="employment decline">
+					<pts>
+						<pt x="1241" y="1360.63"/>
+						<pt x="1051.25" y="1360.63"/>
+						<pt x="1051.25" y="1062.17"/>
+						<pt x="1242" y="1062.17"/>
+					</pts>
+				</flow>
+				<flow label_side="right" x="2172.05" y="1223.3" name="wage\nchange">
+					<pts>
+						<pt x="2172.05" y="1157.13"/>
+						<pt x="2172.05" y="1280.46"/>
+					</pts>
+				</flow>
+				<flow label_side="top" x="1408.69" y="1360.58" name="employment growth">
+					<pts>
+						<pt x="1307" y="1064.17"/>
+						<pt x="1499.38" y="1064.17"/>
+						<pt x="1499.38" y="1360.58"/>
+						<pt x="1306" y="1360.58"/>
+					</pts>
+				</flow>
+				<flow label_side="bottom" x="1369.75" y="1388.75" name="aging out\nof employed">
+					<pts>
+						<pt x="1306" y="1388.75"/>
+						<pt x="1457.5" y="1388.75"/>
+					</pts>
+				</flow>
+				<flow label_side="right" x="1276.5" y="1456.74" name="employed\ndeaths">
+					<pts>
+						<pt x="1276.5" y="1401.81"/>
+						<pt x="1276.5" y="1532.67"/>
+					</pts>
+				</flow>
+				<flow label_side="left" x="1273.5" y="1124.26" name="unemployed\ndeaths">
+					<pts>
+						<pt x="1273.5" y="1069.84"/>
+						<pt x="1273.5" y="1199.67"/>
+					</pts>
+				</flow>
+				<stock label_side="left" x="2172.05" y="1297.96" name="Wage Rate"/>
+				<connector uid="1" angle="132.359">
+					<from>Wage_Rate</from>
+					<to>wage_change</to>
+				</connector>
+				<stock label_side="top" x="1241" y="1346.81" width="65" height="55" name="Employed"/>
+				<aux label_side="right" label_angle="315" x="802.5" y="820.293" name="profit firing\nthreshold"/>
+				<aux label_side="right" x="800.5" y="886.58" name="missed\nprofits"/>
+				<connector uid="2" angle="268.272">
+					<from>profit_firing_threshold</from>
+					<to>missed_profits</to>
+				</connector>
+				<aux label_side="bottom" x="799.5" y="1002.17" name="firing from\nmissed profits"/>
+				<connector uid="3" angle="269.504">
+					<from>missed_profits</from>
+					<to>firing_from_missed_profits</to>
+				</connector>
+				<aux label_side="top" x="799.5" y="1106.25" name="firing from\ndefaults"/>
+				<aux label_side="top" x="1885.75" y="1429.41" name="dollars per billion"/>
+				<aux label_side="bottom" x="1915.18" y="1493.99" name="wage rate\nin billions per\nmillion people"/>
+				<connector uid="4" angle="251.268">
+					<from>Wage_Rate</from>
+					<to>wage_rate_in_billions_per_million_people</to>
+				</connector>
+				<connector uid="5" angle="294.499">
+					<from>dollars_per_billion</from>
+					<to>wage_rate_in_billions_per_million_people</to>
+				</connector>
+				<aux label_side="bottom" x="1683" y="1354.58" name="desired\nadditional hires"/>
+				<connector uid="6" angle="178.529">
+					<from>wage_rate_in_billions_per_million_people</from>
+					<to>desired_additional_hires</to>
+				</connector>
+				<aux label_side="bottom" x="1419.25" y="1449.93" name="one year"/>
+				<connector uid="7" angle="128.975">
+					<from>one_year</from>
+					<to>aging_out_of_employed</to>
+				</connector>
+				<aux label_side="right" x="1946.18" y="1429.41" name="persons per\nmillion people"/>
+				<connector uid="8" angle="244.358">
+					<from>persons_per_million_people</from>
+					<to>wage_rate_in_billions_per_million_people</to>
+				</connector>
+				<aux x="2792.22" y="630.586" name="annual\naggregate wages"/>
+				<connector uid="9" angle="270">
+					<from>
+						<alias uid="10"/>
+					</from>
+					<to>annual_aggregate_wages</to>
+				</connector>
+				<connector uid="11" angle="22.8526">
+					<from>
+						<alias uid="12"/>
+					</from>
+					<to>firing_from_missed_profits</to>
+				</connector>
+				<connector uid="13" angle="340.807">
+					<from>
+						<alias uid="12"/>
+					</from>
+					<to>firing_from_defaults</to>
+				</connector>
+				<flow label_side="top" x="1354.5" y="1027.17" name="aging out of\nunemployed">
+					<pts>
+						<pt x="1307" y="1027.17"/>
+						<pt x="1426" y="1027.17"/>
+					</pts>
+				</flow>
+				<flow label_side="top" x="1178.25" y="1026.41" name="new labour\nforce entrants">
+					<pts>
+						<pt x="1114.5" y="1026.41"/>
+						<pt x="1242" y="1026.41"/>
+					</pts>
+				</flow>
+				<stock label_side="top" x="1242" y="1014.84" width="65" height="55" name="Unemployed"/>
+				<connector uid="14" angle="323.101">
+					<from>
+						<alias uid="15"/>
+					</from>
+					<to>aging_out_of_unemployed</to>
+				</connector>
+				<connector uid="16" angle="180">
+					<from>
+						<alias uid="17"/>
+					</from>
+					<to>annual_aggregate_wages</to>
+				</connector>
+				<aux x="1978.18" y="962.458" name="desired fractional\nwage growth from supply and demand"/>
+				<aux label_side="right" x="3138.67" y="1127" name="unemployment rate"/>
+				<aux label_side="right" x="842.5" y="776" name="profit threshold\nmultiplier"/>
+				<connector uid="18" angle="227.915">
+					<from>profit_threshold_multiplier</from>
+					<to>profit_firing_threshold</to>
+				</connector>
+				<aux label_side="bottom" x="3429.75" y="1248.33" name="deaths 15 to 20 years"/>
+				<aux label_side="left" x="3213.38" y="1516.5" name="aging in"/>
+				<aux label_side="left" x="3213.38" y="1595.57" name="aging out"/>
+				<aux label_side="left" x="3320.48" y="1286.33" name="working age\ndeaths"/>
+				<aux label_side="left" x="3129.65" y="684.209" name="Check"/>
+				<aux label_side="left" x="3129.65" y="813.917" name="participating population"/>
+				<aux label_side="left" x="3116.15" y="882.67" name="percentage\nof working age that\nare employed"/>
+				<aux label_side="right" x="3159.22" y="863.92" name="percentage\nof working age that\nare unemployed"/>
+				<aux label_side="bottom" x="3128.55" y="618.517" name="working\nage population"/>
+				<connector uid="19" angle="296.324">
+					<from>
+						<alias uid="20"/>
+					</from>
+					<to>participating_population</to>
+				</connector>
+				<connector uid="21" angle="242.907">
+					<from>
+						<alias uid="22"/>
+					</from>
+					<to>participating_population</to>
+				</connector>
+				<connector uid="23" angle="253.166">
+					<from>
+						<alias uid="20"/>
+					</from>
+					<to>percentage_of_working_age_that_are_employed</to>
+				</connector>
+				<connector uid="24" angle="64.5">
+					<from>
+						<alias uid="20"/>
+					</from>
+					<to>Check</to>
+				</connector>
+				<connector uid="25" angle="116.252">
+					<from>
+						<alias uid="22"/>
+					</from>
+					<to>Check</to>
+				</connector>
+				<aux x="3407.58" y="1171.96" name="Aged 15 to 20"/>
+				<connector uid="26" angle="268.38">
+					<from>
+						<alias uid="27"/>
+					</from>
+					<to>aging_out_of_unemployed</to>
+				</connector>
+				<connector uid="28" angle="270">
+					<from>
+						<alias uid="29"/>
+					</from>
+					<to>new_labour_force_entrants</to>
+				</connector>
+				<connector uid="30" angle="159.251">
+					<from>
+						<alias uid="31"/>
+					</from>
+					<to>unemployed_deaths</to>
+				</connector>
+				<connector uid="32" angle="21.0343">
+					<from>
+						<alias uid="33"/>
+					</from>
+					<to>employed_deaths</to>
+				</connector>
+				<connector uid="34" angle="92.0884">
+					<from>
+						<alias uid="35"/>
+					</from>
+					<to>aging_out_of_employed</to>
+				</connector>
+				<connector uid="36" angle="151.45">
+					<from>
+						<alias uid="37"/>
+					</from>
+					<to>aging_out_of_employed</to>
+				</connector>
+				<connector uid="38" angle="215.187">
+					<from>
+						<alias uid="39"/>
+					</from>
+					<to>aging_out_of_unemployed</to>
+				</connector>
+				<connector uid="40" angle="206.085">
+					<from>
+						<alias uid="41"/>
+					</from>
+					<to>unemployed_deaths</to>
+				</connector>
+				<connector uid="42" angle="331.987">
+					<from>
+						<alias uid="43"/>
+					</from>
+					<to>employed_deaths</to>
+				</connector>
+				<connector uid="44" angle="205.853">
+					<from>
+						<alias uid="15"/>
+					</from>
+					<to>new_labour_force_entrants</to>
+				</connector>
+				<connector uid="45" angle="175.17">
+					<from>passing_15</from>
+					<to>aging_in</to>
+				</connector>
+				<connector uid="46" angle="199.176">
+					<from>deaths_15_to_20_years</from>
+					<to>working_age_deaths</to>
+				</connector>
+				<connector uid="47" angle="321.752">
+					<from>
+						<alias uid="48"/>
+					</from>
+					<to>working_age_population</to>
+				</connector>
+				<connector uid="49" angle="286.187">
+					<from>Aged_15_to_20</from>
+					<to>deaths_15_to_20_years</to>
+				</connector>
+				<connector uid="50" angle="266.99">
+					<from>working_age_population</from>
+					<to>Check</to>
+				</connector>
+				<connector uid="51" angle="353.66">
+					<from>
+						<alias uid="52"/>
+					</from>
+					<to>annual_aggregate_wages</to>
+				</connector>
+				<stock label_side="center" x="1239.5" y="563.542" width="65" height="55" name="non active working age"/>
+				<flow label_side="bottom" x="1169.25" y="571" name="new\npotential labour\nforce entrants">
+					<pts>
+						<pt x="1099" y="571"/>
+						<pt x="1239.5" y="571"/>
+					</pts>
+				</flow>
+				<connector uid="53" angle="270">
+					<from>
+						<alias uid="54"/>
+					</from>
+					<to>new_potential_labour_force_entrants</to>
+				</connector>
+				<flow label_side="left" x="1272" y="668.521" name="potential\nlabour deaths">
+					<pts>
+						<pt x="1272" y="618.542"/>
+						<pt x="1272" y="739.5"/>
+					</pts>
+				</flow>
+				<flow label_side="top" x="1369.25" y="571" name="aging out\nof potential">
+					<pts>
+						<pt x="1304.5" y="571"/>
+						<pt x="1458" y="571"/>
+					</pts>
+				</flow>
+				<connector uid="55" angle="329.824">
+					<from>
+						<alias uid="56"/>
+					</from>
+					<to>aging_out_of_potential</to>
+				</connector>
+				<connector uid="57" angle="220.602">
+					<from>
+						<alias uid="58"/>
+					</from>
+					<to>aging_out_of_potential</to>
+				</connector>
+				<flow label_side="bottom" x="1378" y="838" name="Seeking work">
+					<pts>
+						<pt x="1304.5" y="604.5"/>
+						<pt x="1458" y="604.5"/>
+						<pt x="1458" y="838"/>
+						<pt x="1298" y="838"/>
+						<pt x="1298" y="1014.84"/>
+					</pts>
+				</flow>
+				<aux label_side="top" x="1378" y="777.542" name="time for labour\nparticipation to change"/>
+				<connector uid="59" angle="270">
+					<from>time_for_labour_participation_to_change</from>
+					<to>Seeking_work</to>
+				</connector>
+				<aux label_side="right" x="1549.92" y="763.542" name="labour force\nparticipation rate"/>
+				<connector uid="60" angle="26.1468">
+					<from>
+						<alias uid="61"/>
+					</from>
+					<to>Check</to>
+				</connector>
+				<aux label_side="left" x="2949.38" y="863.92" name="percentage\nof working age that\nare non active"/>
+				<connector uid="62" angle="280.361">
+					<from>
+						<alias uid="61"/>
+					</from>
+					<to>percentage_of_working_age_that_are_non_active</to>
+				</connector>
+				<connector uid="63" angle="259.409">
+					<from>working_age_population</from>
+					<to>percentage_of_working_age_that_are_non_active</to>
+				</connector>
+				<connector uid="64" angle="270">
+					<from>
+						<alias uid="65"/>
+					</from>
+					<to>aging_out_of_potential</to>
+				</connector>
+				<connector uid="66" angle="200.873">
+					<from>
+						<alias uid="67"/>
+					</from>
+					<to>potential_labour_deaths</to>
+				</connector>
+				<connector uid="68" angle="153.608">
+					<from>
+						<alias uid="69"/>
+					</from>
+					<to>potential_labour_deaths</to>
+				</connector>
+				<connector uid="70" angle="317.564">
+					<from>
+						<alias uid="71"/>
+					</from>
+					<to>new_labour_force_entrants</to>
+				</connector>
+				<connector uid="72" angle="322.103">
+					<from>
+						<alias uid="73"/>
+					</from>
+					<to>new_potential_labour_force_entrants</to>
+				</connector>
+				<connector uid="74" angle="287.479">
+					<from>working_age_population</from>
+					<to>percentage_of_working_age_that_are_employed</to>
+				</connector>
+				<connector uid="75" angle="302.124">
+					<from>working_age_population</from>
+					<to>percentage_of_working_age_that_are_unemployed</to>
+				</connector>
+				<connector uid="76" angle="292.435">
+					<from>
+						<alias uid="22"/>
+					</from>
+					<to>percentage_of_working_age_that_are_unemployed</to>
+				</connector>
+				<connector uid="77" angle="211.079">
+					<from>
+						<alias uid="56"/>
+					</from>
+					<to>new_potential_labour_force_entrants</to>
+				</connector>
+				<aux label_side="left" x="1549.92" y="826" name="indicated\nparticipation"/>
+				<aux label_side="bottom" x="1549.92" y="896.5" name="participation\ngap"/>
+				<connector uid="78" angle="270">
+					<from>indicated_participation</from>
+					<to>participation_gap</to>
+				</connector>
+				<aux label_side="right" label_angle="315" x="1598" y="987.83" name="participating\nlabourers"/>
+				<connector uid="79" angle="31.1215">
+					<from>participating_labourers</from>
+					<to>participation_gap</to>
+				</connector>
+				<connector uid="80" angle="352.072">
+					<from>Unemployed</from>
+					<to>participating_labourers</to>
+				</connector>
+				<connector uid="81" angle="61.0903">
+					<from>Employed</from>
+					<to>participating_labourers</to>
+				</connector>
+				<connector uid="82" angle="191.687">
+					<from>participation_gap</from>
+					<to>Seeking_work</to>
+				</connector>
+				<connector uid="83" angle="180">
+					<from>
+						<alias uid="84"/>
+					</from>
+					<to>indicated_participation</to>
+				</connector>
+				<aux label_side="top" x="2953.92" y="1320.14" name="rent to\ninvestment ratio"/>
+				<aux label_side="right" label_angle="315" x="3019.7" y="1320.14" name="rent"/>
+				<connector uid="85" angle="0">
+					<from>rent_to_investment_ratio</from>
+					<to>rent</to>
+				</connector>
+				<aux label_side="top" x="1674" y="1164.08" name="labour balance"/>
+				<connector uid="86" angle="308.632">
+					<from>Unemployed</from>
+					<to>labour_balance</to>
+				</connector>
+				<aux color="blue" label_side="right" x="1736.7" y="1164.08" name="time seeking\nemployees"/>
+				<aux label_side="top" x="1990.68" y="916.98" name="max change in\nfractional wage growth"/>
+				<connector uid="87" angle="254.631">
+					<from>max_change_in_fractional_wage_growth</from>
+					<to>desired_fractional_wage_growth_from_supply_and_demand</to>
+				</connector>
+				<connector uid="88" angle="270">
+					<from>labour_force_participation_rate</from>
+					<to>indicated_participation</to>
+				</connector>
+				<aux label_side="right" x="1549.92" y="699.086" name="labour force\nparticipation fixed"/>
+				<aux x="2694.25" y="776.75" name="percentage of working age that are active"/>
+				<connector uid="89" angle="161.136">
+					<from>percentage_of_working_age_that_are_non_active</from>
+					<to>percentage_of_working_age_that_are_active</to>
+				</connector>
+				<connector uid="90" angle="258.199">
+					<from>
+						<alias uid="91"/>
+					</from>
+					<to>unemployment_rate</to>
+				</connector>
+				<connector uid="92" angle="324.069">
+					<from>
+						<alias uid="93"/>
+					</from>
+					<to>unemployment_rate</to>
+				</connector>
+				<aux label_side="top" x="1741.7" y="1323.54" name="hiring to\ninvestment\nratio"/>
+				<connector uid="94" angle="207.868">
+					<from>hiring_to_investment_ratio</from>
+					<to>desired_additional_hires</to>
+				</connector>
+				<aux label_side="left" label_angle="225" x="2889.92" y="1393.24" name="sloshing around in\nthe firms checking"/>
+				<connector uid="95" angle="180">
+					<from>rent_to_investment_ratio</from>
+					<to>slosh_to_investment_ratio</to>
+				</connector>
+				<connector uid="96" angle="270">
+					<from>
+						<alias uid="97"/>
+					</from>
+					<to>slosh_to_investment_ratio</to>
+				</connector>
+				<aux label_side="left" x="2889.92" y="1320.14" name="slosh to\ninvestment ratio"/>
+				<connector uid="98" angle="270">
+					<from>slosh_to_investment_ratio</from>
+					<to>sloshing_around_in_the_firms_checking</to>
+				</connector>
+				<connector uid="99" angle="270">
+					<from>labour_force_participation_fixed</from>
+					<to>labour_force_participation_rate</to>
+				</connector>
+				<aux label_side="right" label_angle="315" x="1791.5" y="999.5" name="effect of labour\nbalance on fractional wage growth rate"/>
+				<aux label_side="top" x="1763.54" y="958.208" name="zero point in\nwage growth"/>
+				<connector uid="100" angle="76.0531">
+					<from>labour_balance</from>
+					<to>effect_of_labour_balance_on_fractional_wage_growth_rate</to>
+				</connector>
+				<connector uid="101" angle="304.103">
+					<from>zero_point_in_wage_growth</from>
+					<to>effect_of_labour_balance_on_fractional_wage_growth_rate</to>
+				</connector>
+				<connector uid="102" angle="28.8108">
+					<from>effect_of_labour_balance_on_fractional_wage_growth_rate</from>
+					<to>desired_fractional_wage_growth_from_supply_and_demand</to>
+				</connector>
+				<stacked_container uid="103" x="3545.5" y="1855.5">
+					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="desired_additional_hires[*]"/>
+						</plot>
+						<plot color="red" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="Unemployed[*]"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<aux x="3254.25" y="624.25" name="fraction of pop that is working age"/>
+				<connector uid="104" angle="355.364">
+					<from>working_age_population</from>
+					<to>fraction_of_pop_that_is_working_age</to>
+				</connector>
+				<connector uid="105" angle="106.703">
+					<from>desired_additional_hires</from>
+					<to>labour_balance</to>
+				</connector>
+				<aux label_side="bottom" x="1778.7" y="1354.58" name="planned\ninvestment"/>
+				<connector uid="107" angle="90">
+					<from>
+						<alias uid="108"/>
+					</from>
+					<to>rent</to>
+				</connector>
+				<connector uid="109" angle="209.804">
+					<from>planned_investment</from>
+					<to>desired_additional_hires</to>
+				</connector>
+				<connector uid="110" angle="180">
+					<from>
+						<alias uid="108"/>
+					</from>
+					<to>sloshing_around_in_the_firms_checking</to>
+				</connector>
+				<connector uid="111" angle="182.388">
+					<from>
+						<alias uid="112"/>
+					</from>
+					<to>aging_out</to>
+				</connector>
+				<stock label_side="left" x="2383.86" y="1294.36" name="Wage Index"/>
+				<flow label_side="right" x="2383.86" y="1360.36" name="change in wage index">
+					<pts>
+						<pt x="2383.86" y="1417.86"/>
+						<pt x="2383.86" y="1311.86"/>
+					</pts>
+				</flow>
+				<aux label_side="right" label_angle="315" x="2469.36" y="1162.64" name="wage growth\nrate gap"/>
+				<connector uid="113" angle="39.2824">
+					<from>Wage_Index</from>
+					<to>wage_growth_rate_gap</to>
+				</connector>
+				<aux label_side="bottom" x="2340.29" y="980" name="Urgency with which wage growth is demanded"/>
+				<aux label_side="right" label_angle="45" x="2411.29" y="940.257" name="desired fractional wage\ngrowth from inflation"/>
+				<connector uid="114" angle="82.6074">
+					<from>wage_growth_rate_gap</from>
+					<to>desired_fractional_wage_growth_from_inflation</to>
+				</connector>
+				<connector uid="115" angle="29.2384">
+					<from>Urgency_with_which_wage_growth_is_demanded</from>
+					<to>desired_fractional_wage_growth_from_inflation</to>
+				</connector>
+				<aux x="2882.38" y="1069.03" name="initial average wage rate"/>
+				<connector uid="116" angle="319.381">
+					<from>initial_recent_wage_growth_rate</from>
+					<to>initial_average_wage_rate</to>
+				</connector>
+				<aux label_side="left" label_angle="135" x="2850.41" y="1041.61" name="initial recent\nwage growth rate"/>
+				<connector uid="117" angle="209.811">
+					<from>
+						<alias uid="118"/>
+					</from>
+					<to>initial_average_wage_rate</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="787.625" y="447" name="working age population 2"/>
+				<stock font_style="italic" font_weight="bold" x="3053.15" y="437.25" name="Aged 20 to 40 years 1"/>
+				<connector uid="119" angle="292.585">
+					<from>Aged_20_to_40_years_1</from>
+					<to>working_age_population</to>
+				</connector>
+				<stock font_style="italic" font_weight="bold" x="3183.25" y="443.25" name="Aged 40 to 60 years 1"/>
+				<connector uid="120" angle="252.667">
+					<from>Aged_40_to_60_years_1</from>
+					<to>working_age_population</to>
+				</connector>
+				<stock font_style="italic" font_weight="bold" x="3308.25" y="511.25" name="Aged 60 to 65 years 1"/>
+				<connector uid="121" angle="210.834">
+					<from>Aged_60_to_65_years_1</from>
+					<to>working_age_population</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="3369" y="679.25" name="Population 1"/>
+				<connector uid="122" angle="154.391">
+					<from>Population_1</from>
+					<to>fraction_of_pop_that_is_working_age</to>
+				</connector>
+				<stock font_style="italic" font_weight="bold" x="3376.08" y="1085.5" name="Aged 1 to 20 years 1"/>
+				<connector uid="123" angle="290.019">
+					<from>Aged_1_to_20_years_1</from>
+					<to>Aged_15_to_20</to>
+				</connector>
+				<connector uid="124" angle="238.408">
+					<from>Aged_1_to_20_years_1</from>
+					<to>deaths_15_to_20_years</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="top" x="3533.25" y="1216.17" name="deaths\n1 to 20 years 1"/>
+				<connector uid="125" angle="197.261">
+					<from>deaths_1_to_20_years_1</from>
+					<to>deaths_15_to_20_years</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="3380.58" y="1357.5" name="deaths\n60 to 65 years"/>
+				<connector uid="126" angle="130.18">
+					<from>deaths_60_to_65_years</from>
+					<to>working_age_deaths</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="top" x="3268.25" y="1216.17" name="deaths\n20 to 40 years"/>
+				<aux font_style="italic" font_weight="bold" x="3284" y="1318.25" name="deaths\n40 to 60 years"/>
+				<connector uid="127" angle="306.666">
+					<from>deaths_20_to_40_years</from>
+					<to>working_age_deaths</to>
+				</connector>
+				<connector uid="128" angle="41.1859">
+					<from>deaths_40_to_60_years</from>
+					<to>working_age_deaths</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="right" x="1823.7" y="1288.54" name="total investment 1"/>
+				<stock font_style="italic" font_weight="bold" label_side="top" x="802.5" y="735.336" name="Safe\nLoans"/>
+				<connector uid="129" angle="270">
+					<from>Safe_Loans</from>
+					<to>profit_firing_threshold</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="bottom" x="695.25" y="886.58" name="non bank profits 1"/>
+				<connector uid="130" angle="0">
+					<from>non_bank_profits_1</from>
+					<to>missed_profits</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="624.667" y="1118" name="defaults 1"/>
+				<stock font_style="italic" font_weight="bold" label_side="bottom" x="2534.75" y="1291.36" name="Cumulative inflation"/>
+				<connector uid="132" angle="141.982">
+					<from>Cumulative_inflation</from>
+					<to>wage_growth_rate_gap</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="763" y="776" name="safe\ninterest 1"/>
+				<connector uid="133" angle="311.727">
+					<from>safe_interest_1</from>
+					<to>profit_firing_threshold</to>
+				</connector>
+				<stock font_style="italic" font_weight="bold" x="3399.75" y="1495.5" name="Aged 1 to 20 years"/>
+				<connector uid="134" angle="187.275">
+					<from>Aged_1_to_20_years</from>
+					<to>passing_15</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="3408.75" y="1594.5" name="Passing 66"/>
+				<connector uid="135" angle="180">
+					<from>Passing_66</from>
+					<to>aging_out</to>
+				</connector>
+				<aux label_side="right" x="2128.75" y="1045.17" name="fractional wage growth"/>
+				<connector uid="136" angle="351.147">
+					<from>desired_fractional_wage_growth_from_supply_and_demand</from>
+					<to>fractional_wage_growth</to>
+				</connector>
+				<connector uid="137" angle="135.122">
+					<from>desired_fractional_wage_growth_from_inflation</from>
+					<to>agreed_wage_growth_from_inflation</to>
+				</connector>
+				<aux x="2072.75" y="1095.25" name="wage adjustment negotiation time"/>
+				<connector uid="138" angle="41.8075">
+					<from>wage_adjustment_negotiation_time</from>
+					<to>fractional_wage_growth</to>
+				</connector>
+				<connector uid="139" angle="311.148">
+					<from>fractional_wage_growth</from>
+					<to>wage_change</to>
+				</connector>
+				<aux label_side="left" x="2177.05" y="856" name="negotiation\neffectiveness"/>
+				<aux label_side="right" label_angle="315" x="2204.75" y="894.61" name="agreed wage growth from inflation"/>
+				<connector uid="140" angle="305.657">
+					<from>negotiation_effectiveness</from>
+					<to>agreed_wage_growth_from_inflation</to>
+				</connector>
+				<connector uid="142" angle="257.771">
+					<from>total_investment_1</from>
+					<to>planned_investment</to>
+				</connector>
+				<aux label_side="right" x="1422" y="2357" name="Surface Temperature\n1986 to 2005 offset\nrelative to 1850 to 1900"/>
+				<aux label_side="left" x="1301" y="2446" name="Temperature effect on high exposure productivity"/>
+				<aux label_side="left" x="1301" y="2486" name="Temperature squared effect\non high exposure productivity"/>
+				<aux x="1381" y="2458" name="Effect of climate on high exposure labour"/>
+				<connector uid="143" angle="247.906">
+					<from>Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900</from>
+					<to>Effect_of_climate_on_high_exposure_labour</to>
+				</connector>
+				<connector uid="144" angle="351.469">
+					<from>Temperature_effect_on_high_exposure_productivity</from>
+					<to>Effect_of_climate_on_high_exposure_labour</to>
+				</connector>
+				<connector uid="145" angle="19.29">
+					<from>Temperature_squared_effect_on_high_exposure_productivity</from>
+					<to>Effect_of_climate_on_high_exposure_labour</to>
+				</connector>
+				<aux label_side="left" x="1297" y="2275.5" name="Temperature effect on\nlow exposure productivity"/>
+				<aux label_side="left" x="1297" y="2230.33" name="Temperature squared effect on low exposure productivity"/>
+				<aux label_side="top" x="1384" y="2253.5" name="Effect of climat\non low exposure\nlabour"/>
+				<connector uid="146" angle="14.1911">
+					<from>Temperature_effect_on_low_exposure_productivity</from>
+					<to>Effect_of_climat_on_low_exposure_labour</to>
+				</connector>
+				<connector uid="147" angle="345.087">
+					<from>Temperature_squared_effect_on_low_exposure_productivity</from>
+					<to>Effect_of_climat_on_low_exposure_labour</to>
+				</connector>
+				<connector uid="148" angle="110.161">
+					<from>Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900</from>
+					<to>Effect_of_climat_on_low_exposure_labour</to>
+				</connector>
+				<aux label_side="right" label_angle="315" x="1712" y="1873" name="raw share of\nemployment\nin agriculture"/>
+				<aux label_side="right" label_angle="315" x="2088.68" y="1873" name="raw share of\nemployment\nin industry"/>
+				<aux label_side="right" label_angle="315" x="2459" y="1873" name="raw share of\nemployment\nin services"/>
+				<aux label_side="top" x="1669.27" y="1833" name="share of\nemployment in agriculture intercept"/>
+				<aux label_side="top" x="1769" y="1833" name="share of\nemployment in\nagriculture slope"/>
+				<aux label_side="top" x="2032.33" y="1833" name="share of\nemployment in industry intercept"/>
+				<aux label_side="top" x="2144.68" y="1833" name="share of\nemployment in\nindustry slope"/>
+				<connector uid="149" angle="316.89">
+					<from>share_of_employment_in_agriculture_intercept</from>
+					<to>raw_share_of_employment_in_agriculture</to>
+				</connector>
+				<connector uid="150" angle="215.059">
+					<from>share_of_employment_in_agriculture_slope</from>
+					<to>raw_share_of_employment_in_agriculture</to>
+				</connector>
+				<connector uid="151" angle="324.629">
+					<from>share_of_employment_in_industry_intercept</from>
+					<to>raw_share_of_employment_in_industry</to>
+				</connector>
+				<connector uid="152" angle="215.538">
+					<from>share_of_employment_in_industry_slope</from>
+					<to>raw_share_of_employment_in_industry</to>
+				</connector>
+				<stacked_container uid="153" x="2822" y="2018.67" width="520" height="427">
+					<graph width="520" height="427" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="2" index="0" show_y_axis="true">
+							<isee:data name="Calibration Data"/>
+						</plot>
+						<plot color="#00AA00" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true"/>
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="2" index="2" show_y_axis="true">
+							<isee:data name="Calibration Data"/>
+						</plot>
+						<plot color="#FF7F00" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true"/>
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="2" index="4" show_y_axis="true">
+							<isee:data name="Calibration Data"/>
+						</plot>
+						<plot color="#7F00FF" isee:keep_zero_visible="true" pen_width="1" index="5" show_y_axis="true"/>
+					</graph>
+				</stacked_container>
+				<aux label_side="top" x="2407.09" y="1833" name="share of\nemployment in services intercept"/>
+				<aux label_side="top" x="2509" y="1833" name="share of\nemployment in\nservices slope"/>
+				<connector uid="154" angle="322.383">
+					<from>share_of_employment_in_services_intercept</from>
+					<to>raw_share_of_employment_in_services</to>
+				</connector>
+				<connector uid="155" angle="218.66">
+					<from>share_of_employment_in_services_slope</from>
+					<to>raw_share_of_employment_in_services</to>
+				</connector>
+				<aux label_side="right" x="1712" y="1974" name="share of\nemployment\nin agriculture"/>
+				<aux label_side="right" x="2088.68" y="1974" name="share of\nemployment\nin industry"/>
+				<aux label_side="right" x="2462.88" y="1974" name="share of\nemployment\nin services"/>
+				<connector uid="156" angle="270">
+					<from>raw_share_of_employment_in_agriculture</from>
+					<to>share_of_employment_in_agriculture</to>
+				</connector>
+				<connector uid="157" angle="195.01">
+					<from>raw_share_of_employment_in_industry</from>
+					<to>share_of_employment_in_agriculture</to>
+				</connector>
+				<connector uid="158" angle="187.7">
+					<from>raw_share_of_employment_in_services</from>
+					<to>share_of_employment_in_agriculture</to>
+				</connector>
+				<connector uid="159" angle="344.99">
+					<from>raw_share_of_employment_in_agriculture</from>
+					<to>share_of_employment_in_industry</to>
+				</connector>
+				<connector uid="160" angle="270">
+					<from>raw_share_of_employment_in_industry</from>
+					<to>share_of_employment_in_industry</to>
+				</connector>
+				<connector uid="161" angle="195.256">
+					<from>raw_share_of_employment_in_services</from>
+					<to>share_of_employment_in_industry</to>
+				</connector>
+				<connector uid="162" angle="352.339">
+					<from>raw_share_of_employment_in_agriculture</from>
+					<to>share_of_employment_in_services</to>
+				</connector>
+				<connector uid="163" angle="344.895">
+					<from>raw_share_of_employment_in_industry</from>
+					<to>share_of_employment_in_services</to>
+				</connector>
+				<connector uid="164" angle="272.2">
+					<from>raw_share_of_employment_in_services</from>
+					<to>share_of_employment_in_services</to>
+				</connector>
+				<stacked_container uid="165" x="3373" y="2019.67" width="501" height="425">
+					<graph width="501" height="425" type="scatter" x_axis_auto_scale="true" connect_dots="true" single_point="false" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true"/>
+				</stacked_container>
+				<aux label_side="top" x="1553.09" y="2000" name="Employment to\nLabour Supply"/>
+				<aux label_side="left" x="1490.47" y="2063.64" name="Raw Labour Supply"/>
+				<connector uid="166" angle="225.463">
+					<from>Employment_to_Labour_Supply</from>
+					<to>Raw_Labour_Supply</to>
+				</connector>
+				<aux label_side="right" x="1709" y="2063.64" name="Raw Labour\nSupply agriculture"/>
+				<aux label_side="right" x="2088.68" y="2063.64" name="Raw Labour\nSupply industry"/>
+				<aux label_side="right" x="2462.88" y="2063.64" name="Raw Labour\nSupply services"/>
+				<connector uid="167" angle="349.563">
+					<from>Raw_Labour_Supply</from>
+					<to>Raw_Labour_Supply_agriculture</to>
+				</connector>
+				<connector uid="168" angle="268.083">
+					<from>share_of_employment_in_agriculture</from>
+					<to>Raw_Labour_Supply_agriculture</to>
+				</connector>
+				<connector uid="169" angle="343.295">
+					<from>Raw_Labour_Supply</from>
+					<to>Raw_Labour_Supply_industry</to>
+				</connector>
+				<connector uid="170" angle="343.295">
+					<from>Raw_Labour_Supply</from>
+					<to>Raw_Labour_Supply_services</to>
+				</connector>
+				<connector uid="171" angle="270">
+					<from>share_of_employment_in_industry</from>
+					<to>Raw_Labour_Supply_industry</to>
+				</connector>
+				<connector uid="172" angle="270">
+					<from>share_of_employment_in_services</from>
+					<to>Raw_Labour_Supply_services</to>
+				</connector>
+				<aux label_side="right" x="1709" y="2263.33" name="Labour Supply\nagriculture with Climate Impacts"/>
+				<connector uid="173" angle="11.1649">
+					<from>Effect_of_climate_on_high_exposure_labour</from>
+					<to>Labour_Supply_agriculture_with_Climate_Impacts</to>
+				</connector>
+				<connector uid="174" angle="270">
+					<from>Raw_Labour_Supply_agriculture</from>
+					<to>Labour_Supply_agriculture_with_Climate_Impacts</to>
+				</connector>
+				<aux label_side="right" x="2088.68" y="2263.33" name="Labour Supply\nindustry with\nClimate Impacts"/>
+				<connector uid="175" angle="2.68378">
+					<from>Effect_of_climate_on_high_exposure_labour</from>
+					<to>Labour_Supply_industry_with_Climate_Impacts</to>
+				</connector>
+				<aux label_side="right" x="2462.88" y="2263.33" name="Labour Supply\nservices with\nClimate Impacts"/>
+				<connector uid="176" angle="347.905">
+					<from>Effect_of_climate_on_high_exposure_labour</from>
+					<to>Labour_Supply_services_with_Climate_Impacts</to>
+				</connector>
+				<connector uid="177" angle="270">
+					<from>Raw_Labour_Supply_industry</from>
+					<to>Labour_Supply_industry_with_Climate_Impacts</to>
+				</connector>
+				<connector uid="178" angle="270">
+					<from>Raw_Labour_Supply_services</from>
+					<to>Labour_Supply_services_with_Climate_Impacts</to>
+				</connector>
+				<stacked_container uid="179" x="2823.33" y="2463" width="580" height="394">
+					<graph width="580" height="394" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="#00AA00" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true"/>
+						<plot color="#FFAA00" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true"/>
+						<plot color="#AA00FF" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true"/>
+						<plot color="#00AA00" pen_style="dashed" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true"/>
+						<plot color="#FFAA00" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="4" show_y_axis="true"/>
+						<plot color="#7F00FF" pen_style="dashed" isee:keep_zero_visible="true" pen_width="1" index="5" show_y_axis="true"/>
+					</graph>
+				</stacked_container>
+				<aux x="1490.47" y="2653.5" name="Labour Supply with Climate Impacts"/>
+				<connector uid="180" angle="270.881">
+					<from>Labour_Supply_agriculture_with_Climate_Impacts</from>
+					<to>Labour_Supply_with_Climate_Impacts</to>
+				</connector>
+				<connector uid="181" angle="268.511">
+					<from>Labour_Supply_industry_with_Climate_Impacts</from>
+					<to>Labour_Supply_with_Climate_Impacts</to>
+				</connector>
+				<connector uid="182" angle="270.974">
+					<from>Labour_Supply_services_with_Climate_Impacts</from>
+					<to>Labour_Supply_with_Climate_Impacts</to>
+				</connector>
+				<stacked_container uid="183" x="2820.08" y="2869.92" width="586.5" height="296">
+					<graph width="586.5" height="296" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" pen_style="dashed" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true"/>
+						<plot color="red" isee:keep_zero_visible="false" pen_width="1" index="1" show_y_axis="true">
+							<scale min="1000"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<aux label_side="bottom" x="1754.67" y="2330.97" name="labour exposure shares in agriculture"/>
+				<connector uid="184" angle="124.025">
+					<from>labour_exposure_shares_in_agriculture</from>
+					<to>Labour_Supply_agriculture_with_Climate_Impacts</to>
+				</connector>
+				<aux label_side="bottom" x="2126.68" y="2330.97" name="labour exposure\nshares in industry"/>
+				<connector uid="185" angle="119.328">
+					<from>labour_exposure_shares_in_industry</from>
+					<to>Labour_Supply_industry_with_Climate_Impacts</to>
+				</connector>
+				<aux label_side="bottom" x="2500.42" y="2330.97" name="labour exposure shares\nin services"/>
+				<connector uid="186" angle="119.033">
+					<from>labour_exposure_shares_in_services</from>
+					<to>Labour_Supply_services_with_Climate_Impacts</to>
+				</connector>
+				<stacked_container uid="187" x="1475.05" y="2201.69" width="202.235" height="123.278">
+					<table orientation="horizontal" isee:start_time="1980" isee:stop_time="1980" interval="1" report_balances="beginning" report_flows="instantaneous" width="202.235" height="123.278">
+						<item type="time"/>
+						<item>
+							<entity name="labour_exposure_shares_in_agriculture[*]"/>
+						</item>
+					</table>
+				</stacked_container>
+				<stacked_container uid="188" x="1856" y="2201.53" width="193.902" height="120.444">
+					<table orientation="horizontal" isee:start_time="1980" isee:stop_time="1980" interval="1" report_balances="beginning" report_flows="instantaneous" width="193.902" height="120.444">
+						<item type="time"/>
+						<item>
+							<entity name="labour_exposure_shares_in_industry[*]"/>
+						</item>
+					</table>
+				</stacked_container>
+				<stacked_container uid="189" x="2238.26" y="2200.53" width="186.902" height="121.444">
+					<table orientation="horizontal" isee:start_time="1980" isee:stop_time="1980" interval="1" report_balances="beginning" report_flows="instantaneous" width="186.902" height="121.444">
+						<item type="time"/>
+						<item>
+							<entity name="labour_exposure_shares_in_services[*]"/>
+						</item>
+					</table>
+				</stacked_container>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="1356" y="2360" name="Surface Temperature Anomaly 1"/>
+				<connector uid="193" angle="253.363">
+					<from>Employed</from>
+					<to>Raw_Labour_Supply</to>
+				</connector>
+				<connector uid="194" angle="75.2697">
+					<from>Surface_Temperature_Anomaly_1</from>
+					<to>Effect_of_climat_on_low_exposure_labour</to>
+				</connector>
+				<connector uid="195" angle="284.311">
+					<from>Surface_Temperature_Anomaly_1</from>
+					<to>Effect_of_climate_on_high_exposure_labour</to>
+				</connector>
+				<connector uid="196" angle="18.0605">
+					<from>Effect_of_climat_on_low_exposure_labour</from>
+					<to>Labour_Supply_agriculture_with_Climate_Impacts</to>
+				</connector>
+				<connector uid="197" angle="18.166">
+					<from>Effect_of_climat_on_low_exposure_labour</from>
+					<to>Labour_Supply_industry_with_Climate_Impacts</to>
+				</connector>
+				<connector uid="198" angle="19.9037">
+					<from>Effect_of_climat_on_low_exposure_labour</from>
+					<to>Labour_Supply_services_with_Climate_Impacts</to>
+				</connector>
+				<aux label_side="right" label_angle="45" x="752" y="1401.31" name="realised\nproductivity"/>
+				<aux label_side="right" x="1090.25" y="1841" name="climate impact\non productivity"/>
+				<connector uid="201" angle="75.8034">
+					<from>climate_impact_on_productivity</from>
+					<to>realised_productivity</to>
+				</connector>
+				<aux label_side="right" x="839.5" y="1230.75" name="fraction fired from\nproductivity gains"/>
+				<aux x="848.667" y="1287.46" name="fraction of\nproductivity gains translating to firing"/>
+				<connector uid="202" angle="99.1825">
+					<from>fraction_of_productivity_gains_translating_to_firing</from>
+					<to>fraction_fired_from_productivity_gains</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="624.667" y="1195.33" name="exploratory\nloan failure"/>
+				<connector uid="204" angle="200.688">
+					<from>Wage_Index</from>
+					<to>change_in_wage_index</to>
+				</connector>
+				<connector uid="205" angle="319.223">
+					<from>fractional_wage_growth</from>
+					<to>change_in_wage_index</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="624.667" y="1154.75" name="actual safe\ninvestment failure"/>
+				<aux background="white" label_side="right" x="719.25" y="1320.29" name="realised\nproductivity\ngrowth"/>
+				<aux label_side="left" x="668.667" y="1320.29" name="initial\nproductivity\ngrowth"/>
+				<connector uid="207" angle="0">
+					<from>initial_productivity_growth</from>
+					<to>realised_productivity_growth</to>
+				</connector>
+				<connector uid="208" angle="150.16">
+					<from>realised_productivity</from>
+					<to>realised_productivity_growth</to>
+				</connector>
+				<connector uid="209" angle="72.622">
+					<from>realised_productivity_growth</from>
+					<to>fraction_fired_from_productivity_gains</to>
+				</connector>
+				<connector uid="210" angle="270">
+					<from>
+						<alias uid="211"/>
+					</from>
+					<to>initial_average_wage_rate</to>
+				</connector>
+				<stock label_side="top" x="700.667" y="1482.64" name="Productivity"/>
+				<flow label_side="left" x="700.727" y="1552.68" name="change in\nproductivity">
+					<pts>
+						<pt x="700.727" y="1593.22"/>
+						<pt x="700.727" y="1500.14"/>
+					</pts>
+				</flow>
+				<stock label_side="right" x="700.786" y="1610.72" name="productivity\nunder development"/>
+				<flow label_side="right" x="700.786" y="1680.69" name="productivity\nstarting development">
+					<pts>
+						<pt x="700.786" y="1733.15"/>
+						<pt x="700.786" y="1628.22"/>
+					</pts>
+				</flow>
+				<aux label_side="right" x="770" y="1552.68" name="average\ndevelopment\ncompletion time"/>
+				<connector uid="212" angle="184.223">
+					<from>Productivity</from>
+					<to>productivity_starting_development</to>
+				</connector>
+				<connector uid="213" angle="180">
+					<from>average_development_completion_time</from>
+					<to>change_in_productivity</to>
+				</connector>
+				<connector uid="214" angle="50.9771">
+					<from>productivity_under_development</from>
+					<to>change_in_productivity</to>
+				</connector>
+				<connector uid="215" angle="41.8838">
+					<from>Productivity</from>
+					<to>realised_productivity</to>
+				</connector>
+				<connector uid="216" angle="180">
+					<from>time_seeking_employees</from>
+					<to>labour_balance</to>
+				</connector>
+				<aux x="1576.64" y="1500.16" name="threshold\nunemployment\nrate"/>
+				<aux label_side="right" label_angle="45" x="1623.71" y="1467.93" name="effect of labour\nsupply on hiring"/>
+				<connector uid="217" angle="34.3996">
+					<from>threshold_unemployment_rate</from>
+					<to>effect_of_labour_supply_on_hiring</to>
+				</connector>
+				<connector uid="218" angle="170.118">
+					<from>
+						<alias uid="219"/>
+					</from>
+					<to>effect_of_labour_supply_on_hiring</to>
+				</connector>
+				<aux label_side="top" x="1558.64" y="1288.54" name="sensitivity\nof hiring to\nunemployment\nrate"/>
+				<connector uid="220" angle="270">
+					<from>sensitivity_of_hiring_to_unemployment_rate</from>
+					<to>hiring</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="left" label_angle="225" x="531.5" y="2043.17" name="safe loans\nfinancing innovation"/>
+				<aux font_style="italic" font_weight="bold" label_side="right" label_angle="315" x="686" y="2043.17" name="exploratory\nbank investment"/>
+				<aux font_style="italic" font_weight="bold" label_side="bottom" x="610.5" y="2016.5" name="GDP"/>
+				<aux label_side="left" x="573.5" y="1977.17" name="non-bank innovation investment share of GDP"/>
+				<connector uid="221" angle="133.249">
+					<from>GDP</from>
+					<to>&quot;non-bank_innovation_investment_share_of_GDP&quot;</to>
+				</connector>
+				<aux label_side="left" label_angle="135" x="537.333" y="1868.67" name="productivity yield of\nnon-bank innovation"/>
+				<aux label_side="left" label_angle="225" x="573.5" y="1902.33" name="indicated productivity growth\nfrom non-bank innovation"/>
+				<connector uid="222" angle="90">
+					<from>&quot;non-bank_innovation_investment_share_of_GDP&quot;</from>
+					<to>&quot;indicated_productivity_growth_from_non-bank_innovation&quot;</to>
+				</connector>
+				<connector uid="223" angle="57.5288">
+					<from>safe_loans_financing_innovation</from>
+					<to>&quot;non-bank_innovation_investment_share_of_GDP&quot;</to>
+				</connector>
+				<aux label_side="right" x="646.833" y="1977.17" name="exploratory bank investment share of GDP"/>
+				<connector uid="224" angle="47.2704">
+					<from>GDP</from>
+					<to>exploratory_bank_investment_share_of_GDP</to>
+				</connector>
+				<connector uid="225" angle="120.686">
+					<from>exploratory_bank_investment</from>
+					<to>exploratory_bank_investment_share_of_GDP</to>
+				</connector>
+				<aux label_side="right" x="646.833" y="1902.33" name="indicated productivity growth from bank exploration"/>
+				<connector uid="226" angle="90">
+					<from>exploratory_bank_investment_share_of_GDP</from>
+					<to>indicated_productivity_growth_from_bank_exploration</to>
+				</connector>
+				<connector uid="227" angle="317.05">
+					<from>&quot;productivity_yield_of_non-bank_innovation&quot;</from>
+					<to>&quot;indicated_productivity_growth_from_non-bank_innovation&quot;</to>
+				</connector>
+				<aux label_side="right" label_angle="45" x="686" y="1868.67" name="productivity yield of exploratory investment"/>
+				<connector uid="228" angle="220.682">
+					<from>productivity_yield_of_exploratory_investment</from>
+					<to>indicated_productivity_growth_from_bank_exploration</to>
+				</connector>
+				<text_box uid="229" x="129.583" y="1521.67" width="260" height="220.5">They are not comparable, Ben was right. And it is not sufficient to say the bank investments are more productive, and let that be decided by the size of investment relative to safe assets, without defining how much more. I believe the below gets around that.
+
+furthermore. The structure that was previously decided on had the productivity growth be a function of &quot;orientation&quot; which is upstream from actual investment. It is, after all, the investment that ends up as productivity gains, and thus productivity should be downstream of investment and not circumventing it directly from &quot;orientation&quot;.</text_box>
+				<aux label_side="left" x="610.5" y="1802.33" name="indicated productivity growth"/>
+				<connector uid="230" angle="101.821">
+					<from>indicated_productivity_growth_from_bank_exploration</from>
+					<to>indicated_productivity_growth</to>
+				</connector>
+				<connector uid="231" angle="69.6955">
+					<from>&quot;indicated_productivity_growth_from_non-bank_innovation&quot;</from>
+					<to>indicated_productivity_growth</to>
+				</connector>
+				<connector uid="232" angle="67.1263">
+					<from>indicated_productivity_growth</from>
+					<to>productivity_starting_development</to>
+				</connector>
+				<aux label_side="right" x="875.5" y="1266.08" name="time for\nproductivity\nto affect firing"/>
+				<connector uid="233" angle="135.535">
+					<from>time_for_productivity_to_affect_firing</from>
+					<to>fraction_fired_from_productivity_gains</to>
+				</connector>
+				<aux x="799.5" y="1154.75" name="time for defaults to affect firing"/>
+				<connector uid="234" angle="90">
+					<from>time_for_defaults_to_affect_firing</from>
+					<to>firing_from_defaults</to>
+				</connector>
+				<aux label_side="left" label_angle="225" x="1558.64" y="1341.54" name="hiring"/>
+				<connector uid="235" angle="167.489">
+					<from>hiring</from>
+					<to>employment_growth</to>
+				</connector>
+				<connector uid="236" angle="199.014">
+					<from>desired_additional_hires</from>
+					<to>hiring</to>
+				</connector>
+				<connector uid="237" angle="142.241">
+					<from>effect_of_labour_supply_on_hiring</from>
+					<to>hiring</to>
+				</connector>
+				<aux x="1013" y="1172.75" name="firing"/>
+				<connector uid="239" angle="159.919">
+					<from>Employed</from>
+					<to>firing</to>
+				</connector>
+				<connector uid="240" angle="4.61065">
+					<from>firing_from_defaults</from>
+					<to>firing</to>
+				</connector>
+				<connector uid="241" angle="0.79653">
+					<from>firing_from_missed_profits</from>
+					<to>firing</to>
+				</connector>
+				<connector uid="242" angle="18.4845">
+					<from>fraction_fired_from_productivity_gains</from>
+					<to>firing</to>
+				</connector>
+				<connector uid="243" angle="0.859372">
+					<from>firing</from>
+					<to>employment_decline</to>
+				</connector>
+				<aux label_side="top" x="953.5" y="1008.41" name="time to fire from missed profits"/>
+				<connector uid="244" angle="177.68">
+					<from>time_to_fire_from_missed_profits</from>
+					<to>firing_from_missed_profits</to>
+				</connector>
+				<aux label_side="left" label_angle="135" x="757" y="850.58" name="ratio of missed profit\nto threshold"/>
+				<connector uid="245" angle="213.65">
+					<from>profit_firing_threshold</from>
+					<to>ratio_of_missed_profit_to_threshold</to>
+				</connector>
+				<aux label_side="top" x="624.667" y="741" name="sensitivity of firing to profit discrepancy"/>
+				<connector uid="246" angle="25.5069">
+					<from>non_bank_profits_1</from>
+					<to>ratio_of_missed_profit_to_threshold</to>
+				</connector>
+				<aux x="548" y="829" name="effect of missed profits"/>
+				<connector uid="247" angle="227.779">
+					<from>sensitivity_of_firing_to_profit_discrepancy</from>
+					<to>effect_of_missed_profits</to>
+				</connector>
+				<connector uid="248" angle="147.245">
+					<from>ratio_of_missed_profit_to_threshold</from>
+					<to>effect_of_missed_profits</to>
+				</connector>
+				<connector uid="249" angle="283.134">
+					<from>effect_of_missed_profits</from>
+					<to>firing_from_missed_profits</to>
+				</connector>
+				<connector uid="251" angle="211.614">
+					<from>agreed_wage_growth_from_inflation</from>
+					<to>fractional_wage_growth</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="2088.68" y="1607" name="real GDP per person"/>
+				<connector uid="252" angle="213.48">
+					<from>real_GDP_per_person</from>
+					<to>raw_share_of_employment_in_agriculture</to>
+				</connector>
+				<connector uid="253" angle="279.09">
+					<from>real_GDP_per_person</from>
+					<to>raw_share_of_employment_in_industry</to>
+				</connector>
+				<connector uid="254" angle="323.091">
+					<from>real_GDP_per_person</from>
+					<to>raw_share_of_employment_in_services</to>
+				</connector>
+				<aux x="728" y="1177.33" name="total defaults"/>
+				<connector uid="255" angle="355.137">
+					<from>defaults_1</from>
+					<to>total_defaults</to>
+				</connector>
+				<connector uid="256" angle="34.8814">
+					<from>exploratory_loan_failure</from>
+					<to>total_defaults</to>
+				</connector>
+				<connector uid="257" angle="12.6737">
+					<from>actual_safe_investment_failure</from>
+					<to>total_defaults</to>
+				</connector>
+				<connector uid="258" angle="57.3467">
+					<from>total_defaults</from>
+					<to>firing_from_defaults</to>
+				</connector>
+				<connector uid="259" angle="216.607">
+					<from>
+						<alias uid="260"/>
+					</from>
+					<to>firing_from_defaults</to>
+				</connector>
+				<aux label_side="top" x="1013" y="1110.41" name="max firing\npercentage"/>
+				<connector uid="238" angle="270">
+					<from>max_firing_percentage</from>
+					<to>firing</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1190" y="2393" name="switch economy damage"/>
+				<aux font_style="italic" font_weight="bold" x="1143" y="2317" name="today"/>
+				<connector uid="261" angle="341.206">
+					<from>switch_economy_damage</from>
+					<to>Effect_of_climate_on_high_exposure_labour</to>
+				</connector>
+				<connector uid="262" angle="329.356">
+					<from>today</from>
+					<to>Effect_of_climate_on_high_exposure_labour</to>
+				</connector>
+				<connector uid="263" angle="35.7189">
+					<from>switch_economy_damage</from>
+					<to>Effect_of_climat_on_low_exposure_labour</to>
+				</connector>
+				<connector uid="264" angle="14.7611">
+					<from>today</from>
+					<to>Effect_of_climat_on_low_exposure_labour</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="946" y="1774" name="Productivity reduction factor from coastal flooding"/>
+				<connector uid="265" angle="10.8855">
+					<from>Productivity_reduction_factor_from_coastal_flooding</from>
+					<to>climate_impact_on_productivity</to>
+				</connector>
+				<aux x="1125" y="1943" name="climate impact of heat on productivity"/>
+				<connector uid="266" angle="172.77">
+					<from>Labour_Supply_with_Climate_Impacts</from>
+					<to>climate_impact_of_heat_on_productivity</to>
+				</connector>
+				<connector uid="267" angle="167.538">
+					<from>Raw_Labour_Supply</from>
+					<to>climate_impact_of_heat_on_productivity</to>
+				</connector>
+				<connector uid="268" angle="101.689">
+					<from>climate_impact_of_heat_on_productivity</from>
+					<to>climate_impact_on_productivity</to>
+				</connector>
+				<alias color="blue" background="white" font_style="italic" label_side="left" uid="12" x="655.25" y="1050.17" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>wage_rate_in_billions_per_million_people</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" label_side="top" uid="15" x="1265.5" y="965.417" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>one_year</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="10" x="2783.22" y="560.918" width="18" height="18">
+					<of>wage_rate_in_billions_per_million_people</of>
+				</alias>
+				<alias font_style="italic" uid="17" x="2849.58" y="613.086" width="45" height="35">
+					<of>Employed</of>
+				</alias>
+				<alias font_style="italic" uid="22" x="3139.72" y="732.75" width="45" height="35">
+					<of>Unemployed</of>
+				</alias>
+				<alias font_style="italic" uid="20" x="3075.65" y="732.75" width="45" height="35">
+					<of>Employed</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" label_side="left" uid="48" x="2988.25" y="506.017" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>Aged_15_to_20</of>
+				</alias>
+				<alias font_style="italic" uid="35" x="1363.5" y="1455.16" width="18" height="18">
+					<of>aging_out</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="27" x="1347.5" y="947.417" width="18" height="18">
+					<of>aging_out</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="29" x="1169.25" y="947.417" width="18" height="18">
+					<of>aging_in</of>
+				</alias>
+				<alias font_style="italic" label_side="right" uid="31" x="1312" y="1133.25" width="18" height="18">
+					<of>working_age_deaths</of>
+				</alias>
+				<alias font_style="italic" label_side="left" uid="33" x="1215" y="1473.16" width="18" height="18">
+					<of>working_age_deaths</of>
+				</alias>
+				<alias font_style="italic" label_side="right" label_angle="315" uid="37" x="1434.38" y="1419.81" width="18" height="18">
+					<of>percentage_of_working_age_that_are_employed</of>
+				</alias>
+				<alias font_style="italic" label_side="right" label_angle="45" uid="39" x="1399.69" y="979.961" width="18" height="18">
+					<of>percentage_of_working_age_that_are_unemployed</of>
+				</alias>
+				<alias font_style="italic" label_side="right" uid="41" x="1312" y="1092" width="18" height="18">
+					<of>percentage_of_working_age_that_are_unemployed</of>
+				</alias>
+				<alias font_style="italic" label_side="left" uid="43" x="1215" y="1419.81" width="18" height="18">
+					<of>percentage_of_working_age_that_are_employed</of>
+				</alias>
+				<alias font_style="italic" uid="52" x="2707.63" y="619" width="18" height="18">
+					<of>one_year</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" label_side="top" uid="56" x="1263" y="512.767" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>one_year</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" label_side="top" uid="58" x="1417.69" y="512.767" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>aging_out</of>
+				</alias>
+				<alias font_style="italic" uid="61" x="2959.25" y="711.25" width="65" height="55">
+					<of>non_active_working_age</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="65" x="1360.25" y="494.767" width="18" height="18">
+					<of>percentage_of_working_age_that_are_non_active</of>
+				</alias>
+				<alias font_style="italic" label_side="right" uid="67" x="1312" y="640.836" width="18" height="18">
+					<of>percentage_of_working_age_that_are_non_active</of>
+				</alias>
+				<alias font_style="italic" label_side="right" uid="69" x="1312" y="683.836" width="18" height="18">
+					<of>working_age_deaths</of>
+				</alias>
+				<alias font_style="italic" label_side="left" label_angle="135" uid="71" x="1108" y="963" width="18" height="18">
+					<of>labour_force_participation_rate</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="73" x="1097" y="512.767" width="18" height="18">
+					<of>aging_in</of>
+				</alias>
+				<alias font_style="italic" label_side="right" uid="84" x="1607" y="817" width="18" height="18">
+					<of>working_age_population</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="54" x="1160.25" y="494.767" width="18" height="18">
+					<of>labour_force_participation_rate</of>
+				</alias>
+				<alias font_style="italic" uid="91" x="3174.25" y="1008.5" width="65" height="55">
+					<of>Unemployed</of>
+				</alias>
+				<alias font_style="italic" uid="93" x="3014.75" y="990" width="65" height="55">
+					<of>Employed</of>
+				</alias>
+				<alias font_style="italic" uid="112" x="3311.98" y="1551.5" width="18" height="18">
+					<of>one_year</of>
+				</alias>
+				<alias font_style="italic" uid="118" x="2916.31" y="1030.18" width="27.8571" height="22.8571">
+					<of>Wage_Rate</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="97" x="2880.92" y="1251.14" width="18" height="18">
+					<of>hiring_to_investment_ratio</of>
+				</alias>
+				<alias font_style="italic" uid="108" x="3010.7" y="1384.24" width="18" height="18">
+					<of>planned_investment</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="211" x="2873.38" y="998.143" width="18" height="18">
+					<of>one_year</of>
+				</alias>
+				<alias font_style="italic" uid="219" x="1721.41" y="1525.86" width="18" height="18">
+					<of>unemployment_rate</of>
+				</alias>
+				<alias font_style="italic" uid="260" x="878" y="1060" width="18" height="18">
+					<of>hiring_to_investment_ratio</of>
 				</alias>
 			</view>
 		</views>
