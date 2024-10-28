@@ -5,7 +5,7 @@
 		<name>Economy</name>
 		<uuid>87c9d369-189f-4c9a-86f9-24635ff46796</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.2" isee:build_number="3414" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
+		<product version="3.7.2" isee:build_number="3414" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -213,6 +213,18 @@
 		<unit name="Mcc$">
 			<eqn>Million*cc$</eqn>
 		</unit>
+		<unit name="G">
+			<eqn>Giga</eqn>
+		</unit>
+		<unit name="GtCO2">
+			<eqn>Giga*tCO2</eqn>
+		</unit>
+		<unit name="GtCH4">
+			<eqn>Giga*tCH4</eqn>
+		</unit>
+		<unit name="GtN2O">
+			<eqn>Giga*tN2O</eqn>
+		</unit>
 	</model_units>
 	<model name="Economy">
 		<variables>
@@ -403,6 +415,8 @@
 				<connect2 to="Government.Oil_Investments_in_Fossil_Fuel_Extraction_Capital" from="energy_investments.Oil_Gross_Investments_in_Fossil_Fuel_Extraction_Capital"/>
 				<connect to="Government.profit_tax_1" from="Circular_Flow.profit_tax"/>
 				<connect2 to="Government.profit_tax_1" from="Circular_Flow.profit_tax"/>
+				<connect to="Government.profit_tax_rate" from="Circular_Flow.profit_tax_rate"/>
+				<connect2 to="Government.profit_tax_rate" from="Circular_Flow.profit_tax_rate"/>
 				<connect to="Government.rent_tax_1" from="Circular_Flow.rent_tax"/>
 				<connect2 to="Government.rent_tax_1" from="Circular_Flow.rent_tax"/>
 				<connect to="Government.required_last_resort_lending" from="Finance.required_government_solvency_support_lending"/>
@@ -452,6 +466,8 @@
 				<connect2 to="Finance.private_investment_1" from="Circular_Flow.private_investment"/>
 				<connect to="Government.profit_tax_1" from="Circular_Flow.profit_tax"/>
 				<connect2 to="Government.profit_tax_1" from="Circular_Flow.profit_tax"/>
+				<connect to="Government.profit_tax_rate" from="Circular_Flow.profit_tax_rate"/>
+				<connect2 to="Government.profit_tax_rate" from="Circular_Flow.profit_tax_rate"/>
 				<connect to='Animal_Products_Demand."real_private_consumption_2021$"' from='Circular_Flow."real_private_consumption_2021c$"'/>
 				<connect2 to='Animal_Products_Demand."real_private_consumption_2021$"' from='Circular_Flow."real_private_consumption_2021c$"'/>
 				<connect to="Inflation.rent" from="Circular_Flow.rent"/>
@@ -613,7 +629,7 @@
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/year</units>
 			</aux>
-			<module name="Employment" isee:label="" url="/home/benjamin/Documents/UHH/FNU/FNK/WordTrans/FRIDA/fridaGitWD-lennart-SLR/FRIDA_Modules/Employment.itmx">
+			<module name="Employment" isee:label="" url="/Users/bschoenberg/code/WorldTrans/Frida/FRIDA_Modules/Employment.itmx">
 				<format scale_by="auto"/>
 				<connect to="Circular_Flow.annual_aggregate_wages" from="Employment.annual_aggregate_wages"/>
 				<connect2 to="Circular_Flow.annual_aggregate_wages" from="Employment.annual_aggregate_wages"/>
@@ -831,7 +847,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="229" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1116,7 +1132,7 @@
 			<aux name="desired savings\nas multiple of\nprofits">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>10.4217235806811</eqn>
+				<eqn>10.4396494727387</eqn>
 				<range min="2" max="20"/>
 				<units>Years</units>
 			</aux>
@@ -1140,14 +1156,14 @@ SMTH1(net_owner_income*desired_savings_as_multiple_of_profits, time_to_consider_
 			<aux name="time to consider desired savings">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>1.1607788213501</eqn>
+				<eqn>1.10340065679604</eqn>
 				<range min="1" max="10"/>
 				<units>Years</units>
 			</aux>
 			<aux name="time to reach\nsavings goal">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>4.95109481230813</eqn>
+				<eqn>4.93128551870947</eqn>
 				<range min="1" max="5"/>
 				<units>year</units>
 			</aux>
@@ -1222,7 +1238,7 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 			<aux name="desired savings\nas multiple of\nwages">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>2.4345257981593</eqn>
+				<eqn>2.4496565045003</eqn>
 				<range min="1" max="5"/>
 				<units>Years</units>
 			</aux>
@@ -1271,14 +1287,14 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 			<aux name="wage tax rate">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.211927621464837</eqn>
+				<eqn>0.193514822202657</eqn>
 				<range min="0.1" max="0.3"/>
 				<units>dmnl</units>
 			</aux>
-			<aux name="profit tax rate">
+			<aux name="profit tax rate" access="output" isee:autocreated="true">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.34553773098806</eqn>
+				<eqn>0.331571456839155</eqn>
 				<range min="0" max="0.4"/>
 				<units>dmnl</units>
 			</aux>
@@ -1291,17 +1307,17 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 				<units>b$/year</units>
 			</flow>
 			<aux name="initial owner savings">
-				<eqn>50011.8020173956</eqn>
+				<eqn>50010.8478217988</eqn>
 				<range min="30000" max="60000"/>
 				<units>b$</units>
 			</aux>
 			<aux name="initial firms\nchecking accounts">
-				<eqn>5308.26160098611</eqn>
+				<eqn>5305.85853916569</eqn>
 				<range min="4000" max="6000"/>
 				<units>b$</units>
 			</aux>
 			<aux name="initial worker savings">
-				<eqn>23776.8932287026</eqn>
+				<eqn>23759.9222538967</eqn>
 				<range min="20000" max="30000"/>
 				<units>b$</units>
 			</aux>
@@ -1333,7 +1349,7 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 			<aux name="time to pay out profits">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>2.88098549451317</eqn>
+				<eqn>2.91185710869511</eqn>
 				<range min="1" max="5"/>
 				<units>year</units>
 			</aux>
@@ -2656,7 +2672,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 			<aux name="loan maturation\ntime">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>21.1858370756696</eqn>
+				<eqn>21.0399802981558</eqn>
 				<range min="3" max="30"/>
 				<units>Years</units>
 			</aux>
@@ -2693,7 +2709,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 			<aux name="max change in lending\nstandards">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.116055749762342</eqn>
+				<eqn>0.108445387618137</eqn>
 				<range min="0" max="1"/>
 				<units>dmnl</units>
 			</aux>
@@ -2707,7 +2723,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 			<aux name="time to change\nlending standards">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>1.2506502150905</eqn>
+				<eqn>1.30439981245385</eqn>
 				<range min="0.5" max="1.5"/>
 				<units>year</units>
 			</aux>
@@ -2741,7 +2757,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 			<aux name="reporting\ndelay">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.977526353896657</eqn>
+				<eqn>0.973122384945736</eqn>
 				<range min="0.125" max="1"/>
 				<units>year</units>
 			</aux>
@@ -2770,7 +2786,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 			<aux name="normal\nfailure rate">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.0246405770142564</eqn>
+				<eqn>0.0268253737531501</eqn>
 				<range min="0.01" max="0.05"/>
 				<units>dmnl</units>
 			</aux>
@@ -2796,7 +2812,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 			<aux name="elasticity of\ndesired bank growth\nrate to changes in lending\nstandards">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>3.92399350467991</eqn>
+				<eqn>3.91664897271061</eqn>
 				<range min="1" max="10"/>
 				<units>dmnl</units>
 			</aux>
@@ -2847,14 +2863,14 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 			<aux name="max change\nin failure rate">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.09</eqn>
+				<eqn>0.0851379574870907</eqn>
 				<range min="0.05" max="0.2"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="bank expectation\nformation time">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>2</eqn>
+				<eqn>2.09242131041338</eqn>
 				<range min="2" max="20"/>
 				<units>years</units>
 			</aux>
@@ -2875,14 +2891,14 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 			<aux name="elasticity of bankruptcy\nrate on risk premium">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>4.60882097586021</eqn>
+				<eqn>4.64485211561433</eqn>
 				<range min="0.5" max="10"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial risk premium">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.01</eqn>
+				<eqn>0.0146315205303861</eqn>
 				<range min="0.01" max="0.05"/>
 				<units>1/year</units>
 			</aux>
@@ -2894,22 +2910,22 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial bank investment">
-				<eqn>3851.66506985556</eqn>
+				<eqn>3854.7144689448</eqn>
 				<range min="3000" max="5000"/>
 				<units>b$/year</units>
 			</aux>
 			<aux name="initial good loans">
-				<eqn>7992.38877236925</eqn>
+				<eqn>8024.7844030256</eqn>
 				<range min="7500" max="8500"/>
 				<units>b$</units>
 			</aux>
 			<aux name="initial bad loans">
-				<eqn>203.607562918598</eqn>
+				<eqn>203.410006247564</eqn>
 				<range min="180" max="300"/>
 				<units>b$</units>
 			</aux>
 			<aux name="Initial safe assets">
-				<eqn>72500.6744357128</eqn>
+				<eqn>72489.5556339758</eqn>
 				<range min="60000" max="100000"/>
 				<units>b$</units>
 			</aux>
@@ -3006,7 +3022,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 			<aux name="sensitivity of failure rate to\ninvestment to gdp ratio">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.0732380165589877</eqn>
+				<eqn>0.0750508223682323</eqn>
 				<range min="0.05" max="1"/>
 				<units>dmnl</units>
 			</aux>
@@ -3079,7 +3095,7 @@ ELSE
 				<units>b$</units>
 			</stock>
 			<aux name="max change in\nbank investment\nas fraction of normal">
-				<eqn>0.773809073089753</eqn>
+				<eqn>0.711160573127497</eqn>
 				<range min="0.1" max="1"/>
 				<units>dmnl</units>
 			</aux>
@@ -3225,7 +3241,7 @@ ELSE
 				<units>b$/year</units>
 			</flow>
 			<aux name="time for safe loans that will fail to actually fail">
-				<eqn>10.3881776603316</eqn>
+				<eqn>10.2034764534148</eqn>
 				<range min="3" max="30"/>
 				<units>years</units>
 			</aux>
@@ -3473,7 +3489,7 @@ ELSE
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="initial bank investment growth rate">
-				<eqn>0.0652238197392532</eqn>
+				<eqn>0.0682429758469568</eqn>
 				<range min="0" max="0.1"/>
 				<units>1/year</units>
 			</aux>
@@ -4850,8 +4866,8 @@ ELSE
 				<eqn>debt_to_GDP_ratio</eqn>
 				<gf>
 					<xscale min="1" max="2"/>
-					<yscale min="0.9" max="1.2"/>
-					<ypts>1.2,1.196,1.187,1.165,1.12,1.05,0.9803,0.935,0.913,0.9038,0.9</ypts>
+					<yscale min="0.9" max="1.3"/>
+					<ypts>1.3,1.295,1.283,1.253,1.193,1.1,1.007,0.9466,0.9174,0.9051,0.9</ypts>
 				</gf>
 				<units>dmnl</units>
 			</aux>
@@ -4865,12 +4881,12 @@ ELSE
 			<aux name="public\nconsumption to transfers\nratio">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.707333688885808</eqn>
+				<eqn>0.70192269580969</eqn>
 				<range min="0.7" max="1"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial government debt" access="output" isee:autocreated="true">
-				<eqn>19539.8096602049</eqn>
+				<eqn>15017.1515592584</eqn>
 				<range min="15000" max="25000"/>
 				<units>B$</units>
 			</aux>
@@ -4898,7 +4914,7 @@ ELSE
 			<aux name="GDP\nperception time">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>2.04723849520376</eqn>
+				<eqn>2.05247538692746</eqn>
 				<range min="1" max="3"/>
 				<units>Years</units>
 			</aux>
@@ -4919,7 +4935,7 @@ ELSE
 			<aux name="investment share of\npublic expenditure">
 				<doc>${Assumption,Calibration Parameter}
 https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/component/e2ee1eb1-en</doc>
-				<eqn>0.0478424799544378</eqn>
+				<eqn>0.050430443239546</eqn>
 				<range min="0.04" max="0.16"/>
 				<units>dmnl</units>
 			</aux>
@@ -4959,7 +4975,10 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 				<units>b$/year</units>
 			</aux>
 			<aux name="averaging time to adjust tax based on income">
-				<eqn>3</eqn>
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>2.56742482100196</eqn>
+				<range min="1" max="3"/>
 				<units>year</units>
 			</aux>
 			<aux name="initial smoothed total public tax income">
@@ -5015,7 +5034,7 @@ ELSE
 				<units>1/year</units>
 			</aux>
 			<aux name="initial safe interest">
-				<eqn>0.0303642702115715</eqn>
+				<eqn>0.0307077853820425</eqn>
 				<range min="0" max="0.2"/>
 				<units>1/year</units>
 			</aux>
@@ -5538,6 +5557,10 @@ government_interest_payments</eqn>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/year</units>
 			</aux>
+			<aux name="profit tax rate" access="input">
+				<eqn>0.34553773098806</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -5587,7 +5610,7 @@ government_interest_payments</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="4" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="10" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -6270,6 +6293,7 @@ government_interest_payments</eqn>
 					<from>Total_nominal_SLR_protection_cost</from>
 					<to>public_expenditure</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" x="101.429" y="79.2857" name="profit tax rate"/>
 				<alias font_style="italic" label_side="right" label_angle="315" uid="73" x="385.797" y="954.5" width="18" height="18">
 					<of>baseline_interest</of>
 				</alias>
@@ -6554,17 +6578,17 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 				<units>dmnl</units>
 			</aux>
 			<aux name="Agriculture share\nof GDP\nintercept">
-				<eqn>3.34126239686121</eqn>
+				<eqn>3.29539612429132</eqn>
 				<range min="0" max="100"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="agriculture share\nof GDP slope">
-				<eqn>-2.33038908095928</eqn>
+				<eqn>-2.31257195593821</eqn>
 				<range min="-10" max="1"/>
 				<units>Million*Person*Years/b$</units>
 			</aux>
 			<aux name="agriculture share\nof GDP starting point determinant">
-				<eqn>19.9244895513055</eqn>
+				<eqn>19.9327670541321</eqn>
 				<range min="0" max="20"/>
 				<units>dmnl</units>
 			</aux>
@@ -6654,7 +6678,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 				<units>1/year</units>
 			</aux>
 			<aux name="deflation\nadjustment time">
-				<eqn>9.1885901933281</eqn>
+				<eqn>8.82993469188639</eqn>
 				<range min="2" max="10"/>
 				<units>years</units>
 			</aux>
@@ -6693,7 +6717,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 			<aux name="weight of marginal energy\ncost inflation">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.0155072912124247</eqn>
+				<eqn>0.0185690559734947</eqn>
 				<range min="0.01" max="2"/>
 				<units>dmnl</units>
 			</aux>
@@ -6721,7 +6745,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 			<aux name="weight of cropland inflation contribution">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.105358905693056</eqn>
+				<eqn>0.104683896571018</eqn>
 				<range min="0.001" max="2"/>
 				<units>dmnl</units>
 			</aux>
@@ -6753,7 +6777,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 			<aux name="weight of fertilizer used per unit of crop production">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.001</eqn>
+				<eqn>0.00366992015739802</eqn>
 				<range min="0.001" max="2"/>
 				<units>dmnl</units>
 			</aux>
@@ -6781,7 +6805,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 			<aux name="weight of feed\nper unit of animal\nproduct production">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.151121164124527</eqn>
+				<eqn>0.154754491328236</eqn>
 				<range min="0.001" max="2"/>
 				<units>dmnl</units>
 			</aux>
@@ -6809,7 +6833,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 			<aux name="weight of grazing land inflation contribution">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.054605743773537</eqn>
+				<eqn>0.0546715238795152</eqn>
 				<range min="0.001" max="2"/>
 				<units>dmnl</units>
 			</aux>
@@ -6841,17 +6865,17 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 			<aux name="weight of irrigation water used per unit of crop production inflation contribution">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>0.0505711372057475</eqn>
+				<eqn>0.0511423325152036</eqn>
 				<range min="0.001" max="2"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial inflation index">
-				<eqn>0.415556371217708</eqn>
+				<eqn>0.408743191615044</eqn>
 				<range min="0.35" max="0.55"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial inflation rate">
-				<eqn>0.0321433073076368</eqn>
+				<eqn>0.0320686166408301</eqn>
 				<range min="0" max="0.1"/>
 				<units>1/year</units>
 			</aux>
@@ -6954,7 +6978,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="347" isee:scroll_y="347" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="347" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -7504,7 +7528,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 			<aux name="normal time to decrease innovation orientation">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>10.0307912327686</eqn>
+				<eqn>10.0330707712392</eqn>
 				<range min="5" max="20"/>
 				<units>years</units>
 			</aux>
@@ -7576,7 +7600,7 @@ ELSE MAX(0, Firms_Innovation_Orientation//time_to_decrease_innovation_orientatio
 			<aux name="sensitivity of\nfirms innovation orientation\nto cash deceleration">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>1.00763521826536</eqn>
+				<eqn>1.00985548578139</eqn>
 				<range min="0" max="20"/>
 				<units>dmnl</units>
 			</aux>
@@ -7613,7 +7637,7 @@ ELSE MAX(0, Firms_Innovation_Orientation//time_to_decrease_innovation_orientatio
 			<aux name="sensitivity of innovation\ndecrease to cash growth">
 				<doc>${Calibration Parameter}
 </doc>
-				<eqn>9.99535453394382</eqn>
+				<eqn>9.99238355490161</eqn>
 				<range min="0" max="20"/>
 				<units>dmnl</units>
 			</aux>
