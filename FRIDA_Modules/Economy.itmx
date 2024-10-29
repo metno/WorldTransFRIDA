@@ -593,8 +593,8 @@
 				<connect2 to="Finance.safe_interest" from="Government.safe_interest"/>
 				<connect to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
-				<connect to="Finance.switch_economy_damage" from="Climate.switch_economy_damage"/>
-				<connect2 to="Finance.switch_economy_damage" from="Climate.switch_economy_damage"/>
+				<connect to="Finance.switch_economy_damage" from="Climate.switch_finance_damage"/>
+				<connect2 to="Finance.switch_economy_damage" from="Climate.switch_finance_damage"/>
 				<connect to="Finance.today" from="Climate.today"/>
 				<connect2 to="Finance.today" from="Climate.today"/>
 				<connect to="Finance.Total_nominal_loss_of_assets_from_SLR" from="Sea_level_rise_costs_and_impacts.Total_nominal_loss_of_assets_from_SLR"/>
@@ -691,8 +691,8 @@
 				<connect2 to="Employment.safe_loans_financing_innovation" from="Finance.safe_loans_affected_innovation"/>
 				<connect to="Employment.Surface_Temperature_Anomaly_1" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Employment.Surface_Temperature_Anomaly_1" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
-				<connect to="Employment.switch_economy_damage" from="Climate.switch_economy_damage"/>
-				<connect2 to="Employment.switch_economy_damage" from="Climate.switch_economy_damage"/>
+				<connect to="Employment.switch_labor_damage" from="Climate.switch_labor_damage"/>
+				<connect2 to="Employment.switch_labor_damage" from="Climate.switch_labor_damage"/>
 				<connect to="Employment.today" from="Climate.today"/>
 				<connect2 to="Employment.today" from="Climate.today"/>
 				<connect to="Employment.total_investment_1" from="Finance.total_investment"/>
@@ -3229,7 +3229,7 @@ https://rshiny.ilo.org/dataexplorer20/?id=EAP_2WAP_SEX_AGE_RT_A&amp;ref_area=X01
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>IF (switch_economy_damage =0) AND TIME &gt; today THEN
+				<eqn>IF (switch_labor_damage =0) AND TIME &gt; today THEN
 PREVIOUS(SELF, 0)
 ELSE
 1 + 0.01*(Temperature_effect_on_high_exposure_productivity*(Surface_Temperature_Anomaly_1 - Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900) + Temperature_squared_effect_on_high_exposure_productivity*(Surface_Temperature_Anomaly_1 - Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900)^2)</eqn>
@@ -3247,7 +3247,7 @@ ELSE
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>IF (switch_economy_damage =0) AND TIME &gt; today THEN
+				<eqn>IF (switch_labor_damage =0) AND TIME &gt; today THEN
 PREVIOUS(SELF, 0)
 ELSE
 1 + 0.01*(Temperature_effect_on_low_exposure_productivity*( - Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900) + Temperature_squared_effect_on_low_exposure_productivity*(Surface_Temperature_Anomaly_1 - Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900)^2)</eqn>
@@ -3710,10 +3710,6 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 				<range min="0.03" max="0.1"/>
 				<units>1/year</units>
 			</aux>
-			<aux name="switch economy damage" access="input">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
 			<aux name="today" access="input">
 				<eqn>2025</eqn>
 				<units>year</units>
@@ -3731,6 +3727,10 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 				</dimensions>
 				<eqn>Labour_Supply_with_Climate_Impacts/Raw_Labour_Supply</eqn>
 				<units>1</units>
+			</aux>
+			<aux name="switch labor damage" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
 			</aux>
 		</variables>
 		<views>
@@ -3781,7 +3781,7 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="6" isee:scroll_x="1200" isee:scroll_y="873" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="6" isee:scroll_x="693" isee:scroll_y="1978" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -5036,19 +5036,10 @@ furthermore. The structure that was previously decided on had the productivity g
 					<from>max_firing_percentage</from>
 					<to>firing</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1190" y="2393" name="switch economy damage"/>
 				<aux font_style="italic" font_weight="bold" x="1143" y="2317" name="today"/>
-				<connector uid="261" angle="341.206">
-					<from>switch_economy_damage</from>
-					<to>Effect_of_climate_on_high_exposure_labour</to>
-				</connector>
 				<connector uid="262" angle="329.356">
 					<from>today</from>
 					<to>Effect_of_climate_on_high_exposure_labour</to>
-				</connector>
-				<connector uid="263" angle="35.7189">
-					<from>switch_economy_damage</from>
-					<to>Effect_of_climat_on_low_exposure_labour</to>
 				</connector>
 				<connector uid="264" angle="14.7611">
 					<from>today</from>
@@ -5071,6 +5062,15 @@ furthermore. The structure that was previously decided on had the productivity g
 				<connector uid="268" angle="101.689">
 					<from>climate_impact_of_heat_on_productivity</from>
 					<to>climate_impact_on_productivity</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1143" y="2387" name="switch labor damage"/>
+				<connector uid="269" angle="28.9839">
+					<from>switch_labor_damage</from>
+					<to>Effect_of_climat_on_low_exposure_labour</to>
+				</connector>
+				<connector uid="270" angle="343.389">
+					<from>switch_labor_damage</from>
+					<to>Effect_of_climate_on_high_exposure_labour</to>
 				</connector>
 				<alias color="blue" background="white" font_style="italic" label_side="left" uid="12" x="655.25" y="1050.17" width="18" height="18">
 					<shape type="circle" radius="18"/>
@@ -6206,7 +6206,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="937.778" isee:scroll_y="266.667" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="1313.89" isee:scroll_y="533.333" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -8257,7 +8257,7 @@ government_interest_payments</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="165" isee:scroll_y="171.429" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="18.5714" isee:scroll_y="428.571" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -9661,7 +9661,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="347" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
