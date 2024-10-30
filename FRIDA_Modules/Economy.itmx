@@ -512,14 +512,16 @@
 				<connect2 to="Circular_Flow.safe_interest_3" from="Government.safe_interest"/>
 				<connect to="Circular_Flow.safe_bank_assets" from="Finance.private_safe_bank_assets"/>
 				<connect2 to="Circular_Flow.safe_bank_assets" from="Finance.private_safe_bank_assets"/>
-				<connect to="Circular_Flow.start_year" from="Government_Regulations.start_year"/>
-				<connect2 to="Circular_Flow.start_year" from="Government_Regulations.start_year"/>
+				<connect to="Circular_Flow.start_year" from="Government_Regulations.tax_policy_start_year"/>
+				<connect2 to="Circular_Flow.start_year" from="Government_Regulations.tax_policy_start_year"/>
 				<connect to="Circular_Flow.sum_of_energy_taxes" from="Government.sum_of_energy_taxes_in_nominal_terms"/>
 				<connect2 to="Circular_Flow.sum_of_energy_taxes" from="Government.sum_of_energy_taxes_in_nominal_terms"/>
 				<connect to="Circular_Flow.sum_of_subsidies_spent" from="Government.sum_of_subsidies_spent"/>
 				<connect2 to="Circular_Flow.sum_of_subsidies_spent" from="Government.sum_of_subsidies_spent"/>
 				<connect to="Circular_Flow.switch_tax_policy" from="Government_Regulations.switch_tax_policy"/>
 				<connect2 to="Circular_Flow.switch_tax_policy" from="Government_Regulations.switch_tax_policy"/>
+				<connect to="Circular_Flow.time_to_implement_tax_policy" from="Government_Regulations.time_to_implement_tax_policy"/>
+				<connect2 to="Circular_Flow.time_to_implement_tax_policy" from="Government_Regulations.time_to_implement_tax_policy"/>
 				<connect to="Circular_Flow.Total_nominal_people_retreat_costs" from="Sea_level_rise_costs_and_impacts.Total_nominal_people_retreat_costs"/>
 				<connect2 to="Circular_Flow.Total_nominal_people_retreat_costs" from="Sea_level_rise_costs_and_impacts.Total_nominal_people_retreat_costs"/>
 				<connect to="Circular_Flow.wage_tax_policy" from="Government_Regulations.wage_tax_rate_policy"/>
@@ -1287,13 +1289,6 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 				<range min="0.1" max="0.3"/>
 				<units>dmnl</units>
 			</aux>
-			<aux name="profit tax rate" access="output" isee:autocreated="true">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.331571456839155</eqn>
-				<range min="0" max="0.4"/>
-				<units>dmnl</units>
-			</aux>
 			<flow name="profit tax" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
@@ -1684,7 +1679,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<units>Year</units>
 			</aux>
 			<aux name="actual wage tax rate">
-				<eqn>IF TIME &gt; start_year AND switch_tax_policy = 1 THEN wage_tax_policy ELSE wage_tax_rate</eqn>
+				<eqn>IF TIME &gt; start_year AND switch_tax_policy = 1 THEN wage_tax_rate + RAMP((wage_tax_policy-wage_tax_rate)/time_to_implement_tax_policy, start_year, start_year+ time_to_implement_tax_policy) ELSE wage_tax_rate</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="switch tax policy" access="input">
@@ -1696,7 +1691,18 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<units>dmnl</units>
 			</aux>
 			<aux name="actual profit tax rate">
-				<eqn>IF TIME &gt; start_year AND switch_tax_policy = 1 THEN profit_tax_rate_policy ELSE profit_tax_rate</eqn>
+				<eqn>IF TIME &gt; start_year AND switch_tax_policy = 1 THEN profit_tax_rate + RAMP((profit_tax_rate_policy-profit_tax_rate)/time_to_implement_tax_policy, start_year, start_year+ time_to_implement_tax_policy) ELSE profit_tax_rate</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="time to implement\ntax policy" access="input">
+				<eqn>5</eqn>
+				<units>years</units>
+			</aux>
+			<aux name="profit tax rate">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.331571456839155</eqn>
+				<range min="0" max="0.4"/>
 				<units>dmnl</units>
 			</aux>
 		</variables>
@@ -1748,7 +1754,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="22" isee:scroll_y="145" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="64" isee:scroll_y="145" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1825,8 +1831,8 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 					<from>time_to_consider_desired_savings</from>
 					<to>desired_owner_savings</to>
 				</connector>
-				<aux label_side="top" x="460.084" y="693.391" name="time to reach\nsavings goal"/>
-				<connector uid="5" angle="48.7636">
+				<aux label_side="top" x="419.084" y="741.391" name="time to reach\nsavings goal"/>
+				<connector uid="5" angle="49.0508">
 					<from>time_to_reach_savings_goal</from>
 					<to>annual_owner_savings_to_reach_goal</to>
 				</connector>
@@ -1926,7 +1932,6 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 					<from>Worker_Savings</from>
 					<to>worker_savings_interest</to>
 				</connector>
-				<aux label_side="left" x="442.084" y="556.75" name="profit tax rate"/>
 				<flow label_side="left" label_angle="225" x="696.209" y="484" name="profit tax">
 					<pts>
 						<pt x="757.417" y="484"/>
@@ -2376,10 +2381,10 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 					<from>&quot;inflation_adjustment_b$_per_bc$&quot;</from>
 					<to>&quot;real_private_consumption_2021c$&quot;</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1966.33" y="864" name="wage tax policy"/>
+				<aux font_style="italic" font_weight="bold" x="2042.33" y="878.333" name="wage tax policy"/>
 				<aux font_style="italic" font_weight="bold" x="2122" y="764" name="start year"/>
 				<aux x="1902" y="679.141" name="actual wage tax rate"/>
-				<connector uid="130" angle="115.012">
+				<connector uid="130" angle="125.165">
 					<from>wage_tax_policy</from>
 					<to>actual_wage_tax_rate</to>
 				</connector>
@@ -2406,10 +2411,6 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 					<from>profit_tax_rate_policy</from>
 					<to>actual_profit_tax_rate</to>
 				</connector>
-				<connector uid="136" angle="12.5146">
-					<from>profit_tax_rate</from>
-					<to>actual_profit_tax_rate</to>
-				</connector>
 				<connector uid="137" angle="25.8664">
 					<from>actual_profit_tax_rate</from>
 					<to>profit_tax</to>
@@ -2418,7 +2419,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 					<from>actual_profit_tax_rate</from>
 					<to>rent_tax</to>
 				</connector>
-				<connector uid="139" angle="20.9245">
+				<connector uid="139" angle="19.3178">
 					<from>
 						<alias uid="140"/>
 					</from>
@@ -2449,6 +2450,22 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<connector uid="146" angle="111.801">
 					<from>Total_nominal_people_retreat_costs</from>
 					<to>Actual_people_retreat_cost_from_SLR</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="224" y="601.617" name="time to implement\ntax policy"/>
+				<aux label_side="left" x="333.084" y="562.75" name="profit tax rate"/>
+				<connector uid="136" angle="7.5419">
+					<from>profit_tax_rate</from>
+					<to>actual_profit_tax_rate</to>
+				</connector>
+				<connector uid="147" angle="7.51474">
+					<from>time_to_implement_tax_policy</from>
+					<to>actual_profit_tax_rate</to>
+				</connector>
+				<connector uid="148" angle="96.9622">
+					<from>
+						<alias uid="149"/>
+					</from>
+					<to>actual_wage_tax_rate</to>
 				</connector>
 				<alias label_side="top" uid="8" x="2058.75" y="594.617" width="18" height="18">
 					<of>time_to_reach_savings_goal</of>
@@ -2552,11 +2569,14 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<alias font_style="italic" uid="128" x="1237" y="1170" width="18" height="18">
 					<of>net_worker_income</of>
 				</alias>
-				<alias font_style="italic" font_weight="bold" uid="140" x="358" y="599" width="18" height="18">
+				<alias font_style="italic" font_weight="bold" uid="140" x="303" y="616.75" width="18" height="18">
 					<of>start_year</of>
 				</alias>
 				<alias font_style="italic" font_weight="bold" uid="142" x="292" y="489" width="18" height="18">
 					<of>switch_tax_policy</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="149" x="1924" y="924" width="18" height="18">
+					<of>time_to_implement_tax_policy</of>
 				</alias>
 			</view>
 		</views>
