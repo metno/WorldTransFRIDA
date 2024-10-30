@@ -512,14 +512,16 @@
 				<connect2 to="Circular_Flow.safe_interest_3" from="Government.safe_interest"/>
 				<connect to="Circular_Flow.safe_bank_assets" from="Finance.private_safe_bank_assets"/>
 				<connect2 to="Circular_Flow.safe_bank_assets" from="Finance.private_safe_bank_assets"/>
-				<connect to="Circular_Flow.start_year" from="Government_Regulations.start_year"/>
-				<connect2 to="Circular_Flow.start_year" from="Government_Regulations.start_year"/>
+				<connect to="Circular_Flow.start_year" from="Government_Regulations.tax_policy_start_year"/>
+				<connect2 to="Circular_Flow.start_year" from="Government_Regulations.tax_policy_start_year"/>
 				<connect to="Circular_Flow.sum_of_energy_taxes" from="Government.sum_of_energy_taxes_in_nominal_terms"/>
 				<connect2 to="Circular_Flow.sum_of_energy_taxes" from="Government.sum_of_energy_taxes_in_nominal_terms"/>
 				<connect to="Circular_Flow.sum_of_subsidies_spent" from="Government.sum_of_subsidies_spent"/>
 				<connect2 to="Circular_Flow.sum_of_subsidies_spent" from="Government.sum_of_subsidies_spent"/>
 				<connect to="Circular_Flow.switch_tax_policy" from="Government_Regulations.switch_tax_policy"/>
 				<connect2 to="Circular_Flow.switch_tax_policy" from="Government_Regulations.switch_tax_policy"/>
+				<connect to="Circular_Flow.time_to_implement_tax_policy" from="Government_Regulations.time_to_implement_tax_policy"/>
+				<connect2 to="Circular_Flow.time_to_implement_tax_policy" from="Government_Regulations.time_to_implement_tax_policy"/>
 				<connect to="Circular_Flow.Total_nominal_people_retreat_costs" from="Sea_level_rise_costs_and_impacts.Total_nominal_people_retreat_costs"/>
 				<connect2 to="Circular_Flow.Total_nominal_people_retreat_costs" from="Sea_level_rise_costs_and_impacts.Total_nominal_people_retreat_costs"/>
 				<connect to="Circular_Flow.wage_tax_policy" from="Government_Regulations.wage_tax_rate_policy"/>
@@ -593,8 +595,8 @@
 				<connect2 to="Finance.safe_interest" from="Government.safe_interest"/>
 				<connect to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
-				<connect to="Finance.switch_economy_damage" from="Climate.switch_economy_damage"/>
-				<connect2 to="Finance.switch_economy_damage" from="Climate.switch_economy_damage"/>
+				<connect to="Finance.switch_economy_damage" from="Climate.switch_finance_damage"/>
+				<connect2 to="Finance.switch_economy_damage" from="Climate.switch_finance_damage"/>
 				<connect to="Finance.today" from="Climate.today"/>
 				<connect2 to="Finance.today" from="Climate.today"/>
 				<connect to="Finance.Total_nominal_loss_of_assets_from_SLR" from="Sea_level_rise_costs_and_impacts.Total_nominal_loss_of_assets_from_SLR"/>
@@ -691,8 +693,8 @@
 				<connect2 to="Employment.safe_loans_financing_innovation" from="Finance.safe_loans_affected_innovation"/>
 				<connect to="Employment.Surface_Temperature_Anomaly_1" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Employment.Surface_Temperature_Anomaly_1" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
-				<connect to="Employment.switch_economy_damage" from="Climate.switch_economy_damage"/>
-				<connect2 to="Employment.switch_economy_damage" from="Climate.switch_economy_damage"/>
+				<connect to="Employment.switch_labor_damage" from="Climate.switch_labor_damage"/>
+				<connect2 to="Employment.switch_labor_damage" from="Climate.switch_labor_damage"/>
 				<connect to="Employment.today" from="Climate.today"/>
 				<connect2 to="Employment.today" from="Climate.today"/>
 				<connect to="Employment.total_investment_1" from="Finance.total_investment"/>
@@ -1287,13 +1289,6 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 				<range min="0.1" max="0.3"/>
 				<units>dmnl</units>
 			</aux>
-			<aux name="profit tax rate" access="output" isee:autocreated="true">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>0.331571456839155</eqn>
-				<range min="0" max="0.4"/>
-				<units>dmnl</units>
-			</aux>
 			<flow name="profit tax" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
@@ -1684,7 +1679,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<units>Year</units>
 			</aux>
 			<aux name="actual wage tax rate">
-				<eqn>IF TIME &gt; start_year AND switch_tax_policy = 1 THEN wage_tax_policy ELSE wage_tax_rate</eqn>
+				<eqn>IF TIME &gt; start_year AND switch_tax_policy = 1 THEN wage_tax_rate + RAMP((wage_tax_policy-wage_tax_rate)/time_to_implement_tax_policy, start_year, start_year+ time_to_implement_tax_policy) ELSE wage_tax_rate</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="switch tax policy" access="input">
@@ -1696,7 +1691,18 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<units>dmnl</units>
 			</aux>
 			<aux name="actual profit tax rate">
-				<eqn>IF TIME &gt; start_year AND switch_tax_policy = 1 THEN profit_tax_rate_policy ELSE profit_tax_rate</eqn>
+				<eqn>IF TIME &gt; start_year AND switch_tax_policy = 1 THEN profit_tax_rate + RAMP((profit_tax_rate_policy-profit_tax_rate)/time_to_implement_tax_policy, start_year, start_year+ time_to_implement_tax_policy) ELSE profit_tax_rate</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="time to implement\ntax policy" access="input">
+				<eqn>5</eqn>
+				<units>years</units>
+			</aux>
+			<aux name="profit tax rate">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.331571456839155</eqn>
+				<range min="0" max="0.4"/>
 				<units>dmnl</units>
 			</aux>
 		</variables>
@@ -1742,7 +1748,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="22" isee:scroll_y="145" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="64" isee:scroll_y="145" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1819,8 +1825,8 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 					<from>time_to_consider_desired_savings</from>
 					<to>desired_owner_savings</to>
 				</connector>
-				<aux label_side="top" x="460.084" y="693.391" name="time to reach\nsavings goal"/>
-				<connector uid="5" angle="48.7636">
+				<aux label_side="top" x="419.084" y="741.391" name="time to reach\nsavings goal"/>
+				<connector uid="5" angle="49.0508">
 					<from>time_to_reach_savings_goal</from>
 					<to>annual_owner_savings_to_reach_goal</to>
 				</connector>
@@ -1920,7 +1926,6 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 					<from>Worker_Savings</from>
 					<to>worker_savings_interest</to>
 				</connector>
-				<aux label_side="left" x="442.084" y="556.75" name="profit tax rate"/>
 				<flow label_side="left" label_angle="225" x="696.209" y="484" name="profit tax">
 					<pts>
 						<pt x="757.417" y="484"/>
@@ -2370,10 +2375,10 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 					<from>&quot;inflation_adjustment_b$_per_bc$&quot;</from>
 					<to>&quot;real_private_consumption_2021c$&quot;</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1966.33" y="864" name="wage tax policy"/>
+				<aux font_style="italic" font_weight="bold" x="2042.33" y="878.333" name="wage tax policy"/>
 				<aux font_style="italic" font_weight="bold" x="2122" y="764" name="start year"/>
 				<aux x="1902" y="679.141" name="actual wage tax rate"/>
-				<connector uid="130" angle="115.012">
+				<connector uid="130" angle="125.165">
 					<from>wage_tax_policy</from>
 					<to>actual_wage_tax_rate</to>
 				</connector>
@@ -2400,10 +2405,6 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 					<from>profit_tax_rate_policy</from>
 					<to>actual_profit_tax_rate</to>
 				</connector>
-				<connector uid="136" angle="12.5146">
-					<from>profit_tax_rate</from>
-					<to>actual_profit_tax_rate</to>
-				</connector>
 				<connector uid="137" angle="25.8664">
 					<from>actual_profit_tax_rate</from>
 					<to>profit_tax</to>
@@ -2412,7 +2413,7 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 					<from>actual_profit_tax_rate</from>
 					<to>rent_tax</to>
 				</connector>
-				<connector uid="139" angle="20.9245">
+				<connector uid="139" angle="19.3178">
 					<from>
 						<alias uid="140"/>
 					</from>
@@ -2443,6 +2444,22 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<connector uid="146" angle="111.801">
 					<from>Total_nominal_people_retreat_costs</from>
 					<to>Actual_people_retreat_cost_from_SLR</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="224" y="601.617" name="time to implement\ntax policy"/>
+				<aux label_side="left" x="333.084" y="562.75" name="profit tax rate"/>
+				<connector uid="136" angle="7.5419">
+					<from>profit_tax_rate</from>
+					<to>actual_profit_tax_rate</to>
+				</connector>
+				<connector uid="147" angle="7.51474">
+					<from>time_to_implement_tax_policy</from>
+					<to>actual_profit_tax_rate</to>
+				</connector>
+				<connector uid="148" angle="96.9622">
+					<from>
+						<alias uid="149"/>
+					</from>
+					<to>actual_wage_tax_rate</to>
 				</connector>
 				<alias label_side="top" uid="8" x="2058.75" y="594.617" width="18" height="18">
 					<of>time_to_reach_savings_goal</of>
@@ -2546,11 +2563,14 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<alias font_style="italic" uid="128" x="1237" y="1170" width="18" height="18">
 					<of>net_worker_income</of>
 				</alias>
-				<alias font_style="italic" font_weight="bold" uid="140" x="358" y="599" width="18" height="18">
+				<alias font_style="italic" font_weight="bold" uid="140" x="303" y="616.75" width="18" height="18">
 					<of>start_year</of>
 				</alias>
 				<alias font_style="italic" font_weight="bold" uid="142" x="292" y="489" width="18" height="18">
 					<of>switch_tax_policy</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="149" x="1924" y="924" width="18" height="18">
+					<of>time_to_implement_tax_policy</of>
 				</alias>
 			</view>
 		</views>
@@ -3219,12 +3239,12 @@ https://rshiny.ilo.org/dataexplorer20/?id=EAP_2WAP_SEX_AGE_RT_A&amp;ref_area=X01
 				<eqn>0.892955</eqn>
 				<units>1/(deg C^2)</units>
 			</aux>
-			<aux name="Effect of climate on high exposure labour">
+			<aux name="effect of climate on\nhigh exposure labour">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>IF (switch_economy_damage =0) AND TIME &gt; today THEN
-PREVIOUS(SELF, 0)
+				<eqn>IF (switch_labor_damage =0) AND TIME &gt; today THEN
+previous_effect_of_climate_on_high_exposure_labour
 ELSE
 1 + 0.01*(Temperature_effect_on_high_exposure_productivity*(Surface_Temperature_Anomaly_1 - Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900) + Temperature_squared_effect_on_high_exposure_productivity*(Surface_Temperature_Anomaly_1 - Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900)^2)</eqn>
 				<units>dmnl</units>
@@ -3237,12 +3257,12 @@ ELSE
 				<eqn>0.0841974</eqn>
 				<units>1/(deg C^2)</units>
 			</aux>
-			<aux name="Effect of climat\non low exposure\nlabour">
+			<aux name="effect of climate\non low exposure\nlabour">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>IF (switch_economy_damage =0) AND TIME &gt; today THEN
-PREVIOUS(SELF, 0)
+				<eqn>IF (switch_labor_damage =0) AND TIME &gt; today THEN
+previous_effect_of_climate_on_low_exposure_labour
 ELSE
 1 + 0.01*(Temperature_effect_on_low_exposure_productivity*( - Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900) + Temperature_squared_effect_on_low_exposure_productivity*(Surface_Temperature_Anomaly_1 - Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900)^2)</eqn>
 				<units>dmnl</units>
@@ -3368,10 +3388,10 @@ labour_exposure_shares_in_agriculture[No_Exposure]*
 1
 +
 labour_exposure_shares_in_agriculture[Low_Exposure]*
-Effect_of_climat_on_low_exposure_labour
+effect_of_climate_on_low_exposure_labour
 +
 labour_exposure_shares_in_agriculture[High_Exposure]*
-Effect_of_climate_on_high_exposure_labour
+effect_of_climate_on_high_exposure_labour
 )</eqn>
 				<units>MLabour</units>
 			</aux>
@@ -3385,10 +3405,10 @@ labour_exposure_shares_in_industry[No_Exposure]*
 1
 +
 labour_exposure_shares_in_industry[Low_Exposure]*
-Effect_of_climat_on_low_exposure_labour
+effect_of_climate_on_low_exposure_labour
 +
 labour_exposure_shares_in_industry[High_Exposure]*
-Effect_of_climate_on_high_exposure_labour
+effect_of_climate_on_high_exposure_labour
 )</eqn>
 				<units>MLabour</units>
 			</aux>
@@ -3402,10 +3422,10 @@ labour_exposure_shares_in_services[No_Exposure]*
 1
 +
 labour_exposure_shares_in_services[Low_Exposure]*
-Effect_of_climat_on_low_exposure_labour
+effect_of_climate_on_low_exposure_labour
 +
 labour_exposure_shares_in_services[High_Exposure]*
-Effect_of_climate_on_high_exposure_labour
+effect_of_climate_on_high_exposure_labour
 )</eqn>
 				<units>MLabour</units>
 			</aux>
@@ -3704,10 +3724,6 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 				<range min="0.03" max="0.1"/>
 				<units>1/year</units>
 			</aux>
-			<aux name="switch economy damage" access="input">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
 			<aux name="today" access="input">
 				<eqn>2025</eqn>
 				<units>year</units>
@@ -3725,6 +3741,26 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 				</dimensions>
 				<eqn>Labour_Supply_with_Climate_Impacts/Raw_Labour_Supply</eqn>
 				<units>1</units>
+			</aux>
+			<aux name="switch labor damage" access="input">
+				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="previous effect of climate\non low exposure\nlabour">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>PREVIOUS(effect_of_climate_on_low_exposure_labour, 0)</eqn>
+				<isee:delay_aux/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="previous effect of climate on\nhigh exposure labour">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>PREVIOUS(effect_of_climate_on_high_exposure_labour, 0)</eqn>
+				<isee:delay_aux/>
+				<units>dmnl</units>
 			</aux>
 		</variables>
 		<views>
@@ -3769,7 +3805,7 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="6" isee:scroll_x="1200" isee:scroll_y="873" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="6" isee:scroll_x="755" isee:scroll_y="1196" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4488,33 +4524,33 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 				<aux label_side="right" x="1422" y="2357" name="Surface Temperature\n1986 to 2005 offset\nrelative to 1850 to 1900"/>
 				<aux label_side="left" x="1301" y="2446" name="Temperature effect on high exposure productivity"/>
 				<aux label_side="left" x="1301" y="2486" name="Temperature squared effect\non high exposure productivity"/>
-				<aux x="1381" y="2458" name="Effect of climate on high exposure labour"/>
+				<aux x="1381" y="2458" name="effect of climate on\nhigh exposure labour"/>
 				<connector uid="143" angle="247.906">
 					<from>Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900</from>
-					<to>Effect_of_climate_on_high_exposure_labour</to>
+					<to>effect_of_climate_on_high_exposure_labour</to>
 				</connector>
 				<connector uid="144" angle="351.469">
 					<from>Temperature_effect_on_high_exposure_productivity</from>
-					<to>Effect_of_climate_on_high_exposure_labour</to>
+					<to>effect_of_climate_on_high_exposure_labour</to>
 				</connector>
 				<connector uid="145" angle="19.29">
 					<from>Temperature_squared_effect_on_high_exposure_productivity</from>
-					<to>Effect_of_climate_on_high_exposure_labour</to>
+					<to>effect_of_climate_on_high_exposure_labour</to>
 				</connector>
 				<aux label_side="left" x="1297" y="2275.5" name="Temperature effect on\nlow exposure productivity"/>
 				<aux label_side="left" x="1297" y="2230.33" name="Temperature squared effect on low exposure productivity"/>
-				<aux label_side="top" x="1384" y="2253.5" name="Effect of climat\non low exposure\nlabour"/>
+				<aux label_side="top" x="1384" y="2253.5" name="effect of climate\non low exposure\nlabour"/>
 				<connector uid="146" angle="14.1911">
 					<from>Temperature_effect_on_low_exposure_productivity</from>
-					<to>Effect_of_climat_on_low_exposure_labour</to>
+					<to>effect_of_climate_on_low_exposure_labour</to>
 				</connector>
 				<connector uid="147" angle="345.087">
 					<from>Temperature_squared_effect_on_low_exposure_productivity</from>
-					<to>Effect_of_climat_on_low_exposure_labour</to>
+					<to>effect_of_climate_on_low_exposure_labour</to>
 				</connector>
 				<connector uid="148" angle="110.161">
 					<from>Surface_Temperature_1986_to_2005_offset_relative_to_1850_to_1900</from>
-					<to>Effect_of_climat_on_low_exposure_labour</to>
+					<to>effect_of_climate_on_low_exposure_labour</to>
 				</connector>
 				<aux label_side="right" label_angle="315" x="1712" y="1873" name="raw share of\nemployment\nin agriculture"/>
 				<aux label_side="right" label_angle="315" x="2088.68" y="1873" name="raw share of\nemployment\nin industry"/>
@@ -4636,7 +4672,7 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 				</connector>
 				<aux label_side="right" x="1709" y="2263.33" name="Labour Supply\nagriculture with Climate Impacts"/>
 				<connector uid="173" angle="11.1649">
-					<from>Effect_of_climate_on_high_exposure_labour</from>
+					<from>effect_of_climate_on_high_exposure_labour</from>
 					<to>Labour_Supply_agriculture_with_Climate_Impacts</to>
 				</connector>
 				<connector uid="174" angle="270">
@@ -4645,12 +4681,12 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 				</connector>
 				<aux label_side="right" x="2088.68" y="2263.33" name="Labour Supply\nindustry with\nClimate Impacts"/>
 				<connector uid="175" angle="2.68378">
-					<from>Effect_of_climate_on_high_exposure_labour</from>
+					<from>effect_of_climate_on_high_exposure_labour</from>
 					<to>Labour_Supply_industry_with_Climate_Impacts</to>
 				</connector>
 				<aux label_side="right" x="2462.88" y="2263.33" name="Labour Supply\nservices with\nClimate Impacts"/>
 				<connector uid="176" angle="347.905">
-					<from>Effect_of_climate_on_high_exposure_labour</from>
+					<from>effect_of_climate_on_high_exposure_labour</from>
 					<to>Labour_Supply_services_with_Climate_Impacts</to>
 				</connector>
 				<connector uid="177" angle="270">
@@ -4738,22 +4774,22 @@ indicated_productivity_growth_from_bank_exploration+&quot;indicated_productivity
 				</connector>
 				<connector uid="194" angle="75.2697">
 					<from>Surface_Temperature_Anomaly_1</from>
-					<to>Effect_of_climat_on_low_exposure_labour</to>
+					<to>effect_of_climate_on_low_exposure_labour</to>
 				</connector>
 				<connector uid="195" angle="284.311">
 					<from>Surface_Temperature_Anomaly_1</from>
-					<to>Effect_of_climate_on_high_exposure_labour</to>
+					<to>effect_of_climate_on_high_exposure_labour</to>
 				</connector>
 				<connector uid="196" angle="18.0605">
-					<from>Effect_of_climat_on_low_exposure_labour</from>
+					<from>effect_of_climate_on_low_exposure_labour</from>
 					<to>Labour_Supply_agriculture_with_Climate_Impacts</to>
 				</connector>
 				<connector uid="197" angle="18.166">
-					<from>Effect_of_climat_on_low_exposure_labour</from>
+					<from>effect_of_climate_on_low_exposure_labour</from>
 					<to>Labour_Supply_industry_with_Climate_Impacts</to>
 				</connector>
 				<connector uid="198" angle="19.9037">
-					<from>Effect_of_climat_on_low_exposure_labour</from>
+					<from>effect_of_climate_on_low_exposure_labour</from>
 					<to>Labour_Supply_services_with_Climate_Impacts</to>
 				</connector>
 				<aux label_side="right" label_angle="45" x="752" y="1401.31" name="realised\nproductivity"/>
@@ -5024,23 +5060,14 @@ furthermore. The structure that was previously decided on had the productivity g
 					<from>max_firing_percentage</from>
 					<to>firing</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1190" y="2393" name="switch economy damage"/>
 				<aux font_style="italic" font_weight="bold" x="1143" y="2317" name="today"/>
-				<connector uid="261" angle="341.206">
-					<from>switch_economy_damage</from>
-					<to>Effect_of_climate_on_high_exposure_labour</to>
-				</connector>
 				<connector uid="262" angle="329.356">
 					<from>today</from>
-					<to>Effect_of_climate_on_high_exposure_labour</to>
-				</connector>
-				<connector uid="263" angle="35.7189">
-					<from>switch_economy_damage</from>
-					<to>Effect_of_climat_on_low_exposure_labour</to>
+					<to>effect_of_climate_on_high_exposure_labour</to>
 				</connector>
 				<connector uid="264" angle="14.7611">
 					<from>today</from>
-					<to>Effect_of_climat_on_low_exposure_labour</to>
+					<to>effect_of_climate_on_low_exposure_labour</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="946" y="1774" name="Productivity reduction factor from coastal flooding"/>
 				<connector uid="265" angle="10.8855">
@@ -5059,6 +5086,33 @@ furthermore. The structure that was previously decided on had the productivity g
 				<connector uid="268" angle="101.689">
 					<from>climate_impact_of_heat_on_productivity</from>
 					<to>climate_impact_on_productivity</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1143" y="2387" name="switch labor damage"/>
+				<connector uid="269" angle="28.9839">
+					<from>switch_labor_damage</from>
+					<to>effect_of_climate_on_low_exposure_labour</to>
+				</connector>
+				<connector uid="270" angle="343.389">
+					<from>switch_labor_damage</from>
+					<to>effect_of_climate_on_high_exposure_labour</to>
+				</connector>
+				<aux label_side="top" x="1275" y="2158.5" name="previous effect of climate\non low exposure\nlabour"/>
+				<connector uid="271" angle="101.129">
+					<from>effect_of_climate_on_low_exposure_labour</from>
+					<to>previous_effect_of_climate_on_low_exposure_labour</to>
+				</connector>
+				<connector uid="272" angle="293.962">
+					<from>previous_effect_of_climate_on_low_exposure_labour</from>
+					<to>effect_of_climate_on_low_exposure_labour</to>
+				</connector>
+				<aux x="1363" y="2568" name="previous effect of climate on\nhigh exposure labour"/>
+				<connector uid="273" angle="235.222">
+					<from>effect_of_climate_on_high_exposure_labour</from>
+					<to>previous_effect_of_climate_on_high_exposure_labour</to>
+				</connector>
+				<connector uid="274" angle="55.1247">
+					<from>previous_effect_of_climate_on_high_exposure_labour</from>
+					<to>effect_of_climate_on_high_exposure_labour</to>
 				</connector>
 				<alias color="blue" background="white" font_style="italic" label_side="left" uid="12" x="655.25" y="1050.17" width="18" height="18">
 					<shape type="circle" radius="18"/>
@@ -6188,7 +6242,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="937.778" isee:scroll_y="266.667" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="1313.89" isee:scroll_y="533.333" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -8227,7 +8281,7 @@ government_interest_payments</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="165" isee:scroll_y="171.429" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="18.5714" isee:scroll_y="428.571" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -9625,7 +9679,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="347" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
