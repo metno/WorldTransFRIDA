@@ -5,7 +5,7 @@
 		<name>Energy</name>
 		<uuid>dda966fe-252b-44a1-a101-0c3526293b30</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.2" isee:build_number="3414" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.3" isee:build_number="development" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="1.5" isee:run_prefix="Run" isee:simulation_delay="0.125" isee:restore_on_start="false" isee:save_interval="2" method="Euler" time_units="Months" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
 		<start>0</start>
@@ -445,8 +445,6 @@
 				<connect2 to="demand_for_energy" from="energy_demand.demand_for_energy"/>
 				<connect to="Inflation.demand_for_energy" from="energy_demand.demand_for_energy"/>
 				<connect2 to="Inflation.demand_for_energy" from="energy_demand.demand_for_energy"/>
-				<connect to="Energy.initial_fudge_amount" from="energy_demand.initial_fudge_amount"/>
-				<connect2 to="initial_fudge_amount" from="energy_demand.initial_fudge_amount"/>
 				<connect to="energy_demand.per_person_use_of_energy_policy" from="Behavioral_Choices.per_person_use_of_energy_policy"/>
 				<connect2 to="energy_demand.per_person_use_of_energy_policy" from="Behavioral_Choices.per_person_use_of_energy_policy"/>
 				<connect to="energy_demand.Policy_Start_Year" from="Behavioral_Choices.start_year"/>
@@ -538,6 +536,8 @@
 				<connect2 to="historical_cost_adjustment_smoothing_time" from="energy_investments.historical_cost_adjustment_smoothing_time"/>
 				<connect to="Energy.initial_relative_supply_missmatch" from="energy_investments.initial_relative_supply_missmatch"/>
 				<connect2 to="initial_relative_supply_missmatch" from="energy_investments.initial_relative_supply_missmatch"/>
+				<connect to="Energy.initial_relative_supply_missmatch_1" from="energy_investments.initial_relative_supply_missmatch"/>
+				<connect2 to="initial_relative_supply_missmatch_1" from="energy_investments.initial_relative_supply_missmatch"/>
 				<connect to="Energy.interpolated_historical_cost_adjustment" from="energy_investments.interpolated_historical_cost_adjustment"/>
 				<connect2 to="interpolated_historical_cost_adjustment" from="energy_investments.interpolated_historical_cost_adjustment"/>
 				<connect to="Energy.Investments_in_Nuclear_Capacity" from="energy_investments.Investments_in_Nuclear_Capacity"/>
@@ -1266,10 +1266,6 @@
 				<eqn>0.015199035386722</eqn>
 				<units>GtC/Qbtu</units>
 			</aux>
-			<aux name="initial fudge amount" access="input">
-				<eqn>2766.80358667475</eqn>
-				<units>TWh/year</units>
-			</aux>
 			<aux name="Initial Renewable Energy Installation Costs" access="input">
 				<eqn>14097.4172701301</eqn>
 				<units>c$/kW</units>
@@ -1630,6 +1626,10 @@
 				</gf>
 				<units>dmnl</units>
 			</aux>
+			<aux name="initial relative supply missmatch 1" access="input">
+				<eqn>0.0380071441658185</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -1679,7 +1679,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="12" isee:page_rows="7" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="3438" isee:scroll_y="1260" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2780,11 +2780,6 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 					<from>energy_supply</from>
 					<to>carbon_intensity_in_btu_2</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="2575" y="1663.33" name="initial fudge amount"/>
-				<connector uid="1370" angle="353.461" isee:autocreated="true">
-					<from>energy_demand</from>
-					<to>initial_fudge_amount</to>
-				</connector>
 				<stacked_container uid="1373" x="4912.3" y="1599.31">
 					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="false" pen_width="1" index="0" show_y_axis="true">
@@ -3140,6 +3135,11 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 						</plot>
 					</graph>
 				</stacked_container>
+				<aux font_style="italic" font_weight="bold" x="3365" y="2298" name="initial relative supply missmatch 1"/>
+				<connector uid="1456" angle="345.188" isee:autocreated="true">
+					<from>energy_investments</from>
+					<to>initial_relative_supply_missmatch_1</to>
+				</connector>
 				<alias font_style="italic" font_weight="bold" uid="1179" x="1967.88" y="23.5417" width="18" height="18">
 					<of>&quot;Primary_Fossil_Energy_(FUEL)&quot;</of>
 				</alias>
@@ -3320,7 +3320,7 @@ https://ourworldindata.org/grapher/fossil-fuel-primary-energy?tab=chart&amp;coun
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>(IF SWITCH_couple_energy_and_climate THEN
- Population * climate_adjusted_per_person_use_of_energy + fudge
+ Population * climate_adjusted_per_person_use_of_energy
 ELSE
 historical_demand_for_energy)</eqn>
 				<units>TWh/year</units>
@@ -3334,21 +3334,6 @@ historical_demand_for_energy)</eqn>
 			<aux name="Policy Start Year" access="input">
 				<eqn>2024</eqn>
 				<units>Year</units>
-			</aux>
-			<aux name="fudge">
-				<eqn>initial_fudge_amount-RAMP(initial_fudge_amount/initial_fudge_duration, 1980, 1980+initial_fudge_duration)</eqn>
-				<units>TWh/year</units>
-			</aux>
-			<aux name="initial fudge amount" access="output" isee:autocreated="true">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>1533.19343679129</eqn>
-				<range min="0" max="4000"/>
-				<units>TWh/year</units>
-			</aux>
-			<aux name="initial fudge duration">
-				<eqn>8</eqn>
-				<units>years</units>
 			</aux>
 			<aux name="historical demand for energy">
 				<eqn>NAN</eqn>
@@ -3557,7 +3542,7 @@ Change_in_energy_used_for_Heating_due_to_climate_change_in_MWh + Change_in_energ
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="225" isee:scroll_y="354.286" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="271.429" isee:scroll_y="588.571" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3639,17 +3624,6 @@ Change_in_energy_used_for_Heating_due_to_climate_change_in_MWh + Change_in_energ
 					<from>Policy_Start_Year</from>
 					<to>per_person_use_of_energy</to>
 				</connector>
-				<aux x="816.564" y="908.777" name="fudge"/>
-				<aux x="885.45" y="918.607" name="initial fudge amount"/>
-				<connector uid="51" angle="178.428">
-					<from>initial_fudge_amount</from>
-					<to>fudge</to>
-				</connector>
-				<aux x="870.453" y="980.607" name="initial fudge duration"/>
-				<connector uid="52" angle="124.509">
-					<from>initial_fudge_duration</from>
-					<to>fudge</to>
-				</connector>
 				<connector uid="53" angle="354.239">
 					<from>effect_of_GDP_on_per_person_use_of_energy_alpha</from>
 					<to>effect_of_GDP_per_person_on_per_person_use_of_energy</to>
@@ -3666,10 +3640,6 @@ Change_in_energy_used_for_Heating_due_to_climate_change_in_MWh + Change_in_energ
 				<aux font_style="italic" font_weight="bold" x="772.786" y="1056.52" name="SWITCH couple energy and climate"/>
 				<connector uid="56" angle="88.2799">
 					<from>SWITCH_couple_energy_and_climate</from>
-					<to>demand_for_energy</to>
-				</connector>
-				<connector uid="57" angle="118.235">
-					<from>fudge</from>
 					<to>demand_for_energy</to>
 				</connector>
 				<aux x="544.786" y="249.143" name="CDD"/>
@@ -4427,7 +4397,7 @@ ELSE
 			<aux name="initial relative supply missmatch" access="output" isee:autocreated="true">
 				<doc>${Calibrated,Calibration Parameter}
 </doc>
-				<eqn>0.0380071441658185</eqn>
+				<eqn>-0.0093290037649013</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="historical cost adjustment" access="output" isee:autocreated="true">
@@ -5170,7 +5140,7 @@ adjusted_cost[Run,Coal_fuel_extraction] * Coal_Gross_Investments_in_Fossil_Fuel_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="8" isee:page_rows="8" isee:scroll_y="1724.44" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="8" isee:page_rows="8" isee:scroll_y="1923.89" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -17931,7 +17901,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
