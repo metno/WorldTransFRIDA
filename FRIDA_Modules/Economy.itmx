@@ -439,6 +439,8 @@
 				<connect2 to="Government.unemployment_rate_1" from="Employment.unemployment_rate"/>
 				<connect to="Government.wage_tax_1" from="Circular_Flow.wage_tax"/>
 				<connect2 to="Government.wage_tax_1" from="Circular_Flow.wage_tax"/>
+				<connect to="Government.wealth_tax" from="Circular_Flow.wealth_tax"/>
+				<connect2 to="Government.wealth_tax" from="Circular_Flow.wealth_tax"/>
 			</module>
 			<module name="Circular Flow" isee:label="">
 				<format scale_by="auto"/>
@@ -474,6 +476,8 @@
 				<connect2 to="Government.wage_tax_1" from="Circular_Flow.wage_tax"/>
 				<connect to="Inflation.wages_1" from="Circular_Flow.wages"/>
 				<connect2 to="Inflation.wages_1" from="Circular_Flow.wages"/>
+				<connect to="Government.wealth_tax" from="Circular_Flow.wealth_tax"/>
+				<connect2 to="Government.wealth_tax" from="Circular_Flow.wealth_tax"/>
 				<connect to="Finance.Worker_Savings_1" from="Circular_Flow.Worker_Savings"/>
 				<connect2 to="Finance.Worker_Savings_1" from="Circular_Flow.Worker_Savings"/>
 				<connect to="Circular_Flow.annual_aggregate_wages" from="Employment.annual_aggregate_wages"/>
@@ -526,6 +530,8 @@
 				<connect2 to="Circular_Flow.Total_nominal_people_retreat_costs" from="Sea_level_rise_costs_and_impacts.Total_nominal_people_retreat_costs"/>
 				<connect to="Circular_Flow.wage_tax_policy" from="Government_Regulations.wage_tax_rate_policy"/>
 				<connect2 to="Circular_Flow.wage_tax_policy" from="Government_Regulations.wage_tax_rate_policy"/>
+				<connect to="Circular_Flow.wealth_taxation_rate" from="Government_Regulations.wealth_tax_policy"/>
+				<connect2 to="Circular_Flow.wealth_taxation_rate" from="Government_Regulations.wealth_tax_policy"/>
 			</module>
 			<module name="Finance" isee:label="">
 				<format scale_by="auto"/>
@@ -1125,6 +1131,7 @@
 				<outflow>owner_consumption</outflow>
 				<outflow>profit_tax</outflow>
 				<outflow>rent_tax</outflow>
+				<outflow>wealth_tax</outflow>
 				<units>b$</units>
 			</stock>
 			<aux name="desired savings\nas multiple of\nprofits">
@@ -1704,6 +1711,22 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<eqn>0.331571456839155</eqn>
 				<range min="0" max="0.4"/>
 				<units>dmnl</units>
+			</aux>
+			<aux name="wealth taxation rate" access="input">
+				<eqn>0</eqn>
+				<units>1/year</units>
+			</aux>
+			<flow name="wealth tax" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF TIME &gt; start_year AND switch_tax_policy = 1 THEN  owner_savings*actual_wealth_tax_rate ELSE 0</eqn>
+				<non_negative/>
+				<units>b$/year</units>
+			</flow>
+			<aux name="actual wealth tax rate">
+				<eqn>RAMP((wealth_taxation_rate)/time_to_implement_tax_policy, start_year, start_year+ time_to_implement_tax_policy)</eqn>
+				<units>1/year</units>
 			</aux>
 		</variables>
 		<views>
@@ -2466,6 +2489,48 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 						<alias uid="149"/>
 					</from>
 					<to>actual_wage_tax_rate</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="562" y="798.095" name="wealth taxation rate"/>
+				<flow x="692.709" y="541" name="wealth tax">
+					<pts>
+						<pt x="757.417" y="541"/>
+						<pt x="604" y="541"/>
+					</pts>
+				</flow>
+				<connector uid="150" angle="153.383">
+					<from>owner_savings</from>
+					<to>wealth_tax</to>
+				</connector>
+				<connector uid="152" angle="344.055">
+					<from>
+						<alias uid="142"/>
+					</from>
+					<to>wealth_tax</to>
+				</connector>
+				<connector uid="154" angle="11.0035">
+					<from>
+						<alias uid="140"/>
+					</from>
+					<to>wealth_tax</to>
+				</connector>
+				<aux x="580" y="580.75" name="actual wealth tax rate"/>
+				<connector uid="155" angle="79.9409">
+					<from>wealth_taxation_rate</from>
+					<to>actual_wealth_tax_rate</to>
+				</connector>
+				<connector uid="156" angle="12.4867">
+					<from>time_to_implement_tax_policy</from>
+					<to>actual_wealth_tax_rate</to>
+				</connector>
+				<connector uid="157" angle="13.2653">
+					<from>
+						<alias uid="140"/>
+					</from>
+					<to>actual_wealth_tax_rate</to>
+				</connector>
+				<connector uid="158" angle="19.4267">
+					<from>actual_wealth_tax_rate</from>
+					<to>wealth_tax</to>
 				</connector>
 				<alias label_side="top" uid="8" x="2058.75" y="594.617" width="18" height="18">
 					<of>time_to_reach_savings_goal</of>
@@ -7640,7 +7705,7 @@ https://www.oecd-ilibrary.org/sites/e2ee1eb1-en/index.html?itemId=/content/compo
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>rent_tax_1 + profit_tax_1 + wage_tax_1+sum_of_energy_taxes_in_nominal_terms</eqn>
+				<eqn>rent_tax_1 + profit_tax_1 + wage_tax_1+sum_of_energy_taxes_in_nominal_terms+wealth_tax</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="averaging time to adjust tax based on income">
@@ -8262,6 +8327,13 @@ government_interest_payments</eqn>
 				<eqn>2</eqn>
 				<units>year</units>
 			</aux>
+			<aux name="wealth tax" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -8311,7 +8383,7 @@ government_interest_payments</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="18.5714" isee:scroll_y="428.571" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="17.8571" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -9030,6 +9102,11 @@ government_interest_payments</eqn>
 				<connector uid="209" angle="65.6195">
 					<from>effect_end_effect_of_debt_to_GDP_ratio_on_government_spending</from>
 					<to>effect_of_debt_to_GDP_ratio_on_government_spending</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="235.714" y="14.2857" name="wealth tax"/>
+				<connector uid="210" angle="2.2026">
+					<from>wealth_tax</from>
+					<to>total_public_tax_income</to>
 				</connector>
 				<alias font_style="italic" label_side="right" label_angle="315" uid="73" x="385.797" y="954.5" width="18" height="18">
 					<of>baseline_interest</of>
