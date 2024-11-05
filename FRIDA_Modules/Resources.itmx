@@ -5,7 +5,7 @@
 		<name>Resources</name>
 		<uuid>e9e3d587-974f-4869-83a8-55d5b762307b</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.1" isee:build_number="3377" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.3" isee:build_number="3457" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="true" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -240,6 +240,12 @@
 				<connect2 to="Concrete.Residential_and_Service_buildings_longevity_policy" from="Government_Regulations.Residential_and_Service_buildings_longevity_policy"/>
 				<connect to="Concrete.RS_maintenance_policy" from="Government_Regulations.concrete_residential_and_service_maintenance_policy"/>
 				<connect2 to="Concrete.RS_maintenance_policy" from="Government_Regulations.concrete_residential_and_service_maintenance_policy"/>
+				<connect to="Concrete.start_year" from="Government_Regulations.start_year"/>
+				<connect2 to="Concrete.start_year" from="Government_Regulations.start_year"/>
+				<connect to="Concrete.switch_concrete_impact" from="Climate.switch_concrete_impact"/>
+				<connect2 to="Concrete.switch_concrete_impact" from="Climate.switch_concrete_impact"/>
+				<connect to="Concrete.today" from="Climate.today"/>
+				<connect2 to="Concrete.today" from="Climate.today"/>
 			</module>
 			<module name="CCS" isee:label="">
 				<format scale_by="auto"/>
@@ -321,7 +327,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="314.167" isee:scroll_y="250" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="314.167" isee:scroll_y="250" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -892,11 +898,12 @@ UFA_alpha*LN(real_GDP_per_person*1000) + UFA_intercept)</eqn>
 			<aux name="AVERAGE LIFETIME OF BUILDINGS">
 				<doc>${Parameter}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>BASE_AVERAGE_LIFETIME_OF_BUILDINGS *
-Residential_and_Service_buildings_longevity_policy *
-(1-CLIMATE_IMPACT_ON_CONCRETE_LIFETIME*
-SWITCH_Climate_impacts_on_concrete_structures*
-(Absolute_Surface_Temperature[1] - INIT(Absolute_Surface_Temperature[1])))</eqn>
+actual_concrete_residential_longevity_policy *
+effect_of_STA_on_average_lifetime_of_concrete</eqn>
 				<units>Year</units>
 			</aux>
 			<aux name="residential\nconcrete stock in use">
@@ -1054,11 +1061,12 @@ These percentages illustrate the dynamic nature of cement consumption patterns i
 Estimated service life of infrastructure ranges from 25-100 years depending on country and infrastructure type (Global infrastructure Outlook 2017, pp 204).
 
 Link: https://cdn.gihub.org/outlook/live/methodology/Global+Infrastructure+Outlook+-+July+2017.pdf </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>BASE_AVERAGE_LIFETIME_OF_INFRASTRUCTURE *
-Infrastructure_and_Service_buildings_longevity_policy *
-(1-CLIMATE_IMPACT_ON_CONCRETE_LIFETIME*
-SWITCH_Climate_impacts_on_concrete_structures*
-(Absolute_Surface_Temperature[1] - INIT(Absolute_Surface_Temperature[1])))</eqn>
+actual_concrete_infrastructure_longevity_policy *
+effect_of_STA_on_average_lifetime_of_concrete</eqn>
 				<range min="25" max="100"/>
 				<units>year</units>
 			</aux>
@@ -1108,7 +1116,7 @@ infrastructure_maintenance_efficiency</eqn>
 			</flow>
 			<aux name="RS MAINTENANCE EFFICIENCY">
 				<eqn>NORMAL_RS_MAINTENANCE_EFFICIENCY *
-RS_maintenance_policy</eqn>
+actual_maintenance_policy</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="infrastructure maintenance efficiency">
@@ -1128,7 +1136,7 @@ NORMAL_CONCRETE_DETERIORATION_RATE
 
 +
 
-storm_damages_to_concrete_buildings_and_infrastructure * 0.5</eqn>
+storm_damages_to_concrete_buildings_and_infrastructure * (1-share_of_old_concrete_in_infrastructure)</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<flow name="old infrastructure\ndeterioration">
@@ -1140,7 +1148,7 @@ NORMAL_CONCRETE_DETERIORATION_RATE
 
 +
 
-storm_damages_to_concrete_buildings_and_infrastructure*0.5</eqn>
+storm_damages_to_concrete_buildings_and_infrastructure*share_of_old_concrete_in_infrastructure</eqn>
 				<units>Mtonne/year</units>
 			</flow>
 			<flow name="New RS deterioration">
@@ -1186,10 +1194,20 @@ NORMAL_CONCRETE_DETERIORATION_RATE</eqn>
 			</aux>
 			<aux name="infrastructure\nmaintenance policy" access="input">
 				<eqn>1</eqn>
+				<gf>
+					<xscale min="0" max="2"/>
+					<yscale min="0" max="2"/>
+					<ypts>0,0,0,0,0,0,0,0,0,0,0</ypts>
+				</gf>
 				<units>dmnl</units>
 			</aux>
 			<aux name="RS maintenance policy" access="input">
 				<eqn>1</eqn>
+				<gf>
+					<xscale min="0" max="2"/>
+					<yscale min="0" max="2"/>
+					<ypts>0,0,0,0,0,0,0,0,0,0,0</ypts>
+				</gf>
 				<units>dmnl</units>
 			</aux>
 			<aux name="NORMAL RS\nMAINTENANCE EFFICIENCY">
@@ -1321,16 +1339,9 @@ This qualitative estimate is derived from:
 
     Bastidas-Arteaga, E., &amp; Stewart, M. G. (2015). &quot;Climate Change Impact on Coastal Infrastructure: A Case Study on Chloride-Induced Corrosion of Concrete Structures.&quot; Structural Safety, 52, 40-53.
 </doc>
-				<eqn>0.075</eqn>
+				<eqn>-0.075</eqn>
 				<range min="0.05" max="0.15"/>
 				<units>dmnl/deg C</units>
-			</aux>
-			<aux name="Absolute Surface Temperature" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>deg C</units>
 			</aux>
 			<aux name="BASE AVERAGE LIFETIME\nOF INFRASTRUCTURE">
 				<doc>${Calibration Parameter}
@@ -1357,9 +1368,13 @@ This qualitative estimate is derived from:
 			<aux name="storm damages to concrete buildings and infrastructure">
 				<doc>${Output}
 </doc>
-				<eqn>SUM(All_storm_damage)/&quot;bc$/Mtonne_concrete&quot;
-
-* SWITCH_Climate_impacts_on_concrete_structures</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF (switch_concrete_impact = 0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+SUM(All_storm_damage[Run,*])/&quot;bc$/Mtonne_concrete&quot;</eqn>
 				<units>Mtonne/year</units>
 			</aux>
 			<aux name="bc$/Mtonne concrete">
@@ -1376,16 +1391,77 @@ Asset dollars = Bank Assets minus Government debt.</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>bc$/Mp/year</units>
 			</aux>
-			<aux name="Residential and Service\nbuildings longevity policy" access="input">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
 			<aux name="Infrastructure and Service\nbuildings longevity policy" access="input">
 				<eqn>1</eqn>
+				<gf>
+					<xscale min="0" max="2"/>
+					<yscale min="0" max="2"/>
+					<ypts>0,0,0,0,0,0,0,0,0,0,0</ypts>
+				</gf>
 				<units>dmnl</units>
 			</aux>
-			<aux name="SWITCH Climate impacts on concrete structures">
+			<aux name="switch concrete impact" access="input">
 				<eqn>1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="today" access="input">
+				<eqn>2025</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="effect of STA on average\nlifetime of concrete">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF (switch_concrete_impact = 0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+1+CLIMATE_IMPACT_ON_CONCRETE_LIFETIME*
+(Absolute_Surface_Temperature - INIT(Absolute_Surface_Temperature))</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="share of old concrete in infrastructure">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Concrete_Stock_in_old_Infrastructure/(Concrete_Stock_in_old_Infrastructure+Concrete_Stock_in_Old_Residential_and_Service_Buildings)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="Absolute Surface Temperature" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>deg C</units>
+			</aux>
+			<aux name="start year" access="input">
+				<eqn>2025</eqn>
+				<units>Year</units>
+			</aux>
+			<aux name="actual\nconcrete infrastructure longevity\npolicy">
+				<eqn>IF TIME &lt; start_year THEN 1
+ELSE
+Infrastructure_and_Service_buildings_longevity_policy</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="actual maintenance policy">
+				<eqn>IF TIME &lt; start_year THEN 1
+ELSE
+RS_maintenance_policy</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="Residential and Service\nbuildings longevity policy" access="input">
+				<eqn>1</eqn>
+				<gf>
+					<xscale min="0" max="2"/>
+					<yscale min="0" max="2"/>
+					<ypts>0,0,0,0,0,0,0,0,0,0,0</ypts>
+				</gf>
+				<units>dmnl</units>
+			</aux>
+			<aux name="actual\nconcrete residential longevity\npolicy">
+				<eqn>IF TIME &lt; start_year THEN 1
+ELSE
+Residential_and_Service_buildings_longevity_policy</eqn>
 				<units>dmnl</units>
 			</aux>
 		</variables>
@@ -1437,7 +1513,7 @@ Asset dollars = Bank Assets minus Government debt.</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="601.25" isee:scroll_y="728.75" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="1017.14" isee:scroll_y="151.429" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1615,9 +1691,6 @@ Based on data only from the US and Japan.
 						</plot>
 					</graph>
 				</stacked_container>
-				<graphics_frame fill="none" uid="23" x="1604" y="892.25" width="411.667" height="286.094">
-					<image width="0" height="0" size_to_parent="true" isee:transparency="0">C:/Users/AndreasNi/AppData/Local/isee systems/Stella Architect/Stella Architect Temp/Graphics/-1297734801.png</image>
-				</graphics_frame>
 				<aux x="437.946" y="402.5" width="19.25" height="19.25" name="total yearly concrete use"/>
 				<text_box border_width="1.1" uid="24" x="1566.88" y="1211.58" width="312.5" height="91.75">Infrastructure consumed about 52% of the world&apos;s annual material use in 2020.
 
@@ -1717,7 +1790,7 @@ Source: https://www.gihub.org/infrastructure-monitor/insights/infrastructure-con
 						<pt x="1262.25" y="1052.46"/>
 					</pts>
 				</flow>
-				<aux background="white" label_side="right" x="1290.25" y="523.321" name="RS MAINTENANCE EFFICIENCY"/>
+				<aux background="white" label_side="right" label_angle="315" x="1290.25" y="523.321" name="RS MAINTENANCE EFFICIENCY"/>
 				<connector uid="40" angle="211.685">
 					<from>RS_MAINTENANCE_EFFICIENCY</from>
 					<to>Old_RS_maintenance</to>
@@ -1820,11 +1893,7 @@ Energy:
 					<to>new_infrastructure_maintenance</to>
 				</connector>
 				<aux background="yellow" label_side="top" x="1206.7" y="901.25" name="NORMAL CONCRETE\nDETERIORATION RATE"/>
-				<aux background="white" label_side="top" x="1352.54" y="870.25" name="NORMAL INFRASTRUCTURE MAINTENANCE EFFICIENCY"/>
-				<connector uid="58" angle="243.277">
-					<from>NORMAL_INFRASTRUCTURE_MAINTENANCE_EFFICIENCY</from>
-					<to>infrastructure_maintenance_efficiency</to>
-				</connector>
+				<aux background="white" label_side="top" x="1352.54" y="888.25" name="NORMAL INFRASTRUCTURE MAINTENANCE EFFICIENCY"/>
 				<aux color="black" font_style="italic" font_weight="bold" font_color="black" label_side="right" x="1426" y="888.25" name="infrastructure\nmaintenance policy"/>
 				<connector uid="59" color="#757575" font_color="#757575" angle="203.499">
 					<from>infrastructure_maintenance_policy</from>
@@ -1834,10 +1903,6 @@ Energy:
 				<aux background="#FFAAFF" label_side="top" x="1322.25" y="452.036" name="NORMAL RS\nMAINTENANCE EFFICIENCY"/>
 				<connector uid="65" angle="246.759">
 					<from>NORMAL_RS_MAINTENANCE_EFFICIENCY</from>
-					<to>RS_MAINTENANCE_EFFICIENCY</to>
-				</connector>
-				<connector uid="66" color="#6B6B6B" font_color="#6B6B6B" angle="192.203">
-					<from>RS_maintenance_policy</from>
 					<to>RS_MAINTENANCE_EFFICIENCY</to>
 				</connector>
 				<aux x="693.83" y="1626" name="CO2 emissions\nfrom concrete for HS"/>
@@ -1954,36 +2019,15 @@ Energy:
 					<from>indicated_desired_infrastructure</from>
 					<to>ALT_desired_infra</to>
 				</connector>
-				<aux x="1177" y="1312.33" name="CLIMATE IMPACT ON\nCONCRETE LIFETIME"/>
-				<aux font_style="italic" font_weight="bold" x="1061.51" y="1271" name="Absolute Surface Temperature"/>
-				<aux background="yellow" x="1275.33" y="1271" name="BASE AVERAGE LIFETIME\nOF INFRASTRUCTURE"/>
-				<connector uid="98" angle="154.565">
+				<aux x="1438.14" y="772.75" name="CLIMATE IMPACT ON\nCONCRETE LIFETIME"/>
+				<aux background="yellow" x="1042.83" y="1312.33" name="BASE AVERAGE LIFETIME\nOF INFRASTRUCTURE"/>
+				<connector uid="98" angle="38.3783">
 					<from>BASE_AVERAGE_LIFETIME_OF_INFRASTRUCTURE</from>
 					<to>AVERAGE_LIFETIME_OF_INFRASTRUCTURE</to>
 				</connector>
-				<connector uid="99" angle="26.913">
-					<from>Absolute_Surface_Temperature</from>
-					<to>AVERAGE_LIFETIME_OF_INFRASTRUCTURE</to>
-				</connector>
-				<connector uid="100" angle="98.586">
-					<from>CLIMATE_IMPACT_ON_CONCRETE_LIFETIME</from>
-					<to>AVERAGE_LIFETIME_OF_INFRASTRUCTURE</to>
-				</connector>
-				<aux background="yellow" label_side="right" x="1290" y="799.786" name="BASE AVERAGE LIFETIME OF BUILDINGS"/>
-				<connector uid="103" angle="169.751">
+				<aux background="yellow" label_side="right" x="1017.42" y="805" name="BASE AVERAGE LIFETIME OF BUILDINGS"/>
+				<connector uid="103" angle="38.644">
 					<from>BASE_AVERAGE_LIFETIME_OF_BUILDINGS</from>
-					<to>AVERAGE_LIFETIME_OF_BUILDINGS</to>
-				</connector>
-				<connector uid="104" angle="159.444">
-					<from>
-						<alias uid="102"/>
-					</from>
-					<to>AVERAGE_LIFETIME_OF_BUILDINGS</to>
-				</connector>
-				<connector uid="105" angle="176.186">
-					<from>
-						<alias uid="101"/>
-					</from>
 					<to>AVERAGE_LIFETIME_OF_BUILDINGS</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="254" y="1686" name="All storm damage"/>
@@ -2008,7 +2052,7 @@ Energy:
 					</from>
 					<to>indicated_desired_infrastructure</to>
 				</connector>
-				<connector uid="122" angle="339.993">
+				<connector uid="122" angle="346.676">
 					<from>
 						<alias uid="123"/>
 					</from>
@@ -2022,36 +2066,7 @@ Energy:
 				</connector>
 				<text_box font_weight="bold" text_align="center" uid="126" x="158" y="1497.25" width="260" height="34">Concrete structure deterioration due to extreme weather events.</text_box>
 				<text_box font_weight="bold" text_align="center" uid="127" x="624" y="1500.75" width="260" height="27">CO2 emissions from concrete production</text_box>
-				<aux color="black" font_style="italic" font_weight="bold" font_color="black" x="1507" y="619" name="Residential and Service\nbuildings longevity policy"/>
-				<connector uid="130" color="#636363" font_color="#636363" angle="213.69">
-					<from>Residential_and_Service_buildings_longevity_policy</from>
-					<to>AVERAGE_LIFETIME_OF_BUILDINGS</to>
-				</connector>
 				<aux color="black" font_style="italic" font_weight="bold" font_color="black" x="1434" y="1199.42" name="Infrastructure and Service\nbuildings longevity policy"/>
-				<connector uid="131" color="#707070" font_color="#707070" angle="199.179">
-					<from>Infrastructure_and_Service_buildings_longevity_policy</from>
-					<to>AVERAGE_LIFETIME_OF_INFRASTRUCTURE</to>
-				</connector>
-				<aux x="1198.5" y="1554.57" name="SWITCH Climate impacts on concrete structures"/>
-				<text_box font_weight="bold" text_align="center" uid="132" x="1060.71" y="1500.75" width="260" height="27">Climate impacts switch</text_box>
-				<connector uid="133" angle="20.7723">
-					<from>
-						<alias uid="134"/>
-					</from>
-					<to>storm_damages_to_concrete_buildings_and_infrastructure</to>
-				</connector>
-				<connector uid="135" angle="134.029">
-					<from>
-						<alias uid="136"/>
-					</from>
-					<to>AVERAGE_LIFETIME_OF_INFRASTRUCTURE</to>
-				</connector>
-				<connector uid="137" angle="37.5501">
-					<from>
-						<alias uid="138"/>
-					</from>
-					<to>AVERAGE_LIFETIME_OF_BUILDINGS</to>
-				</connector>
 				<connector uid="139" angle="255.64">
 					<from>
 						<alias uid="62"/>
@@ -2073,6 +2088,114 @@ Energy:
 						<alias uid="144"/>
 					</from>
 					<to>New_RS_deterioration</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1329.76" y="808.536" name="switch concrete impact"/>
+				<aux font_style="italic" font_weight="bold" x="1203.5" y="808.536" name="today"/>
+				<aux x="1268" y="754.75" name="effect of STA on average\nlifetime of concrete"/>
+				<connector uid="145" angle="173.961">
+					<from>CLIMATE_IMPACT_ON_CONCRETE_LIFETIME</from>
+					<to>effect_of_STA_on_average_lifetime_of_concrete</to>
+				</connector>
+				<connector uid="147" angle="174.204">
+					<from>effect_of_STA_on_average_lifetime_of_concrete</from>
+					<to>AVERAGE_LIFETIME_OF_BUILDINGS</to>
+				</connector>
+				<connector uid="148" angle="43.398">
+					<from>today</from>
+					<to>effect_of_STA_on_average_lifetime_of_concrete</to>
+				</connector>
+				<connector uid="149" angle="151.051">
+					<from>switch_concrete_impact</from>
+					<to>effect_of_STA_on_average_lifetime_of_concrete</to>
+				</connector>
+				<connector uid="152" angle="128.928">
+					<from>
+						<alias uid="150"/>
+					</from>
+					<to>storm_damages_to_concrete_buildings_and_infrastructure</to>
+				</connector>
+				<connector uid="153" angle="168.69">
+					<from>
+						<alias uid="151"/>
+					</from>
+					<to>storm_damages_to_concrete_buildings_and_infrastructure</to>
+				</connector>
+				<aux x="1074.08" y="856.25" name="share of old concrete in infrastructure"/>
+				<connector uid="154" angle="220.572">
+					<from>Concrete_Stock_in_Old_Residential_and_Service_Buildings</from>
+					<to>share_of_old_concrete_in_infrastructure</to>
+				</connector>
+				<connector uid="155" angle="149.244">
+					<from>Concrete_Stock_in_old_Infrastructure</from>
+					<to>share_of_old_concrete_in_infrastructure</to>
+				</connector>
+				<connector uid="156" angle="351.491">
+					<from>share_of_old_concrete_in_infrastructure</from>
+					<to>old_infrastructure_deterioration</to>
+				</connector>
+				<connector uid="157" angle="130.176">
+					<from>share_of_old_concrete_in_infrastructure</from>
+					<to>Old_RS_deterioration</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1523" y="718.143" name="Absolute Surface Temperature"/>
+				<connector uid="146" angle="188.169">
+					<from>Absolute_Surface_Temperature</from>
+					<to>effect_of_STA_on_average_lifetime_of_concrete</to>
+				</connector>
+				<connector uid="158" angle="99.4623">
+					<from>
+						<alias uid="159"/>
+					</from>
+					<to>AVERAGE_LIFETIME_OF_INFRASTRUCTURE</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1343.75" y="1323.75" name="start year"/>
+				<aux x="1290.25" y="1240" name="actual\nconcrete infrastructure longevity\npolicy"/>
+				<connector uid="160" angle="114.775">
+					<from>start_year</from>
+					<to>actual_concrete_infrastructure_longevity_policy</to>
+				</connector>
+				<connector uid="161" angle="192.462">
+					<from>Infrastructure_and_Service_buildings_longevity_policy</from>
+					<to>actual_concrete_infrastructure_longevity_policy</to>
+				</connector>
+				<connector uid="162" angle="164.162">
+					<from>actual_concrete_infrastructure_longevity_policy</from>
+					<to>AVERAGE_LIFETIME_OF_INFRASTRUCTURE</to>
+				</connector>
+				<connector uid="58" angle="234.308">
+					<from>NORMAL_INFRASTRUCTURE_MAINTENANCE_EFFICIENCY</from>
+					<to>infrastructure_maintenance_efficiency</to>
+				</connector>
+				<aux x="1370.54" y="495.821" name="actual maintenance policy"/>
+				<connector uid="165" angle="177.403">
+					<from>RS_maintenance_policy</from>
+					<to>actual_maintenance_policy</to>
+				</connector>
+				<connector uid="166" angle="194.005">
+					<from>actual_maintenance_policy</from>
+					<to>RS_MAINTENANCE_EFFICIENCY</to>
+				</connector>
+				<connector uid="167" angle="254.358">
+					<from>
+						<alias uid="168"/>
+					</from>
+					<to>actual_maintenance_policy</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1523" y="588.232" name="Residential and Service\nbuildings longevity policy"/>
+				<aux x="1370.54" y="677.214" name="actual\nconcrete residential longevity\npolicy"/>
+				<connector uid="169" angle="206.921">
+					<from>Residential_and_Service_buildings_longevity_policy</from>
+					<to>actual_concrete_residential_longevity_policy</to>
+				</connector>
+				<connector uid="170" angle="187.425">
+					<from>
+						<alias uid="171"/>
+					</from>
+					<to>actual_concrete_residential_longevity_policy</to>
+				</connector>
+				<connector uid="172" angle="199.163">
+					<from>actual_concrete_residential_longevity_policy</from>
+					<to>AVERAGE_LIFETIME_OF_BUILDINGS</to>
 				</connector>
 				<alias background="yellow" font_style="italic" label_side="top" uid="62" x="1160.75" y="447.821" width="18" height="18">
 					<of>NORMAL_CONCRETE_DETERIORATION_RATE</of>
@@ -2101,38 +2224,36 @@ Energy:
 				<alias font_style="italic" uid="97" x="464.5" y="1284.25" width="18" height="18">
 					<of>Infrastructure_concrete_stock_in_use</of>
 				</alias>
-				<alias font_style="italic" font_weight="bold" label_side="right" uid="101" x="1279" y="714" width="18" height="18">
-					<of>Absolute_Surface_Temperature</of>
-				</alias>
-				<alias font_style="italic" label_side="right" uid="102" x="1281" y="755" width="18" height="18">
-					<of>CLIMATE_IMPACT_ON_CONCRETE_LIFETIME</of>
-				</alias>
 				<alias font_style="italic" font_weight="bold" label_side="right" uid="119" x="800" y="814" width="18" height="18">
 					<of>real_GDP_per_person</of>
 				</alias>
-				<alias font_style="italic" label_side="top" uid="123" x="1057.51" y="934.17" width="18" height="18">
+				<alias font_style="italic" label_side="top" uid="123" x="1029.08" y="934.17" width="18" height="18">
 					<of>storm_damages_to_concrete_buildings_and_infrastructure</of>
 				</alias>
 				<alias font_style="italic" label_side="top" uid="124" x="1047.08" y="504.821" width="18" height="18">
 					<of>storm_damages_to_concrete_buildings_and_infrastructure</of>
-				</alias>
-				<alias color="blue" background="white" font_style="italic" uid="134" x="142" y="1559" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>SWITCH_Climate_impacts_on_concrete_structures</of>
-				</alias>
-				<alias color="blue" background="white" font_style="italic" uid="136" x="1283" y="1340" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>SWITCH_Climate_impacts_on_concrete_structures</of>
-				</alias>
-				<alias color="blue" background="white" font_style="italic" uid="138" x="1029.08" y="786.619" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>SWITCH_Climate_impacts_on_concrete_structures</of>
 				</alias>
 				<alias background="yellow" font_style="italic" uid="142" x="717.42" y="1213" width="18" height="18">
 					<of>NORMAL_CONCRETE_DETERIORATION_RATE</of>
 				</alias>
 				<alias background="yellow" font_style="italic" uid="144" x="729" y="732" width="18" height="18">
 					<of>NORMAL_CONCRETE_DETERIORATION_RATE</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="150" x="352.25" y="1632.25" width="18" height="18">
+					<of>today</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="151" x="392.25" y="1559.75" width="18" height="18">
+					<of>switch_concrete_impact</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="159" x="1167.25" y="1338.5" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>effect_of_STA_on_average_lifetime_of_concrete</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="168" x="1407.25" y="368.5" width="18" height="18">
+					<of>start_year</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="171" x="1532" y="646" width="18" height="18">
+					<of>start_year</of>
 				</alias>
 			</view>
 		</views>
