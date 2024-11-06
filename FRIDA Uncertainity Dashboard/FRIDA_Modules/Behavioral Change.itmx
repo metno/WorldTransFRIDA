@@ -5,7 +5,7 @@
 		<name>Behavioral Change</name>
 		<uuid>cd1acf4c-3b14-40c2-9e7a-712ab18a234f</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.3" isee:build_number="development" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.3" isee:build_number="3457" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -15,7 +15,7 @@
 	<dimensions>
 		<dim name="Run" size="15"/>
 	</dimensions>
-	<isee:prefs live_at_start="true" saved_runs="100" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true">
+	<isee:prefs saved_runs="100" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true">
 		<isee:ignored_words>
 			<isee:ignored_word>WolrdTrans</isee:ignored_word>
 			<isee:ignored_word>WorldTrans</isee:ignored_word>
@@ -347,19 +347,19 @@
 	</model>
 	<model name="Animal_Products_Demand">
 		<variables>
-			<flow name="change in\ndemand per capita">
+			<flow name="change in desired demand per capita">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(average_indicated_animal_products_demand_per_capita-Average_Daily_Demand_Per_Capita)/time_to_adjust_consumption_pattern</eqn>
+				<eqn>(indicated_average_desired_demand_per_capita-Desired_Average_Daily_Demand_Per_Capita)/time_to_adjust_consumption_pattern</eqn>
 				<units>kcal/person/day/Year</units>
 			</flow>
-			<stock name="Average Daily\nDemand Per Capita">
+			<stock name="Desired Average Daily\nDemand Per Capita">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>average_daily_demand_per_capita_in_1980</eqn>
-				<inflow>change_in_demand_per_capita</inflow>
+				<inflow>change_in_desired_demand_per_capita</inflow>
 				<units>kcal/person/day</units>
 			</stock>
 			<aux name="UNIT cal per pcal">
@@ -370,7 +370,7 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>MIN(Average_Daily_Demand_Per_Capita, desired_demand_from_accessibility)*UNIT_days_per_year*UNIT_p_per_Mp/UNIT_cal_per_pcal</eqn>
+				<eqn>Average_Daily_Demand_Per_Capita*UNIT_days_per_year*UNIT_p_per_Mp/UNIT_cal_per_pcal</eqn>
 				<units>PCal/Mp/Year</units>
 			</aux>
 			<aux name="UNIT days per year">
@@ -479,7 +479,7 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Average_Daily_Demand_Per_Capita*(1+ indicated_short_term_trend*expectation_time_horizon)</eqn>
+				<eqn>Desired_Average_Daily_Demand_Per_Capita*(1+ indicated_short_term_trend*expectation_time_horizon)</eqn>
 				<units>kcal/person/day</units>
 			</aux>
 			<aux name="supply demand\nbalance">
@@ -513,7 +513,7 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Average_Daily_Demand_Per_Capita*effect_of_climate_risk_on_personal_norm*effect_of_consumption_risk_on_personal_norm*effect_of_social_value_on_personal_norm</eqn>
+				<eqn>Desired_Average_Daily_Demand_Per_Capita*effect_of_climate_risk_on_personal_norm*effect_of_consumption_risk_on_personal_norm*effect_of_social_value_on_personal_norm</eqn>
 				<units>kcal/person/day</units>
 			</aux>
 			<aux name="sensitivity of personal norm\nto climate risk">
@@ -736,7 +736,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>(animal_products_production_1-total_yearly_consumption)/animal_products_production_1</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="average indicated\nanimal products\ndemand per capita">
+			<aux name="indicated\naverage desired demand per capita">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -807,30 +807,19 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>average_yearly_demand_per_capita*Population_1</eqn>
 				<units>PCal/Year</units>
 			</aux>
-			<aux name="demand accessibility check">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>IF Average_Daily_Demand_Per_Capita*jeff_is_this_a_problem &gt;desired_demand_from_accessibility THEN 1 ELSE 0</eqn>
-				<units>dmnl</units>
-				<event_poster>
-					<threshold direction="increasing" value="0.5" repeat="once">
-						<event sim_action="stop" isee:kind="model_only">
-							<text_box>ERROR! Animal Product Demand is higher than what people can afford!</text_box>
-						</event>
-					</threshold>
-				</event_poster>
-			</aux>
-			<aux name="jeff is this a problem">
-				<eqn>0</eqn>
-				<units>dmnl</units>
-			</aux>
 			<aux name="real private consumption 2021$" access="input">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>bc$/year</units>
+			</aux>
+			<aux name="Average Daily\nDemand Per Capita">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MIN(Desired_Average_Daily_Demand_Per_Capita, desired_demand_from_accessibility)</eqn>
+				<units>kcal/person/day</units>
 			</aux>
 		</variables>
 		<views>
@@ -875,7 +864,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="4" isee:page_rows="3" isee:scroll_y="334.167" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="4" isee:page_rows="3" isee:scroll_x="247.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -914,19 +903,19 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<flow x="706.286" y="558.179" name="change in\ndemand per capita">
+				<flow x="706.286" y="567.929" name="change in desired demand per capita">
 					<pts>
 						<pt x="706.286" y="651.429"/>
-						<pt x="706.286" y="473.929"/>
+						<pt x="706.286" y="493.429"/>
 					</pts>
 				</flow>
-				<stock x="706.286" y="456.429" name="Average Daily\nDemand Per Capita"/>
+				<stock x="706.286" y="475.929" name="Desired Average Daily\nDemand Per Capita"/>
 				<aux x="834.262" y="249.833" name="UNIT cal per pcal"/>
-				<aux x="665.572" y="318.572" name="average yearly\ndemand per capita"/>
+				<aux x="670.715" y="277.786" name="average yearly\ndemand per capita"/>
 				<aux x="857.167" y="344.714" name="UNIT days per year"/>
 				<aux x="851.524" y="300.572" name="UNIT p per Mp"/>
 				<aux x="811" y="576.179" name="time to adjust\nconsumption pattern"/>
-				<aux x="592.929" y="441.429" name="average daily demand\nper capita in 1980"/>
+				<aux x="807.429" y="467.429" name="average daily demand\nper capita in 1980"/>
 				<aux x="906.048" y="141.429" name="total yearly\nconsumption"/>
 				<aux x="1005.93" y="245.762" name="average daily\nconsumption per capita"/>
 				<connector uid="1" angle="19.5435">
@@ -937,25 +926,25 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>UNIT_cal_per_pcal</from>
 					<to>average_daily_consumption_per_capita</to>
 				</connector>
-				<connector uid="4" angle="170.246">
+				<connector uid="4" angle="175.495">
 					<from>time_to_adjust_consumption_pattern</from>
-					<to>change_in_demand_per_capita</to>
+					<to>change_in_desired_demand_per_capita</to>
 				</connector>
-				<connector uid="6" angle="202.17">
+				<connector uid="6" angle="189.699">
 					<from>UNIT_cal_per_pcal</from>
 					<to>average_yearly_demand_per_capita</to>
 				</connector>
-				<connector uid="7" angle="185.529">
+				<connector uid="7" angle="172.817">
 					<from>UNIT_p_per_Mp</from>
 					<to>average_yearly_demand_per_capita</to>
 				</connector>
 				<connector uid="8" angle="309.454">
-					<from>Average_Daily_Demand_Per_Capita</from>
-					<to>change_in_demand_per_capita</to>
+					<from>Desired_Average_Daily_Demand_Per_Capita</from>
+					<to>change_in_desired_demand_per_capita</to>
 				</connector>
-				<connector uid="12" angle="70.9912">
-					<from>Average_Daily_Demand_Per_Capita</from>
-					<to>average_yearly_demand_per_capita</to>
+				<connector uid="12" angle="162.588">
+					<from>Desired_Average_Daily_Demand_Per_Capita</from>
+					<to>Average_Daily_Demand_Per_Capita</to>
 				</connector>
 				<connector uid="13" angle="324.462">
 					<from>total_yearly_consumption</from>
@@ -1036,7 +1025,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				</connector>
 				<aux x="1028.78" y="558.179" name="desired demand\nfrom descriptive norm"/>
 				<connector uid="27" angle="36.2542">
-					<from>Average_Daily_Demand_Per_Capita</from>
+					<from>Desired_Average_Daily_Demand_Per_Capita</from>
 					<to>desired_demand_from_descriptive_norm</to>
 				</connector>
 				<connector uid="28" angle="179.425">
@@ -1116,7 +1105,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<to>total_yearly_consumption</to>
 				</connector>
 				<connector uid="49" angle="236.642">
-					<from>Average_Daily_Demand_Per_Capita</from>
+					<from>Desired_Average_Daily_Demand_Per_Capita</from>
 					<to>desired_demand_from_personal_norm</to>
 				</connector>
 				<aux x="694.214" y="1021.69" name="effect of climate\nrisk on personal norm"/>
@@ -1255,22 +1244,22 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 							<entity name="desired_demand_from_accessibility[1]"/>
 						</plot>
 						<plot color="#008F44" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
-							<entity name="average_indicated_animal_products_demand_per_capita[1]"/>
+							<entity name="indicated_average_desired_demand_per_capita[1]"/>
 						</plot>
 					</graph>
 				</stacked_container>
-				<aux x="825.429" y="687.857" name="average indicated\nanimal products\ndemand per capita"/>
+				<aux x="825.429" y="687.857" name="indicated\naverage desired demand per capita"/>
 				<connector uid="81" angle="92.8616">
 					<from>desired_demand_from_personal_norm</from>
-					<to>average_indicated_animal_products_demand_per_capita</to>
+					<to>indicated_average_desired_demand_per_capita</to>
 				</connector>
 				<connector uid="82" angle="244.48">
 					<from>desired_demand_from_descriptive_norm</from>
-					<to>average_indicated_animal_products_demand_per_capita</to>
+					<to>indicated_average_desired_demand_per_capita</to>
 				</connector>
 				<connector uid="83" angle="165.795">
-					<from>average_indicated_animal_products_demand_per_capita</from>
-					<to>change_in_demand_per_capita</to>
+					<from>indicated_average_desired_demand_per_capita</from>
+					<to>change_in_desired_demand_per_capita</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="407.572" y="953.572" name="direct food demand\nper person per day"/>
 				<aux x="449.548" y="810.406" name="indicated demand\nfrom accessibility"/>
@@ -1291,7 +1280,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				</connector>
 				<connector uid="89" angle="346.293">
 					<from>desired_demand_from_accessibility</from>
-					<to>average_indicated_animal_products_demand_per_capita</to>
+					<to>indicated_average_desired_demand_per_capita</to>
 				</connector>
 				<connector uid="90" angle="53.4527">
 					<from>
@@ -1330,15 +1319,15 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<aux x="957.018" y="691.607" name="weight of\ndescriptive norm"/>
 				<connector uid="101" angle="96.2149">
 					<from>weight_of_personal_norm</from>
-					<to>average_indicated_animal_products_demand_per_capita</to>
+					<to>indicated_average_desired_demand_per_capita</to>
 				</connector>
 				<connector uid="102" angle="143.882">
 					<from>weight_of_accessibility</from>
-					<to>average_indicated_animal_products_demand_per_capita</to>
+					<to>indicated_average_desired_demand_per_capita</to>
 				</connector>
 				<connector uid="103" angle="178.368">
 					<from>weight_of_descriptive_norm</from>
-					<to>average_indicated_animal_products_demand_per_capita</to>
+					<to>indicated_average_desired_demand_per_capita</to>
 				</connector>
 				<aux x="1004.39" y="751.834" name="relative weight of accessibility"/>
 				<connector uid="104" angle="186.955">
@@ -1374,20 +1363,11 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>average_yearly_demand_per_capita</from>
 					<to>total_yearly_demand</to>
 				</connector>
-				<aux label_side="bottom" x="610.929" y="540.179" name="demand accessibility check"/>
-				<connector uid="111" angle="216.001">
-					<from>Average_Daily_Demand_Per_Capita</from>
-					<to>demand_accessibility_check</to>
-				</connector>
-				<connector uid="112" angle="79.495">
-					<from>desired_demand_from_accessibility</from>
-					<to>demand_accessibility_check</to>
-				</connector>
 				<connector uid="113" angle="37.4">
 					<from>direct_food_demand_per_person_per_day</from>
 					<to>indicated_demand_from_accessibility</to>
 				</connector>
-				<connector uid="114" angle="172.23">
+				<connector uid="114" angle="160.254">
 					<from>UNIT_days_per_year</from>
 					<to>average_yearly_demand_per_capita</to>
 				</connector>
@@ -1401,17 +1381,17 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				</connector>
 				<connector uid="117" angle="130.168">
 					<from>desired_demand_from_accessibility</from>
-					<to>average_yearly_demand_per_capita</to>
-				</connector>
-				<aux x="460" y="456.429" name="jeff is this a problem"/>
-				<connector uid="120" angle="330.974">
-					<from>jeff_is_this_a_problem</from>
-					<to>demand_accessibility_check</to>
+					<to>Average_Daily_Demand_Per_Capita</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="250.833" y="1156.67" name="real private consumption 2021$"/>
 				<connector uid="121" angle="83.3675">
 					<from>&quot;real_private_consumption_2021$&quot;</from>
 					<to>average_consumption_expenditure_per_person</to>
+				</connector>
+				<aux x="614.167" y="374.025" name="Average Daily\nDemand Per Capita"/>
+				<connector uid="122" angle="76.9503">
+					<from>Average_Daily_Demand_Per_Capita</from>
+					<to>average_yearly_demand_per_capita</to>
 				</connector>
 				<alias color="blue" background="white" font_style="italic" uid="91" x="1628.79" y="1145.96" width="45" height="35">
 					<shape type="rectangle" width="45" height="35"/>
