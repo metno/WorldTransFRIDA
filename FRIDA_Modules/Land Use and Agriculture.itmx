@@ -5,7 +5,7 @@
 		<name>Land Use and Agriculture</name>
 		<uuid>4b1bfdf6-0d8e-44ed-8961-df13293735b9</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.2" isee:build_number="3414" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.2" isee:build_number="3414" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -186,18 +186,6 @@
 		<unit name="Kelvin">
 			<eqn/>
 			<alias>K</alias>
-		</unit>
-		<unit name="G">
-			<eqn>Giga</eqn>
-		</unit>
-		<unit name="GtCO2">
-			<eqn>Giga*tCO2</eqn>
-		</unit>
-		<unit name="GtCH4">
-			<eqn>Giga*tCH4</eqn>
-		</unit>
-		<unit name="GtN2O">
-			<eqn>Giga*tN2O</eqn>
 		</unit>
 		<unit name="Gc$">
 			<eqn>Giga*c$</eqn>
@@ -828,10 +816,14 @@
 				<connect2 to="Grass.UNIT_GtC_per_PCal" from="Crop.UNIT_GtC_per_PCal_crop"/>
 				<connect to="Terrestrial_carbon_balance.UNIT_GtC_per_PCal" from="Crop.UNIT_GtC_per_PCal_crop"/>
 				<connect2 to="Terrestrial_carbon_balance.UNIT_GtC_per_PCal" from="Crop.UNIT_GtC_per_PCal_crop"/>
+				<connect to="Crop.Absolute_Surface_Temperature" from="Energy_Balance_Model.Absolute_Surface_Temperature"/>
+				<connect2 to="Crop.Absolute_Surface_Temperature" from="Energy_Balance_Model.Absolute_Surface_Temperature"/>
 				<connect to="Crop.agricultural_water_withdrawal" from="Freshwater.agricultural_water_withdrawal"/>
 				<connect2 to="Crop.agricultural_water_withdrawal" from="Freshwater.agricultural_water_withdrawal"/>
 				<connect to="Crop.Atmospheric_CO2_Concentration" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
 				<connect2 to="Crop.Atmospheric_CO2_Concentration" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
+				<connect to="Crop.Atmospheric_CO2_Concentration_1" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
+				<connect2 to="Crop.Atmospheric_CO2_Concentration_1" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
 				<connect to="Crop.crop_demand_1" from="Food_Demand.crop_demand"/>
 				<connect2 to="Crop.crop_demand_1" from="Food_Demand.crop_demand"/>
 				<connect to="Crop.Cropland" from="Land_Use.Cropland"/>
@@ -1202,7 +1194,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="2" isee:scroll_x="110" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="5" isee:page_rows="2" isee:scroll_x="110" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2346,6 +2338,104 @@ initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
+			<aux name="Absolute Surface Temperature" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>deg C</units>
+			</aux>
+			<aux name="Atmospheric CO2 Concentration 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>ppm</units>
+			</aux>
+			<aux name="rel change in crop\nproductivity from CO2">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>crop_prod_linear_CO2_effect*Atmospheric_CO2_Concentration_1</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="rel change in crop productivity\nfrom temperature squared">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>crop_prod_squared_temp_effect*Absolute_Surface_Temperature^2</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="crop prod linear temp effect">
+				<doc>${Calibration Parameter,Yield}
+</doc>
+				<eqn>1.829e+01</eqn>
+				<range min="17.94867585" max="18.62621389"/>
+				<units>1/deg C</units>
+			</aux>
+			<aux name="crop prod squared temp effect">
+				<doc>${Calibration Parameter,Yield}
+</doc>
+				<eqn>-6.070e-01</eqn>
+				<range min="-0.61651334" max="-0.59741074"/>
+				<units>1/(deg C^2)</units>
+			</aux>
+			<aux name="crop prod linear CO2 effect">
+				<doc>${Calibration Parameter,Yield}
+</doc>
+				<eqn>4.249e-02</eqn>
+				<range min="0.04212299" max="0.04286464"/>
+				<units>1/ppm</units>
+			</aux>
+			<aux name="rel change in crop productivity\nfrom temperature linear">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>crop_prod_linear_temp_effect*Absolute_Surface_Temperature</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="rel change in crop productivity\nfrom temperature">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>rel_change_in_crop_productivity_from_temperature_squared + rel_change_in_crop_productivity_from_temperature_linear</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="rel change in crop productivity from climate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>rel_change_in_crop_productivity_intercept +
+rel_change_in_crop_productivity_from_CO2 +
+rel_change_in_crop_productivity_from_temperature</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="rel change in crop productivity intercept">
+				<eqn>-1.547e+02</eqn>
+				<range min="-157.740491" max="-151.71107198"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="change in crop yield from climate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>rel_change_in_crop_productivity_from_climate * initial_crop_yield</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<aux name="crop yield new impact function" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>initial_crop_yield + change_in_crop_yield_from_fertilizer_use+change_in_crop_yield_from_soil_carbon+change_in_crop_yield_from_irrigation +change_in_crop_yield_from_climate</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<aux name="crop yield change from climate old">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>change_in_crop_yield_from_CO2 + combined_change_in_crop_yield_from_STA</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -2395,7 +2485,7 @@ initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="4" isee:scroll_x="1117.14" isee:scroll_y="1469.29" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="5" isee:page_rows="4" isee:scroll_x="1120" isee:scroll_y="1498.57" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2785,6 +2875,104 @@ initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
 					<from>switch_landuse_damage</from>
 					<to>change_in_crop_yield_from_STA_squared</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" x="1845" y="2246.57" name="Absolute Surface Temperature"/>
+				<aux font_style="italic" font_weight="bold" x="2090" y="2246.57" name="Atmospheric CO2 Concentration 1"/>
+				<aux x="2090" y="2150" name="rel change in crop\nproductivity from CO2"/>
+				<aux x="1925.86" y="2150" name="rel change in crop productivity\nfrom temperature squared"/>
+				<connector uid="83" angle="57.8833">
+					<from>Absolute_Surface_Temperature</from>
+					<to>rel_change_in_crop_productivity_from_temperature_squared</to>
+				</connector>
+				<connector uid="84" angle="93.6368">
+					<from>Atmospheric_CO2_Concentration_1</from>
+					<to>rel_change_in_crop_productivity_from_CO2</to>
+				</connector>
+				<aux x="1778" y="2207.14" name="crop prod linear temp effect"/>
+				<aux x="1925.86" y="2207.14" name="crop prod squared temp effect"/>
+				<connector uid="87" angle="82.8137">
+					<from>crop_prod_squared_temp_effect</from>
+					<to>rel_change_in_crop_productivity_from_temperature_squared</to>
+				</connector>
+				<aux x="2176.29" y="2207.14" name="crop prod linear CO2 effect"/>
+				<connector uid="92" angle="145.932">
+					<from>crop_prod_linear_CO2_effect</from>
+					<to>rel_change_in_crop_productivity_from_CO2</to>
+				</connector>
+				<aux x="1778" y="2150" name="rel change in crop productivity\nfrom temperature linear"/>
+				<connector uid="86" angle="90.2339">
+					<from>crop_prod_linear_temp_effect</from>
+					<to>rel_change_in_crop_productivity_from_temperature_linear</to>
+				</connector>
+				<connector uid="82" angle="125.427">
+					<from>Absolute_Surface_Temperature</from>
+					<to>rel_change_in_crop_productivity_from_temperature_linear</to>
+				</connector>
+				<aux x="1845" y="2083.86" name="rel change in crop productivity\nfrom temperature"/>
+				<connector uid="93" angle="44.6299">
+					<from>rel_change_in_crop_productivity_from_temperature_linear</from>
+					<to>rel_change_in_crop_productivity_from_temperature</to>
+				</connector>
+				<connector uid="94" angle="140.717">
+					<from>rel_change_in_crop_productivity_from_temperature_squared</from>
+					<to>rel_change_in_crop_productivity_from_temperature</to>
+				</connector>
+				<aux x="1980" y="2033.57" name="rel change in crop productivity from climate"/>
+				<connector uid="95" angle="40.5274">
+					<from>rel_change_in_crop_productivity_from_temperature</from>
+					<to>rel_change_in_crop_productivity_from_climate</to>
+				</connector>
+				<connector uid="96" angle="110.556">
+					<from>rel_change_in_crop_productivity_from_CO2</from>
+					<to>rel_change_in_crop_productivity_from_climate</to>
+				</connector>
+				<aux x="2176.29" y="2083.86" name="rel change in crop productivity intercept"/>
+				<connector uid="97" angle="163.621">
+					<from>rel_change_in_crop_productivity_intercept</from>
+					<to>rel_change_in_crop_productivity_from_climate</to>
+				</connector>
+				<aux x="1980" y="1957.86" name="change in crop yield from climate"/>
+				<connector uid="98" angle="180">
+					<from>
+						<alias uid="99"/>
+					</from>
+					<to>change_in_crop_yield_from_climate</to>
+				</connector>
+				<connector uid="100" angle="92.4366">
+					<from>rel_change_in_crop_productivity_from_climate</from>
+					<to>change_in_crop_yield_from_climate</to>
+				</connector>
+				<aux x="2095.57" y="1816.71" name="crop yield new impact function"/>
+				<connector uid="101" angle="112.741">
+					<from>
+						<alias uid="99"/>
+					</from>
+					<to>crop_yield_new_impact_function</to>
+				</connector>
+				<connector uid="102" angle="359.747">
+					<from>change_in_crop_yield_from_fertilizer_use</from>
+					<to>crop_yield_new_impact_function</to>
+				</connector>
+				<connector uid="103" angle="346.32">
+					<from>change_in_crop_yield_from_soil_carbon</from>
+					<to>crop_yield_new_impact_function</to>
+				</connector>
+				<connector uid="104" angle="7.94301">
+					<from>change_in_crop_yield_from_irrigation</from>
+					<to>crop_yield_new_impact_function</to>
+				</connector>
+				<connector uid="105" angle="59.7436">
+					<from>change_in_crop_yield_from_climate</from>
+					<to>crop_yield_new_impact_function</to>
+				</connector>
+				<aux x="1553.57" y="1520.86" name="crop yield change from climate old"/>
+				<connector uid="106" angle="70.1252">
+					<from>combined_change_in_crop_yield_from_STA</from>
+					<to>crop_yield_change_from_climate_old</to>
+				</connector>
+				<connector uid="107" angle="113.121">
+					<from>change_in_crop_yield_from_CO2</from>
+					<to>crop_yield_change_from_climate_old</to>
+				</connector>
 				<alias color="blue" background="white" font_style="italic" uid="33" x="1283.74" y="1482.07" width="18" height="18">
 					<shape type="circle" radius="18"/>
 					<of>initial_crop_yield</of>
@@ -2816,6 +3004,9 @@ initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
 				</alias>
 				<alias font_style="italic" font_weight="bold" uid="77" x="2231.79" y="1055.36" width="45" height="35">
 					<of>Cropland</of>
+				</alias>
+				<alias font_style="italic" uid="99" x="2081" y="1948.86" width="18" height="18">
+					<of>initial_crop_yield</of>
 				</alias>
 			</view>
 		</views>
