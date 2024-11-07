@@ -828,10 +828,12 @@
 				<connect2 to="Grass.UNIT_GtC_per_PCal" from="Crop.UNIT_GtC_per_PCal_crop"/>
 				<connect to="Terrestrial_carbon_balance.UNIT_GtC_per_PCal" from="Crop.UNIT_GtC_per_PCal_crop"/>
 				<connect2 to="Terrestrial_carbon_balance.UNIT_GtC_per_PCal" from="Crop.UNIT_GtC_per_PCal_crop"/>
+				<connect to="Crop.Absolute_Surface_Temperature" from="Energy_Balance_Model.Absolute_Surface_Temperature"/>
+				<connect2 to="Crop.Absolute_Surface_Temperature" from="Energy_Balance_Model.Absolute_Surface_Temperature"/>
 				<connect to="Crop.agricultural_water_withdrawal" from="Freshwater.agricultural_water_withdrawal"/>
 				<connect2 to="Crop.agricultural_water_withdrawal" from="Freshwater.agricultural_water_withdrawal"/>
-				<connect to="Crop.Atmospheric_CO2_Concentration" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
-				<connect2 to="Crop.Atmospheric_CO2_Concentration" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
+				<connect to="Crop.Atmospheric_CO2_Concentration_1" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
+				<connect2 to="Crop.Atmospheric_CO2_Concentration_1" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
 				<connect to="Crop.crop_demand_1" from="Food_Demand.crop_demand"/>
 				<connect2 to="Crop.crop_demand_1" from="Food_Demand.crop_demand"/>
 				<connect to="Crop.Cropland" from="Land_Use.Cropland"/>
@@ -842,8 +844,6 @@
 				<connect2 to="Crop.fraction_of_cropland_irrigated" from="Freshwater.fraction_of_cropland_irrigated"/>
 				<connect to="Crop.soil_carbon_cropland_1" from="cropland_soil_carbon.soil_carbon_cropland"/>
 				<connect2 to="Crop.soil_carbon_cropland_1" from="cropland_soil_carbon.soil_carbon_cropland"/>
-				<connect to="Crop.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
-				<connect2 to="Crop.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Crop.switch_landuse_damage" from="Climate.switch_landuse_damage"/>
 				<connect2 to="Crop.switch_landuse_damage" from="Climate.switch_landuse_damage"/>
 				<connect to="Crop.today" from="Climate.today"/>
@@ -2083,145 +2083,6 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="CO2 crop yield parameter">
-				<doc>${Calibration Parameter,Yield}
-</doc>
-				<eqn>0.000528942276758028</eqn>
-				<range min="1" max="1"/>
-				<units>1/ppm</units>
-			</aux>
-			<aux name="effect of CO2 on\ncrop yield">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(Atmospheric_CO2_Concentration - INIT(Atmospheric_CO2_Concentration))*CO2_crop_yield_parameter</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="change in crop yield from CO2">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>initial_crop_yield*effect_of_CO2_on_crop_yield</eqn>
-				<units>PCal/(Mha*year)</units>
-			</aux>
-			<aux name="change in crop yield from STA">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>IF (switch_landuse_damage = 0) AND TIME &gt; today THEN
-PREVIOUS(SELF, 0)
-ELSE
-initial_crop_yield*effect_of_STA_on_crop_yield</eqn>
-				<units>PCal/(Mha*year)</units>
-			</aux>
-			<aux name="effect of STA on\ncrop yield">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(Surface_Temperature_Anomaly-INIT(Surface_Temperature_Anomaly))*STA_crop_yield_parameter</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="STA crop yield parameter">
-				<doc>${Calibration Parameter,Yield}
-</doc>
-				<eqn>0.499391124602685</eqn>
-				<range min="-1" max="1"/>
-				<units>1/deg C</units>
-			</aux>
-			<aux name="change in crop yield\nfrom STA squared">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>IF (switch_landuse_damage = 0) AND TIME &gt; today THEN
-PREVIOUS(SELF, 0)
-ELSE
-initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
-				<units>PCal/(Mha*year)</units>
-			</aux>
-			<aux name="effect of STA squared on\ncrop yield">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>((Surface_Temperature_Anomaly-INIT(Surface_Temperature_Anomaly))^2)*STA_squared_crop_yield_parameter</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="STA squared crop yield parameter">
-				<doc>${Calibration Parameter,Yield}
-</doc>
-				<eqn>-0.358938618558643</eqn>
-				<range min="-5" max="-1"/>
-				<units>1/(deg C^2)</units>
-			</aux>
-			<aux name="change in crop yield\nfrom fertilizer use">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>initial_crop_yield*effect_of_fertilizer_use_on_crop_yield</eqn>
-				<units>PCal/(Mha*year)</units>
-			</aux>
-			<aux name="effect of fertilizer use\non crop yield">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(fertilizer_use-INIT(fertilizer_use))*fertilizer_use_crop_yield_parameter</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="fertilizer use crop yield parameter">
-				<doc>${Calibration Parameter,Yield}
-</doc>
-				<eqn>0.0157982062227971</eqn>
-				<range min="0.00001" max="0.1"/>
-				<units>1/MtN*year</units>
-			</aux>
-			<aux name="change in crop yield\nfrom soil carbon">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>initial_crop_yield*effect_of_soil_carbon_on_crop_yield</eqn>
-				<units>PCal/(Mha*year)</units>
-			</aux>
-			<aux name="effect of soil carbon\non crop yield">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(soil_carbon_cropland_1-INIT(soil_carbon_cropland_1))*soil_carbon_crop_yield_parameter</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="soil carbon crop yield parameter">
-				<doc>${Calibration Parameter,Yield}
-</doc>
-				<eqn>0.00841168677734405</eqn>
-				<range min="1e-8" max="0.2"/>
-				<units>1/GtC</units>
-			</aux>
-			<aux name="initial crop yield">
-				<doc>${Calibration Parameter}
-</doc>
-				<eqn>2.49242261286435</eqn>
-				<range min="1" max="3"/>
-				<units>PCal/(Mha*year)</units>
-			</aux>
-			<aux name="effect of irrigation\non crop yield">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(fraction_of_cropland_irrigated-INIT(fraction_of_cropland_irrigated))*irrigation_crop_yield_parameter</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="irrigation crop yield parameter">
-				<doc>${Yield,Calibration Parameter}
-</doc>
-				<eqn>3.05979419179362</eqn>
-				<range min="3" max="9"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="change in\ncrop yield from irrigation">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>initial_crop_yield*effect_of_irrigation_on_crop_yield</eqn>
-				<units>PCal/(Mha*year)</units>
-			</aux>
 			<stock name="fertilizer use" access="input">
 				<dimensions>
 					<dim name="Run"/>
@@ -2229,33 +2090,12 @@ initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>MtN/year</units>
 			</stock>
-			<aux name="combined change in crop yield\nfrom STA">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>change_in_crop_yield_from_STA+change_in_crop_yield_from_STA_squared</eqn>
-				<units>PCal/(Mha*year)</units>
-			</aux>
-			<aux name="Atmospheric CO2 Concentration" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>ppm</units>
-			</aux>
 			<aux name="crop yield" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>initial_crop_yield + change_in_crop_yield_from_CO2+change_in_crop_yield_from_STA+change_in_crop_yield_from_STA_squared+change_in_crop_yield_from_fertilizer_use+change_in_crop_yield_from_soil_carbon+change_in_crop_yield_from_irrigation</eqn>
+				<eqn>initial_crop_yield + change_in_crop_yield_from_fertilizer_use+change_in_crop_yield_from_soil_carbon+change_in_crop_yield_from_irrigation +change_in_crop_yield_from_climate</eqn>
 				<units>PCal/(Mha*year)</units>
-			</aux>
-			<aux name="Surface Temperature Anomaly" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>deg C</units>
 			</aux>
 			<aux name="soil carbon cropland 1" access="input">
 				<dimensions>
@@ -2340,6 +2180,165 @@ initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
+			<aux name="Absolute Surface Temperature" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>deg C</units>
+			</aux>
+			<aux name="Atmospheric CO2 Concentration 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>ppm</units>
+			</aux>
+			<aux name="rel change in crop\nproductivity from CO2">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>crop_prod_linear_CO2_effect*Atmospheric_CO2_Concentration_1</eqn>
+				<units>pct</units>
+			</aux>
+			<aux name="rel change in crop productivity\nfrom temperature squared">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>crop_prod_squared_temp_effect*Absolute_Surface_Temperature^2</eqn>
+				<units>pct</units>
+			</aux>
+			<aux name="crop prod linear temp effect">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>1.829e+01</eqn>
+				<range min="17.94867585" max="18.62621389"/>
+				<units>pct/deg C</units>
+			</aux>
+			<aux name="crop prod squared temp effect">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>-6.070e-01</eqn>
+				<range min="-0.61651334" max="-0.59741074"/>
+				<units>pct/(deg C^2)</units>
+			</aux>
+			<aux name="crop prod linear CO2 effect">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>4.249e-02</eqn>
+				<range min="0.04212299" max="0.04286464"/>
+				<units>pct/ppm</units>
+			</aux>
+			<aux name="rel change in crop productivity\nfrom temperature linear">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>crop_prod_linear_temp_effect*Absolute_Surface_Temperature</eqn>
+				<units>pct</units>
+			</aux>
+			<aux name="rel change in crop productivity\nfrom temperature">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>rel_change_in_crop_productivity_from_temperature_squared + rel_change_in_crop_productivity_from_temperature_linear</eqn>
+				<units>pct</units>
+			</aux>
+			<aux name="rel change in crop productivity from climate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(rel_change_in_crop_productivity_intercept +
+rel_change_in_crop_productivity_from_CO2 +
+rel_change_in_crop_productivity_from_temperature)/UNIT_pct_conversion</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="rel change in crop productivity intercept">
+				<eqn>-154.7</eqn>
+				<range min="-157.740491" max="0"/>
+				<units>pct</units>
+			</aux>
+			<aux name="change in crop yield from climate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF (switch_landuse_damage =0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+rel_change_in_crop_productivity_from_climate * initial_crop_yield</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<aux name="change in crop yield\nfrom soil carbon">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>initial_crop_yield*effect_of_soil_carbon_on_crop_yield</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<aux name="effect of soil carbon\non crop yield">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(soil_carbon_cropland_1-INIT(soil_carbon_cropland_1))*soil_carbon_crop_yield_parameter</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="soil carbon crop yield parameter">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.00254012588624707</eqn>
+				<range min="1e-8" max="0.2"/>
+				<units>1/GtC</units>
+			</aux>
+			<aux name="effect of irrigation\non crop yield">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(fraction_of_cropland_irrigated-INIT(fraction_of_cropland_irrigated))*irrigation_crop_yield_parameter</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="irrigation crop yield parameter">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>5.80361422909965</eqn>
+				<range min="3" max="9"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="change in\ncrop yield from irrigation">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>initial_crop_yield*effect_of_irrigation_on_crop_yield</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<aux name="change in crop yield\nfrom fertilizer use">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>initial_crop_yield*effect_of_fertilizer_use_on_crop_yield</eqn>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<aux name="effect of fertilizer use\non crop yield">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(fertilizer_use-INIT(fertilizer_use))*fertilizer_use_crop_yield_parameter</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="fertilizer use crop yield parameter">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.0103231846299799</eqn>
+				<range min="0.00001" max="0.1"/>
+				<units>1/MtN*year</units>
+			</aux>
+			<aux name="initial crop yield">
+				<eqn>2.59512182104256</eqn>
+				<range min="0" max="20"/>
+				<units>PCal/(Mha*year)</units>
+			</aux>
+			<aux name="UNIT pct conversion">
+				<eqn>100</eqn>
+				<units>pct</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -2383,7 +2382,7 @@ initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="4" isee:scroll_x="1117.14" isee:scroll_y="1469.29" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="6" isee:scroll_x="951" isee:scroll_y="1036" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2473,199 +2472,14 @@ initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
 					<from>Cropland</from>
 					<to>crop_production</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1221.86" y="1553.5" name="fraction of cropland\nirrigated"/>
-				<aux x="1827" y="1843.75" name="CO2 crop yield parameter"/>
-				<aux x="1705" y="1829" name="effect of CO2 on\ncrop yield"/>
-				<connector uid="11" angle="173.106">
-					<from>CO2_crop_yield_parameter</from>
-					<to>effect_of_CO2_on_crop_yield</to>
-				</connector>
-				<aux x="1613" y="1669" name="change in crop yield from CO2"/>
-				<connector uid="12" angle="119.899">
-					<from>effect_of_CO2_on_crop_yield</from>
-					<to>change_in_crop_yield_from_CO2</to>
-				</connector>
-				<aux x="1471" y="1728" name="change in crop yield from STA"/>
-				<aux x="1408.42" y="1992" name="effect of STA on\ncrop yield"/>
-				<aux x="1326.57" y="2083.86" name="STA crop yield parameter"/>
-				<connector uid="13" angle="48.2976">
-					<from>STA_crop_yield_parameter</from>
-					<to>effect_of_STA_on_crop_yield</to>
-				</connector>
-				<connector uid="14" angle="76.6644">
-					<from>effect_of_STA_on_crop_yield</from>
-					<to>change_in_crop_yield_from_STA</to>
-				</connector>
-				<aux x="1560.14" y="1766.43" name="change in crop yield\nfrom STA squared"/>
-				<aux x="1560.14" y="1984.57" name="effect of STA squared on\ncrop yield"/>
-				<aux x="1653.25" y="2083.86" name="STA squared crop yield parameter"/>
-				<connector uid="15" angle="133.161">
-					<from>STA_squared_crop_yield_parameter</from>
-					<to>effect_of_STA_squared_on_crop_yield</to>
-				</connector>
-				<connector uid="16" angle="90">
-					<from>effect_of_STA_squared_on_crop_yield</from>
-					<to>change_in_crop_yield_from_STA_squared</to>
-				</connector>
-				<aux label_side="bottom" x="1760" y="1658.43" name="change in crop yield\nfrom fertilizer use"/>
-				<aux x="1874" y="1681.43" name="effect of fertilizer use\non crop yield"/>
-				<aux x="1977" y="1784.43" name="fertilizer use crop yield parameter"/>
-				<connector uid="17" angle="135">
-					<from>fertilizer_use_crop_yield_parameter</from>
-					<to>effect_of_fertilizer_use_on_crop_yield</to>
-				</connector>
-				<connector uid="18" angle="173.354">
-					<from>effect_of_fertilizer_use_on_crop_yield</from>
-					<to>change_in_crop_yield_from_fertilizer_use</to>
-				</connector>
-				<aux x="1471" y="1316.7" name="change in crop yield\nfrom soil carbon"/>
-				<aux x="1365" y="1306.03" name="effect of soil carbon\non crop yield"/>
-				<aux x="1232.43" y="1211.84" name="soil carbon crop yield parameter"/>
-				<connector uid="19" angle="324.606">
-					<from>soil_carbon_crop_yield_parameter</from>
-					<to>effect_of_soil_carbon_on_crop_yield</to>
-				</connector>
-				<connector uid="20" angle="354.254">
-					<from>effect_of_soil_carbon_on_crop_yield</from>
-					<to>change_in_crop_yield_from_soil_carbon</to>
-				</connector>
-				<aux x="1636.25" y="1193.84" name="initial crop yield"/>
-				<connector uid="21" angle="39.8525">
-					<from>
-						<alias uid="22"/>
-					</from>
-					<to>change_in_crop_yield_from_soil_carbon</to>
-				</connector>
-				<connector uid="23" angle="139.232">
-					<from>
-						<alias uid="24"/>
-					</from>
-					<to>change_in_crop_yield_from_CO2</to>
-				</connector>
-				<connector uid="25" angle="126.481">
-					<from>
-						<alias uid="26"/>
-					</from>
-					<to>change_in_crop_yield_from_STA_squared</to>
-				</connector>
-				<connector uid="27" angle="54.6888">
-					<from>
-						<alias uid="28"/>
-					</from>
-					<to>change_in_crop_yield_from_STA</to>
-				</connector>
-				<aux x="1297" y="1631" name="effect of irrigation\non crop yield"/>
-				<connector uid="29" angle="318.166">
-					<from>fraction_of_cropland_irrigated</from>
-					<to>effect_of_irrigation_on_crop_yield</to>
-				</connector>
-				<aux x="1257.29" y="1718.93" name="irrigation crop yield parameter"/>
-				<connector uid="30" angle="65.6956">
-					<from>irrigation_crop_yield_parameter</from>
-					<to>effect_of_irrigation_on_crop_yield</to>
-				</connector>
-				<aux x="1410.43" y="1606.5" name="change in\ncrop yield from irrigation"/>
-				<connector uid="31" angle="12.1884">
-					<from>effect_of_irrigation_on_crop_yield</from>
-					<to>change_in_crop_yield_from_irrigation</to>
-				</connector>
-				<connector uid="32" angle="315.556">
-					<from>
-						<alias uid="33"/>
-					</from>
-					<to>change_in_crop_yield_from_irrigation</to>
-				</connector>
-				<stock font_style="italic" font_weight="bold" x="1961" y="1651.43" name="fertilizer use"/>
-				<connector uid="34" angle="199.026">
-					<from>fertilizer_use</from>
-					<to>effect_of_fertilizer_use_on_crop_yield</to>
-				</connector>
-				<aux x="1492.57" y="1838.29" name="combined change in crop yield\nfrom STA"/>
-				<connector uid="35" angle="281.067">
-					<from>change_in_crop_yield_from_STA</from>
-					<to>combined_change_in_crop_yield_from_STA</to>
-				</connector>
-				<connector uid="36" angle="226.761">
-					<from>change_in_crop_yield_from_STA_squared</from>
-					<to>combined_change_in_crop_yield_from_STA</to>
-				</connector>
-				<stacked_container uid="37" x="2543.29" y="935.357" width="656" height="571">
-					<graph width="656" height="571" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="true" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="change_in_crop_yield_from_irrigation[1]"/>
-						</plot>
-						<plot color="red" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
-							<entity name="combined_change_in_crop_yield_from_STA[1]"/>
-						</plot>
-						<plot color="fuchsia" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
-							<entity name="change_in_crop_yield_from_CO2[1]"/>
-						</plot>
-						<plot color="#008F44" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
-							<entity name="change_in_crop_yield_from_fertilizer_use[1]"/>
-						</plot>
-						<plot color="#FF7F00" isee:keep_zero_visible="true" pen_width="1" index="4" show_y_axis="true">
-							<entity name="change_in_crop_yield_from_soil_carbon[1]"/>
-						</plot>
-					</graph>
-				</stacked_container>
-				<aux font_style="italic" font_weight="bold" x="1703.57" y="1932.86" name="Atmospheric CO2 Concentration"/>
-				<connector uid="41" angle="86.2686">
-					<from>Atmospheric_CO2_Concentration</from>
-					<to>effect_of_CO2_on_crop_yield</to>
-				</connector>
+				<aux font_style="italic" font_weight="bold" x="1035" y="1773.67" name="fraction of cropland\nirrigated"/>
+				<stock font_style="italic" font_weight="bold" x="1951" y="1542.5" name="fertilizer use"/>
 				<aux x="1625.71" y="1262.57" name="crop yield"/>
 				<connector uid="42" angle="121.77">
 					<from>crop_yield</from>
 					<to>crop_production</to>
 				</connector>
-				<connector uid="43" angle="261.281">
-					<from>initial_crop_yield</from>
-					<to>crop_yield</to>
-				</connector>
-				<connector uid="44" angle="113.209">
-					<from>change_in_crop_yield_from_CO2</from>
-					<to>crop_yield</to>
-				</connector>
-				<connector uid="45" angle="96.6131">
-					<from>change_in_crop_yield_from_STA</from>
-					<to>crop_yield</to>
-				</connector>
-				<connector uid="46" angle="107.585">
-					<from>change_in_crop_yield_from_STA_squared</from>
-					<to>crop_yield</to>
-				</connector>
-				<connector uid="47" angle="133.739">
-					<from>change_in_crop_yield_from_fertilizer_use</from>
-					<to>crop_yield</to>
-				</connector>
-				<connector uid="48" angle="31.4117">
-					<from>change_in_crop_yield_from_soil_carbon</from>
-					<to>crop_yield</to>
-				</connector>
-				<connector uid="49" angle="82.9558">
-					<from>change_in_crop_yield_from_irrigation</from>
-					<to>crop_yield</to>
-				</connector>
-				<connector uid="50" angle="93.0128">
-					<from>
-						<alias uid="51"/>
-					</from>
-					<to>change_in_crop_yield_from_fertilizer_use</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="1465" y="2156" name="Surface Temperature Anomaly"/>
-				<connector uid="54" angle="108.435">
-					<from>Surface_Temperature_Anomaly</from>
-					<to>effect_of_STA_on_crop_yield</to>
-				</connector>
-				<connector uid="55" angle="66.3706">
-					<from>Surface_Temperature_Anomaly</from>
-					<to>effect_of_STA_squared_on_crop_yield</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="1196" y="1343" name="soil carbon cropland 1"/>
-				<connector uid="56" angle="21.8014">
-					<from>soil_carbon_cropland_1</from>
-					<to>effect_of_soil_carbon_on_crop_yield</to>
-				</connector>
+				<aux font_style="italic" font_weight="bold" x="1053" y="1474.03" name="soil carbon cropland 1"/>
 				<aux x="1699.25" y="980.667" name="cropland net primary production"/>
 				<connector uid="57" angle="84.6281">
 					<from>crop_production</from>
@@ -2705,10 +2519,6 @@ initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
 				<aux x="1772" y="1340" name="sensitivity of effect of crop\nyield on harvest index"/>
 				<connector uid="65" angle="120.466">
 					<from>sensitivity_of_effect_of_crop_yield_on_harvest_index</from>
-					<to>effect_of_crop_yield_on_harvest_index</to>
-				</connector>
-				<connector uid="66" angle="330.213">
-					<from>initial_crop_yield</from>
 					<to>effect_of_crop_yield_on_harvest_index</to>
 				</connector>
 				<aux x="1983.71" y="1305.32" name="sensitivity of effect of crop\nresidue production on field fraction"/>
@@ -2755,47 +2565,193 @@ initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
 					<from>agricultural_water_withdrawal</from>
 					<to>irrigation_water_used_per_unit_of_crop_production</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1480.71" y="1994.29" name="today"/>
-				<connector uid="78" angle="117.089">
-					<from>today</from>
-					<to>change_in_crop_yield_from_STA</to>
+				<aux font_style="italic" font_weight="bold" x="1453.88" y="1697.1" name="today"/>
+				<aux font_style="italic" font_weight="bold" x="1409.62" y="1831.93" name="switch landuse damage"/>
+				<aux font_style="italic" font_weight="bold" x="1417.14" y="2105.14" name="Absolute Surface Temperature"/>
+				<aux font_style="italic" font_weight="bold" x="1662.14" y="2105.14" name="Atmospheric CO2 Concentration 1"/>
+				<aux x="1662.14" y="2008.57" name="rel change in crop\nproductivity from CO2"/>
+				<aux x="1498" y="2008.57" name="rel change in crop productivity\nfrom temperature squared"/>
+				<connector uid="83" angle="57.8833">
+					<from>Absolute_Surface_Temperature</from>
+					<to>rel_change_in_crop_productivity_from_temperature_squared</to>
 				</connector>
-				<connector uid="79" angle="95.7825">
-					<from>today</from>
-					<to>change_in_crop_yield_from_STA_squared</to>
+				<connector uid="84" angle="93.6368">
+					<from>Atmospheric_CO2_Concentration_1</from>
+					<to>rel_change_in_crop_productivity_from_CO2</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1505.29" y="1658.43" name="switch landuse damage"/>
-				<connector uid="80" angle="243.765">
+				<aux x="1350.14" y="2065.71" name="crop prod linear temp effect"/>
+				<aux x="1498" y="2065.71" name="crop prod squared temp effect"/>
+				<connector uid="87" angle="82.8137">
+					<from>crop_prod_squared_temp_effect</from>
+					<to>rel_change_in_crop_productivity_from_temperature_squared</to>
+				</connector>
+				<aux x="1748.43" y="2065.71" name="crop prod linear CO2 effect"/>
+				<connector uid="92" angle="145.932">
+					<from>crop_prod_linear_CO2_effect</from>
+					<to>rel_change_in_crop_productivity_from_CO2</to>
+				</connector>
+				<aux x="1350.14" y="2008.57" name="rel change in crop productivity\nfrom temperature linear"/>
+				<connector uid="86" angle="90.2339">
+					<from>crop_prod_linear_temp_effect</from>
+					<to>rel_change_in_crop_productivity_from_temperature_linear</to>
+				</connector>
+				<connector uid="82" angle="125.427">
+					<from>Absolute_Surface_Temperature</from>
+					<to>rel_change_in_crop_productivity_from_temperature_linear</to>
+				</connector>
+				<aux x="1417.14" y="1942.43" name="rel change in crop productivity\nfrom temperature"/>
+				<connector uid="93" angle="44.6299">
+					<from>rel_change_in_crop_productivity_from_temperature_linear</from>
+					<to>rel_change_in_crop_productivity_from_temperature</to>
+				</connector>
+				<connector uid="94" angle="140.717">
+					<from>rel_change_in_crop_productivity_from_temperature_squared</from>
+					<to>rel_change_in_crop_productivity_from_temperature</to>
+				</connector>
+				<aux x="1552.14" y="1892.14" name="rel change in crop productivity from climate"/>
+				<connector uid="95" angle="40.5274">
+					<from>rel_change_in_crop_productivity_from_temperature</from>
+					<to>rel_change_in_crop_productivity_from_climate</to>
+				</connector>
+				<connector uid="96" angle="110.556">
+					<from>rel_change_in_crop_productivity_from_CO2</from>
+					<to>rel_change_in_crop_productivity_from_climate</to>
+				</connector>
+				<aux x="1748.43" y="1942.43" name="rel change in crop productivity intercept"/>
+				<connector uid="97" angle="163.621">
+					<from>rel_change_in_crop_productivity_intercept</from>
+					<to>rel_change_in_crop_productivity_from_climate</to>
+				</connector>
+				<aux x="1562.97" y="1712.26" name="change in crop yield from climate"/>
+				<connector uid="100" angle="86.5534">
+					<from>rel_change_in_crop_productivity_from_climate</from>
+					<to>change_in_crop_yield_from_climate</to>
+				</connector>
+				<aux x="1367" y="1466.7" name="change in crop yield\nfrom soil carbon"/>
+				<aux x="1261" y="1456.03" name="effect of soil carbon\non crop yield"/>
+				<aux x="1128.43" y="1361.84" name="soil carbon crop yield parameter"/>
+				<connector uid="108" angle="324.606">
+					<from>soil_carbon_crop_yield_parameter</from>
+					<to>effect_of_soil_carbon_on_crop_yield</to>
+				</connector>
+				<connector uid="109" angle="354.254">
+					<from>effect_of_soil_carbon_on_crop_yield</from>
+					<to>change_in_crop_yield_from_soil_carbon</to>
+				</connector>
+				<aux x="1193" y="1781" name="effect of irrigation\non crop yield"/>
+				<aux x="1071" y="1859.43" name="irrigation crop yield parameter"/>
+				<connector uid="112" angle="32.7357">
+					<from>irrigation_crop_yield_parameter</from>
+					<to>effect_of_irrigation_on_crop_yield</to>
+				</connector>
+				<aux x="1385" y="1614.83" name="change in\ncrop yield from irrigation"/>
+				<connector uid="113" angle="40.8746">
+					<from>effect_of_irrigation_on_crop_yield</from>
+					<to>change_in_crop_yield_from_irrigation</to>
+				</connector>
+				<aux label_side="bottom" x="1707" y="1645.77" name="change in crop yield\nfrom fertilizer use"/>
+				<aux x="1821" y="1668.77" name="effect of fertilizer use\non crop yield"/>
+				<aux x="1924" y="1771.77" name="fertilizer use crop yield parameter"/>
+				<connector uid="116" angle="135">
+					<from>fertilizer_use_crop_yield_parameter</from>
+					<to>effect_of_fertilizer_use_on_crop_yield</to>
+				</connector>
+				<connector uid="117" angle="173.354">
+					<from>effect_of_fertilizer_use_on_crop_yield</from>
+					<to>change_in_crop_yield_from_fertilizer_use</to>
+				</connector>
+				<connector uid="121" angle="3.32261">
+					<from>soil_carbon_cropland_1</from>
+					<to>effect_of_soil_carbon_on_crop_yield</to>
+				</connector>
+				<connector uid="123" angle="358.751">
+					<from>fraction_of_cropland_irrigated</from>
+					<to>effect_of_irrigation_on_crop_yield</to>
+				</connector>
+				<connector uid="125" angle="212.364">
+					<from>fertilizer_use</from>
+					<to>effect_of_fertilizer_use_on_crop_yield</to>
+				</connector>
+				<aux label_side="bottom" x="1417.14" y="1235.84" name="initial crop yield"/>
+				<connector uid="134" angle="56.2218">
+					<from>
+						<alias uid="133"/>
+					</from>
+					<to>change_in_crop_yield_from_soil_carbon</to>
+				</connector>
+				<connector uid="135" angle="63.1441">
+					<from>
+						<alias uid="136"/>
+					</from>
+					<to>change_in_crop_yield_from_irrigation</to>
+				</connector>
+				<connector uid="137" angle="129.939">
+					<from>
+						<alias uid="138"/>
+					</from>
+					<to>change_in_crop_yield_from_climate</to>
+				</connector>
+				<connector uid="139" angle="96.009">
+					<from>
+						<alias uid="140"/>
+					</from>
+					<to>change_in_crop_yield_from_fertilizer_use</to>
+				</connector>
+				<stacked_container uid="143" x="2519" y="1226.71" width="405.714" height="350.857">
+					<graph width="405.714" height="350.857" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="change_in_crop_yield_from_fertilizer_use[1]"/>
+						</plot>
+						<plot color="red" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="change_in_crop_yield_from_irrigation[1]"/>
+						</plot>
+						<plot color="fuchsia" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
+							<entity name="change_in_crop_yield_from_soil_carbon[1]"/>
+						</plot>
+						<plot color="#008F44" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
+							<entity name="change_in_crop_yield_from_climate[1]"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<aux x="1709" y="1874.14" name="UNIT pct conversion"/>
+				<connector uid="146" angle="186.669">
+					<from>UNIT_pct_conversion</from>
+					<to>rel_change_in_crop_productivity_from_climate</to>
+				</connector>
+				<connector uid="147" angle="37.9667">
 					<from>switch_landuse_damage</from>
-					<to>change_in_crop_yield_from_STA</to>
+					<to>change_in_crop_yield_from_climate</to>
 				</connector>
-				<connector uid="81" angle="296.926">
-					<from>switch_landuse_damage</from>
-					<to>change_in_crop_yield_from_STA_squared</to>
+				<connector uid="148" angle="352.087">
+					<from>today</from>
+					<to>change_in_crop_yield_from_climate</to>
 				</connector>
-				<alias color="blue" background="white" font_style="italic" uid="33" x="1283.74" y="1482.07" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>initial_crop_yield</of>
-				</alias>
-				<alias color="blue" background="white" font_style="italic" uid="28" x="1356" y="1843.86" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>initial_crop_yield</of>
-				</alias>
-				<alias color="blue" background="white" font_style="italic" uid="26" x="1626.25" y="1859" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>initial_crop_yield</of>
-				</alias>
-				<alias color="blue" background="white" font_style="italic" uid="24" x="1672.43" y="1719" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>initial_crop_yield</of>
-				</alias>
-				<alias color="blue" background="white" font_style="italic" uid="22" x="1330.4" y="1417.54" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>initial_crop_yield</of>
-				</alias>
-				<alias font_style="italic" uid="51" x="1755.17" y="1756" width="18" height="18">
-					<of>initial_crop_yield</of>
-				</alias>
+				<connector uid="149" angle="352.697">
+					<from>initial_crop_yield</from>
+					<to>crop_yield</to>
+				</connector>
+				<connector uid="150" angle="126.977">
+					<from>change_in_crop_yield_from_fertilizer_use</from>
+					<to>crop_yield</to>
+				</connector>
+				<connector uid="151" angle="63.2745">
+					<from>change_in_crop_yield_from_soil_carbon</from>
+					<to>crop_yield</to>
+				</connector>
+				<connector uid="152" angle="78.08">
+					<from>change_in_crop_yield_from_irrigation</from>
+					<to>crop_yield</to>
+				</connector>
+				<connector uid="153" angle="107.058">
+					<from>change_in_crop_yield_from_climate</from>
+					<to>crop_yield</to>
+				</connector>
+				<connector uid="154" angle="293.962">
+					<from>
+						<alias uid="155"/>
+					</from>
+					<to>effect_of_crop_yield_on_harvest_index</to>
+				</connector>
 				<alias font_style="italic" uid="72" x="2198.86" y="1389.84" width="18" height="18">
 					<of>crop_production</of>
 				</alias>
@@ -2804,6 +2760,25 @@ initial_crop_yield*effect_of_STA_squared_on_crop_yield</eqn>
 				</alias>
 				<alias font_style="italic" font_weight="bold" uid="77" x="2231.79" y="1055.36" width="45" height="35">
 					<of>Cropland</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="133" x="1279.43" y="1575.16" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>initial_crop_yield</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="136" x="1270" y="1815.17" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>initial_crop_yield</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="138" x="1647.67" y="1815.17" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>initial_crop_yield</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="140" x="1701" y="1749.34" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>initial_crop_yield</of>
+				</alias>
+				<alias font_style="italic" uid="155" x="1657" y="1181" width="18" height="18">
+					<of>initial_crop_yield</of>
 				</alias>
 			</view>
 		</views>
@@ -3299,7 +3274,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<units>GtC/(Mha*year)</units>
 			</aux>
 			<aux name="CO2 tree net primary\nproduction parameter">
-				<doc>${Calibration Parameter,Yield}
+				<doc>${Calibration Parameter}
 </doc>
 				<eqn>0.00424012634638434</eqn>
 				<range min="-1" max="1"/>
@@ -3337,7 +3312,7 @@ ELSE
 				<units>dmnl</units>
 			</aux>
 			<aux name="STA tree net primary\nproduction parameter">
-				<doc>${Calibration Parameter,Yield}
+				<doc>${Calibration Parameter}
 </doc>
 				<eqn>0.12440257768868</eqn>
 				<range min="-1" max="1"/>
@@ -3361,7 +3336,7 @@ ELSE
 				<units>dmnl</units>
 			</aux>
 			<aux name="STA squared tree net\nprimary production">
-				<doc>${Calibration Parameter,Yield}
+				<doc>${Calibration Parameter}
 </doc>
 				<eqn>-0.00545300819393586</eqn>
 				<range min="-5" max="-0.0001"/>
@@ -4756,7 +4731,7 @@ the less future investment due to crowding out of more profitable forms of inves
 				<units>GtC/(Mha*year)</units>
 			</aux>
 			<aux name="CO2 grass net primary production parameter">
-				<doc>${Calibration Parameter,Yield}
+				<doc>${Calibration Parameter}
 </doc>
 				<eqn>0.00518212229043056</eqn>
 				<range min="0" max="0.1"/>
@@ -4794,7 +4769,7 @@ ELSE
 				<units>dmnl</units>
 			</aux>
 			<aux name="STA grass net primary production parameter">
-				<doc>${Calibration Parameter,Yield}
+				<doc>${Calibration Parameter}
 </doc>
 				<eqn>0.00830132049806093</eqn>
 				<range min="-1" max="1"/>
@@ -4818,7 +4793,7 @@ ELSE
 				<units>dmnl</units>
 			</aux>
 			<aux name="STA squared grass net primary production">
-				<doc>${Calibration Parameter,Yield}
+				<doc>${Calibration Parameter}
 </doc>
 				<eqn>-0.0266311994451481</eqn>
 				<range min="-5" max="0"/>
