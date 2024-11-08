@@ -5,7 +5,7 @@
 		<name>Energy</name>
 		<uuid>dda966fe-252b-44a1-a101-0c3526293b30</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.1" isee:build_number="3377" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.3" isee:build_number="3457" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="1.5" isee:run_prefix="Run" isee:simulation_delay="0.125" isee:restore_on_start="false" isee:save_interval="2" method="Euler" time_units="Months" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
 		<start>0</start>
@@ -228,18 +228,6 @@
 		</unit>
 		<unit name="Mcc$">
 			<eqn>Million*cc$</eqn>
-		</unit>
-		<unit name="G">
-			<eqn>Giga</eqn>
-		</unit>
-		<unit name="GtCO2">
-			<eqn>Giga*tCO2</eqn>
-		</unit>
-		<unit name="GtCH4">
-			<eqn>Giga*tCH4</eqn>
-		</unit>
-		<unit name="GtN2O">
-			<eqn>Giga*tN2O</eqn>
 		</unit>
 	</model_units>
 	<model name="Energy" run="true">
@@ -474,8 +462,8 @@
 				<connect2 to="adaptive_energy_investments_proportional_factor" from="energy_investments.adaptive_energy_investments_proportional_factor"/>
 				<connect to="Finance.All_Energy_Investments" from="energy_investments.All_Gross_Energy_Investments"/>
 				<connect2 to="Finance.All_Energy_Investments" from="energy_investments.All_Gross_Energy_Investments"/>
-				<connect to="Inflation.average_marginal_cost_of_energy" from="energy_investments.average_marginal_net_cost_of_energy"/>
-				<connect2 to="Inflation.average_marginal_cost_of_energy" from="energy_investments.average_marginal_net_cost_of_energy"/>
+				<connect to="Inflation.average_marginal_cost_of_energy" from="energy_investments.average_marginal_net_cost_of_energy_with_historical_cost_adjustment"/>
+				<connect2 to="Inflation.average_marginal_cost_of_energy" from="energy_investments.average_marginal_net_cost_of_energy_with_historical_cost_adjustment"/>
 				<connect to="Energy.baseline_energy_investments" from="energy_investments.baseline_energy_investments"/>
 				<connect2 to="baseline_energy_investments" from="energy_investments.baseline_energy_investments"/>
 				<connect to="fossil_energy_coal.Investments_in_Fossil_Energy_Capital" from="energy_investments.Coal_Gross_Investments_in_Fossil_Energy_Capital"/>
@@ -1679,7 +1667,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="298" isee:scroll_y="60" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="298" isee:scroll_y="60" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2424,7 +2412,7 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 							<entity name='bio_fuel_energy."Cost_of_Extra_Energy_Output_through_bio_fuel_production_capacity_per_Unit_net_of_subsidies,_taxes_and_storage_costs"[1]'/>
 						</plot>
 						<plot color="red" pen_style="dotted" isee:keep_zero_visible="true" pen_width="4" index="11" show_y_axis="true">
-							<entity name="energy_investments.average_marginal_net_cost_of_energy[1]"/>
+							<entity name="energy_investments.average_marginal_net_cost_of_energy_without_historical_cost_adjustment[1]"/>
 						</plot>
 					</graph>
 				</stacked_container>
@@ -2604,7 +2592,7 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 							<entity name="energy_investments.adjusted_cost[1, Bio]"/>
 						</plot>
 						<plot color="red" pen_style="dotted" isee:keep_zero_visible="true" pen_width="4" index="11" show_y_axis="true">
-							<entity name="energy_investments.average_margina_adjustedl_cost_of_energy[1]"/>
+							<entity name="energy_investments.average_marginal_net_cost_of_energy_with_historical_cost_adjustment[1]"/>
 						</plot>
 					</graph>
 				</stacked_container>
@@ -4805,7 +4793,7 @@ ELSE
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>c$*Years/kWh</units>
 			</aux>
-			<aux name="average marginal net cost of energy" access="output" isee:autocreated="true">
+			<aux name="average marginal\nnet cost of energy without historical cost adjustment">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -4825,7 +4813,7 @@ cost_of_extra_energy_output_through_fuel_extraction_per_unit * Coal_Gross_Invest
 /Total_Gross_Investments_in_Energy</eqn>
 				<units>c$/(kWh/Years)</units>
 			</aux>
-			<aux name="average margina adjustedl\ncost of energy" access="output" isee:autocreated="true">
+			<aux name="average marginal\nnet cost of energy with historical cost adjustment" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -5140,7 +5128,7 @@ adjusted_cost[Run,Coal_fuel_extraction] * Coal_Gross_Investments_in_Fossil_Fuel_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="8" isee:page_rows="8" isee:scroll_y="1423.89" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="8" isee:page_rows="8" isee:scroll_x="710" isee:scroll_y="757.222" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -6045,151 +6033,151 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_7</from>
 					<to>cost_to_build_per_unit</to>
 				</connector>
-				<aux x="1885.02" y="1331.48" name="average marginal net cost of energy"/>
+				<aux x="1885.02" y="1331.48" name="average marginal\nnet cost of energy without historical cost adjustment"/>
 				<connector uid="508" angle="345.474">
 					<from>Coal_Gross_Investments_in_Fossil_Fuel_Extraction_Capital</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="509" angle="342.405">
 					<from>Coal_Gross_Investments_in_Fossil_Energy_Capital</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="510" angle="338.88">
 					<from>Oil_Gross_Investments_in_Fossil_Fuel_Extraction_Capital</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="511" angle="330.754">
 					<from>Oil_Gross_Investments_in_Fossil_Energy_Capital</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="512" angle="322.602">
 					<from>Gas_Gross_Investments_in_Fossil_Fuel_Extraction_Capital</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="513" angle="302.374">
 					<from>Gas_Gross_Investments_in_Fossil_Energy_Capital</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="514" angle="282.99">
 					<from>Gross_Investments_in_Solar_and_Wind_Energy_Capacity</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="515" angle="258.101">
 					<from>Gross_Investments_in_Hydropower_Energy_capacity</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="516" angle="235.847">
 					<from>Gross_Investments_in_Biofuel_Capacity</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="517" angle="226.598">
 					<from>Gross_Investments_in_Other_Capacity</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="518" angle="214.295">
 					<from>Investments_in_Nuclear_Capacity</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="519" angle="19.569">
 					<from>cost_of_extra_energy_output_through_fuel_extraction_per_unit</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="520" angle="23.4234">
 					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="521" angle="24.0843">
 					<from>cost_of_extra_energy_output_through_fuel_extraction_per_unit_2</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="522" angle="28.5797">
 					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_2</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="523" angle="31.0469">
 					<from>cost_of_extra_energy_output_through_fuel_extraction_per_unit_1</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="524" angle="36.2653">
 					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_1</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="525" angle="49.1381">
 					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_3</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="526" angle="54.625">
 					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_4</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="527" angle="59.0396">
 					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_5</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="528" angle="62.2002">
 					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_7</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="529" angle="82.0572">
 					<from>Cost_of_Extra_Energy_Output_through_Capital_per_Unit_6</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="530" angle="316.636">
 					<from>Total_Gross_Investments_in_Energy</from>
-					<to>average_marginal_net_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_without_historical_cost_adjustment</to>
 				</connector>
-				<aux x="1622.74" y="1334.98" name="average margina adjustedl\ncost of energy"/>
+				<aux x="1622.74" y="1334.98" name="average marginal\nnet cost of energy with historical cost adjustment"/>
 				<connector uid="532" angle="21.7819">
 					<from>adjusted_cost</from>
-					<to>average_margina_adjustedl_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_with_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="533" angle="342.86">
 					<from>Coal_Gross_Investments_in_Fossil_Fuel_Extraction_Capital</from>
-					<to>average_margina_adjustedl_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_with_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="534" angle="338.71">
 					<from>Coal_Gross_Investments_in_Fossil_Energy_Capital</from>
-					<to>average_margina_adjustedl_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_with_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="535" angle="333.27">
 					<from>Oil_Gross_Investments_in_Fossil_Fuel_Extraction_Capital</from>
-					<to>average_margina_adjustedl_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_with_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="536" angle="321.064">
 					<from>Oil_Gross_Investments_in_Fossil_Energy_Capital</from>
-					<to>average_margina_adjustedl_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_with_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="537" angle="305.61">
 					<from>Gas_Gross_Investments_in_Fossil_Fuel_Extraction_Capital</from>
-					<to>average_margina_adjustedl_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_with_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="538" angle="273.998">
 					<from>Gas_Gross_Investments_in_Fossil_Energy_Capital</from>
-					<to>average_margina_adjustedl_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_with_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="539" angle="250.785">
 					<from>Gross_Investments_in_Solar_and_Wind_Energy_Capacity</from>
-					<to>average_margina_adjustedl_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_with_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="540" angle="232.532">
 					<from>Gross_Investments_in_Hydropower_Energy_capacity</from>
-					<to>average_margina_adjustedl_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_with_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="541" angle="219.192">
 					<from>Gross_Investments_in_Biofuel_Capacity</from>
-					<to>average_margina_adjustedl_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_with_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="542" angle="214.194">
 					<from>Gross_Investments_in_Other_Capacity</from>
-					<to>average_margina_adjustedl_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_with_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="543" angle="206.414">
 					<from>Investments_in_Nuclear_Capacity</from>
-					<to>average_margina_adjustedl_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_with_historical_cost_adjustment</to>
 				</connector>
 				<connector uid="544" angle="307.832">
 					<from>Total_Gross_Investments_in_Energy</from>
-					<to>average_margina_adjustedl_cost_of_energy</to>
+					<to>average_marginal_net_cost_of_energy_with_historical_cost_adjustment</to>
 				</connector>
 				<aux x="1351.66" y="244.785" name="Bc$ to c$"/>
 				<connector uid="547" angle="307.404">
@@ -15698,7 +15686,7 @@ ELSE
 						<pt x="428.214" y="623.571"/>
 						<pt x="248.214" y="657.071"/>
 						<pt x="77.2143" y="620.571"/>
-						<pt x="64.8902" y="556.591"/>
+						<pt x="66.357" y="556.958"/>
 					</pts>
 					<from>Installation_of_bio_Capacity</from>
 					<to>accumulating_Renewable_Energy_Construction</to>
@@ -17002,7 +16990,7 @@ ELSE
 						<pt x="532.5" y="651"/>
 						<pt x="459" y="717.5"/>
 						<pt x="199" y="729.5"/>
-						<pt x="182.814" y="671.925"/>
+						<pt x="184.625" y="672.66"/>
 					</pts>
 					<from>Installation_of_Other_Capacity</from>
 					<to>accumulating_Renewable_Energy_Construction</to>
