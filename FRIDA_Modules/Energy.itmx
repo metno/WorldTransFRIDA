@@ -5,7 +5,7 @@
 		<name>Energy</name>
 		<uuid>dda966fe-252b-44a1-a101-0c3526293b30</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.3" isee:build_number="3457" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
+		<product version="3.7.3" isee:build_number="3457" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="1.5" isee:run_prefix="Run" isee:simulation_delay="0.125" isee:restore_on_start="false" isee:save_interval="2" method="Euler" time_units="Months" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
 		<start>0</start>
@@ -229,6 +229,18 @@
 		<unit name="Mcc$">
 			<eqn>Million*cc$</eqn>
 		</unit>
+		<unit name="G">
+			<eqn>Giga</eqn>
+		</unit>
+		<unit name="GtCO2">
+			<eqn>Giga*tCO2</eqn>
+		</unit>
+		<unit name="GtCH4">
+			<eqn>Giga*tCH4</eqn>
+		</unit>
+		<unit name="GtN2O">
+			<eqn>Giga*tN2O</eqn>
+		</unit>
 	</model_units>
 	<model name="Energy" run="true">
 		<variables>
@@ -425,14 +437,16 @@
 				<format scale_by="auto"/>
 				<connect to="Emissions.CDD" from="energy_demand.CDD"/>
 				<connect2 to="Emissions.CDD" from="energy_demand.CDD"/>
+				<connect to="Emissions.CDD" from="energy_demand.CDD"/>
+				<connect2 to="Emissions.CDD" from="energy_demand.CDD"/>
+				<connect to="Emissions.CDD_preindustrial" from="energy_demand.CDD_preindustrial"/>
+				<connect2 to="Emissions.CDD_preindustrial" from="energy_demand.CDD_preindustrial"/>
 				<connect to="Emissions.CDD_preindustrial" from="energy_demand.CDD_preindustrial"/>
 				<connect2 to="Emissions.CDD_preindustrial" from="energy_demand.CDD_preindustrial"/>
 				<connect to="energy_supply_vs_demand.demand_for_energy_1" from="energy_demand.demand_for_energy"/>
 				<connect2 to="energy_supply_vs_demand.demand_for_energy_1" from="energy_demand.demand_for_energy"/>
 				<connect to="Energy.demand_for_energy" from="energy_demand.demand_for_energy"/>
 				<connect2 to="demand_for_energy" from="energy_demand.demand_for_energy"/>
-				<connect to="Inflation.demand_for_energy" from="energy_demand.demand_for_energy"/>
-				<connect2 to="Inflation.demand_for_energy" from="energy_demand.demand_for_energy"/>
 				<connect to="energy_demand.per_person_use_of_energy_policy" from="Behavioral_Choices.per_person_use_of_energy_policy"/>
 				<connect2 to="energy_demand.per_person_use_of_energy_policy" from="Behavioral_Choices.per_person_use_of_energy_policy"/>
 				<connect to="energy_demand.Policy_Start_Year" from="Behavioral_Choices.start_year"/>
@@ -554,8 +568,6 @@
 				<connect2 to="share_of_GDP_invested_in_fuel_extraction" from="energy_investments.share_of_GDP_invested_in_fuel_extraction"/>
 				<connect to="Energy.share_of_GDP_invested_in_Energy" from="energy_investments.share_of_GDP_invested_in_Energy"/>
 				<connect2 to="share_of_GDP_invested_in_Energy" from="energy_investments.share_of_GDP_invested_in_Energy"/>
-				<connect to="Inflation.share_of_GDP_invested_in_Energy" from="energy_investments.share_of_GDP_invested_in_Energy"/>
-				<connect2 to="Inflation.share_of_GDP_invested_in_Energy" from="energy_investments.share_of_GDP_invested_in_Energy"/>
 				<connect to="Energy.smoothing_time" from="energy_investments.smoothing_time"/>
 				<connect2 to="smoothing_time" from="energy_investments.smoothing_time"/>
 				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_3" from="wind_and_solar_energy.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_net_of_Tax_and_Subsidies"/>
@@ -643,10 +655,8 @@
 				<connect2 to="energy_supply_vs_demand.Total_Energy_Output" from="energy_supply.Total_Energy_Output"/>
 				<connect to="Energy.Total_Energy_Output" from="energy_supply.Total_Energy_Output"/>
 				<connect2 to="Total_Energy_Output" from="energy_supply.Total_Energy_Output"/>
-				<connect to="Inflation.Total_Energy_Output" from="energy_supply.Total_Energy_Output"/>
-				<connect2 to="Inflation.Total_Energy_Output" from="energy_supply.Total_Energy_Output"/>
-				<connect to="Damages.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect2 to="Damages.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect to="Damages.Surface_Temperature_Anomaly_1" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Damages.Surface_Temperature_Anomaly_1" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Damages.SWITCH_couple_energy_and_climate" from="Energy.SWITCH_couple_energy_and_climate"/>
 				<connect2 to="Damages.SWITCH_couple_energy_and_climate" from="SWITCH_couple_energy_and_climate"/>
 				<connect to="Damages.switch_energy_damage" from="Climate.switch_energy_damage"/>
@@ -675,6 +685,8 @@
 				<connect2 to="energy_investments.cost_of_extra_energy_output_through_fuel_extraction_per_unit" from="fossil_energy_coal.cost_net_of_taxes_of_extra_energy_output_through_fuel_extraction_per_unit"/>
 				<connect to="Government.energy_conversion_tax_rate" from="fossil_energy_coal.energy_conversion_effective_tax_rate"/>
 				<connect2 to="Government.energy_conversion_tax_rate" from="fossil_energy_coal.energy_conversion_effective_tax_rate"/>
+				<connect to="Emissions.Fossil_Energy_Extraction_1" from="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
+				<connect2 to="Emissions.Fossil_Energy_Extraction_1" from="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Emissions.Fossil_Energy_Extraction_1" from="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
 				<connect2 to="Emissions.Fossil_Energy_Extraction_1" from="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Government.fuel_extraction_tax_rate" from="fossil_energy_coal.fuel_extraction_effective_tax_rate"/>
@@ -731,6 +743,8 @@
 				<connect2 to="Government.energy_conversion_tax_rate_2" from="fossil_energy_gas.energy_conversion_effective_tax_rate"/>
 				<connect to="Emissions.Fossil_Energy_Extraction_3" from="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
 				<connect2 to="Emissions.Fossil_Energy_Extraction_3" from="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
+				<connect to="Emissions.Fossil_Energy_Extraction_3" from="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
+				<connect2 to="Emissions.Fossil_Energy_Extraction_3" from="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Government.fuel_extraction_tax_rate_2" from="fossil_energy_gas.fuel_extraction_effective_tax_rate"/>
 				<connect2 to="Government.fuel_extraction_tax_rate_2" from="fossil_energy_gas.fuel_extraction_effective_tax_rate"/>
 				<connect to="Energy.initial_fossil_energy_capital_2" from="fossil_energy_gas.initial_fossil_energy_capital"/>
@@ -777,6 +791,8 @@
 				<connect2 to="fossil_energy_gas.tax_on_SO2_emissions" from="Government_Regulations.tax_on_SO2_emissions"/>
 				<connect to="Emissions.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
 				<connect2 to="Emissions.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
+				<connect to="Emissions.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
+				<connect2 to="Emissions.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
 				<connect to="Energy.carbon_intensity_in_btu_1" from="fossil_energy_oil.carbon_intensity_in_btu"/>
 				<connect2 to="carbon_intensity_in_btu_1" from="fossil_energy_oil.carbon_intensity_in_btu"/>
 				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_2" from="fossil_energy_oil.Cost_net_of_taxes_of_Extra_Energy_Output_through_Capital_per_Unit"/>
@@ -785,6 +801,8 @@
 				<connect2 to="energy_investments.cost_of_extra_energy_output_through_fuel_extraction_per_unit_2" from="fossil_energy_oil.cost_net_of_taxes_of_extra_energy_output_through_fuel_extraction_per_unit"/>
 				<connect to="Government.energy_conversion_tax_rate_1" from="fossil_energy_oil.energy_conversion_effective_tax_rate"/>
 				<connect2 to="Government.energy_conversion_tax_rate_1" from="fossil_energy_oil.energy_conversion_effective_tax_rate"/>
+				<connect to="Emissions.Fossil_Energy_Extraction_2" from="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
+				<connect2 to="Emissions.Fossil_Energy_Extraction_2" from="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Emissions.Fossil_Energy_Extraction_2" from="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
 				<connect2 to="Emissions.Fossil_Energy_Extraction_2" from="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Government.fuel_extraction_tax_rate_1" from="fossil_energy_oil.fuel_extraction_effective_tax_rate"/>
@@ -859,6 +877,8 @@
 				<connect2 to="Renewable_Energy_Output" from="renewable_energy.Renewable_Energy_Output"/>
 				<connect to="Energy.Total_Renewable_Energy_Capacity" from="renewable_energy.Total_Renewable_Energy_Capacity"/>
 				<connect2 to="Total_Renewable_Energy_Capacity" from="renewable_energy.Total_Renewable_Energy_Capacity"/>
+				<connect to="Emissions.bio_fuel_primary_energy" from="bio_fuel_energy.bio_fuel_primary_energy"/>
+				<connect2 to="Emissions.bio_fuel_primary_energy" from="bio_fuel_energy.bio_fuel_primary_energy"/>
 				<connect to="Emissions.bio_fuel_primary_energy" from="bio_fuel_energy.bio_fuel_primary_energy"/>
 				<connect2 to="Emissions.bio_fuel_primary_energy" from="bio_fuel_energy.bio_fuel_primary_energy"/>
 				<connect to="Energy.bio_fuel_primary_energy_content" from="bio_fuel_energy.bio_fuel_primary_energy_content"/>
@@ -3097,10 +3117,10 @@ GREEN: Cost and Emissions minimal provision of energy demanded </text_box>
 					</from>
 					<to>demand_for_energy_by_PCTILE</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="2507" y="1921" name="share of biofuel\nemissions stored"/>
-				<aux font_style="italic" font_weight="bold" x="2160" y="1921" name="share of coal emissions stored"/>
-				<aux font_style="italic" font_weight="bold" x="2269.76" y="1921" name="share of oil\nemissions stored"/>
-				<aux font_style="italic" font_weight="bold" x="2378.17" y="1921" name="share of gas\nemissions stored"/>
+				<aux x="2507" y="1921" name="share of biofuel\nemissions stored"/>
+				<aux x="2160" y="1921" name="share of coal emissions stored"/>
+				<aux x="2269.76" y="1921" name="share of oil\nemissions stored"/>
+				<aux x="2378.17" y="1921" name="share of gas\nemissions stored"/>
 				<aux font_style="italic" font_weight="bold" x="2507" y="1976" name="biofuels CO2e emissions tax reduction share"/>
 				<aux font_style="italic" font_weight="bold" x="2507" y="2035" name="biofuels SO2 emissions\ntax reduction share"/>
 				<text_box font_size="36pt" appearance="transparent" uid="1451" x="1848" y="1858.23" width="408.34" height="53.77">Government Regulations</text_box>
@@ -3742,7 +3762,7 @@ Clarke et al (on the left) estimate and over all increase in Energy Demand while
 
 This affects the energy use per CCD, energy use per HDD variables. Any change in the energy demand for heating cooling requires a recalibration of per person use of energy.</text_box>
 				<text_box uid="87" x="981.17" y="240.143" width="260" height="18">Figure of Clarke is for RCP 8.5</text_box>
-				<aux font_style="italic" font_weight="bold" x="619.286" y="162.143" name="Surface Temperature Anomaly"/>
+				<aux x="619.286" y="162.143" name="Surface Temperature Anomaly"/>
 				<connector uid="88" angle="236.31">
 					<from>Surface_Temperature_Anomaly</from>
 					<to>CDD</to>
@@ -6489,6 +6509,8 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="Wind_and_Solar_Energy_Output" from="renewable_energy.Wind_and_Solar_Energy_Output"/>
 				<connect to="Emissions.bio_fuel_primary_energy" from="bio_fuel_energy.bio_fuel_primary_energy"/>
 				<connect2 to="Emissions.bio_fuel_primary_energy" from="bio_fuel_energy.bio_fuel_primary_energy"/>
+				<connect to="Emissions.bio_fuel_primary_energy" from="bio_fuel_energy.bio_fuel_primary_energy"/>
+				<connect2 to="Emissions.bio_fuel_primary_energy" from="bio_fuel_energy.bio_fuel_primary_energy"/>
 				<connect to="fossil_energy_oil.bio_fuel_energy_output" from="bio_fuel_energy.bio_fuel_primary_energy"/>
 				<connect2 to="fossil_energy_oil.bio_fuel_energy_output" from="bio_fuel_energy.bio_fuel_primary_energy"/>
 				<connect to="Energy.bio_fuel_primary_energy_content" from="bio_fuel_energy.bio_fuel_primary_energy_content"/>
@@ -6656,8 +6678,8 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="other_energy.damage_rate_of_energy_capital_from_STA" from="Damages.damage_rate_of_energy_capital_from_STA"/>
 				<connect to="wind_and_solar_energy.damage_rate_of_energy_capital_from_STA" from="Damages.damage_rate_of_energy_capital_from_STA"/>
 				<connect2 to="wind_and_solar_energy.damage_rate_of_energy_capital_from_STA" from="Damages.damage_rate_of_energy_capital_from_STA"/>
-				<connect to="Damages.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
-				<connect2 to="Damages.Surface_Temperature_Anomaly" from="Temperature.Surface_Temperature_Anomaly"/>
+				<connect to="Damages.Surface_Temperature_Anomaly_1" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Damages.Surface_Temperature_Anomaly_1" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Damages.SWITCH_couple_energy_and_climate" from="Energy.SWITCH_couple_energy_and_climate"/>
 				<connect2 to="Damages.SWITCH_couple_energy_and_climate" from="Energy.SWITCH_couple_energy_and_climate"/>
 				<connect to="Damages.switch_energy_damage" from="Climate.switch_energy_damage"/>
@@ -6689,6 +6711,8 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="energy_investments.cost_of_extra_energy_output_through_fuel_extraction_per_unit" from="fossil_energy_coal.cost_net_of_taxes_of_extra_energy_output_through_fuel_extraction_per_unit"/>
 				<connect to="Government.energy_conversion_tax_rate" from="fossil_energy_coal.energy_conversion_effective_tax_rate"/>
 				<connect2 to="Government.energy_conversion_tax_rate" from="fossil_energy_coal.energy_conversion_effective_tax_rate"/>
+				<connect to="Emissions.Fossil_Energy_Extraction_1" from="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
+				<connect2 to="Emissions.Fossil_Energy_Extraction_1" from="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Emissions.Fossil_Energy_Extraction_1" from="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
 				<connect2 to="Emissions.Fossil_Energy_Extraction_1" from="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Government.fuel_extraction_tax_rate" from="fossil_energy_coal.fuel_extraction_effective_tax_rate"/>
@@ -6753,6 +6777,8 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="Government.energy_conversion_tax_rate_2" from="fossil_energy_gas.energy_conversion_effective_tax_rate"/>
 				<connect to="Emissions.Fossil_Energy_Extraction_3" from="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
 				<connect2 to="Emissions.Fossil_Energy_Extraction_3" from="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
+				<connect to="Emissions.Fossil_Energy_Extraction_3" from="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
+				<connect2 to="Emissions.Fossil_Energy_Extraction_3" from="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Government.fuel_extraction_tax_rate_2" from="fossil_energy_gas.fuel_extraction_effective_tax_rate"/>
 				<connect2 to="Government.fuel_extraction_tax_rate_2" from="fossil_energy_gas.fuel_extraction_effective_tax_rate"/>
 				<connect to="Energy.initial_fossil_energy_capital_2" from="fossil_energy_gas.initial_fossil_energy_capital"/>
@@ -6809,6 +6835,8 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="bio_fuel_energy.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
 				<connect to="Emissions.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
 				<connect2 to="Emissions.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
+				<connect to="Emissions.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
+				<connect2 to="Emissions.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
 				<connect to="Energy.carbon_intensity_in_btu_1" from="fossil_energy_oil.carbon_intensity_in_btu"/>
 				<connect2 to="Energy.carbon_intensity_in_btu_1" from="fossil_energy_oil.carbon_intensity_in_btu"/>
 				<connect to="energy_investments.Cost_of_Extra_Energy_Output_through_Capital_per_Unit_2" from="fossil_energy_oil.Cost_net_of_taxes_of_Extra_Energy_Output_through_Capital_per_Unit"/>
@@ -6819,6 +6847,8 @@ https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_c
 				<connect2 to="Government.energy_conversion_tax_rate_1" from="fossil_energy_oil.energy_conversion_effective_tax_rate"/>
 				<connect to="bio_fuel_energy.Extra_FUEL_needed_for_Extra_delta_Energy" from="fossil_energy_oil.Extra_FUEL_needed_for_Extra_delta_Energy"/>
 				<connect2 to="bio_fuel_energy.Extra_FUEL_needed_for_Extra_delta_Energy" from="fossil_energy_oil.Extra_FUEL_needed_for_Extra_delta_Energy"/>
+				<connect to="Emissions.Fossil_Energy_Extraction_2" from="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
+				<connect2 to="Emissions.Fossil_Energy_Extraction_2" from="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Emissions.Fossil_Energy_Extraction_2" from="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
 				<connect2 to="Emissions.Fossil_Energy_Extraction_2" from="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Government.fuel_extraction_tax_rate_1" from="fossil_energy_oil.fuel_extraction_effective_tax_rate"/>
@@ -7406,13 +7436,6 @@ This is total energy production of both fossil and renewable</doc>
 	</model>
 	<model name="Damages" run="true">
 		<variables>
-			<aux name="Surface Temperature Anomaly" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>deg C</units>
-			</aux>
 			<aux name="time for STA to impact energy\ncapital">
 				<eqn>1</eqn>
 				<units>year</units>
@@ -7453,7 +7476,7 @@ ELSE
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>IF SWITCH_couple_energy_and_climate THEN
-Surface_Temperature_Anomaly
+Surface_Temperature_Anomaly_1
 ELSE
 historical_surface_temperature_anomaly</eqn>
 				<units>deg C</units>
@@ -7469,6 +7492,13 @@ historical_surface_temperature_anomaly</eqn>
 			<aux name="switch energy damage" access="input">
 				<eqn>1</eqn>
 				<units>dmnl</units>
+			</aux>
+			<aux name="Surface Temperature Anomaly 1" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>deg C</units>
 			</aux>
 		</variables>
 		<views>
@@ -7519,7 +7549,7 @@ historical_surface_temperature_anomaly</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -7558,7 +7588,6 @@ historical_surface_temperature_anomaly</eqn>
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<aux font_style="italic" font_weight="bold" x="124.25" y="186.71" name="Surface Temperature Anomaly"/>
 				<aux x="525.75" y="191.75" name="time for STA to impact energy\ncapital"/>
 				<aux x="351.417" y="168.71" name="damage rate of energy\ncapital from STA"/>
 				<aux x="269.25" y="102" name="Slope of Capital Damage Function"/>
@@ -7578,10 +7607,6 @@ historical_surface_temperature_anomaly</eqn>
 				<aux label_side="bottom" x="79.625" y="105.125" name="historical surface temperature anomaly"/>
 				<aux font_style="italic" font_weight="bold" x="180.125" y="37.1667" name="SWITCH couple energy and climate"/>
 				<aux x="225.5" y="158.5" name="switched surface temperature anomaly"/>
-				<connector uid="7" angle="70">
-					<from>Surface_Temperature_Anomaly</from>
-					<to>switched_surface_temperature_anomaly</to>
-				</connector>
 				<connector uid="8" angle="4.39871">
 					<from>historical_surface_temperature_anomaly</from>
 					<to>switched_surface_temperature_anomaly</to>
@@ -7608,6 +7633,11 @@ historical_surface_temperature_anomaly</eqn>
 				<connector uid="16" angle="90">
 					<from>switch_energy_damage</from>
 					<to>damage_rate_of_energy_capital_from_STA</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="123.571" y="206.429" name="Surface Temperature Anomaly 1"/>
+				<connector uid="17" angle="39.3071">
+					<from>Surface_Temperature_Anomaly_1</from>
+					<to>switched_surface_temperature_anomaly</to>
 				</connector>
 			</view>
 		</views>
@@ -7785,7 +7815,7 @@ ELSE
 				<aux x="403.242" y="243.956" name="effect of STA on thermal power\nenergy capacity\nefficiency slope"/>
 				<aux x="429.011" y="326.956" name="effect of STA on thermal power\nenergy capacity\nefficiency quadratic"/>
 				<aux x="124.333" y="373.431" name="SWITCH effect of STA on\nthermal power efficiency"/>
-				<aux font_style="italic" font_weight="bold" x="714.648" y="194.091" name="Surface Temperature Anomaly"/>
+				<aux x="714.648" y="194.091" name="Surface Temperature Anomaly"/>
 				<aux x="432.308" y="562.385" name="effect of STA on hydropower\nenergy capacity efficiency"/>
 				<aux x="581.154" y="489.79" name="effect of STA on hydropower\nenergy capacity efficiency slope"/>
 				<aux x="581.154" y="580.385" name="effect of STA on hydropower\nenergy capacity efficiency quadratic"/>
@@ -7877,6 +7907,8 @@ ELSE
 				<connect2 to="Government.energy_conversion_tax_rate" from="fossil_energy_coal.energy_conversion_effective_tax_rate"/>
 				<connect to="Emissions.Fossil_Energy_Extraction_1" from="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
 				<connect2 to="Emissions.Fossil_Energy_Extraction_1" from="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
+				<connect to="Emissions.Fossil_Energy_Extraction_1" from="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
+				<connect2 to="Emissions.Fossil_Energy_Extraction_1" from="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Government.fuel_extraction_tax_rate" from="fossil_energy_coal.fuel_extraction_effective_tax_rate"/>
 				<connect2 to="Government.fuel_extraction_tax_rate" from="fossil_energy_coal.fuel_extraction_effective_tax_rate"/>
 				<connect to="Energy.initial_fossil_energy_capital" from="fossil_energy_coal.initial_fossil_energy_capital"/>
@@ -7944,6 +7976,8 @@ ELSE
 				<connect2 to="bio_fuel_energy.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
 				<connect to="Emissions.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
 				<connect2 to="Emissions.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
+				<connect to="Emissions.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
+				<connect2 to="Emissions.Carbon_Intensity" from="fossil_energy_oil.Carbon_Intensity"/>
 				<connect to="Energy.carbon_intensity_in_btu_1" from="fossil_energy_oil.carbon_intensity_in_btu"/>
 				<connect2 to="Energy.carbon_intensity_in_btu_1" from="fossil_energy_oil.carbon_intensity_in_btu"/>
 				<connect to="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy_1" from="fossil_energy_oil.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy"/>
@@ -7956,6 +7990,8 @@ ELSE
 				<connect2 to="Government.energy_conversion_tax_rate_1" from="fossil_energy_oil.energy_conversion_effective_tax_rate"/>
 				<connect to="bio_fuel_energy.Extra_FUEL_needed_for_Extra_delta_Energy" from="fossil_energy_oil.Extra_FUEL_needed_for_Extra_delta_Energy"/>
 				<connect2 to="bio_fuel_energy.Extra_FUEL_needed_for_Extra_delta_Energy" from="fossil_energy_oil.Extra_FUEL_needed_for_Extra_delta_Energy"/>
+				<connect to="Emissions.Fossil_Energy_Extraction_2" from="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
+				<connect2 to="Emissions.Fossil_Energy_Extraction_2" from="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Emissions.Fossil_Energy_Extraction_2" from="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
 				<connect2 to="Emissions.Fossil_Energy_Extraction_2" from="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Government.fuel_extraction_tax_rate_1" from="fossil_energy_oil.fuel_extraction_effective_tax_rate"/>
@@ -8037,6 +8073,8 @@ ELSE
 				<connect2 to="energy_investments.cost_of_extra_energy_output_through_fuel_extraction_per_unit_1" from="fossil_energy_gas.cost_net_of_taxes_of_extra_energy_output_through_fuel_extraction_per_unit"/>
 				<connect to="Government.energy_conversion_tax_rate_2" from="fossil_energy_gas.energy_conversion_effective_tax_rate"/>
 				<connect2 to="Government.energy_conversion_tax_rate_2" from="fossil_energy_gas.energy_conversion_effective_tax_rate"/>
+				<connect to="Emissions.Fossil_Energy_Extraction_3" from="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
+				<connect2 to="Emissions.Fossil_Energy_Extraction_3" from="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Emissions.Fossil_Energy_Extraction_3" from="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
 				<connect2 to="Emissions.Fossil_Energy_Extraction_3" from="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Government.fuel_extraction_tax_rate_2" from="fossil_energy_gas.fuel_extraction_effective_tax_rate"/>
@@ -9914,7 +9952,7 @@ ELSE
 					<from>TWh_to_kWh</from>
 					<to>Carbon_needed_for_extra_energy_output_through_fuel_extraction_per_unit</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1785.63" y="1240.86" name="GtC to MtCO2"/>
+				<aux x="1785.63" y="1240.86" name="GtC to MtCO2"/>
 				<aux x="1746.26" y="1417.38" name="MtCO2 to tCO2e"/>
 				<aux font_style="italic" font_weight="bold" x="1742.51" y="1546.46" name="tax on CO2e emissions"/>
 				<aux x="1600.01" y="1546.14" name="CO2e tax burden of extra energy\noutput through fuel\nextraction per unit"/>
@@ -9953,7 +9991,7 @@ ELSE
 					<to>extra_CO2_emissions_per_unit</to>
 				</connector>
 				<aux x="1599.29" y="1295.23" name="extra CH4 emissions per unit"/>
-				<aux font_style="italic" font_weight="bold" x="1785.63" y="1295.23" name="coupling factor of fossil fuels\nand CH4 emissions"/>
+				<aux x="1785.63" y="1295.23" name="coupling factor of fossil fuels\nand CH4 emissions"/>
 				<connector uid="176" angle="180">
 					<from>coupling_factor_of_fossil_fuels_and_CH4_emissions</from>
 					<to>extra_CH4_emissions_per_unit</to>
@@ -9962,7 +10000,7 @@ ELSE
 					<from>Carbon_needed_for_extra_energy_output_through_fuel_extraction_per_unit</from>
 					<to>extra_CH4_emissions_per_unit</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1785.63" y="1355" name="coupling factor of fossil fuels\nand N2O emissions"/>
+				<aux x="1785.63" y="1355" name="coupling factor of fossil fuels\nand N2O emissions"/>
 				<aux x="1599.29" y="1355" name="extra N20 emissions per unit"/>
 				<connector uid="178" angle="307.039">
 					<from>Carbon_needed_for_extra_energy_output_through_fuel_extraction_per_unit</from>
@@ -10004,7 +10042,7 @@ ELSE
 					<to>CO2e_tax_burden_of_extra_energy_output_through_fuel_extraction_per_unit</to>
 				</connector>
 				<aux x="1377.91" y="1583.13" name="extra SO2 emissions per unit"/>
-				<aux font_style="italic" font_weight="bold" x="1385.41" y="1648.75" name="coupling factor of fossil fuels\nand SO2 emissions"/>
+				<aux x="1385.41" y="1648.75" name="coupling factor of fossil fuels\nand SO2 emissions"/>
 				<connector uid="187" angle="287.076">
 					<from>Carbon_needed_for_extra_energy_output_through_fuel_extraction_per_unit</from>
 					<to>extra_SO2_emissions_per_unit</to>
@@ -11725,7 +11763,7 @@ ELSE
 					<from>cost_of_extra_energy_output_through_fuel_extraction_per_unit</from>
 					<to>cost_net_of_taxes_of_extra_energy_output_through_fuel_extraction_per_unit</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1760.02" y="1308.49" name="GtC to MtCO2"/>
+				<aux x="1760.02" y="1308.49" name="GtC to MtCO2"/>
 				<aux font_style="italic" font_weight="bold" x="1758.77" y="1575.01" name="tax on CO2e emissions"/>
 				<aux x="1615.02" y="1524.69" name="CO2e tax burden of extra energy\noutput through fuel\nextraction per unit"/>
 				<connector uid="148" angle="160.705">
@@ -11738,12 +11776,12 @@ ELSE
 					<to>extra_CO2_emissions_per_unit</to>
 				</connector>
 				<aux x="1571.8" y="1358.16" name="extra CH4 emissions per unit"/>
-				<aux font_style="italic" font_weight="bold" x="1760.02" y="1345.43" name="coupling factor of fossil fuels\nand CH4 emissions"/>
+				<aux x="1760.02" y="1345.43" name="coupling factor of fossil fuels\nand CH4 emissions"/>
 				<connector uid="150" angle="181.591">
 					<from>coupling_factor_of_fossil_fuels_and_CH4_emissions</from>
 					<to>extra_CH4_emissions_per_unit</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1758.14" y="1394.18" name="coupling factor of fossil fuels\nand N2O emissions"/>
+				<aux x="1758.14" y="1394.18" name="coupling factor of fossil fuels\nand N2O emissions"/>
 				<aux x="1572.14" y="1394.18" name="extra N20 emissions per unit"/>
 				<connector uid="151" angle="180">
 					<from>coupling_factor_of_fossil_fuels_and_N2O_emissions</from>
@@ -11777,7 +11815,7 @@ ELSE
 					<to>CO2e_tax_burden_of_extra_energy_output_through_fuel_extraction_per_unit</to>
 				</connector>
 				<aux x="1418.8" y="1567.01" name="extra SO2 emissions per unit"/>
-				<aux font_style="italic" font_weight="bold" x="1418.8" y="1633.68" name="coupling factor of fossil fuels\nand SO2 emissions"/>
+				<aux x="1418.8" y="1633.68" name="coupling factor of fossil fuels\nand SO2 emissions"/>
 				<connector uid="159" angle="87.6032">
 					<from>coupling_factor_of_fossil_fuels_and_SO2_emissions</from>
 					<to>extra_SO2_emissions_per_unit</to>
@@ -13502,7 +13540,7 @@ ELSE
 					<from>TWh_to_kWh</from>
 					<to>cost_of_extra_energy_output_through_fuel_extraction_per_unit</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1855.65" y="1262.24" name="GtC to MtCO2"/>
+				<aux x="1855.65" y="1262.24" name="GtC to MtCO2"/>
 				<aux font_style="italic" font_weight="bold" x="1854.4" y="1528.76" name="tax on CO2e emissions"/>
 				<aux x="1710.65" y="1478.44" name="CO2e tax burden of extra energy\noutput through fuel\nextraction per unit"/>
 				<connector uid="159" angle="160.705">
@@ -13515,12 +13553,12 @@ ELSE
 					<to>extra_CO2_emissions_per_unit</to>
 				</connector>
 				<aux x="1667.43" y="1311.91" name="extra CH4 emissions per unit"/>
-				<aux font_style="italic" font_weight="bold" x="1855.65" y="1299.18" name="coupling factor of fossil fuels\nand CH4 emissions"/>
+				<aux x="1855.65" y="1299.18" name="coupling factor of fossil fuels\nand CH4 emissions"/>
 				<connector uid="161" angle="181.591">
 					<from>coupling_factor_of_fossil_fuels_and_CH4_emissions</from>
 					<to>extra_CH4_emissions_per_unit</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1853.77" y="1347.93" name="coupling factor of fossil fuels\nand N2O emissions"/>
+				<aux x="1853.77" y="1347.93" name="coupling factor of fossil fuels\nand N2O emissions"/>
 				<aux x="1667.77" y="1347.93" name="extra N20 emissions per unit"/>
 				<connector uid="162" angle="180">
 					<from>coupling_factor_of_fossil_fuels_and_N2O_emissions</from>
@@ -13554,7 +13592,7 @@ ELSE
 					<to>CO2e_tax_burden_of_extra_energy_output_through_fuel_extraction_per_unit</to>
 				</connector>
 				<aux x="1567.93" y="1528.76" name="extra SO2 emissions per unit"/>
-				<aux font_style="italic" font_weight="bold" x="1567.93" y="1595.43" name="coupling factor of fossil fuels\nand SO2 emissions"/>
+				<aux x="1567.93" y="1595.43" name="coupling factor of fossil fuels\nand SO2 emissions"/>
 				<connector uid="169" angle="87.6032">
 					<from>coupling_factor_of_fossil_fuels_and_SO2_emissions</from>
 					<to>extra_SO2_emissions_per_unit</to>
@@ -14706,6 +14744,8 @@ Calibrate to energy provision from renewable sources</doc>
 				<format scale_by="auto"/>
 				<connect to="Emissions.bio_fuel_primary_energy" from="bio_fuel_energy.bio_fuel_primary_energy"/>
 				<connect2 to="Emissions.bio_fuel_primary_energy" from="bio_fuel_energy.bio_fuel_primary_energy"/>
+				<connect to="Emissions.bio_fuel_primary_energy" from="bio_fuel_energy.bio_fuel_primary_energy"/>
+				<connect2 to="Emissions.bio_fuel_primary_energy" from="bio_fuel_energy.bio_fuel_primary_energy"/>
 				<connect to="fossil_energy_oil.bio_fuel_energy_output" from="bio_fuel_energy.bio_fuel_primary_energy"/>
 				<connect2 to="fossil_energy_oil.bio_fuel_energy_output" from="bio_fuel_energy.bio_fuel_primary_energy"/>
 				<connect to="Energy.bio_fuel_primary_energy_content" from="bio_fuel_energy.bio_fuel_primary_energy_content"/>
@@ -15686,7 +15726,7 @@ ELSE
 						<pt x="428.214" y="623.571"/>
 						<pt x="248.214" y="657.071"/>
 						<pt x="77.2143" y="620.571"/>
-						<pt x="66.357" y="556.958"/>
+						<pt x="66.5287" y="556.984"/>
 					</pts>
 					<from>Installation_of_bio_Capacity</from>
 					<to>accumulating_Renewable_Energy_Construction</to>
@@ -15770,7 +15810,7 @@ ELSE
 					<from>relative_carbon_intensity_of_biofuels_to_petroleum_fuels</from>
 					<to>carbon_intensity_of_biofuels</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1495" y="644.463" name="GtC to MtCO2"/>
+				<aux x="1495" y="644.463" name="GtC to MtCO2"/>
 				<aux x="874.807" y="600.493" name="Carbon needed for one extra Energy"/>
 				<aux x="989.107" y="626.463" name="Carbon needed for extra energy\noutput through fuel\nextraction per unit"/>
 				<connector uid="73" angle="352.202">
@@ -15834,12 +15874,12 @@ ELSE
 					<to>CO2e_tax_burden_of_extra_energy_output_through_fuel_extraction_per_unit</to>
 				</connector>
 				<aux x="1227.86" y="853.624" name="extra CH4 emissions per unit"/>
-				<aux font_style="italic" font_weight="bold" x="1416.08" y="840.894" name="coupling factor of fossil fuels\nand CH4 emissions"/>
+				<aux x="1416.08" y="840.894" name="coupling factor of fossil fuels\nand CH4 emissions"/>
 				<connector uid="90" angle="181.591">
 					<from>coupling_factor_of_fossil_fuels_and_CH4_emissions</from>
 					<to>extra_CH4_emissions_per_unit</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1414.2" y="889.644" name="coupling factor of fossil fuels\nand N2O emissions"/>
+				<aux x="1414.2" y="889.644" name="coupling factor of fossil fuels\nand N2O emissions"/>
 				<aux x="1228.2" y="889.644" name="extra N20 emissions per unit"/>
 				<connector uid="91" angle="180">
 					<from>coupling_factor_of_fossil_fuels_and_N2O_emissions</from>
@@ -15869,7 +15909,7 @@ ELSE
 					<to>CO2e_tax_burden_of_extra_energy_output_through_fuel_extraction_per_unit</to>
 				</connector>
 				<aux x="1131.22" y="1145.47" name="extra SO2 emissions per unit"/>
-				<aux font_style="italic" font_weight="bold" x="1131.22" y="1212.14" name="coupling factor of fossil fuels\nand SO2 emissions"/>
+				<aux x="1131.22" y="1212.14" name="coupling factor of fossil fuels\nand SO2 emissions"/>
 				<connector uid="98" angle="87.6032">
 					<from>coupling_factor_of_fossil_fuels_and_SO2_emissions</from>
 					<to>extra_SO2_emissions_per_unit</to>
@@ -16990,7 +17030,7 @@ ELSE
 						<pt x="532.5" y="651"/>
 						<pt x="459" y="717.5"/>
 						<pt x="199" y="729.5"/>
-						<pt x="184.625" y="672.66"/>
+						<pt x="184.841" y="672.719"/>
 					</pts>
 					<from>Installation_of_Other_Capacity</from>
 					<to>accumulating_Renewable_Energy_Construction</to>
