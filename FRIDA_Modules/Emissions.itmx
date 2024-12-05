@@ -328,7 +328,7 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(deforestation_carbon_loss-forest_regrowth_carbon_uptake + Total_land_use_transition_carbon_loss_excluding_young_and_mature_forest_conversions)*GtC_to_MtCO2</eqn>
+				<eqn>(deforestation_carbon_loss-forest_regrowth_carbon_uptake  + CO2_emissions_from_degraded_land + Annual_realized_CO2_emissions_from_land_use_transitions)*GtC_to_MtCO2</eqn>
 				<units>MtCO2/Year</units>
 			</aux>
 			<aux name="MtCH4 emission\nper PCal animal products">
@@ -1085,7 +1085,7 @@ ELSE
 				<eqn>CO2_emissions_from_Energy-Captured_CO2_emissions_from_Energy</eqn>
 				<units>MtCO2/Year</units>
 			</aux>
-			<aux name="Natural land carbon sink" access="output">
+			<aux name="land carbon sink" access="output">
 				<doc>${Calibrated}
 </doc>
 				<dimensions>
@@ -1134,11 +1134,46 @@ ELSE
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>GtC/Year</units>
 			</aux>
-			<aux name="Total land use transition carbon\nloss excluding young and\nmature forest conversions" access="input">
+			<aux name="CO2 emissions from\ndegraded land" access="input">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>GtC/year</units>
+			</aux>
+			<aux name="Annual realized CO2 emissions from land use transitions" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>GtC/Year</units>
+			</aux>
+			<aux name="Total CO2 Emissions GtC" access="output">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Total_CO2_Emissions/GtC_to_MtCO2</eqn>
+				<units>GtC/Year</units>
+			</aux>
+			<aux name="CO2 Emissions from Other GtC" access="output">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>CO2_Emissions_from_Other/GtC_to_MtCO2</eqn>
+				<units>GtC/Year</units>
+			</aux>
+			<aux name="CO2 Emissions from Food and Land Use GtC" access="output">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>CO2_emissions_from_Food_and_Land_Use/GtC_to_MtCO2</eqn>
+				<units>GtC/Year</units>
+			</aux>
+			<aux name="Realized CO2 Emissions from Energy GtC" access="output">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Realized_CO2_emissions_from_Energy/GtC_to_MtCO2</eqn>
 				<units>GtC/Year</units>
 			</aux>
 		</variables>
@@ -1190,7 +1225,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="168.571" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="320" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1902,13 +1937,13 @@ ELSE
 					<from>Captured_CO2_emissions_from_Energy</from>
 					<to>Realized_CO2_emissions_from_Energy</to>
 				</connector>
-				<aux label_side="bottom" x="645.25" y="199.167" name="Natural land carbon sink"/>
+				<aux label_side="bottom" x="645.25" y="199.167" name="land carbon sink"/>
 				<aux font_style="italic" font_weight="bold" label_side="bottom" x="831.714" y="85.167" name="Terrestrial carbon balance"/>
 				<connector uid="189" angle="109.902">
 					<from>
 						<alias uid="190"/>
 					</from>
-					<to>Natural_land_carbon_sink</to>
+					<to>land_carbon_sink</to>
 				</connector>
 				<connector uid="191" angle="152.447">
 					<from>
@@ -1920,7 +1955,7 @@ ELSE
 					<from>
 						<alias uid="188"/>
 					</from>
-					<to>Natural_land_carbon_sink</to>
+					<to>land_carbon_sink</to>
 				</connector>
 				<aux label_side="bottom" x="799.821" y="516.611" name="relative carbon intensity of biofuels to petroleum fuels"/>
 				<aux x="799.821" y="575.5" name="carbon intensity of biofuels"/>
@@ -1958,20 +1993,15 @@ ELSE
 					</from>
 					<to>CO2_emissions_from_Food_and_Land_Use</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="292.167" y="2092.25" name="Total land use transition carbon\nloss excluding young and\nmature forest conversions"/>
-				<connector uid="210" angle="23.9479">
-					<from>Total_land_use_transition_carbon_loss_excluding_young_and_mature_forest_conversions</from>
-					<to>CO2_emissions_from_Food_and_Land_Use</to>
-				</connector>
 				<connector uid="211" angle="18.7627">
 					<from>
 						<alias uid="31"/>
 					</from>
-					<to>Natural_land_carbon_sink</to>
+					<to>land_carbon_sink</to>
 				</connector>
 				<connector uid="212" angle="179.667">
 					<from>Terrestrial_carbon_balance</from>
-					<to>Natural_land_carbon_sink</to>
+					<to>land_carbon_sink</to>
 				</connector>
 				<connector uid="213" angle="271.983">
 					<from>CO2_emissions_from_coal</from>
@@ -1988,6 +2018,66 @@ ELSE
 				<connector uid="216" angle="212.008">
 					<from>CO2_emissions_from_biofuels</from>
 					<to>CO2_emissions_from_Energy</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="394.286" y="2172.86" name="CO2 emissions from\ndegraded land"/>
+				<connector uid="217" angle="20.6681">
+					<from>CO2_emissions_from_degraded_land</from>
+					<to>CO2_emissions_from_Food_and_Land_Use</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="367.857" y="2032.86" name="Annual realized CO2 emissions from land use transitions"/>
+				<connector uid="218" angle="338.087">
+					<from>Annual_realized_CO2_emissions_from_land_use_transitions</from>
+					<to>CO2_emissions_from_Food_and_Land_Use</to>
+				</connector>
+				<aux x="193.345" y="358.738" name="Total CO2 Emissions GtC"/>
+				<aux x="193.345" y="410.167" name="CO2 Emissions from Other GtC"/>
+				<aux x="193.345" y="464.881" name="CO2 Emissions from Food and Land Use GtC"/>
+				<aux x="193.345" y="534.611" name="Realized CO2 Emissions from Energy GtC"/>
+				<connector uid="219" angle="53.5442">
+					<from>
+						<alias uid="220"/>
+					</from>
+					<to>Total_CO2_Emissions_GtC</to>
+				</connector>
+				<connector uid="221" angle="21.3001">
+					<from>
+						<alias uid="220"/>
+					</from>
+					<to>CO2_Emissions_from_Other_GtC</to>
+				</connector>
+				<connector uid="222" angle="356.325">
+					<from>
+						<alias uid="220"/>
+					</from>
+					<to>CO2_Emissions_from_Food_and_Land_Use_GtC</to>
+				</connector>
+				<connector uid="223" angle="327.261">
+					<from>
+						<alias uid="220"/>
+					</from>
+					<to>Realized_CO2_Emissions_from_Energy_GtC</to>
+				</connector>
+				<connector uid="224" angle="203.534">
+					<from>Total_CO2_Emissions</from>
+					<to>Total_CO2_Emissions_GtC</to>
+				</connector>
+				<connector uid="225" angle="285.374">
+					<from>
+						<alias uid="52"/>
+					</from>
+					<to>CO2_Emissions_from_Other_GtC</to>
+				</connector>
+				<connector uid="226" angle="245.318">
+					<from>
+						<alias uid="31"/>
+					</from>
+					<to>CO2_Emissions_from_Food_and_Land_Use_GtC</to>
+				</connector>
+				<connector uid="227" angle="256.988">
+					<from>
+						<alias uid="192"/>
+					</from>
+					<to>Realized_CO2_Emissions_from_Energy_GtC</to>
 				</connector>
 				<alias font_style="italic" uid="31" x="428.917" y="155.625" width="18" height="18">
 					<of>CO2_emissions_from_Food_and_Land_Use</of>
@@ -2044,6 +2134,9 @@ ELSE
 					<of>Realized_CO2_emissions_from_Energy</of>
 				</alias>
 				<alias color="black" font_style="italic" font_color="black" uid="209" x="670" y="2173" width="18" height="18">
+					<of>GtC_to_MtCO2</of>
+				</alias>
+				<alias color="black" font_style="italic" font_color="black" uid="220" x="63.8571" y="448.143" width="18" height="18">
 					<of>GtC_to_MtCO2</of>
 				</alias>
 			</view>
