@@ -5,7 +5,7 @@
 		<name>Planetary Boundaries</name>
 		<uuid>4cfa77a7-34c5-4df6-92d8-556eb00b1dd9</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.1" isee:build_number="3377" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.3" isee:build_number="3465" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -254,6 +254,7 @@
 				<entity name="HANPP_of_grazing_land"/>
 				<entity name="HANPP_of_land_use_change"/>
 				<entity name="HANPP_of_timber"/>
+				<entity name="Holocene_forested_area"/>
 				<entity name="Holocene_grassland_area"/>
 				<entity name="Holocene_net_primary_production"/>
 				<entity name="Potential_net_primary_production"/>
@@ -264,49 +265,6 @@
 				<entity name="Total_actual_NPP_2000"/>
 				<entity name="tree_net_primary_production"/>
 				<entity name="UNIT_GtC_per_PCal_crop"/>
-			</group>
-			<group name="PB 2 - Land System Change" run="false">
-				<format scale_by="auto"/>
-				<entity name='"PB2:1_Boundary_value"'/>
-				<entity name='"PB2:1_Fraction_remaining_forest_cover"'/>
-				<entity name='"PB2:1_High_risk_boundary_value"'/>
-				<entity name='"PB2:1_Holocene_value"'/>
-				<entity name='"PB2:1_Normalized_control_variable"'/>
-				<entity name="Forested_area"/>
-				<entity name="Fraction_of_young_forest_to_include"/>
-				<entity name="Holocene_forested_area"/>
-				<entity name="Mature_Forest"/>
-				<entity name="Young_Forest"/>
-			</group>
-			<group name="PB 3 - Freshwater Change" run="false">
-				<format scale_by="auto"/>
-				<entity name='"PB3:1_Boundary_value"'/>
-				<entity name='"PB3:1_High_risk_boundary_value"'/>
-				<entity name='"PB3:1_Holocene_value"'/>
-				<entity name='"PB3:1_Maximum_amount_of_consumptive_blue_water_use"'/>
-				<entity name='"PB3:1_Normalised_control_variable"'/>
-				<entity name="Fraction_of_total_water_withdrawal_for_consumption"/>
-				<entity name="km3_to_m3"/>
-				<entity name="Reference_total_water_withdrawal_2009"/>
-				<entity name="Reference_water_consumption_2009"/>
-				<entity name="total_water_withdrawal"/>
-			</group>
-			<group name="PB 4 - Biogeochemical Flows" run="false">
-				<format scale_by="auto"/>
-				<entity name='"PB4:1_Boundary_value"'/>
-				<entity name='"PB4:1_High_risk_boundary_value"'/>
-				<entity name='"PB4:1_Holocene_value"'/>
-				<entity name='"PB4:1_Intentionally_fixed_N_applied_to_the_agricultural_system"'/>
-				<entity name='"PB4:1_Normalised_control_variable"'/>
-				<entity name='"PB4:2_Boundary_value"'/>
-				<entity name='"PB4:2_High_risk_boundary_value"'/>
-				<entity name='"PB4:2_Holocene_value"'/>
-				<entity name='"PB4:2_Normalised_control_variable"'/>
-				<entity name='"PB4:2_P_flow_from_fertilizers_to_erodible_soils"'/>
-				<entity name='"Ratio_N:P_in_man_made_fertilizer"'/>
-				<entity name="Fraction_intentionally_fixed_N_in_man_made_fertilizer"/>
-				<entity name="Fraction_P_flow_from_fertilizers_to_erodible_soils"/>
-				<entity name="man_made_fertilizer_use"/>
 			</group>
 			<aux name="timber" access="input">
 				<dimensions>
@@ -356,43 +314,6 @@
 				<eqn>HANPP_excluding_biomass_plantations / Holocene_net_primary_production</eqn>
 				<units>dmnl</units>
 			</aux>
-			<stock name="Mature Forest" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>Mha</units>
-			</stock>
-			<stock name="Young Forest" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<non_negative/>
-				<units>Mha</units>
-			</stock>
-			<aux name="Fraction of young forest to include">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="Forested area">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Mature_Forest + Fraction_of_young_forest_to_include*Young_Forest</eqn>
-				<units>Mha</units>
-			</aux>
-			<aux name="Holocene forested area">
-				<eqn>4790/0.75</eqn>
-				<units>Mha</units>
-			</aux>
-			<aux name="PB2:1 Fraction remaining forest cover">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Forested_area / Holocene_forested_area</eqn>
-				<units>dmnl</units>
-			</aux>
 			<aux name="PB1:1 Boundary value">
 				<eqn>0.1</eqn>
 				<units>dmnl</units>
@@ -401,160 +322,9 @@
 				<eqn>0.2</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="PB2:1 Boundary value">
-				<eqn>0.75</eqn>
-				<units>dmnl</units>
-			</aux>
 			<aux name="Fraction fires of NPP">
 				<eqn>&quot;Total_NPP_consumed_by_human-induced_fires_2000&quot; / Total_actual_NPP_2000</eqn>
 				<units>dmnl</units>
-			</aux>
-			<aux name="PB2:1 High risk\nboundary value">
-				<eqn>0.54</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="total\nwater\nwithdrawal" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>m^3/year</units>
-			</aux>
-			<aux name="Fraction of total water\nwithdrawal for consumption">
-				<eqn>Reference_water_consumption_2009 / Reference_total_water_withdrawal_2009</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="PB3:1 Maximum amount of\nconsumptive blue water use">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Fraction_of_total_water_withdrawal_for_consumption * total_water_withdrawal * km3_to_m3</eqn>
-				<units>km^3/Year</units>
-			</aux>
-			<aux name="PB3:1 Boundary value">
-				<eqn>4000</eqn>
-				<units>km^3/Year</units>
-			</aux>
-			<aux name="PB3:1 High risk\nboundary value">
-				<eqn>6000</eqn>
-				<units>km^3/Year</units>
-			</aux>
-			<aux name="km3 to m3">
-				<eqn>(10^-3)^3</eqn>
-				<units>km^3/m^3</units>
-			</aux>
-			<aux name="PB4:1 Boundary value">
-				<eqn>62</eqn>
-				<units>MtN/year</units>
-			</aux>
-			<aux name="PB4:1 High risk\nboundary value">
-				<eqn>82</eqn>
-				<units>MtN/year</units>
-			</aux>
-			<aux name="PB4:2 Boundary value">
-				<eqn>6.2</eqn>
-				<units>MtP/year</units>
-			</aux>
-			<aux name="PB4:2 High risk\nboundary value">
-				<eqn>11.2</eqn>
-				<units>MtP/year</units>
-			</aux>
-			<aux name="man made fertilizer use" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>MtN/year</units>
-			</aux>
-			<aux name="Fraction intentionally fixed\nN in man made fertilizer">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="PB4:1 Intentionally fixed N applied to the agricultural system">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Fraction_intentionally_fixed_N_in_man_made_fertilizer * man_made_fertilizer_use</eqn>
-				<units>MtN/year</units>
-			</aux>
-			<aux name="Ratio N:P in man made fertilizer">
-				<eqn>11.8</eqn>
-				<units>MtN/MtP</units>
-			</aux>
-			<aux name="PB4:2 P flow from fertilizers to erodible soils">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Fraction_P_flow_from_fertilizers_to_erodible_soils*&quot;PB4:1_Intentionally_fixed_N_applied_to_the_agricultural_system&quot; / &quot;Ratio_N:P_in_man_made_fertilizer&quot;</eqn>
-				<units>MtP/year</units>
-			</aux>
-			<aux name="Fraction P flow from fertilizers to erodible soils">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
-			<group name="PB 5 - Climate Change" run="false">
-				<format scale_by="auto"/>
-				<entity name='"Correction_factor_to_top-of-atmosphere"'/>
-				<entity name='"PB5:1_Atmospheric_CO2_concentration"'/>
-				<entity name='"PB5:1_Boundary_value"'/>
-				<entity name='"PB5:1_High_risk_boundary_value"'/>
-				<entity name='"PB5:1_Holocene_value"'/>
-				<entity name='"PB5:1_Normalised_control_variable"'/>
-				<entity name='"PB5:2_Boundary_value"'/>
-				<entity name='"PB5:2_High_risk_boundary_value"'/>
-				<entity name='"PB5:2_Holocene_value"'/>
-				<entity name='"PB5:2_Normalised_control_variable"'/>
-				<entity name='"PB5:2_Total_anthropogenic_radiative_forcing_at_top_of_atmosphere"'/>
-				<entity name="Anthropogenic_Effective_Radiative_Forcing"/>
-				<entity name="Atmospheric_CO2_Concentration"/>
-			</group>
-			<aux name="Atmospheric CO2 Concentration" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>ppm</units>
-			</aux>
-			<aux name="PB5:1 Atmospheric CO2 concentration">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Atmospheric_CO2_Concentration</eqn>
-				<units>ppm</units>
-			</aux>
-			<aux name="PB5:1 Boundary value">
-				<eqn>350</eqn>
-				<units>ppm</units>
-			</aux>
-			<aux name="PB5:1 High risk\nboundary value">
-				<eqn>450</eqn>
-				<units>ppm</units>
-			</aux>
-			<aux name="Anthropogenic Effective Radiative\nForcing" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>W/(metre^2)</units>
-			</aux>
-			<aux name="Correction factor to top-of-atmosphere">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="PB5:2 Total anthropogenic radiative\nforcing at top of atmosphere">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>&quot;Correction_factor_to_top-of-atmosphere&quot; * Anthropogenic_Effective_Radiative_Forcing</eqn>
-				<units>W/metre^2</units>
-			</aux>
-			<aux name="PB5:2 Boundary value">
-				<eqn>1</eqn>
-				<units>W/metre^2</units>
-			</aux>
-			<aux name="PB5:2 High risk\nboundary value">
-				<eqn>1.5</eqn>
-				<units>W/metre^2</units>
 			</aux>
 			<aux name="tree net primary production" access="input">
 				<dimensions>
@@ -612,92 +382,12 @@
 				<eqn>Potential_net_primary_production - Terrestrial_net_primary_production</eqn>
 				<units>GtC/Year</units>
 			</aux>
-			<group name="Correlation analysis" run="false">
-				<format scale_by="auto"/>
-				<entity name="Variables_to_correlate_against"/>
-			</group>
-			<isee:placeholder name="Variables to correlate against">
-				<eqn>Behavioral_Choices.food_demand_policy + Land_Use.sensitivity_of_effect_of_crop_balance_on_crop_land_expansion_rate</eqn>
-			</isee:placeholder>
-			<group name="SMEX correlation analysis" run="false">
-				<format scale_by="auto"/>
-				<entity name="SMEX_variables_to_correlate_against"/>
-			</group>
-			<isee:placeholder name="SMEX variables to\ncorrelate against">
-				<eqn>Crop.irrigation_crop_yield_parameter + Freshwater.water_withdrawal_per_MHa_irrigated_1980 + Freshwater.rate_of_change_in_irrigation_efficiency</eqn>
-			</isee:placeholder>
 			<aux name="PB1:1 Holocene value">
 				<eqn>0.019</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="PB1:1 Normalised control variable">
 				<eqn>(&quot;PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production&quot; - &quot;PB1:1_Holocene_value&quot;)/(&quot;PB1:1_Boundary_value&quot; - &quot;PB1:1_Holocene_value&quot;)</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="PB2:1 Holocene value">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="PB2:1 Normalized control variable">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(&quot;PB2:1_Fraction_remaining_forest_cover&quot; - &quot;PB2:1_Holocene_value&quot;)/(&quot;PB2:1_Boundary_value&quot; - &quot;PB2:1_Holocene_value&quot;)</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="PB3:1 Holocene value">
-				<eqn>415</eqn>
-				<units>km^3/Year</units>
-			</aux>
-			<aux name="PB3:1 Normalised control variable">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(&quot;PB3:1_Maximum_amount_of_consumptive_blue_water_use&quot; - &quot;PB3:1_Holocene_value&quot;)/(&quot;PB3:1_Boundary_value&quot; - &quot;PB3:1_Holocene_value&quot;)</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="PB4:1 Holocene value">
-				<eqn>0</eqn>
-				<units>MtN/year</units>
-			</aux>
-			<aux name="PB4:1 Normalised control variable">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(&quot;PB4:1_Intentionally_fixed_N_applied_to_the_agricultural_system&quot; - &quot;PB4:1_Holocene_value&quot;)/(&quot;PB4:1_Boundary_value&quot; - &quot;PB4:1_Holocene_value&quot;)</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="PB4:2 Holocene value">
-				<eqn>0</eqn>
-				<units>MtP/year</units>
-			</aux>
-			<aux name="PB4:2 Normalised control variable">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(&quot;PB4:2_P_flow_from_fertilizers_to_erodible_soils&quot; - &quot;PB4:2_Holocene_value&quot;)/(&quot;PB4:2_Boundary_value&quot; - &quot;PB4:2_Holocene_value&quot;)</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="PB5:1 Holocene value">
-				<eqn>280</eqn>
-				<units>ppm</units>
-			</aux>
-			<aux name="PB5:1 Normalised control variable">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(&quot;PB5:1_Atmospheric_CO2_concentration&quot; - &quot;PB5:1_Holocene_value&quot;)/(&quot;PB5:1_Boundary_value&quot; - &quot;PB5:1_Holocene_value&quot;)</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="PB5:2 Holocene value">
-				<eqn>0</eqn>
-				<units>W/metre^2</units>
-			</aux>
-			<aux name="PB5:2 Normalised control variable">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(&quot;PB5:2_Total_anthropogenic_radiative_forcing_at_top_of_atmosphere&quot; - &quot;PB5:2_Holocene_value&quot;)/(&quot;PB5:2_Boundary_value&quot; - &quot;PB5:2_Holocene_value&quot;)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Fraction of cropland NPP\ncontributing to HANPP">
@@ -722,24 +412,6 @@
 				<eqn>Fraction_of_grazing_land_contributing_to_HANPP * grazing_land_net_primary_production</eqn>
 				<units>GtC/Year</units>
 			</aux>
-			<aux name="Reference water consumption 2009">
-				<eqn>2600</eqn>
-				<units>km3/Year</units>
-			</aux>
-			<aux name="Reference total water withdrawal 2009">
-				<eqn>4000</eqn>
-				<units>km3/Year</units>
-			</aux>
-			<group name="Test variables" run="false">
-				<format scale_by="auto"/>
-				<entity name="base_value_water_withdrawal_per_MHa_irrigated_1980"/>
-				<entity name="Maximum_fraction_for_parameters_in_spider_diagram"/>
-				<entity name="Maximum_value_for_Mha_irrigated_1980_parameter"/>
-				<entity name="Minimum_fraction_for_parameters_in_spider_diagram"/>
-				<entity name="Minimum_value_for_Mha_irrigated_1980_parameter"/>
-				<entity name="Number_of_values_for_parameters_in_spider_diagram"/>
-				<entity name="water_withdrawal_per_MHa_irrigated_1980"/>
-			</group>
 			<aux name="Cropland harvested\nNPP per unit area 2000">
 				<eqn>296</eqn>
 				<units>gC/m^2/year</units>
@@ -778,142 +450,6 @@
 				<eqn>timber</eqn>
 				<units>GtC/year</units>
 			</aux>
-			<aux name="Agriculture fraction of\nblue water consumption">
-				<eqn>0.84</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="agricultural water\nwithdrawal" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>m^3/year</units>
-			</aux>
-			<aux name="ALT PB3:1 Maximum amount of\nconsumptive blue water use">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>agricultural_water_withdrawal / Agriculture_fraction_of_blue_water_consumption * km3_to_m3</eqn>
-				<units>km^3/Year</units>
-			</aux>
-			<group name="ALT PB3:1 calculation" run="false">
-				<format scale_by="auto"/>
-				<entity name='"ALT_PB3:1_Maximum_amount_of_consumptive_blue_water_use"'/>
-				<entity name="agricultural_water_withdrawal"/>
-				<entity name="Agriculture_fraction_of_blue_water_consumption"/>
-			</group>
-			<group name="PB 1 Validation" run="false">
-				<format scale_by="auto"/>
-				<entity name="Cropland"/>
-				<entity name="Forest_Land"/>
-				<entity name="Forest_net_primary_production"/>
-				<entity name="grazing_land_1"/>
-				<entity name="GtC_to_gC"/>
-				<entity name="HANPP_from_harvest"/>
-				<entity name="Harvested_NPP_per_unit_cropland_area"/>
-				<entity name="Harvested_NPP_per_unit_cropland_area_ALT"/>
-				<entity name="Harvested_NPP_per_unit_forest_area"/>
-				<entity name="Harvested_NPP_per_unit_grazing_land_area"/>
-				<entity name="mature_forest_net_primary_production"/>
-				<entity name="Mha_to_m2"/>
-				<entity name="NPP_per_unit_cropland_area"/>
-				<entity name="NPP_per_unit_forest_area"/>
-				<entity name="NPP_per_unit_grazing_land_area"/>
-				<entity name="NPP_remaining_in_ecosystems"/>
-				<entity name="young_forest_net_primary_production"/>
-			</group>
-			<aux name="HANPP from harvest">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>HANPP_of_cropland + HANPP_of_grazing_land + HANPP_of_timber</eqn>
-				<units>GtC/year</units>
-			</aux>
-			<aux name="NPP remaining in ecosystems">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Terrestrial_net_primary_production - HANPP_from_harvest - &quot;HANPP_of_human-induced_fires&quot;</eqn>
-				<units>GtC/year</units>
-			</aux>
-			<stock name="Cropland" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>Mha</units>
-			</stock>
-			<aux name="Harvested NPP per unit cropland area">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(HANPP_of_cropland / GtC_to_gC) / (Cropland / Mha_to_m2)</eqn>
-				<units>gC/m^2/year</units>
-			</aux>
-			<aux name="GtC to gC">
-				<eqn>10^-9*10^-6</eqn>
-				<units>GtC/gC</units>
-			</aux>
-			<aux name="Mha to m2">
-				<eqn>10^-6*(10^-2)^2</eqn>
-				<units>Mha/m^2</units>
-			</aux>
-			<aux name="grazing land 1" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>Mha</units>
-			</aux>
-			<aux name="Harvested NPP per\nunit grazing land area">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(HANPP_of_grazing_land / GtC_to_gC) / (grazing_land_1 / Mha_to_m2)</eqn>
-				<units>gC/m^2/year</units>
-			</aux>
-			<aux name="Forest Land" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>Mha</units>
-			</aux>
-			<aux name="Harvested NPP per\nunit forest area">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(HANPP_of_timber / GtC_to_gC) / (Forest_Land / Mha_to_m2)</eqn>
-				<units>gC/m^2/year</units>
-			</aux>
-			<aux name="Minimum value for Mha irrigated 1980 parameter">
-				<eqn>base_value_water_withdrawal_per_MHa_irrigated_1980 * Minimum_fraction_for_parameters_in_spider_diagram</eqn>
-				<units>m^3/MHa/year</units>
-			</aux>
-			<aux name="water withdrawal per\nMHa irrigated 1980" access="input">
-				<eqn>10457730985.1113</eqn>
-				<units>m^3/MHa/year</units>
-			</aux>
-			<aux name="Minimum fraction for parameters in spider diagram">
-				<eqn>0.5</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="Maximum fraction for parameters in spider diagram">
-				<eqn>5</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="Maximum value for Mha irrigated 1980 parameter">
-				<eqn>base_value_water_withdrawal_per_MHa_irrigated_1980 * Maximum_fraction_for_parameters_in_spider_diagram</eqn>
-				<units>m^3/MHa/year</units>
-			</aux>
-			<aux name="Number of values for parameters in spider diagram">
-				<eqn>15</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="base value water withdrawal per\nMHa irrigated 1980">
-				<eqn>10457730985.1113</eqn>
-				<units>m^3/MHa/year</units>
-			</aux>
 			<aux name="crop production" access="input">
 				<dimensions>
 					<dim name="Run"/>
@@ -932,54 +468,9 @@
 				<eqn>0.001756582675</eqn>
 				<units>GtC/PCal</units>
 			</aux>
-			<aux name="Harvested NPP per\nunit cropland area ALT">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(HANPP_of_crop_harvest_ALT / GtC_to_gC) / (Cropland / Mha_to_m2)</eqn>
-				<units>gC/m^2/year</units>
-			</aux>
-			<aux name="NPP per\nunit cropland area">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(cropland_net_primary_production / GtC_to_gC) / (Cropland / Mha_to_m2)</eqn>
-				<units>gC/m^2/year</units>
-			</aux>
-			<aux name="NPP per\nunit grazing land area">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(grazing_land_net_primary_production / GtC_to_gC) / (grazing_land / Mha_to_m2)</eqn>
-				<units>gC/m^2/year</units>
-			</aux>
-			<aux name="young forest net\nprimary production" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>GtC/Year</units>
-			</aux>
-			<aux name="mature forest net\nprimary production" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>GtC/Year</units>
-			</aux>
-			<aux name="Forest net primary production">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>mature_forest_net_primary_production + young_forest_net_primary_production</eqn>
-				<units>GtC/year</units>
-			</aux>
-			<aux name="NPP per\nunit forest area">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(Forest_net_primary_production / GtC_to_gC) / (Forest_Land / Mha_to_m2)</eqn>
-				<units>gC/m^2/year</units>
+			<aux name="Holocene forested area">
+				<eqn>4790/0.75</eqn>
+				<units>Mha</units>
 			</aux>
 		</variables>
 		<views>
@@ -1077,101 +568,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
-				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
-				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
-				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
-					<isee:series_styles>
-						<isee:series_style color="blue" thickness="1"/>
-						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
-						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
-						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
-						<isee:series_style color="#FF7F00" thickness="1"/>
-						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
-						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
-						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
-						<isee:series_style color="#FF007F" thickness="1"/>
-						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
-						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
-						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
-						<isee:series_style color="#C8C8C8" thickness="1"/>
-					</isee:series_styles>
-				</graph>
-				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
-				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
-				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
-				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
-				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
-				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
-				<isee:sim_speed_slider color="black" background="white"/>
-				<isee:time_slider color="#E95F74" background="silver"/>
-				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
-				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
-				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
-				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
-				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
-				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
-				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
-				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
-				<lamp color="black" background="white" font_size="9pt"/>
-				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
-				<isee:spatial_map color="black" background="white" font_size="12pt"/>
-				<isee:animation_object color="black" background="white" font_size="12pt"/>
-				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
-				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
-				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
-				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
-				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
-			</style>
-			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
-				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
-				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
-				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
-				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
-					<isee:series_styles>
-						<isee:series_style color="blue" thickness="1"/>
-						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
-						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
-						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
-						<isee:series_style color="#FF7F00" thickness="1"/>
-						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
-						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
-						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
-						<isee:series_style color="#FF007F" thickness="1"/>
-						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
-						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
-						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
-						<isee:series_style color="#C8C8C8" thickness="1"/>
-					</isee:series_styles>
-				</graph>
-				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
-				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
-				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
-				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
-				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
-				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
-				<isee:sim_speed_slider color="black" background="white"/>
-				<isee:time_slider color="#E95F74" background="silver"/>
-				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
-				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
-				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
-				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
-				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
-				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
-				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
-				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
-				<lamp color="black" background="white" font_size="9pt"/>
-				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
-				<isee:spatial_map color="black" background="white" font_size="12pt"/>
-				<isee:animation_object color="black" background="white" font_size="12pt"/>
-				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
-				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
-				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
-				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
-				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
-			</style>
-			<view isee:show_pages="false" background="white" page_width="1096" page_height="764" isee:page_cols="8" isee:page_rows="7" isee:scroll_y="2500" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1096" page_height="764" isee:page_cols="8" isee:page_rows="7" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="black" background="white" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1212,17 +609,7 @@
 				</style>
 				<group locked="true" x="48.3333" y="58.3333" width="618" height="1217.67" name="PB 1 - Biosphere Integrity">
 					<item uid="1"/>
-					<item uid="37"/>
 					<item uid="6"/>
-				</group>
-				<group locked="false" x="821" y="80" width="705" height="449" name="PB 2 - Land System Change">
-					<item uid="10"/>
-				</group>
-				<group locked="false" x="1594" y="78" width="716" height="454" name="PB 3 - Freshwater Change">
-					<item uid="24"/>
-				</group>
-				<group locked="false" x="2452" y="111" width="660" height="594" name="PB 4 - Biogeochemical Flows">
-					<item uid="25"/>
 				</group>
 				<aux font_style="italic" font_weight="bold" x="110.333" y="124" name="timber"/>
 				<aux font_style="italic" font_weight="bold" label_side="left" x="110.333" y="224" name="cropland net primary production"/>
@@ -1258,135 +645,9 @@
 - Grazing land actual NPP per unit area 2000: Ibid
 - Total actual NPP 2000: Ibid
 - Total NPP consumed by human-induced fires 2000: Ibid</text_box>
-				<stock font_style="italic" font_weight="bold" x="872.5" y="122.5" name="Mature Forest"/>
-				<stock font_style="italic" font_weight="bold" x="880" y="211.25" name="Young Forest"/>
-				<aux x="880" y="275" name="Fraction of young forest to include"/>
-				<aux x="987.5" y="173" name="Forested area"/>
-				<connector uid="7" angle="4.51399">
-					<from>Mature_Forest</from>
-					<to>Forested_area</to>
-				</connector>
-				<connector uid="8" angle="19.8552">
-					<from>Young_Forest</from>
-					<to>Forested_area</to>
-				</connector>
-				<connector uid="9" angle="32.7352">
-					<from>Fraction_of_young_forest_to_include</from>
-					<to>Forested_area</to>
-				</connector>
-				<aux x="987.5" y="111.625" name="Holocene forested area"/>
-				<aux x="1113.75" y="155" name="PB2:1 Fraction remaining forest cover"/>
-				<connector uid="11" angle="4.869">
-					<from>Holocene_forested_area</from>
-					<to>&quot;PB2:1_Fraction_remaining_forest_cover&quot;</to>
-				</connector>
-				<connector uid="12" angle="21.0659">
-					<from>Forested_area</from>
-					<to>&quot;PB2:1_Fraction_remaining_forest_cover&quot;</to>
-				</connector>
-				<text_box uid="10" x="877.5" y="392.5" width="260" height="113">References:
-- Holocene forested area: Steffen et al, 2015
-- PB2:1 Holocene value: Richardson et al, 2023
-- PB2:1 Boundary value: Ibid
-- PB2:1 High risk boundary value: Ibid</text_box>
 				<aux label_side="top" x="530.833" y="326" name="PB1:1 Boundary value"/>
 				<aux x="530.833" y="365.5" name="PB1:1 High risk\nboundary value"/>
-				<aux label_side="bottom" x="1217.5" y="155" name="PB2:1 Boundary value"/>
 				<aux label_side="top" x="209.583" y="842.75" name="Fraction fires of NPP"/>
-				<aux x="1217.5" y="203.75" name="PB2:1 High risk\nboundary value"/>
-				<aux font_style="italic" font_weight="bold" x="1658.75" y="146.25" name="total\nwater\nwithdrawal"/>
-				<aux x="1708" y="260.25" name="Fraction of total water\nwithdrawal for consumption"/>
-				<aux label_side="left" label_angle="135" x="1877.5" y="203.75" name="PB3:1 Maximum amount of\nconsumptive blue water use"/>
-				<connector uid="21" angle="14.6209">
-					<from>total_water_withdrawal</from>
-					<to>&quot;PB3:1_Maximum_amount_of_consumptive_blue_water_use&quot;</to>
-				</connector>
-				<connector uid="22" angle="18.4349">
-					<from>Fraction_of_total_water_withdrawal_for_consumption</from>
-					<to>&quot;PB3:1_Maximum_amount_of_consumptive_blue_water_use&quot;</to>
-				</connector>
-				<aux x="1935" y="203.75" name="PB3:1 Boundary value"/>
-				<aux x="1935" y="266.25" name="PB3:1 High risk\nboundary value"/>
-				<aux x="1658.75" y="387.5" name="km3 to m3"/>
-				<connector uid="23" angle="40.0303">
-					<from>km3_to_m3</from>
-					<to>&quot;PB3:1_Maximum_amount_of_consumptive_blue_water_use&quot;</to>
-				</connector>
-				<text_box uid="24" x="1613.75" y="416" width="348.75" height="95">References:
-- PB3:1 Holocene value: Rockström et al., 2009, SI
-- PB3:1 Boundary value: Steffen et al, 2015
-- PB3:1 High risk boundary value: Ibid
-- Reference total water withdrawal 2009: Rockström et al, 2009
-- Reference water consumption 2009: Ibid</text_box>
-				<aux x="2920" y="211.25" name="PB4:1 Boundary value"/>
-				<aux x="2920" y="266.25" name="PB4:1 High risk\nboundary value"/>
-				<aux x="2926.25" y="386.25" name="PB4:2 Boundary value"/>
-				<aux x="2926.25" y="436.25" name="PB4:2 High risk\nboundary value"/>
-				<text_box uid="25" x="2473.75" y="445.25" width="260" height="191">References:
-- Ratio N:P in man made fertilizer: Steffen et al., 2015
-- PB4:1 Holocene value: Richardson et al, 2023
-- PB4:1 Boundary value: Ibid
-- PB4:1 High risk boundary value: Ibid
-- PB4:2 Holocene value: Ibid
-- PB4:2 Boundary value: Ibid
-- PB4:2 High risk boundary value: Ibid</text_box>
-				<aux font_style="italic" font_weight="bold" x="2501.67" y="163.333" name="man made fertilizer use"/>
-				<aux x="2508.33" y="229.25" name="Fraction intentionally fixed\nN in man made fertilizer"/>
-				<aux label_side="right" label_angle="45" x="2603.75" y="203.75" name="PB4:1 Intentionally fixed N applied to the agricultural system"/>
-				<connector uid="26" angle="351.787">
-					<from>man_made_fertilizer_use</from>
-					<to>&quot;PB4:1_Intentionally_fixed_N_applied_to_the_agricultural_system&quot;</to>
-				</connector>
-				<connector uid="27" angle="16.4715">
-					<from>Fraction_intentionally_fixed_N_in_man_made_fertilizer</from>
-					<to>&quot;PB4:1_Intentionally_fixed_N_applied_to_the_agricultural_system&quot;</to>
-				</connector>
-				<aux x="2508.33" y="303" name="Ratio N:P in man made fertilizer"/>
-				<aux x="2609" y="303" name="PB4:2 P flow from fertilizers to erodible soils"/>
-				<connector uid="28" angle="285.113">
-					<from>&quot;PB4:1_Intentionally_fixed_N_applied_to_the_agricultural_system&quot;</from>
-					<to>&quot;PB4:2_P_flow_from_fertilizers_to_erodible_soils&quot;</to>
-				</connector>
-				<connector uid="29" angle="14.5536">
-					<from>&quot;Ratio_N:P_in_man_made_fertilizer&quot;</from>
-					<to>&quot;PB4:2_P_flow_from_fertilizers_to_erodible_soils&quot;</to>
-				</connector>
-				<aux x="2508.33" y="368.25" name="Fraction P flow from fertilizers to erodible soils"/>
-				<connector uid="30" angle="29.7642">
-					<from>Fraction_P_flow_from_fertilizers_to_erodible_soils</from>
-					<to>&quot;PB4:2_P_flow_from_fertilizers_to_erodible_soils&quot;</to>
-				</connector>
-				<group locked="false" x="3247.5" y="157.25" width="893.75" height="906.5" name="PB 5 - Climate Change">
-					<item uid="34"/>
-				</group>
-				<aux font_style="italic" font_weight="bold" x="3337.5" y="246.25" name="Atmospheric CO2 Concentration"/>
-				<aux x="3481.25" y="246.25" name="PB5:1 Atmospheric CO2 concentration"/>
-				<connector uid="31" angle="22.1663">
-					<from>Atmospheric_CO2_Concentration</from>
-					<to>&quot;PB5:1_Atmospheric_CO2_concentration&quot;</to>
-				</connector>
-				<aux x="3642.5" y="246.25" name="PB5:1 Boundary value"/>
-				<aux x="3642.5" y="320" name="PB5:1 High risk\nboundary value"/>
-				<aux font_style="italic" font_weight="bold" x="3342.5" y="503.75" name="Anthropogenic Effective Radiative\nForcing"/>
-				<aux x="3342.5" y="595" name="Correction factor to top-of-atmosphere"/>
-				<aux x="3485" y="511.25" name="PB5:2 Total anthropogenic radiative\nforcing at top of atmosphere"/>
-				<connector uid="32" angle="24.6236">
-					<from>Anthropogenic_Effective_Radiative_Forcing</from>
-					<to>&quot;PB5:2_Total_anthropogenic_radiative_forcing_at_top_of_atmosphere&quot;</to>
-				</connector>
-				<connector uid="33" angle="25.71">
-					<from>&quot;Correction_factor_to_top-of-atmosphere&quot;</from>
-					<to>&quot;PB5:2_Total_anthropogenic_radiative_forcing_at_top_of_atmosphere&quot;</to>
-				</connector>
-				<aux x="3653.75" y="517.5" name="PB5:2 Boundary value"/>
-				<aux x="3653.75" y="580" name="PB5:2 High risk\nboundary value"/>
-				<text_box uid="34" x="3262" y="860" width="260" height="191">References:
-- PB5:1 Holocene value: Richardson et al, 2023
-- PB5:1 Boundary value: Ibid
-- PB5:1 High risk boundary value: Ibid
-- PB5:2 Holocene value: Ibid
-- PB5:2 Boundary value: Ibid
-- PB5:2 High risk boundary value: Ibid</text_box>
 				<aux font_style="italic" font_weight="bold" x="128.333" y="686" name="tree net primary production"/>
 				<aux font_style="italic" font_weight="bold" label_side="bottom" x="128.333" y="586" name="Habitable Land Area"/>
 				<aux font_style="italic" font_weight="bold" x="128.333" y="751.5" name="Terrestrial net primary production"/>
@@ -1395,12 +656,6 @@
 				<aux label_side="bottom" x="271.333" y="601" name="Holocene grassland area"/>
 				<connector uid="38" angle="340.145">
 					<from>Habitable_Land_Area</from>
-					<to>Holocene_grassland_area</to>
-				</connector>
-				<connector uid="39" angle="14.1305">
-					<from>
-						<alias uid="37"/>
-					</from>
 					<to>Holocene_grassland_area</to>
 				</connector>
 				<connector uid="41" angle="46.9306">
@@ -1429,68 +684,6 @@
 					<from>Potential_net_primary_production</from>
 					<to>HANPP_of_land_use_change</to>
 				</connector>
-				<connector uid="42" angle="0">
-					<from>
-						<alias uid="37"/>
-					</from>
-					<to>Potential_net_primary_production_Forest</to>
-				</connector>
-				<stacked_container uid="48" x="667.333" y="1122">
-					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="Terrestrial_carbon_balance.Terrestrial_net_primary_production[*]"/>
-						</plot>
-						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
-							<entity name="Potential_net_primary_production[*]"/>
-						</plot>
-						<plot color="fuchsia" pen_style="dotted" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
-							<entity name="Crop.cropland_net_primary_production[*]"/>
-						</plot>
-						<plot color="#008F44" pen_style="dashed" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
-							<entity name="Forest.timber[*]"/>
-						</plot>
-					</graph>
-				</stacked_container>
-				<group locked="true" x="-44.333" y="4238.67" width="610" height="626" name="Correlation analysis">
-					<item uid="49"/>
-				</group>
-				<stacked_container uid="49" x="12.667" y="4446.67" width="535" height="390">
-					<graph width="535" height="390" type="correlation" isee:correlation_source="Variables_to_correlate_against" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name='"PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production"'/>
-						</plot>
-						<plot color="red" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
-							<entity name='"PB2:1_Fraction_remaining_forest_cover"[*]'/>
-						</plot>
-						<plot color="fuchsia" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
-							<entity name='"PB3:1_Maximum_amount_of_consumptive_blue_water_use"[*]'/>
-						</plot>
-						<plot color="#008F44" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
-							<entity name='"PB4:1_Intentionally_fixed_N_applied_to_the_agricultural_system"[*]'/>
-						</plot>
-						<plot color="#FF7F00" isee:keep_zero_visible="true" pen_width="1" index="4" show_y_axis="true">
-							<entity name='"PB4:2_P_flow_from_fertilizers_to_erodible_soils"[*]'/>
-						</plot>
-						<plot color="#7F00FF" isee:keep_zero_visible="true" pen_width="1" index="5" show_y_axis="true">
-							<entity name='"PB5:1_Atmospheric_CO2_concentration"[*]'/>
-						</plot>
-						<plot color="#0CA0FF" isee:keep_zero_visible="true" pen_width="1" index="6" show_y_axis="true">
-							<entity name='"PB5:2_Total_anthropogenic_radiative_forcing_at_top_of_atmosphere"[*]'/>
-						</plot>
-					</graph>
-				</stacked_container>
-				<isee:placeholder x="431.667" y="4282.67" name="Variables to correlate against"/>
-				<group locked="true" x="784.667" y="1363.67" width="610" height="626" name="SMEX correlation analysis">
-					<item uid="51"/>
-				</group>
-				<stacked_container uid="51" x="841.667" y="1571.67" width="535" height="390">
-					<graph width="535" height="390" type="correlation" isee:correlation_source="SMEX_variables_to_correlate_against" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="red" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name='"PB3:1_Normalised_control_variable"[*]'/>
-						</plot>
-					</graph>
-				</stacked_container>
-				<isee:placeholder x="1260.67" y="1407.67" name="SMEX variables to\ncorrelate against"/>
 				<aux x="530.833" y="266.25" name="PB1:1 Holocene value"/>
 				<aux x="612.333" y="300.25" name="PB1:1 Normalised control variable"/>
 				<connector uid="52" angle="10.568">
@@ -1504,90 +697,6 @@
 				<connector uid="54" angle="17.534">
 					<from>&quot;PB1:1_Boundary_value&quot;</from>
 					<to>&quot;PB1:1_Normalised_control_variable&quot;</to>
-				</connector>
-				<aux x="1217.5" y="106" name="PB2:1 Holocene value"/>
-				<aux x="1318" y="158" name="PB2:1 Normalized control variable"/>
-				<connector uid="55" angle="22.2327">
-					<from>&quot;PB2:1_Fraction_remaining_forest_cover&quot;</from>
-					<to>&quot;PB2:1_Normalized_control_variable&quot;</to>
-				</connector>
-				<connector uid="56" angle="1.66028">
-					<from>&quot;PB2:1_Holocene_value&quot;</from>
-					<to>&quot;PB2:1_Normalized_control_variable&quot;</to>
-				</connector>
-				<connector uid="57" angle="6.61346">
-					<from>&quot;PB2:1_Boundary_value&quot;</from>
-					<to>&quot;PB2:1_Normalized_control_variable&quot;</to>
-				</connector>
-				<aux x="1935" y="146.25" name="PB3:1 Holocene value"/>
-				<aux x="2026" y="203.75" name="PB3:1 Normalised control variable"/>
-				<connector uid="58" angle="9.03948">
-					<from>&quot;PB3:1_Holocene_value&quot;</from>
-					<to>&quot;PB3:1_Normalised_control_variable&quot;</to>
-				</connector>
-				<connector uid="59" angle="33.4017">
-					<from>&quot;PB3:1_Maximum_amount_of_consumptive_blue_water_use&quot;</from>
-					<to>&quot;PB3:1_Normalised_control_variable&quot;</to>
-				</connector>
-				<connector uid="60" angle="14.0362">
-					<from>&quot;PB3:1_Boundary_value&quot;</from>
-					<to>&quot;PB3:1_Normalised_control_variable&quot;</to>
-				</connector>
-				<aux x="2920" y="158" name="PB4:1 Holocene value"/>
-				<aux x="3010" y="211.25" name="PB4:1 Normalised control variable"/>
-				<connector uid="61" angle="18.4349">
-					<from>&quot;PB4:1_Intentionally_fixed_N_applied_to_the_agricultural_system&quot;</from>
-					<to>&quot;PB4:1_Normalised_control_variable&quot;</to>
-				</connector>
-				<connector uid="62" angle="16.5044">
-					<from>&quot;PB4:1_Holocene_value&quot;</from>
-					<to>&quot;PB4:1_Normalised_control_variable&quot;</to>
-				</connector>
-				<connector uid="63" angle="20.2064">
-					<from>&quot;PB4:1_Boundary_value&quot;</from>
-					<to>&quot;PB4:1_Normalised_control_variable&quot;</to>
-				</connector>
-				<aux x="2923" y="345" name="PB4:2 Holocene value"/>
-				<aux x="3007" y="392" name="PB4:2 Normalised control variable"/>
-				<connector uid="64" angle="0">
-					<from>&quot;PB4:2_P_flow_from_fertilizers_to_erodible_soils&quot;</from>
-					<to>&quot;PB4:2_Normalised_control_variable&quot;</to>
-				</connector>
-				<connector uid="65" angle="22.3801">
-					<from>&quot;PB4:2_Holocene_value&quot;</from>
-					<to>&quot;PB4:2_Normalised_control_variable&quot;</to>
-				</connector>
-				<connector uid="66" angle="7.62419">
-					<from>&quot;PB4:2_Boundary_value&quot;</from>
-					<to>&quot;PB4:2_Normalised_control_variable&quot;</to>
-				</connector>
-				<aux x="3642.5" y="196" name="PB5:1 Holocene value"/>
-				<aux x="3744" y="250" name="PB5:1 Normalised control variable"/>
-				<connector uid="67" angle="34.3803">
-					<from>&quot;PB5:1_Atmospheric_CO2_concentration&quot;</from>
-					<to>&quot;PB5:1_Normalised_control_variable&quot;</to>
-				</connector>
-				<connector uid="68" angle="347.3">
-					<from>&quot;PB5:1_Holocene_value&quot;</from>
-					<to>&quot;PB5:1_Normalised_control_variable&quot;</to>
-				</connector>
-				<connector uid="69" angle="21.8709">
-					<from>&quot;PB5:1_Boundary_value&quot;</from>
-					<to>&quot;PB5:1_Normalised_control_variable&quot;</to>
-				</connector>
-				<aux x="3653.75" y="463" name="PB5:2 Holocene value"/>
-				<aux x="3758" y="517.5" name="PB5:2 Normalised control variable"/>
-				<connector uid="70" angle="11.2188">
-					<from>&quot;PB5:2_Holocene_value&quot;</from>
-					<to>&quot;PB5:2_Normalised_control_variable&quot;</to>
-				</connector>
-				<connector uid="71" angle="30.6997">
-					<from>&quot;PB5:2_Total_anthropogenic_radiative_forcing_at_top_of_atmosphere&quot;</from>
-					<to>&quot;PB5:2_Normalised_control_variable&quot;</to>
-				</connector>
-				<connector uid="72" angle="23.658">
-					<from>&quot;PB5:2_Boundary_value&quot;</from>
-					<to>&quot;PB5:2_Normalised_control_variable&quot;</to>
 				</connector>
 				<stacked_container uid="73" x="1505" y="1632.5" width="420" height="353.75">
 					<graph width="420" height="353.75" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
@@ -1623,36 +732,6 @@
 					<from>Fraction_of_grazing_land_contributing_to_HANPP</from>
 					<to>HANPP_of_grazing_land</to>
 				</connector>
-				<stacked_container uid="79" x="631.667" y="568.333" width="350" height="303.333">
-					<graph width="350" height="303.333" type="pie" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="#FF7F00" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="HANPP_of_timber[*]"/>
-						</plot>
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
-							<entity name="HANPP_of_cropland[*]"/>
-						</plot>
-						<plot color="red" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
-							<entity name="HANPP_of_grazing_land[*]"/>
-						</plot>
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
-							<entity name="HANPP_of_land_use_change[*]"/>
-						</plot>
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="4" show_y_axis="true">
-							<entity name='"HANPP_of_human-induced_fires"[*]'/>
-						</plot>
-					</graph>
-				</stacked_container>
-				<aux x="1658.75" y="310" name="Reference water consumption 2009"/>
-				<connector uid="36" angle="45.2894">
-					<from>Reference_water_consumption_2009</from>
-					<to>Fraction_of_total_water_withdrawal_for_consumption</to>
-				</connector>
-				<aux x="1658.75" y="230.25" name="Reference total water withdrawal 2009"/>
-				<connector uid="35" angle="32.7047">
-					<from>Reference_total_water_withdrawal_2009</from>
-					<to>Fraction_of_total_water_withdrawal_for_consumption</to>
-				</connector>
-				<group locked="false" x="726.667" y="2019.33" width="656.667" height="522.333" name="Test variables"/>
 				<aux label_side="left" x="128.333" y="275.25" name="Cropland harvested\nNPP per unit area 2000"/>
 				<aux label_side="left" x="128.333" y="318.25" name="Cropland actual\nNPP per unit area 2000"/>
 				<connector uid="88" angle="0.46707">
@@ -1701,49 +780,6 @@
 					<from>HANPP_excluding_biomass_plantations</from>
 					<to>&quot;PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production&quot;</to>
 				</connector>
-				<aux x="1680" y="732" name="Agriculture fraction of\nblue water consumption"/>
-				<aux font_style="italic" font_weight="bold" x="1662" y="649" name="agricultural water\nwithdrawal"/>
-				<aux label_side="right" label_angle="45" x="1786" y="692.75" name="ALT PB3:1 Maximum amount of\nconsumptive blue water use"/>
-				<connector uid="98" angle="3.81407">
-					<from>agricultural_water_withdrawal</from>
-					<to>&quot;ALT_PB3:1_Maximum_amount_of_consumptive_blue_water_use&quot;</to>
-				</connector>
-				<connector uid="99" angle="20.3187">
-					<from>Agriculture_fraction_of_blue_water_consumption</from>
-					<to>&quot;ALT_PB3:1_Maximum_amount_of_consumptive_blue_water_use&quot;</to>
-				</connector>
-				<connector uid="100" angle="6.00901">
-					<from>km3_to_m3</from>
-					<to>&quot;ALT_PB3:1_Maximum_amount_of_consumptive_blue_water_use&quot;</to>
-				</connector>
-				<group locked="true" x="1592" y="581" width="474" height="346" name="ALT PB3:1 calculation">
-					<item uid="101"/>
-				</group>
-				<text_box uid="101" x="1630" y="788" width="383" height="127">References:
-- Agriculture fraction of blue water consumption: Campbell et al., 2017</text_box>
-				<group locked="true" x="58.75" y="1387.67" width="601.25" height="2807.25" name="PB 1 Validation">
-					<item uid="105"/>
-					<item uid="106"/>
-					<item uid="107"/>
-					<item uid="111"/>
-					<item uid="112"/>
-					<item uid="113"/>
-					<item uid="114"/>
-					<item uid="118"/>
-					<item uid="119"/>
-					<item uid="120"/>
-					<item uid="121"/>
-					<item uid="126"/>
-					<item uid="131"/>
-					<item uid="145"/>
-					<item uid="150"/>
-					<item uid="151"/>
-					<item uid="156"/>
-					<item uid="157"/>
-					<item uid="162"/>
-					<item uid="163"/>
-					<item uid="168"/>
-				</group>
 				<connector uid="103" angle="12.9183">
 					<from>
 						<alias uid="102"/>
@@ -1754,196 +790,18 @@
 					<table width="350" height="250" comparative="true" isee:export_name="Comparative table SMEX" isee:mark_for_export="true" title="Comparative table SMEX">
 						<item type="time"/>
 						<item>
-							<entity name='"PB3:1_Maximum_amount_of_consumptive_blue_water_use"[*]'/>
-						</item>
-						<item>
 							<entity name='"PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production"'/>
 						</item>
 					</table>
 				</stacked_container>
-				<aux label_side="right" label_angle="45" x="171.25" y="1705" name="HANPP from harvest"/>
-				<connector uid="108" angle="345.466">
-					<from>
-						<alias uid="105"/>
-					</from>
-					<to>HANPP_from_harvest</to>
-				</connector>
-				<connector uid="109" angle="29.9816">
-					<from>
-						<alias uid="106"/>
-					</from>
-					<to>HANPP_from_harvest</to>
-				</connector>
-				<connector uid="110" angle="26.6488">
-					<from>
-						<alias uid="107"/>
-					</from>
-					<to>HANPP_from_harvest</to>
-				</connector>
-				<aux x="171.25" y="1858.75" name="NPP remaining in ecosystems"/>
-				<connector uid="115" angle="317.862">
-					<from>
-						<alias uid="112"/>
-					</from>
-					<to>NPP_remaining_in_ecosystems</to>
-				</connector>
-				<connector uid="116" angle="298.443">
-					<from>HANPP_from_harvest</from>
-					<to>NPP_remaining_in_ecosystems</to>
-				</connector>
-				<connector uid="117" angle="285.945">
-					<from>
-						<alias uid="114"/>
-					</from>
-					<to>NPP_remaining_in_ecosystems</to>
-				</connector>
-				<stacked_container uid="119" x="297.917" y="1408.75" width="350" height="376">
-					<graph width="350" height="376" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="Potential_net_primary_production[*]"/>
-						</plot>
-						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
-							<entity name="Terrestrial_carbon_balance.Terrestrial_net_primary_production[*]"/>
-						</plot>
-						<plot color="fuchsia" pen_style="dotted" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
-							<entity name="HANPP_of_land_use_change[*]"/>
-						</plot>
-						<plot color="#008F44" pen_style="dashed" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
-							<entity name="HANPP_from_harvest[*]"/>
-						</plot>
-						<plot color="#FF7F00" isee:keep_zero_visible="true" pen_width="1" index="4" show_y_axis="true">
-							<entity name='"HANPP_of_human-induced_fires"[*]'/>
-						</plot>
-						<plot color="#7F00FF" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="5" show_y_axis="true">
-							<entity name="NPP_remaining_in_ecosystems[*]"/>
-						</plot>
-						<plot color="#0CA0FF" pen_style="dotted" isee:keep_zero_visible="true" pen_width="1" index="6" show_y_axis="true">
-							<entity name="HANPP_excluding_biomass_plantations"/>
-						</plot>
-					</graph>
-				</stacked_container>
-				<stacked_container uid="120" x="91.25" y="1953" width="536.25" height="250">
-					<table orientation="horizontal" isee:start_time="2000" isee:stop_time="2000" interval="1" report_balances="beginning" report_flows="instantaneous" width="536.25" height="250" comparative="true" isee:export_name="SMEX Validation data PB1" isee:mark_for_export="true" isee:comparative_group_by_run="true" title="Validation data PB1">
-						<item type="time"/>
-						<item>
-							<entity name="Potential_net_primary_production[*]"/>
-						</item>
-						<item>
-							<entity name="Terrestrial_carbon_balance.Terrestrial_net_primary_production[*]"/>
-						</item>
-						<item>
-							<entity name="HANPP_of_land_use_change[*]"/>
-						</item>
-						<item>
-							<entity name="HANPP_from_harvest[*]"/>
-						</item>
-						<item>
-							<entity name='"HANPP_of_human-induced_fires"[*]'/>
-						</item>
-						<item>
-							<entity name="NPP_remaining_in_ecosystems[*]"/>
-						</item>
-						<item>
-							<entity name="HANPP_excluding_biomass_plantations"/>
-						</item>
-					</table>
-				</stacked_container>
-				<stock font_style="italic" font_weight="bold" x="108.75" y="2350" name="Cropland"/>
-				<aux x="191.25" y="2312.5" name="Harvested NPP per unit cropland area"/>
-				<connector uid="122" angle="10.1247">
-					<from>
-						<alias uid="121"/>
-					</from>
-					<to>Harvested_NPP_per_unit_cropland_area</to>
-				</connector>
-				<connector uid="123" angle="4.51399">
-					<from>Cropland</from>
-					<to>Harvested_NPP_per_unit_cropland_area</to>
-				</connector>
-				<aux x="453.75" y="2245" name="GtC to gC"/>
-				<aux x="453.75" y="2294.5" name="Mha to m2"/>
-				<connector uid="124" angle="158.199">
-					<from>GtC_to_gC</from>
-					<to>Harvested_NPP_per_unit_cropland_area</to>
-				</connector>
-				<connector uid="125" angle="174.289">
-					<from>Mha_to_m2</from>
-					<to>Harvested_NPP_per_unit_cropland_area</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="108.75" y="2498.75" name="grazing land 1"/>
-				<aux x="191.25" y="2470.75" name="Harvested NPP per\nunit grazing land area"/>
-				<connector uid="127" angle="0">
-					<from>
-						<alias uid="126"/>
-					</from>
-					<to>Harvested_NPP_per_unit_grazing_land_area</to>
-				</connector>
-				<connector uid="128" angle="26.5651">
-					<from>grazing_land_1</from>
-					<to>Harvested_NPP_per_unit_grazing_land_area</to>
-				</connector>
-				<connector uid="129" angle="206.565">
-					<from>GtC_to_gC</from>
-					<to>Harvested_NPP_per_unit_grazing_land_area</to>
-				</connector>
-				<connector uid="130" angle="226.123">
-					<from>Mha_to_m2</from>
-					<to>Harvested_NPP_per_unit_grazing_land_area</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="111.25" y="2618.75" name="Forest Land"/>
-				<aux x="191.25" y="2600.75" name="Harvested NPP per\nunit forest area"/>
-				<connector uid="132" angle="12.9946">
-					<from>
-						<alias uid="131"/>
-					</from>
-					<to>Harvested_NPP_per_unit_forest_area</to>
-				</connector>
-				<connector uid="133" angle="24.444">
-					<from>Forest_Land</from>
-					<to>Harvested_NPP_per_unit_forest_area</to>
-				</connector>
-				<connector uid="134" angle="242.904">
-					<from>GtC_to_gC</from>
-					<to>Harvested_NPP_per_unit_forest_area</to>
-				</connector>
-				<connector uid="135" angle="264.661">
-					<from>Mha_to_m2</from>
-					<to>Harvested_NPP_per_unit_forest_area</to>
-				</connector>
-				<aux x="901.25" y="2415" name="Minimum value for Mha irrigated 1980 parameter"/>
-				<aux font_style="italic" font_weight="bold" x="775" y="2457.5" name="water withdrawal per\nMHa irrigated 1980"/>
-				<aux x="775" y="2163.75" name="Minimum fraction for parameters in spider diagram"/>
-				<aux x="775" y="2225.5" name="Maximum fraction for parameters in spider diagram"/>
-				<connector uid="136" angle="323.471">
-					<from>Minimum_fraction_for_parameters_in_spider_diagram</from>
-					<to>Minimum_value_for_Mha_irrigated_1980_parameter</to>
-				</connector>
-				<aux x="896.25" y="2493.75" name="Maximum value for Mha irrigated 1980 parameter"/>
-				<connector uid="138" angle="315.462">
-					<from>Maximum_fraction_for_parameters_in_spider_diagram</from>
-					<to>Maximum_value_for_Mha_irrigated_1980_parameter</to>
-				</connector>
 				<stacked_container uid="140" x="1638.75" y="2562.5">
 					<table orientation="vertical" isee:start_time="2050" isee:stop_time="2050" interval="1" report_balances="beginning" report_flows="instantaneous" width="350" height="250" comparative="true" isee:export_name="SMEX Values of PB3:1 to use for spider diagram" isee:mark_for_export="true" title="SMEX Values of PB3:1 to use for spider diagram">
 						<item type="time"/>
 						<item>
-							<entity name='"PB3:1_Maximum_amount_of_consumptive_blue_water_use"[*]'/>
-						</item>
-						<item>
 							<entity name='"PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production"'/>
 						</item>
 					</table>
 				</stacked_container>
-				<aux x="775" y="2298.75" name="Number of values for parameters in spider diagram"/>
-				<aux x="775" y="2378.75" name="base value water withdrawal per\nMHa irrigated 1980"/>
-				<connector uid="141" angle="354.289">
-					<from>base_value_water_withdrawal_per_MHa_irrigated_1980</from>
-					<to>Minimum_value_for_Mha_irrigated_1980_parameter</to>
-				</connector>
-				<connector uid="142" angle="300.256">
-					<from>base_value_water_withdrawal_per_MHa_irrigated_1980</from>
-					<to>Maximum_value_for_Mha_irrigated_1980_parameter</to>
-				</connector>
 				<aux font_style="italic" font_weight="bold" x="110" y="192.25" name="crop production"/>
 				<aux x="253.333" y="202.75" name="HANPP of crop harvest ALT"/>
 				<connector uid="143" angle="18.2202">
@@ -1955,172 +813,17 @@
 					<from>UNIT_GtC_per_PCal_crop</from>
 					<to>HANPP_of_crop_harvest_ALT</to>
 				</connector>
-				<aux x="191.25" y="2240" name="Harvested NPP per\nunit cropland area ALT"/>
-				<connector uid="146" angle="144.462">
-					<from>GtC_to_gC</from>
-					<to>Harvested_NPP_per_unit_cropland_area_ALT</to>
+				<aux x="133" y="645.375" name="Holocene forested area"/>
+				<connector uid="175" angle="23.2711">
+					<from>Holocene_forested_area</from>
+					<to>Holocene_grassland_area</to>
 				</connector>
-				<connector uid="147" angle="153.265">
-					<from>Mha_to_m2</from>
-					<to>Harvested_NPP_per_unit_cropland_area_ALT</to>
+				<connector uid="176" angle="14.3187">
+					<from>Holocene_forested_area</from>
+					<to>Potential_net_primary_production_Forest</to>
 				</connector>
-				<connector uid="148" angle="36.2538">
-					<from>
-						<alias uid="145"/>
-					</from>
-					<to>Harvested_NPP_per_unit_cropland_area_ALT</to>
-				</connector>
-				<connector uid="149" angle="48.5763">
-					<from>Cropland</from>
-					<to>Harvested_NPP_per_unit_cropland_area_ALT</to>
-				</connector>
-				<aux x="191.25" y="2792.5" name="NPP per\nunit cropland area"/>
-				<connector uid="152" angle="349.875">
-					<from>
-						<alias uid="151"/>
-					</from>
-					<to>NPP_per_unit_cropland_area</to>
-				</connector>
-				<connector uid="153" angle="19.7468">
-					<from>
-						<alias uid="150"/>
-					</from>
-					<to>NPP_per_unit_cropland_area</to>
-				</connector>
-				<aux x="191.25" y="2943.25" name="NPP per\nunit grazing land area"/>
-				<connector uid="159" angle="319.399">
-					<from>
-						<alias uid="156"/>
-					</from>
-					<to>NPP_per_unit_grazing_land_area</to>
-				</connector>
-				<connector uid="160" angle="28.1786">
-					<from>
-						<alias uid="157"/>
-					</from>
-					<to>NPP_per_unit_grazing_land_area</to>
-				</connector>
-				<connector uid="164" angle="162.474">
-					<from>
-						<alias uid="163"/>
-					</from>
-					<to>NPP_per_unit_cropland_area</to>
-				</connector>
-				<connector uid="165" angle="142.125">
-					<from>
-						<alias uid="162"/>
-					</from>
-					<to>NPP_per_unit_cropland_area</to>
-				</connector>
-				<connector uid="166" angle="212.196">
-					<from>
-						<alias uid="163"/>
-					</from>
-					<to>NPP_per_unit_grazing_land_area</to>
-				</connector>
-				<connector uid="167" angle="167.196">
-					<from>
-						<alias uid="162"/>
-					</from>
-					<to>NPP_per_unit_grazing_land_area</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="127.5" y="3048.75" name="young forest net\nprimary production"/>
-				<aux font_style="italic" font_weight="bold" x="127.5" y="3108.75" name="mature forest net\nprimary production"/>
-				<aux x="202.5" y="3093.75" name="Forest net primary production"/>
-				<connector uid="169" angle="2.1211">
-					<from>young_forest_net_primary_production</from>
-					<to>Forest_net_primary_production</to>
-				</connector>
-				<connector uid="170" angle="29.2488">
-					<from>mature_forest_net_primary_production</from>
-					<to>Forest_net_primary_production</to>
-				</connector>
-				<aux x="252.5" y="3133.25" name="NPP per\nunit forest area"/>
-				<connector uid="171" angle="347.471">
-					<from>Forest_net_primary_production</from>
-					<to>NPP_per_unit_forest_area</to>
-				</connector>
-				<connector uid="172" angle="25.641">
-					<from>
-						<alias uid="168"/>
-					</from>
-					<to>NPP_per_unit_forest_area</to>
-				</connector>
-				<connector uid="173" angle="261.87">
-					<from>
-						<alias uid="163"/>
-					</from>
-					<to>NPP_per_unit_forest_area</to>
-				</connector>
-				<connector uid="174" angle="254.055">
-					<from>
-						<alias uid="162"/>
-					</from>
-					<to>NPP_per_unit_forest_area</to>
-				</connector>
-				<alias font_style="italic" uid="37" x="119.333" y="628" width="18" height="18">
-					<of>Holocene_forested_area</of>
-				</alias>
 				<alias font_style="italic" font_weight="bold" uid="102" x="119.889" y="528.778" width="18" height="18">
 					<of>grass_net_primary_production</of>
-				</alias>
-				<alias font_style="italic" uid="105" x="69.25" y="1641" width="18" height="18">
-					<of>HANPP_of_cropland</of>
-				</alias>
-				<alias font_style="italic" uid="106" x="69.25" y="1696" width="18" height="18">
-					<of>HANPP_of_grazing_land</of>
-				</alias>
-				<alias font_style="italic" uid="107" x="69.25" y="1742.67" width="18" height="18">
-					<of>HANPP_of_timber</of>
-				</alias>
-				<alias font_style="italic" uid="111" x="153.5" y="1431" width="18" height="18">
-					<of>Potential_net_primary_production</of>
-				</alias>
-				<alias font_style="italic" font_weight="bold" uid="112" x="153.5" y="1512.25" width="18" height="18">
-					<of>Terrestrial_net_primary_production</of>
-				</alias>
-				<alias font_style="italic" uid="113" x="153.5" y="1574.75" width="18" height="18">
-					<of>HANPP_of_land_use_change</of>
-				</alias>
-				<alias font_style="italic" uid="114" x="162.25" y="1784.75" width="18" height="18">
-					<of>&quot;HANPP_of_human-induced_fires&quot;</of>
-				</alias>
-				<alias font_style="italic" uid="118" x="167.25" y="1906" width="18" height="18">
-					<of>HANPP_excluding_biomass_plantations</of>
-				</alias>
-				<alias font_style="italic" uid="121" x="99.75" y="2263.5" width="18" height="18">
-					<of>HANPP_of_cropland</of>
-				</alias>
-				<alias font_style="italic" uid="126" x="98.5" y="2421" width="18" height="18">
-					<of>HANPP_of_grazing_land</of>
-				</alias>
-				<alias font_style="italic" uid="131" x="102.25" y="2554.75" width="18" height="18">
-					<of>HANPP_of_timber</of>
-				</alias>
-				<alias color="black" background="white" font_style="italic" uid="145" x="98.5" y="2231" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>HANPP_of_crop_harvest_ALT</of>
-				</alias>
-				<alias font_style="italic" font_weight="bold" uid="151" x="114.75" y="2737.25" width="18" height="18">
-					<of>cropland_net_primary_production</of>
-				</alias>
-				<alias font_style="italic" font_weight="bold" uid="150" x="101.25" y="2810" width="45" height="35">
-					<of>Cropland</of>
-				</alias>
-				<alias font_style="italic" uid="156" x="119.75" y="2888.5" width="18" height="18">
-					<of>grazing_land_net_primary_production</of>
-				</alias>
-				<alias font_style="italic" font_weight="bold" uid="157" x="117.25" y="2962.25" width="18" height="18">
-					<of>grazing_land</of>
-				</alias>
-				<alias font_style="italic" uid="163" x="489.75" y="2764.75" width="18" height="18">
-					<of>GtC_to_gC</of>
-				</alias>
-				<alias font_style="italic" uid="162" x="487.25" y="2888.5" width="18" height="18">
-					<of>Mha_to_m2</of>
-				</alias>
-				<alias font_style="italic" font_weight="bold" uid="168" x="118.5" y="3162.25" width="18" height="18">
-					<of>Forest_Land</of>
 				</alias>
 			</view>
 		</views>
