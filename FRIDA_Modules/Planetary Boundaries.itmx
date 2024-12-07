@@ -235,6 +235,7 @@
 				<entity name='"PB1:1_Holocene_value"'/>
 				<entity name='"PB1:1_Normalised_control_variable"'/>
 				<entity name='"Total_NPP_consumed_by_human-induced_fires_2000"'/>
+				<entity name="crop_production"/>
 				<entity name="Cropland_actual_NPP_per_unit_area_2000"/>
 				<entity name="Cropland_harvested_NPP_per_unit_area_2000"/>
 				<entity name="cropland_net_primary_production"/>
@@ -248,6 +249,7 @@
 				<entity name="grazing_land_net_primary_production"/>
 				<entity name="Habitable_Land_Area"/>
 				<entity name="HANPP_excluding_biomass_plantations"/>
+				<entity name="HANPP_of_crop_harvest_ALT"/>
 				<entity name="HANPP_of_cropland"/>
 				<entity name="HANPP_of_grazing_land"/>
 				<entity name="HANPP_of_land_use_change"/>
@@ -261,6 +263,7 @@
 				<entity name="timber"/>
 				<entity name="Total_actual_NPP_2000"/>
 				<entity name="tree_net_primary_production"/>
+				<entity name="UNIT_GtC_per_PCal_crop"/>
 			</group>
 			<group name="PB 2 - Land System Change" run="false">
 				<format scale_by="auto"/>
@@ -729,7 +732,7 @@
 			</aux>
 			<group name="Test variables" run="false">
 				<format scale_by="auto"/>
-				<entity name="crop_production"/>
+				<entity name="base_value_water_withdrawal_per_MHa_irrigated_1980"/>
 				<entity name="Maximum_fraction_for_parameters_in_spider_diagram"/>
 				<entity name="Maximum_value_for_Mha_irrigated_1980_parameter"/>
 				<entity name="Minimum_fraction_for_parameters_in_spider_diagram"/>
@@ -803,22 +806,22 @@
 				<format scale_by="auto"/>
 				<entity name="Cropland"/>
 				<entity name="Forest_Land"/>
+				<entity name="Forest_net_primary_production"/>
 				<entity name="grazing_land_1"/>
 				<entity name="GtC_to_gC"/>
 				<entity name="HANPP_from_harvest"/>
 				<entity name="Harvested_NPP_per_unit_cropland_area"/>
+				<entity name="Harvested_NPP_per_unit_cropland_area_ALT"/>
 				<entity name="Harvested_NPP_per_unit_forest_area"/>
 				<entity name="Harvested_NPP_per_unit_grazing_land_area"/>
+				<entity name="mature_forest_net_primary_production"/>
 				<entity name="Mha_to_m2"/>
+				<entity name="NPP_per_unit_cropland_area"/>
+				<entity name="NPP_per_unit_forest_area"/>
+				<entity name="NPP_per_unit_grazing_land_area"/>
 				<entity name="NPP_remaining_in_ecosystems"/>
+				<entity name="young_forest_net_primary_production"/>
 			</group>
-			<aux name="crop production" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>PCal/year</units>
-			</aux>
 			<aux name="HANPP from harvest">
 				<dimensions>
 					<dim name="Run"/>
@@ -884,7 +887,7 @@
 				<units>gC/m^2/year</units>
 			</aux>
 			<aux name="Minimum value for Mha irrigated 1980 parameter">
-				<eqn>water_withdrawal_per_MHa_irrigated_1980 * Minimum_fraction_for_parameters_in_spider_diagram</eqn>
+				<eqn>base_value_water_withdrawal_per_MHa_irrigated_1980 * Minimum_fraction_for_parameters_in_spider_diagram</eqn>
 				<units>m^3/MHa/year</units>
 			</aux>
 			<aux name="water withdrawal per\nMHa irrigated 1980" access="input">
@@ -892,20 +895,91 @@
 				<units>m^3/MHa/year</units>
 			</aux>
 			<aux name="Minimum fraction for parameters in spider diagram">
-				<eqn>0.2</eqn>
+				<eqn>0.5</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Maximum fraction for parameters in spider diagram">
-				<eqn>3</eqn>
+				<eqn>5</eqn>
 				<units>dmnl</units>
+			</aux>
+			<aux name="Maximum value for Mha irrigated 1980 parameter">
+				<eqn>base_value_water_withdrawal_per_MHa_irrigated_1980 * Maximum_fraction_for_parameters_in_spider_diagram</eqn>
+				<units>m^3/MHa/year</units>
 			</aux>
 			<aux name="Number of values for parameters in spider diagram">
 				<eqn>15</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="Maximum value for Mha irrigated 1980 parameter">
-				<eqn>water_withdrawal_per_MHa_irrigated_1980 * Maximum_fraction_for_parameters_in_spider_diagram</eqn>
+			<aux name="base value water withdrawal per\nMHa irrigated 1980">
+				<eqn>10457730985.1113</eqn>
 				<units>m^3/MHa/year</units>
+			</aux>
+			<aux name="crop production" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>PCal/year</units>
+			</aux>
+			<aux name="HANPP of crop harvest ALT">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>UNIT_GtC_per_PCal_crop * crop_production</eqn>
+				<units>GtC/year</units>
+			</aux>
+			<aux name="UNIT GtC per PCal crop" access="input">
+				<eqn>0.001756582675</eqn>
+				<units>GtC/PCal</units>
+			</aux>
+			<aux name="Harvested NPP per\nunit cropland area ALT">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(HANPP_of_crop_harvest_ALT / GtC_to_gC) / (Cropland / Mha_to_m2)</eqn>
+				<units>gC/m^2/year</units>
+			</aux>
+			<aux name="NPP per\nunit cropland area">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(cropland_net_primary_production / GtC_to_gC) / (Cropland / Mha_to_m2)</eqn>
+				<units>gC/m^2/year</units>
+			</aux>
+			<aux name="NPP per\nunit grazing land area">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(grazing_land_net_primary_production / GtC_to_gC) / (grazing_land / Mha_to_m2)</eqn>
+				<units>gC/m^2/year</units>
+			</aux>
+			<aux name="young forest net\nprimary production" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>GtC/Year</units>
+			</aux>
+			<aux name="mature forest net\nprimary production" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>GtC/Year</units>
+			</aux>
+			<aux name="Forest net primary production">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>mature_forest_net_primary_production + young_forest_net_primary_production</eqn>
+				<units>GtC/year</units>
+			</aux>
+			<aux name="NPP per\nunit forest area">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(Forest_net_primary_production / GtC_to_gC) / (Forest_Land / Mha_to_m2)</eqn>
+				<units>gC/m^2/year</units>
 			</aux>
 		</variables>
 		<views>
@@ -1050,7 +1124,54 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1096" page_height="764" isee:page_cols="8" isee:page_rows="6" isee:scroll_x="1036.25" isee:scroll_y="2236.25" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
+				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:sim_speed_slider color="black" background="white"/>
+				<isee:time_slider color="#E95F74" background="silver"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
+				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
+				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<view isee:show_pages="false" background="white" page_width="1096" page_height="764" isee:page_cols="8" isee:page_rows="7" isee:scroll_y="2500" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="black" background="white" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1330,10 +1451,10 @@
 						</plot>
 					</graph>
 				</stacked_container>
-				<group locked="true" x="60.667" y="3023.67" width="610" height="626" name="Correlation analysis">
+				<group locked="true" x="-44.333" y="4238.67" width="610" height="626" name="Correlation analysis">
 					<item uid="49"/>
 				</group>
-				<stacked_container uid="49" x="117.667" y="3231.67" width="535" height="390">
+				<stacked_container uid="49" x="12.667" y="4446.67" width="535" height="390">
 					<graph width="535" height="390" type="correlation" isee:correlation_source="Variables_to_correlate_against" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name='"PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production"'/>
@@ -1358,7 +1479,7 @@
 						</plot>
 					</graph>
 				</stacked_container>
-				<isee:placeholder x="536.667" y="3067.67" name="Variables to correlate against"/>
+				<isee:placeholder x="431.667" y="4282.67" name="Variables to correlate against"/>
 				<group locked="true" x="784.667" y="1363.67" width="610" height="626" name="SMEX correlation analysis">
 					<item uid="51"/>
 				</group>
@@ -1600,7 +1721,7 @@
 				</group>
 				<text_box uid="101" x="1630" y="788" width="383" height="127">References:
 - Agriculture fraction of blue water consumption: Campbell et al., 2017</text_box>
-				<group locked="true" x="58.75" y="1387.67" width="601.25" height="1636" name="PB 1 Validation">
+				<group locked="true" x="58.75" y="1387.67" width="601.25" height="2807.25" name="PB 1 Validation">
 					<item uid="105"/>
 					<item uid="106"/>
 					<item uid="107"/>
@@ -1614,6 +1735,14 @@
 					<item uid="121"/>
 					<item uid="126"/>
 					<item uid="131"/>
+					<item uid="145"/>
+					<item uid="150"/>
+					<item uid="151"/>
+					<item uid="156"/>
+					<item uid="157"/>
+					<item uid="162"/>
+					<item uid="163"/>
+					<item uid="168"/>
 				</group>
 				<connector uid="103" angle="12.9183">
 					<from>
@@ -1625,9 +1754,6 @@
 					<table width="350" height="250" comparative="true" isee:export_name="Comparative table SMEX" isee:mark_for_export="true" title="Comparative table SMEX">
 						<item type="time"/>
 						<item>
-							<entity name="Crop.crop_production[*]"/>
-						</item>
-						<item>
 							<entity name='"PB3:1_Maximum_amount_of_consumptive_blue_water_use"[*]'/>
 						</item>
 						<item>
@@ -1635,7 +1761,6 @@
 						</item>
 					</table>
 				</stacked_container>
-				<aux font_style="italic" font_weight="bold" x="779" y="2078" name="crop production"/>
 				<aux label_side="right" label_angle="45" x="171.25" y="1705" name="HANPP from harvest"/>
 				<connector uid="108" angle="345.466">
 					<from>
@@ -1786,16 +1911,11 @@
 					<to>Harvested_NPP_per_unit_forest_area</to>
 				</connector>
 				<aux x="901.25" y="2415" name="Minimum value for Mha irrigated 1980 parameter"/>
-				<aux font_style="italic" font_weight="bold" x="800" y="2448.75" name="water withdrawal per\nMHa irrigated 1980"/>
+				<aux font_style="italic" font_weight="bold" x="775" y="2457.5" name="water withdrawal per\nMHa irrigated 1980"/>
 				<aux x="775" y="2163.75" name="Minimum fraction for parameters in spider diagram"/>
 				<aux x="775" y="2225.5" name="Maximum fraction for parameters in spider diagram"/>
-				<aux x="775" y="2298.75" name="Number of values for parameters in spider diagram"/>
 				<connector uid="136" angle="323.471">
 					<from>Minimum_fraction_for_parameters_in_spider_diagram</from>
-					<to>Minimum_value_for_Mha_irrigated_1980_parameter</to>
-				</connector>
-				<connector uid="137" angle="41.1859">
-					<from>water_withdrawal_per_MHa_irrigated_1980</from>
 					<to>Minimum_value_for_Mha_irrigated_1980_parameter</to>
 				</connector>
 				<aux x="896.25" y="2493.75" name="Maximum value for Mha irrigated 1980 parameter"/>
@@ -1803,18 +1923,141 @@
 					<from>Maximum_fraction_for_parameters_in_spider_diagram</from>
 					<to>Maximum_value_for_Mha_irrigated_1980_parameter</to>
 				</connector>
-				<connector uid="139" angle="330.751">
-					<from>water_withdrawal_per_MHa_irrigated_1980</from>
-					<to>Maximum_value_for_Mha_irrigated_1980_parameter</to>
-				</connector>
 				<stacked_container uid="140" x="1638.75" y="2562.5">
-					<table width="350" height="250" comparative="true" isee:export_name="SMEX Values of PB3:1 to use for spider diagram" isee:mark_for_export="true" title="SMEX Values of PB3:1 to use for spider diagram">
+					<table orientation="vertical" isee:start_time="2050" isee:stop_time="2050" interval="1" report_balances="beginning" report_flows="instantaneous" width="350" height="250" comparative="true" isee:export_name="SMEX Values of PB3:1 to use for spider diagram" isee:mark_for_export="true" title="SMEX Values of PB3:1 to use for spider diagram">
 						<item type="time"/>
 						<item>
 							<entity name='"PB3:1_Maximum_amount_of_consumptive_blue_water_use"[*]'/>
 						</item>
+						<item>
+							<entity name='"PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production"'/>
+						</item>
 					</table>
 				</stacked_container>
+				<aux x="775" y="2298.75" name="Number of values for parameters in spider diagram"/>
+				<aux x="775" y="2378.75" name="base value water withdrawal per\nMHa irrigated 1980"/>
+				<connector uid="141" angle="354.289">
+					<from>base_value_water_withdrawal_per_MHa_irrigated_1980</from>
+					<to>Minimum_value_for_Mha_irrigated_1980_parameter</to>
+				</connector>
+				<connector uid="142" angle="300.256">
+					<from>base_value_water_withdrawal_per_MHa_irrigated_1980</from>
+					<to>Maximum_value_for_Mha_irrigated_1980_parameter</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="110" y="192.25" name="crop production"/>
+				<aux x="253.333" y="202.75" name="HANPP of crop harvest ALT"/>
+				<connector uid="143" angle="18.2202">
+					<from>crop_production</from>
+					<to>HANPP_of_crop_harvest_ALT</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="110" y="161.25" name="UNIT GtC per PCal crop"/>
+				<connector uid="144" angle="10.3048">
+					<from>UNIT_GtC_per_PCal_crop</from>
+					<to>HANPP_of_crop_harvest_ALT</to>
+				</connector>
+				<aux x="191.25" y="2240" name="Harvested NPP per\nunit cropland area ALT"/>
+				<connector uid="146" angle="144.462">
+					<from>GtC_to_gC</from>
+					<to>Harvested_NPP_per_unit_cropland_area_ALT</to>
+				</connector>
+				<connector uid="147" angle="153.265">
+					<from>Mha_to_m2</from>
+					<to>Harvested_NPP_per_unit_cropland_area_ALT</to>
+				</connector>
+				<connector uid="148" angle="36.2538">
+					<from>
+						<alias uid="145"/>
+					</from>
+					<to>Harvested_NPP_per_unit_cropland_area_ALT</to>
+				</connector>
+				<connector uid="149" angle="48.5763">
+					<from>Cropland</from>
+					<to>Harvested_NPP_per_unit_cropland_area_ALT</to>
+				</connector>
+				<aux x="191.25" y="2792.5" name="NPP per\nunit cropland area"/>
+				<connector uid="152" angle="349.875">
+					<from>
+						<alias uid="151"/>
+					</from>
+					<to>NPP_per_unit_cropland_area</to>
+				</connector>
+				<connector uid="153" angle="19.7468">
+					<from>
+						<alias uid="150"/>
+					</from>
+					<to>NPP_per_unit_cropland_area</to>
+				</connector>
+				<aux x="191.25" y="2943.25" name="NPP per\nunit grazing land area"/>
+				<connector uid="159" angle="319.399">
+					<from>
+						<alias uid="156"/>
+					</from>
+					<to>NPP_per_unit_grazing_land_area</to>
+				</connector>
+				<connector uid="160" angle="28.1786">
+					<from>
+						<alias uid="157"/>
+					</from>
+					<to>NPP_per_unit_grazing_land_area</to>
+				</connector>
+				<connector uid="164" angle="162.474">
+					<from>
+						<alias uid="163"/>
+					</from>
+					<to>NPP_per_unit_cropland_area</to>
+				</connector>
+				<connector uid="165" angle="142.125">
+					<from>
+						<alias uid="162"/>
+					</from>
+					<to>NPP_per_unit_cropland_area</to>
+				</connector>
+				<connector uid="166" angle="212.196">
+					<from>
+						<alias uid="163"/>
+					</from>
+					<to>NPP_per_unit_grazing_land_area</to>
+				</connector>
+				<connector uid="167" angle="167.196">
+					<from>
+						<alias uid="162"/>
+					</from>
+					<to>NPP_per_unit_grazing_land_area</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="127.5" y="3048.75" name="young forest net\nprimary production"/>
+				<aux font_style="italic" font_weight="bold" x="127.5" y="3108.75" name="mature forest net\nprimary production"/>
+				<aux x="202.5" y="3093.75" name="Forest net primary production"/>
+				<connector uid="169" angle="2.1211">
+					<from>young_forest_net_primary_production</from>
+					<to>Forest_net_primary_production</to>
+				</connector>
+				<connector uid="170" angle="29.2488">
+					<from>mature_forest_net_primary_production</from>
+					<to>Forest_net_primary_production</to>
+				</connector>
+				<aux x="252.5" y="3133.25" name="NPP per\nunit forest area"/>
+				<connector uid="171" angle="347.471">
+					<from>Forest_net_primary_production</from>
+					<to>NPP_per_unit_forest_area</to>
+				</connector>
+				<connector uid="172" angle="25.641">
+					<from>
+						<alias uid="168"/>
+					</from>
+					<to>NPP_per_unit_forest_area</to>
+				</connector>
+				<connector uid="173" angle="261.87">
+					<from>
+						<alias uid="163"/>
+					</from>
+					<to>NPP_per_unit_forest_area</to>
+				</connector>
+				<connector uid="174" angle="254.055">
+					<from>
+						<alias uid="162"/>
+					</from>
+					<to>NPP_per_unit_forest_area</to>
+				</connector>
 				<alias font_style="italic" uid="37" x="119.333" y="628" width="18" height="18">
 					<of>Holocene_forested_area</of>
 				</alias>
@@ -1853,6 +2096,31 @@
 				</alias>
 				<alias font_style="italic" uid="131" x="102.25" y="2554.75" width="18" height="18">
 					<of>HANPP_of_timber</of>
+				</alias>
+				<alias color="black" background="white" font_style="italic" uid="145" x="98.5" y="2231" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>HANPP_of_crop_harvest_ALT</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="151" x="114.75" y="2737.25" width="18" height="18">
+					<of>cropland_net_primary_production</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="150" x="101.25" y="2810" width="45" height="35">
+					<of>Cropland</of>
+				</alias>
+				<alias font_style="italic" uid="156" x="119.75" y="2888.5" width="18" height="18">
+					<of>grazing_land_net_primary_production</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="157" x="117.25" y="2962.25" width="18" height="18">
+					<of>grazing_land</of>
+				</alias>
+				<alias font_style="italic" uid="163" x="489.75" y="2764.75" width="18" height="18">
+					<of>GtC_to_gC</of>
+				</alias>
+				<alias font_style="italic" uid="162" x="487.25" y="2888.5" width="18" height="18">
+					<of>Mha_to_m2</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="168" x="118.5" y="3162.25" width="18" height="18">
+					<of>Forest_Land</of>
 				</alias>
 			</view>
 		</views>
