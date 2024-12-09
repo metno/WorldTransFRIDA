@@ -4030,10 +4030,10 @@ ELSE
 				<eqn>IF (switch_land_carbon_impact =0) AND TIME &gt; today THEN
 PREVIOUS(SELF, 0)
 ELSE
-((Surface_Temperature_Anomaly_1-INIT(Surface_Temperature_Anomaly_1))^2)*STA_squared_tree_net_primary_production</eqn>
+((Surface_Temperature_Anomaly_1-INIT(Surface_Temperature_Anomaly_1))^2)*STA_squared_tree_net_primary_production_parameter</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="STA squared tree net\nprimary production">
+			<aux name="STA squared tree net\nprimary production parameter">
 				<doc>${Calibration Parameter}
 </doc>
 				<eqn>-0.005</eqn>
@@ -4051,7 +4051,7 @@ ELSE
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>young_forest_net_primary_production*(1-forest_net_primary_production_aboveground_biomass_share)</eqn>
+				<eqn>young_forest_net_primary_production*(1-Young_forest_net_primary_production_aboveground_biomass_share)</eqn>
 				<units>GtC/Year</units>
 			</aux>
 			<aux name="tree net primary production\nin 1980">
@@ -4092,7 +4092,7 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>ppm</units>
 			</aux>
-			<aux name="forest net primary\nproduction aboveground\nbiomass share">
+			<aux name="Young forest net primary\nproduction aboveground\nbiomass share">
 				<doc>https://doi.org/10.1890/1051-0761(2001)011[1395:NPPACA]2.0.CO;2</doc>
 				<dimensions>
 					<dim name="Run"/>
@@ -4104,7 +4104,7 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>young_forest_net_primary_production*forest_net_primary_production_aboveground_biomass_share</eqn>
+				<eqn>young_forest_net_primary_production*Young_forest_net_primary_production_aboveground_biomass_share</eqn>
 				<non_negative/>
 				<units>GtC/Year</units>
 			</flow>
@@ -4129,6 +4129,7 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 				<eqn>forest_aboveground_biomass_1980-Young_forest_aboveground_biomass</eqn>
 				<format precision="full"/>
 				<inflow>maturing</inflow>
+				<inflow>Mature_forest_growth</inflow>
 				<outflow>cutting</outflow>
 				<outflow>clearing</outflow>
 				<non_negative/>
@@ -4156,7 +4157,7 @@ https://doi.org/10.1073/pnas.0704243104 (0.0072)</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>mature_forest_net_primary_production</eqn>
+				<eqn>mature_forest_net_primary_production-Mature_forest_growth</eqn>
 				<units>GtC/Year</units>
 			</aux>
 			<aux name="timber" access="output" isee:autocreated="true">
@@ -4270,10 +4271,57 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>Mha/year</units>
 			</aux>
-			<aux name="old forest net primary\nproduction aboveground\nbiomass share">
+			<flow name="Mature forest growth">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>mature_forest_net_primary_production*Mature_forest_net_primary_production_aboveground_biomass_share</eqn>
+				<units>GtC/Year</units>
+			</flow>
+			<aux name="Mature forest net primary\nproduction aboveground\nbiomass share">
 				<doc>https://doi.org/10.1890/1051-0761(2001)011[1395:NPPACA]2.0.CO;2</doc>
-				<eqn>0.2</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MAX(0, (1.0 - Mature_forest_aboveground_biomass_per_area/Maximum_mature_forest_aboveground_biomass_per_area))</eqn>
 				<units>dmnl</units>
+			</aux>
+			<aux name="Normal mature forest\naboveground biomass per area">
+				<doc>https://doi.org/10.1890/1051-0761(2001)011[1395:NPPACA]2.0.CO;2</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>INIT(Mature_forest_aboveground_biomass_per_area)</eqn>
+				<units>GtC/Mha</units>
+			</aux>
+			<aux name="Change in maximum mature forest\naboveground biomass per area">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Normal_mature_forest_aboveground_biomass_per_area *  (STA_maximum_aboveground_biomass_per_area_parameter * Surface_Temperature_Anomaly_1 - STA_squared_maximum_aboveground_biomass_per_area_parameter * Surface_Temperature_Anomaly_1^2)</eqn>
+				<units>GtC/Mha</units>
+			</aux>
+			<aux name="Maximum mature forest\naboveground biomass per area">
+				<doc>https://doi.org/10.1890/1051-0761(2001)011[1395:NPPACA]2.0.CO;2</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Normal_mature_forest_aboveground_biomass_per_area+Change_in_maximum_mature_forest_aboveground_biomass_per_area</eqn>
+				<units>GtC/Mha</units>
+			</aux>
+			<aux name="STA maximum aboveground\nbiomass per area parameter">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>0.05</eqn>
+				<range min="0.01" max="0.05"/>
+				<units>1/deg C</units>
+			</aux>
+			<aux name="STA squared maximum aboveground\nbiomass per area parameter">
+				<doc>${Calibration Parameter}
+</doc>
+				<eqn>-0.005</eqn>
+				<range min="-0.02" max="0"/>
+				<units>1/(deg C^2)</units>
 			</aux>
 		</variables>
 		<views>
@@ -4324,7 +4372,7 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="322" isee:scroll_y="103" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="463.571" isee:scroll_y="39.2857" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4363,14 +4411,14 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<aux label_side="left" x="1017.89" y="820.167" name="tree net primary production"/>
-				<aux x="1448.63" y="1048.29" name="CO2 tree net primary\nproduction parameter"/>
-				<aux x="1296" y="1059.17" name="effect of CO2 on\ntree net primary production"/>
-				<connector uid="1" angle="184.076">
+				<aux label_side="left" x="988.89" y="943.167" name="tree net primary production"/>
+				<aux x="1420.63" y="1151.29" name="CO2 tree net primary\nproduction parameter"/>
+				<aux x="1267" y="1182.17" name="effect of CO2 on\ntree net primary production"/>
+				<connector uid="1" angle="191.365">
 					<from>CO2_tree_net_primary_production_parameter</from>
 					<to>effect_of_CO2_on_tree_net_primary_production</to>
 				</connector>
-				<aux x="1204" y="899.167" name="change in tree net\nprimary production from CO2"/>
+				<aux x="1175" y="1022.17" name="change in tree net\nprimary production from CO2"/>
 				<connector uid="2" angle="157.557">
 					<from>effect_of_CO2_on_tree_net_primary_production</from>
 					<to>change_in_tree_net_primary_production_from_CO2</to>
@@ -4379,9 +4427,9 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 					<from>change_in_tree_net_primary_production_from_CO2</from>
 					<to>tree_net_primary_production</to>
 				</connector>
-				<aux x="832.75" y="917.167" name="change in tree net\nprimary production from STA"/>
-				<aux x="755.17" y="1181.17" name="effect of STA on\ntree net primary production"/>
-				<aux label_side="left" label_angle="225" x="673.32" y="1273.03" name="STA tree net primary\nproduction parameter"/>
+				<aux x="803.75" y="1040.17" name="change in tree net\nprimary production from STA"/>
+				<aux x="726.17" y="1304.17" name="effect of STA on\ntree net primary production"/>
+				<aux label_side="left" label_angle="225" x="644.32" y="1396.03" name="STA tree net primary\nproduction parameter"/>
 				<connector uid="4" angle="81.0979">
 					<from>STA_tree_net_primary_production_parameter</from>
 					<to>effect_of_STA_on_tree_net_primary_production</to>
@@ -4390,18 +4438,18 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 					<from>effect_of_STA_on_tree_net_primary_production</from>
 					<to>change_in_tree_net_primary_production_from_STA</to>
 				</connector>
-				<aux x="1044.89" y="979.597" name="change in tree net primary production\nfrom STA squared"/>
-				<aux x="1044.89" y="1197.74" name="effect of STA squared on\ntree net primary production"/>
-				<aux x="1138" y="1297.03" name="STA squared tree net\nprimary production"/>
+				<aux x="1015.89" y="1102.6" name="change in tree net primary production\nfrom STA squared"/>
+				<aux x="1015.89" y="1320.74" name="effect of STA squared on\ntree net primary production"/>
+				<aux x="1109" y="1420.03" name="STA squared tree net\nprimary production parameter"/>
 				<connector uid="6" angle="82.673">
-					<from>STA_squared_tree_net_primary_production</from>
+					<from>STA_squared_tree_net_primary_production_parameter</from>
 					<to>effect_of_STA_squared_on_tree_net_primary_production</to>
 				</connector>
 				<connector uid="7" angle="90">
 					<from>effect_of_STA_squared_on_tree_net_primary_production</from>
 					<to>change_in_tree_net_primary_production_from_STA_squared</to>
 				</connector>
-				<aux x="914.82" y="1041.46" name="combined change in tree net primary production\nfrom STA"/>
+				<aux x="885.82" y="1164.46" name="combined change in tree net primary production\nfrom STA"/>
 				<connector uid="8" angle="272.291">
 					<from>change_in_tree_net_primary_production_from_STA</from>
 					<to>combined_change_in_tree_net_primary_production_from_STA</to>
@@ -4419,11 +4467,11 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 					<to>tree_net_primary_production</to>
 				</connector>
 				<aux x="570" y="384.833" name="young forest litter"/>
-				<connector uid="12" angle="126.031">
+				<connector uid="12" angle="114.133">
 					<from>tree_net_primary_production</from>
 					<to>young_forest_net_primary_production</to>
 				</connector>
-				<aux x="716.083" y="820.167" name="tree net primary production\nin 1980"/>
+				<aux x="687.083" y="943.167" name="tree net primary production\nin 1980"/>
 				<connector uid="13" angle="31.7595">
 					<from>tree_net_primary_production_in_1980</from>
 					<to>tree_net_primary_production</to>
@@ -4452,7 +4500,7 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 					<to>young_forest_litter</to>
 				</connector>
 				<stock font_style="italic" font_weight="bold" label_side="top" x="844.334" y="527.619" name="Young Forest"/>
-				<aux font_style="italic" font_weight="bold" x="873.25" y="1274.92" name="Surface Temperature Anomaly 1"/>
+				<aux font_style="italic" font_weight="bold" x="844.25" y="1397.92" name="Surface Temperature Anomaly 1"/>
 				<connector uid="24" angle="184.899">
 					<from>Surface_Temperature_Anomaly_1</from>
 					<to>effect_of_STA_on_tree_net_primary_production</to>
@@ -4461,7 +4509,7 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 					<from>Surface_Temperature_Anomaly_1</from>
 					<to>effect_of_STA_squared_on_tree_net_primary_production</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1346.5" y="1224.38" name="Atmospheric CO2 Concentration 1"/>
+				<aux font_style="italic" font_weight="bold" x="1317.5" y="1347.38" name="Atmospheric CO2 Concentration 1"/>
 				<connector uid="26" angle="50.7106">
 					<from>Atmospheric_CO2_Concentration_1</from>
 					<to>effect_of_CO2_on_tree_net_primary_production</to>
@@ -4470,9 +4518,9 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 					<from>Young_Forest</from>
 					<to>young_forest_net_primary_production</to>
 				</connector>
-				<aux color="blue" x="743.104" y="259.333" name="forest net primary\nproduction aboveground\nbiomass share"/>
+				<aux color="blue" x="743.104" y="259.333" name="Young forest net primary\nproduction aboveground\nbiomass share"/>
 				<connector uid="28" angle="177.645">
-					<from>forest_net_primary_production_aboveground_biomass_share</from>
+					<from>Young_forest_net_primary_production_aboveground_biomass_share</from>
 					<to>young_forest_litter</to>
 				</connector>
 				<flow x="915.987" y="411.333" name="young forest growth">
@@ -4481,18 +4529,18 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 						<pt x="991.14" y="411.333"/>
 					</pts>
 				</flow>
-				<aux x="1229" y="758.75" name="mature forest net\nprimary production"/>
-				<stock font_style="italic" font_weight="bold" x="1417.13" y="766" name="Mature Forest"/>
-				<connector uid="29" angle="154.658">
+				<aux x="1133" y="850.75" name="mature forest net\nprimary production"/>
+				<stock font_style="italic" font_weight="bold" x="1275.13" y="835" name="Mature Forest"/>
+				<connector uid="29" angle="163.188">
 					<from>Mature_Forest</from>
 					<to>mature_forest_net_primary_production</to>
 				</connector>
-				<connector uid="30" angle="35.2215">
+				<connector uid="30" angle="51.6724">
 					<from>tree_net_primary_production</from>
 					<to>mature_forest_net_primary_production</to>
 				</connector>
 				<connector uid="31" angle="1.28194">
-					<from>forest_net_primary_production_aboveground_biomass_share</from>
+					<from>Young_forest_net_primary_production_aboveground_biomass_share</from>
 					<to>young_forest_growth</to>
 				</connector>
 				<connector uid="32" angle="21.4115">
@@ -4512,8 +4560,8 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 						<pt x="1542" y="411.333"/>
 					</pts>
 				</flow>
-				<aux x="1346.5" y="814.178" name="mature forest litter"/>
-				<connector uid="33" angle="353.069">
+				<aux x="1128.82" y="705.178" name="mature forest litter"/>
+				<connector uid="33" angle="109.968">
 					<from>mature_forest_net_primary_production</from>
 					<to>mature_forest_litter</to>
 				</connector>
@@ -4522,19 +4570,19 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 					<from>clearing</from>
 					<to>timber</to>
 				</connector>
-				<aux color="blue" x="1104.76" y="690.535" name="forest aboveground biomass 1980"/>
+				<aux color="blue" x="1045.76" y="606.535" name="forest aboveground biomass 1980"/>
 				<aux color="blue" x="904.571" y="97.5714" name="Young mature forest biomass\nratio"/>
-				<aux font_style="italic" font_weight="bold" x="1478.54" y="519.571" name="clearing forest\nfor grassland"/>
-				<connector uid="40" angle="101.569">
+				<aux font_style="italic" font_weight="bold" x="1653.54" y="407.833" name="clearing forest\nfor grassland"/>
+				<connector uid="40" angle="155.787">
 					<from>clearing_forest_for_grassland</from>
 					<to>clearing</to>
 				</connector>
-				<aux x="1083.14" y="589.202" name="forest aboveground biomass"/>
-				<connector uid="44" angle="227.046">
+				<aux x="1024.14" y="505.202" name="forest aboveground biomass"/>
+				<connector uid="44" angle="202.041">
 					<from>Mature_forest_aboveground_biomass</from>
 					<to>forest_aboveground_biomass</to>
 				</connector>
-				<aux x="1041.68" y="649.654" name="forest aboveground biomass balance"/>
+				<aux x="982.68" y="565.654" name="forest aboveground biomass balance"/>
 				<connector uid="47" angle="187.218">
 					<from>forest_aboveground_biomass</from>
 					<to>forest_aboveground_biomass_balance</to>
@@ -4544,7 +4592,7 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 					<to>forest_aboveground_biomass_balance</to>
 				</connector>
 				<stock label_side="top" x="1013.64" y="411.333" name="Young forest\naboveground biomass"/>
-				<connector uid="43" angle="272.562">
+				<connector uid="43" angle="257.602">
 					<from>Young_forest_aboveground_biomass</from>
 					<to>forest_aboveground_biomass</to>
 				</connector>
@@ -4564,8 +4612,8 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 					<to>timber</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="904.571" y="44.2857" name="young forest share"/>
-				<aux font_style="italic" font_weight="bold" x="896.82" y="1156.5" name="switch land carbon\nimpact"/>
-				<aux font_style="italic" font_weight="bold" x="891.25" y="1106.5" name="today"/>
+				<aux font_style="italic" font_weight="bold" x="867.82" y="1279.5" name="switch land carbon\nimpact"/>
+				<aux font_style="italic" font_weight="bold" x="862.25" y="1229.5" name="today"/>
 				<connector uid="54" angle="208.755">
 					<from>today</from>
 					<to>effect_of_STA_on_tree_net_primary_production</to>
@@ -4582,17 +4630,17 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 					<from>today</from>
 					<to>effect_of_STA_squared_on_tree_net_primary_production</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1513.86" y="445.857" name="clearing forests\nfor crops 1"/>
-				<connector uid="58" angle="163.373">
+				<aux font_style="italic" font_weight="bold" x="1718.86" y="363" name="clearing forests\nfor crops 1"/>
+				<connector uid="58" angle="164.634">
 					<from>clearing_forests_for_crops_1</from>
 					<to>clearing</to>
 				</connector>
-				<aux x="1319.61" y="482.714" name="Mature forest aboveground biomass per area"/>
-				<connector uid="60" angle="311.705">
+				<aux x="1358.75" y="487.571" name="Mature forest aboveground biomass per area"/>
+				<connector uid="60" angle="323.425">
 					<from>Mature_forest_aboveground_biomass</from>
 					<to>Mature_forest_aboveground_biomass_per_area</to>
 				</connector>
-				<connector uid="61" angle="119.41">
+				<connector uid="61" angle="86.8815">
 					<from>Mature_Forest</from>
 					<to>Mature_forest_aboveground_biomass_per_area</to>
 				</connector>
@@ -4605,11 +4653,11 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 					<from>Young_forest_aboveground_biomass</from>
 					<to>Young_forest_aboveground_biomass_per_area</to>
 				</connector>
-				<connector uid="72" angle="109.433">
+				<connector uid="72" angle="119.028">
 					<from>Mature_forest_aboveground_biomass_per_area</from>
 					<to>cutting</to>
 				</connector>
-				<connector uid="73" angle="56.4504">
+				<connector uid="73" angle="76.8313">
 					<from>Mature_forest_aboveground_biomass_per_area</from>
 					<to>clearing</to>
 				</connector>
@@ -4618,27 +4666,96 @@ https://doi.org/10.1016/j.foreco.2021.119507</doc>
 					<from>forest_completing_recovery</from>
 					<to>maturing</to>
 				</connector>
-				<connector uid="75" angle="189.784">
+				<connector uid="75" angle="191.953">
 					<from>Mature_forest_aboveground_biomass_per_area</from>
 					<to>maturing</to>
 				</connector>
-				<aux color="blue" x="646.247" y="168.5" name="old forest net primary\nproduction aboveground\nbiomass share"/>
 				<connector uid="77" angle="205.644">
 					<from>Young_forest_aboveground_biomass_per_area</from>
-					<to>forest_net_primary_production_aboveground_biomass_share</to>
+					<to>Young_forest_net_primary_production_aboveground_biomass_share</to>
 				</connector>
-				<connector uid="78" angle="210.316">
+				<connector uid="78" angle="297.477">
+					<from>
+						<alias uid="79"/>
+					</from>
+					<to>Young_forest_net_primary_production_aboveground_biomass_share</to>
+				</connector>
+				<flow label_side="bottom" x="1256" y="509.917" name="Mature forest growth">
+					<pts>
+						<pt x="1256" y="600"/>
+						<pt x="1256" y="428.833"/>
+					</pts>
+				</flow>
+				<aux color="blue" x="1380.25" y="640" name="Mature forest net primary\nproduction aboveground\nbiomass share"/>
+				<aux color="blue" x="1605.86" y="602.202" name="Normal mature forest\naboveground biomass per area"/>
+				<connector uid="80" angle="310.875">
 					<from>Mature_forest_aboveground_biomass_per_area</from>
-					<to>forest_net_primary_production_aboveground_biomass_share</to>
+					<to>Normal_mature_forest_aboveground_biomass_per_area</to>
 				</connector>
-				<alias font_style="italic" uid="15" x="675.75" y="1012.33" width="18" height="18">
+				<aux x="1595.86" y="723.178" name="Change in maximum mature forest\naboveground biomass per area"/>
+				<connector uid="81" angle="165.133">
+					<from>
+						<alias uid="82"/>
+					</from>
+					<to>Change_in_maximum_mature_forest_aboveground_biomass_per_area</to>
+				</connector>
+				<aux color="blue" x="1501.54" y="672" name="Maximum mature forest\naboveground biomass per area"/>
+				<connector uid="83" angle="202.778">
+					<from>Normal_mature_forest_aboveground_biomass_per_area</from>
+					<to>Maximum_mature_forest_aboveground_biomass_per_area</to>
+				</connector>
+				<connector uid="84" angle="151.516">
+					<from>Change_in_maximum_mature_forest_aboveground_biomass_per_area</from>
+					<to>Maximum_mature_forest_aboveground_biomass_per_area</to>
+				</connector>
+				<connector uid="85" angle="265.275">
+					<from>Normal_mature_forest_aboveground_biomass_per_area</from>
+					<to>Change_in_maximum_mature_forest_aboveground_biomass_per_area</to>
+				</connector>
+				<connector uid="86" angle="147.212">
+					<from>Maximum_mature_forest_aboveground_biomass_per_area</from>
+					<to>Mature_forest_net_primary_production_aboveground_biomass_share</to>
+				</connector>
+				<connector uid="87" angle="299.202">
+					<from>Mature_forest_aboveground_biomass_per_area</from>
+					<to>Mature_forest_net_primary_production_aboveground_biomass_share</to>
+				</connector>
+				<connector uid="88" angle="59.2159">
+					<from>mature_forest_net_primary_production</from>
+					<to>Mature_forest_growth</to>
+				</connector>
+				<connector uid="89" angle="174.986">
+					<from>Mature_forest_net_primary_production_aboveground_biomass_share</from>
+					<to>Mature_forest_growth</to>
+				</connector>
+				<aux label_side="right" x="1768" y="675.03" name="STA maximum aboveground\nbiomass per area parameter"/>
+				<connector uid="91" angle="171.419">
+					<from>STA_maximum_aboveground_biomass_per_area_parameter</from>
+					<to>Change_in_maximum_mature_forest_aboveground_biomass_per_area</to>
+				</connector>
+				<connector uid="92" angle="206.83">
+					<from>Mature_forest_growth</from>
+					<to>mature_forest_litter</to>
+				</connector>
+				<aux label_side="right" x="1747" y="616.202" name="STA squared maximum aboveground\nbiomass per area parameter"/>
+				<connector uid="93" angle="200.085">
+					<from>STA_squared_maximum_aboveground_biomass_per_area_parameter</from>
+					<to>Change_in_maximum_mature_forest_aboveground_biomass_per_area</to>
+				</connector>
+				<alias font_style="italic" uid="15" x="646.75" y="1135.33" width="18" height="18">
 					<of>tree_net_primary_production_in_1980</of>
 				</alias>
-				<alias font_style="italic" uid="17" x="1101.75" y="1057.33" width="18" height="18">
+				<alias font_style="italic" uid="17" x="1072.75" y="1180.33" width="18" height="18">
 					<of>tree_net_primary_production_in_1980</of>
 				</alias>
-				<alias font_style="italic" uid="19" x="1331.75" y="937.597" width="18" height="18">
+				<alias font_style="italic" uid="19" x="1302.75" y="1060.6" width="18" height="18">
 					<of>tree_net_primary_production_in_1980</of>
+				</alias>
+				<alias font_style="italic" uid="79" x="642" y="157" width="18" height="18">
+					<of>Mature_forest_aboveground_biomass_per_area</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="82" x="1788" y="727" width="18" height="18">
+					<of>Surface_Temperature_Anomaly_1</of>
 				</alias>
 			</view>
 		</views>
@@ -12313,7 +12430,7 @@ clearing_forests_for_crops*(Mature_forest_soil_carbon_per_area-Cropland_soil_car
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="5" isee:page_rows="4" isee:scroll_x="172.5" isee:scroll_y="450" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="5" isee:page_rows="4" isee:scroll_x="172.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
