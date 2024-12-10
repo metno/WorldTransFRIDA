@@ -459,6 +459,8 @@
 				<connect2 to="Government.rent_tax_1" from="Circular_Flow.rent_tax"/>
 				<connect to="Government.required_last_resort_lending" from="Finance.required_government_solvency_support_lending"/>
 				<connect2 to="Government.required_last_resort_lending" from="Finance.required_government_solvency_support_lending"/>
+				<connect to="Government.risky_interest" from="Finance.risky_interest"/>
+				<connect2 to="Government.risky_interest" from="Finance.risky_interest"/>
 				<connect to="Government.start_year" from="Government_Regulations.start_year"/>
 				<connect2 to="Government.start_year" from="Government_Regulations.start_year"/>
 				<connect to="Government.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
@@ -623,6 +625,8 @@
 				<connect2 to="Government.required_last_resort_lending" from="Finance.required_government_solvency_support_lending"/>
 				<connect to="Circular_Flow.risky_interest_1" from="Finance.risky_interest"/>
 				<connect2 to="Circular_Flow.risky_interest_1" from="Finance.risky_interest"/>
+				<connect to="Government.risky_interest" from="Finance.risky_interest"/>
+				<connect2 to="Government.risky_interest" from="Finance.risky_interest"/>
 				<connect to="Circular_Flow.risky_bank_assets" from="Finance.risky_bank_assets"/>
 				<connect2 to="Circular_Flow.risky_bank_assets" from="Finance.risky_bank_assets"/>
 				<connect to="Employment.Safe_Loans" from="Finance.Safe_Loans"/>
@@ -984,7 +988,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="150" isee:scroll_y="29.2857" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="150" isee:scroll_y="28.5714" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -9590,7 +9594,7 @@ ELSE
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SMTH1(safe_interest, average_time_government_refinances_debt)</eqn>
+				<eqn>SMTH1(current_government_debt_interest_rate, average_time_government_refinances_debt)</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="average time government refinances debt">
@@ -9740,6 +9744,35 @@ effect_of_STA_on_public_consumption</eqn>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>1/year</units>
 			</aux>
+			<aux name="current government debt interest rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>safe_interest+effect_of_risky_government_debt_on_government_interest_rate</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="risky\ninterest" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="banks threshold for perceiving gov debt as risky">
+				<eqn>1</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="sensitivity of banks\ngov debt risk perception">
+				<eqn> 0.1</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="effect of risky government debt on\ngovernment interest rate">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>risky_interest * (MAXSOFT((debt_to_GDP_ratio-banks_threshold_for_perceiving_gov_debt_as_risky), 0,sensitivity_of_banks_gov_debt_risk_perception))/debt_to_GDP_ratio</eqn>
+				<units>1/year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -9783,7 +9816,7 @@ effect_of_STA_on_public_consumption</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="277.857" isee:scroll_y="860" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="114.286" isee:scroll_y="877.857" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -9919,8 +9952,8 @@ effect_of_STA_on_public_consumption</eqn>
 					<from>initial_smoothed_total_public_tax_income</from>
 					<to>smoothed_total_public_tax_income</to>
 				</connector>
-				<aux label_side="left" label_angle="135" x="362.41" y="1096.33" name="central bank\ngoal inflation"/>
-				<aux label_side="bottom" x="362.41" y="1160.67" name="inflation\ntarget\ndiscrepancy"/>
+				<aux label_side="left" label_angle="135" x="276.696" y="1201.33" name="central bank\ngoal inflation"/>
+				<aux label_side="bottom" x="276.696" y="1265.67" name="inflation\ntarget\ndiscrepancy"/>
 				<connector uid="30" angle="270">
 					<from>central_bank_goal_inflation</from>
 					<to>inflation_target_discrepancy</to>
@@ -9959,21 +9992,21 @@ effect_of_STA_on_public_consumption</eqn>
 					<from>Central_Bank_Safe_Interest</from>
 					<to>safe_interest</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="235" y="1152.33" name="inflation"/>
+				<aux font_style="italic" font_weight="bold" x="149.286" y="1257.33" name="inflation"/>
 				<connector uid="47" angle="40.8819">
 					<from>inflation</from>
 					<to>inflation_target_discrepancy</to>
 				</connector>
 				<aux label_side="right" x="801.263" y="1198.93" name="initial safe interest"/>
-				<aux label_side="top" x="362.41" y="1326.83" name="unemployment\ntarget discrepancy"/>
-				<aux label_side="left" label_angle="225" x="502" y="1230.83" name="interest rate\npolicy discrepancy"/>
-				<aux label_side="right" x="362.41" y="1382.67" name="central bank goal\nunemployment"/>
+				<aux label_side="top" x="276.696" y="1431.83" name="unemployment\ntarget discrepancy"/>
+				<aux label_side="left" label_angle="225" x="416.286" y="1335.83" name="interest rate\npolicy discrepancy"/>
+				<aux label_side="right" x="276.696" y="1487.67" name="central bank goal\nunemployment"/>
 				<connector uid="64" angle="90">
 					<from>central_bank_goal_unemployment</from>
 					<to>unemployment_target_discrepancy</to>
 				</connector>
-				<aux label_side="top" x="483" y="1161.67" name="unemployment\nweight"/>
-				<aux label_side="top" x="550.63" y="1174.33" name="inflation\nweight"/>
+				<aux label_side="top" x="397.286" y="1266.67" name="unemployment\nweight"/>
+				<aux label_side="top" x="464.916" y="1279.33" name="inflation\nweight"/>
 				<connector uid="65" angle="229.281">
 					<from>inflation_weight</from>
 					<to>interest_rate_policy_discrepancy</to>
@@ -9982,17 +10015,17 @@ effect_of_STA_on_public_consumption</eqn>
 					<from>unemployment_weight</from>
 					<to>interest_rate_policy_discrepancy</to>
 				</connector>
-				<connector uid="67" angle="323.775">
+				<connector uid="67" angle="348.274">
 					<from>interest_rate_policy_discrepancy</from>
 					<to>change_in_safe_interest</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="238.833" y="1293.67" name="unemployment rate 1"/>
+				<aux font_style="italic" font_weight="bold" x="153.119" y="1398.67" name="unemployment rate 1"/>
 				<connector uid="68" angle="5.5722">
 					<from>unemployment_rate_1</from>
 					<to>unemployment_target_discrepancy</to>
 				</connector>
-				<aux x="453.667" y="1297.67" name="yearly\nunemployment target\ndiscrepancy"/>
-				<aux x="532.63" y="1355.17" name="time to measure\nunemployment"/>
+				<aux x="367.953" y="1402.67" name="yearly\nunemployment target\ndiscrepancy"/>
+				<aux x="446.916" y="1460.17" name="time to measure\nunemployment"/>
 				<connector uid="69" angle="153.97">
 					<from>time_to_measure_unemployment</from>
 					<to>yearly_unemployment_target_discrepancy</to>
@@ -10019,9 +10052,9 @@ effect_of_STA_on_public_consumption</eqn>
 					</pts>
 				</flow>
 				<aux x="1077.14" y="401.343" name="solvency support adjustment time"/>
-				<aux font_style="italic" font_weight="bold" x="362.41" y="1473" name="unemployment goal policy"/>
-				<aux font_style="italic" font_weight="bold" x="344.41" y="986" name="inflation goal policy"/>
-				<aux font_style="italic" font_weight="bold" x="268" y="1226" name="start year"/>
+				<aux font_style="italic" font_weight="bold" x="276.696" y="1578" name="unemployment goal policy"/>
+				<aux font_style="italic" font_weight="bold" x="258.696" y="1091" name="inflation goal policy"/>
+				<aux font_style="italic" font_weight="bold" x="182.286" y="1331" name="start year"/>
 				<connector uid="76" angle="279.266">
 					<from>inflation_goal_policy</from>
 					<to>central_bank_goal_inflation</to>
@@ -10542,17 +10575,17 @@ effect_of_STA_on_public_consumption</eqn>
 					<from>computed_government_debt_to_GDP_ratio_target</from>
 					<to>one_to_one_effect_of_debt_to_GDP_ratio_on_government_spending</to>
 				</connector>
-				<aux x="609.13" y="1074.57" name="average government debt\ninterest rate"/>
-				<connector uid="229" angle="123.668">
+				<aux x="591.273" y="1008.14" name="average government debt\ninterest rate"/>
+				<connector uid="229" angle="85.3743">
 					<from>safe_interest</from>
-					<to>average_government_debt_interest_rate</to>
+					<to>current_government_debt_interest_rate</to>
 				</connector>
-				<connector uid="230" angle="120.398">
+				<connector uid="230" angle="119.128">
 					<from>average_government_debt_interest_rate</from>
 					<to>government_interest_payments</to>
 				</connector>
-				<aux x="729.226" y="1034" name="average time government refinances debt"/>
-				<connector uid="231" angle="198.666">
+				<aux x="741.571" y="968" name="average time government refinances debt"/>
+				<connector uid="231" angle="194.953">
 					<from>average_time_government_refinances_debt</from>
 					<to>average_government_debt_interest_rate</to>
 				</connector>
@@ -10695,7 +10728,38 @@ effect_of_STA_on_public_consumption</eqn>
 					<to>&quot;government_spending_without_climate_impact_in_2021c$&quot;</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="869.286" y="1115" name="average private debt safe interest"/>
-				<alias font_style="italic" label_side="right" label_angle="315" uid="73" x="532.797" y="1275.5" width="18" height="18">
+				<aux x="707.857" y="1078.33" name="current government debt interest rate"/>
+				<connector uid="269" angle="164.122">
+					<from>current_government_debt_interest_rate</from>
+					<to>average_government_debt_interest_rate</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="536.429" y="1219.33" name="risky\ninterest"/>
+				<aux x="548.553" y="1064.57" name="banks threshold for perceiving gov debt as risky"/>
+				<aux x="488.553" y="1141.43" name="sensitivity of banks\ngov debt risk perception"/>
+				<aux x="621.429" y="1141.43" name="effect of risky government debt on\ngovernment interest rate"/>
+				<connector uid="275" angle="112.69">
+					<from>
+						<alias uid="271"/>
+					</from>
+					<to>effect_of_risky_government_debt_on_government_interest_rate</to>
+				</connector>
+				<connector uid="276" angle="338.477">
+					<from>banks_threshold_for_perceiving_gov_debt_as_risky</from>
+					<to>effect_of_risky_government_debt_on_government_interest_rate</to>
+				</connector>
+				<connector uid="277" angle="25">
+					<from>sensitivity_of_banks_gov_debt_risk_perception</from>
+					<to>effect_of_risky_government_debt_on_government_interest_rate</to>
+				</connector>
+				<connector uid="278" angle="38.6598">
+					<from>effect_of_risky_government_debt_on_government_interest_rate</from>
+					<to>current_government_debt_interest_rate</to>
+				</connector>
+				<connector uid="279" angle="31.3942">
+					<from>risky_interest</from>
+					<to>effect_of_risky_government_debt_on_government_interest_rate</to>
+				</connector>
+				<alias font_style="italic" label_side="right" label_angle="315" uid="73" x="447.083" y="1380.5" width="18" height="18">
 					<of>baseline_interest</of>
 				</alias>
 				<alias font_style="italic" uid="150" x="544.857" y="21.3583" width="18" height="18">
@@ -10721,6 +10785,9 @@ effect_of_STA_on_public_consumption</eqn>
 				<alias color="blue" background="white" font_style="italic" uid="267" x="757.25" y="1760.25" width="18" height="18">
 					<shape type="circle" radius="18"/>
 					<of>government_spending_without_climate_impact</of>
+				</alias>
+				<alias font_style="italic" uid="271" x="609.286" y="1210.33" width="18" height="18">
+					<of>debt_to_GDP_ratio</of>
 				</alias>
 			</view>
 		</views>
