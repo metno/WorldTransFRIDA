@@ -235,7 +235,6 @@
 				<entity name='"PB1:1_Holocene_value"'/>
 				<entity name='"PB1:1_Normalised_control_variable"'/>
 				<entity name='"Total_NPP_consumed_by_human-induced_fires_2000"'/>
-				<entity name="crop_production"/>
 				<entity name="Cropland_actual_NPP_per_unit_area_2000"/>
 				<entity name="Cropland_harvested_NPP_per_unit_area_2000"/>
 				<entity name="cropland_net_primary_production"/>
@@ -249,7 +248,7 @@
 				<entity name="grazing_land_net_primary_production"/>
 				<entity name="Habitable_Land_Area"/>
 				<entity name="HANPP_excluding_biomass_plantations"/>
-				<entity name="HANPP_of_crop_harvest_ALT"/>
+				<entity name="HANPP_from_harvest"/>
 				<entity name="HANPP_of_cropland"/>
 				<entity name="HANPP_of_grazing_land"/>
 				<entity name="HANPP_of_land_use_change"/>
@@ -263,7 +262,6 @@
 				<entity name="timber"/>
 				<entity name="Total_actual_NPP_2000"/>
 				<entity name="tree_net_primary_production"/>
-				<entity name="UNIT_GtC_per_PCal_crop"/>
 			</group>
 			<group name="PB 2 - Land System Change" run="false">
 				<format scale_by="auto"/>
@@ -344,8 +342,10 @@
 				<units>GtC/Year</units>
 			</aux>
 			<aux name="HANPP excluding\nbiomass plantations">
-				<eqn>SUM(&quot;HANPP_of_human-induced_fires&quot;[*]) + SUM(HANPP_of_cropland[*]) + SUM(HANPP_of_grazing_land[*]) + SUM(HANPP_of_land_use_change[*]) + SUM(HANPP_of_timber[*])</eqn>
-				<isee:summing/>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>HANPP_from_harvest + HANPP_of_land_use_change + &quot;HANPP_of_human-induced_fires&quot;</eqn>
 				<units>GtC/Year</units>
 			</aux>
 			<aux name="Holocene net\nprimary production">
@@ -353,6 +353,9 @@
 				<units>GtC/Year</units>
 			</aux>
 			<aux name="PB1:1 HANPP as fraction of\nHolocene net primary production">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>HANPP_excluding_biomass_plantations / Holocene_net_primary_production</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -631,6 +634,9 @@
 				<units>dmnl</units>
 			</aux>
 			<aux name="PB1:1 Normalised control variable">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>(&quot;PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production&quot; - &quot;PB1:1_Holocene_value&quot;)/(&quot;PB1:1_Boundary_value&quot; - &quot;PB1:1_Holocene_value&quot;)</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -808,9 +814,7 @@
 				<entity name="Forest_Land"/>
 				<entity name="Forest_net_primary_production"/>
 				<entity name="GtC_to_gC"/>
-				<entity name="HANPP_from_harvest"/>
 				<entity name="Harvested_NPP_per_unit_cropland_area"/>
-				<entity name="Harvested_NPP_per_unit_cropland_area_ALT"/>
 				<entity name="Harvested_NPP_per_unit_forest_area"/>
 				<entity name="Harvested_NPP_per_unit_grazing_land_area"/>
 				<entity name="mature_forest_net_primary_production"/>
@@ -821,13 +825,6 @@
 				<entity name="NPP_remaining_in_ecosystems"/>
 				<entity name="young_forest_net_primary_production"/>
 			</group>
-			<aux name="HANPP from harvest">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>HANPP_of_cropland + HANPP_of_grazing_land + HANPP_of_timber</eqn>
-				<units>GtC/year</units>
-			</aux>
 			<aux name="NPP remaining in ecosystems">
 				<dimensions>
 					<dim name="Run"/>
@@ -906,31 +903,6 @@
 				<eqn>10457730985.1113</eqn>
 				<units>m^3/MHa/year</units>
 			</aux>
-			<aux name="crop production" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>PCal/year</units>
-			</aux>
-			<aux name="HANPP of crop harvest ALT">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>UNIT_GtC_per_PCal_crop * crop_production</eqn>
-				<units>GtC/year</units>
-			</aux>
-			<aux name="UNIT GtC per PCal crop" access="input">
-				<eqn>0.001756582675</eqn>
-				<units>GtC/PCal</units>
-			</aux>
-			<aux name="Harvested NPP per\nunit cropland area ALT">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(HANPP_of_crop_harvest_ALT / GtC_to_gC) / (Cropland / Mha_to_m2)</eqn>
-				<units>gC/m^2/year</units>
-			</aux>
 			<aux name="NPP per\nunit cropland area">
 				<dimensions>
 					<dim name="Run"/>
@@ -976,6 +948,13 @@
 			<group name="SMEX Driver analysis" run="false">
 				<format scale_by="auto"/>
 			</group>
+			<aux name="HANPP from harvest">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>HANPP_of_timber + HANPP_of_cropland + HANPP_of_grazing_land</eqn>
+				<units>GtC/year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -1025,7 +1004,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="8" isee:page_rows="9" isee:scroll_y="1822.5" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1093" page_height="767" isee:page_cols="8" isee:page_rows="9" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="black" background="white" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1082,18 +1061,18 @@
 				<aux font_style="italic" font_weight="bold" label_side="left" x="110.333" y="224" name="cropland net primary production"/>
 				<aux font_style="italic" font_weight="bold" x="110.333" y="350.75" name="grass net primary production"/>
 				<aux font_style="italic" font_weight="bold" x="115" y="414.75" name="grazing land 2"/>
-				<aux x="180.833" y="383.5" name="grazing land net\nprimary production"/>
-				<connector uid="1" angle="347.905">
+				<aux x="164.583" y="388.5" name="grazing land net\nprimary production"/>
+				<connector uid="1" angle="337.989">
 					<from>grass_net_primary_production</from>
 					<to>grazing_land_net_primary_production</to>
 				</connector>
-				<connector uid="2" angle="25.3929">
+				<connector uid="2" angle="27.8974">
 					<from>grazing_land_2</from>
 					<to>grazing_land_net_primary_production</to>
 				</connector>
-				<aux label_side="left" label_angle="225" x="346.583" y="332.75" name="HANPP excluding\nbiomass plantations"/>
-				<aux x="346.583" y="242" name="Holocene net\nprimary production"/>
-				<aux x="433.333" y="329" name="PB1:1 HANPP as fraction of\nHolocene net primary production"/>
+				<aux label_side="left" label_angle="225" x="379.083" y="332.75" name="HANPP excluding\nbiomass plantations"/>
+				<aux x="379.083" y="242" name="Holocene net\nprimary production"/>
+				<aux x="465.833" y="329" name="PB1:1 HANPP as fraction of\nHolocene net primary production"/>
 				<connector uid="4" angle="331.294">
 					<from>Holocene_net_primary_production</from>
 					<to>&quot;PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production&quot;</to>
@@ -1143,8 +1122,8 @@
 - PB2:1 Holocene value: Richardson et al, 2023
 - PB2:1 Boundary value: Ibid
 - PB2:1 High risk boundary value: Ibid</text_box>
-				<aux label_side="top" x="530.833" y="326" name="PB1:1 Boundary value"/>
-				<aux x="530.833" y="365.5" name="PB1:1 High risk\nboundary value"/>
+				<aux label_side="top" x="563.333" y="326" name="PB1:1 Boundary value"/>
+				<aux x="563.333" y="365.5" name="PB1:1 High risk\nboundary value"/>
 				<aux label_side="bottom" x="1217.5" y="155" name="PB2:1 Boundary value"/>
 				<aux label_side="top" x="209.583" y="842.75" name="Fraction fires of NPP"/>
 				<aux x="1217.5" y="203.75" name="PB2:1 High risk\nboundary value"/>
@@ -1310,25 +1289,22 @@
 				</group>
 				<stacked_container uid="49" x="12.667" y="4446.67" width="535" height="390">
 					<graph width="535" height="390" type="correlation" isee:correlation_source="Variables_to_correlate_against" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
-						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name='"PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production"'/>
-						</plot>
-						<plot color="red" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+						<plot color="red" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
 							<entity name='"PB2:1_Fraction_remaining_forest_cover"[*]'/>
 						</plot>
-						<plot color="fuchsia" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
+						<plot color="fuchsia" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
 							<entity name='"PB3:1_Maximum_amount_of_consumptive_blue_water_use"[*]'/>
 						</plot>
-						<plot color="#008F44" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
+						<plot color="#008F44" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
 							<entity name='"PB4:1_Intentionally_fixed_N_applied_to_the_agricultural_system"[*]'/>
 						</plot>
-						<plot color="#FF7F00" isee:keep_zero_visible="true" pen_width="1" index="4" show_y_axis="true">
+						<plot color="#FF7F00" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
 							<entity name='"PB4:2_P_flow_from_fertilizers_to_erodible_soils"[*]'/>
 						</plot>
-						<plot color="#7F00FF" isee:keep_zero_visible="true" pen_width="1" index="5" show_y_axis="true">
+						<plot color="#7F00FF" isee:keep_zero_visible="true" pen_width="1" index="4" show_y_axis="true">
 							<entity name='"PB5:1_Atmospheric_CO2_concentration"[*]'/>
 						</plot>
-						<plot color="#0CA0FF" isee:keep_zero_visible="true" pen_width="1" index="6" show_y_axis="true">
+						<plot color="#0CA0FF" isee:keep_zero_visible="true" pen_width="1" index="5" show_y_axis="true">
 							<entity name='"PB5:2_Total_anthropogenic_radiative_forcing_at_top_of_atmosphere"[*]'/>
 						</plot>
 					</graph>
@@ -1345,8 +1321,8 @@
 					</graph>
 				</stacked_container>
 				<isee:placeholder x="1260.67" y="1407.67" name="SMEX variables to\ncorrelate against"/>
-				<aux x="530.833" y="266.25" name="PB1:1 Holocene value"/>
-				<aux x="612.333" y="300.25" name="PB1:1 Normalised control variable"/>
+				<aux x="563.333" y="266.25" name="PB1:1 Holocene value"/>
+				<aux x="644.833" y="300.25" name="PB1:1 Normalised control variable"/>
 				<connector uid="52" angle="10.568">
 					<from>&quot;PB1:1_Holocene_value&quot;</from>
 					<to>&quot;PB1:1_Normalised_control_variable&quot;</to>
@@ -1457,10 +1433,10 @@
 						</plot>
 					</graph>
 				</stacked_container>
-				<aux label_side="right" label_angle="315" x="175.333" y="293.25" name="Fraction of cropland NPP\ncontributing to HANPP"/>
-				<aux label_side="right" label_angle="315" x="170.333" y="471" name="Fraction of grazing land contributing to HANPP"/>
-				<aux label_side="top" x="251.167" y="260" name="HANPP of cropland"/>
-				<connector uid="75" angle="14.5536">
+				<aux label_side="right" label_angle="315" x="159.083" y="298.25" name="Fraction of cropland NPP\ncontributing to HANPP"/>
+				<aux label_side="right" label_angle="315" x="154.083" y="476" name="Fraction of grazing land contributing to HANPP"/>
+				<aux label_side="top" x="234.917" y="265" name="HANPP of cropland"/>
+				<connector uid="75" angle="10.6764">
 					<from>cropland_net_primary_production</from>
 					<to>HANPP_of_cropland</to>
 				</connector>
@@ -1468,7 +1444,7 @@
 					<from>Fraction_of_cropland_NPP_contributing_to_HANPP</from>
 					<to>HANPP_of_cropland</to>
 				</connector>
-				<aux x="243.5" y="426.25" name="HANPP of grazing land"/>
+				<aux x="227.25" y="431.25" name="HANPP of grazing land"/>
 				<connector uid="77" angle="351.948">
 					<from>grazing_land_net_primary_production</from>
 					<to>HANPP_of_grazing_land</to>
@@ -1509,21 +1485,21 @@
 				<group locked="false" x="726.667" y="2019.33" width="656.667" height="522.333" name="Test variables"/>
 				<aux label_side="left" x="128.333" y="275.25" name="Cropland harvested\nNPP per unit area 2000"/>
 				<aux label_side="left" x="128.333" y="318.25" name="Cropland actual\nNPP per unit area 2000"/>
-				<connector uid="88" angle="0.46707">
+				<connector uid="88" angle="344.628">
 					<from>Cropland_harvested_NPP_per_unit_area_2000</from>
 					<to>Fraction_of_cropland_NPP_contributing_to_HANPP</to>
 				</connector>
-				<connector uid="89" angle="28.0092">
+				<connector uid="89" angle="33.0402">
 					<from>Cropland_actual_NPP_per_unit_area_2000</from>
 					<to>Fraction_of_cropland_NPP_contributing_to_HANPP</to>
 				</connector>
 				<aux label_side="left" x="123.333" y="460" name="Grazing land harvested\nNPP per unit area 2000"/>
 				<aux label_side="left" x="123.333" y="497" name="Grazing land actual\nNPP per unit area 2000"/>
-				<connector uid="90" angle="353.601">
+				<connector uid="90" angle="332.511">
 					<from>Grazing_land_harvested_NPP_per_unit_area_2000</from>
 					<to>Fraction_of_grazing_land_contributing_to_HANPP</to>
 				</connector>
-				<connector uid="91" angle="18.0937">
+				<connector uid="91" angle="23.4729">
 					<from>Grazing_land_actual_NPP_per_unit_area_2000</from>
 					<to>Fraction_of_grazing_land_contributing_to_HANPP</to>
 				</connector>
@@ -1538,8 +1514,8 @@
 					<to>Fraction_fires_of_NPP</to>
 				</connector>
 				<aux x="285.333" y="812.75" name="HANPP of human-induced fires"/>
-				<aux x="251.167" y="120" name="HANPP of timber"/>
-				<connector uid="94" angle="18.5953">
+				<aux x="234.917" y="125" name="HANPP of timber"/>
+				<connector uid="94" angle="16.5085">
 					<from>timber</from>
 					<to>HANPP_of_timber</to>
 				</connector>
@@ -1576,9 +1552,6 @@
 				<text_box uid="101" x="1630" y="788" width="383" height="127">References:
 - Agriculture fraction of blue water consumption: Campbell et al., 2017</text_box>
 				<group locked="true" x="58.75" y="1387.67" width="601.25" height="2807.25" name="PB 1 Validation">
-					<item uid="105"/>
-					<item uid="106"/>
-					<item uid="107"/>
 					<item uid="111"/>
 					<item uid="112"/>
 					<item uid="113"/>
@@ -1589,7 +1562,6 @@
 					<item uid="121"/>
 					<item uid="126"/>
 					<item uid="131"/>
-					<item uid="145"/>
 					<item uid="150"/>
 					<item uid="151"/>
 					<item uid="156"/>
@@ -1598,6 +1570,7 @@
 					<item uid="163"/>
 					<item uid="168"/>
 					<item uid="177"/>
+					<item uid="185"/>
 				</group>
 				<connector uid="103" angle="12.9183">
 					<from>
@@ -1611,39 +1584,13 @@
 						<item>
 							<entity name='"PB3:1_Maximum_amount_of_consumptive_blue_water_use"[*]'/>
 						</item>
-						<item>
-							<entity name='"PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production"'/>
-						</item>
 					</table>
 				</stacked_container>
-				<aux label_side="right" label_angle="45" x="171.25" y="1705" name="HANPP from harvest"/>
-				<connector uid="108" angle="345.466">
-					<from>
-						<alias uid="105"/>
-					</from>
-					<to>HANPP_from_harvest</to>
-				</connector>
-				<connector uid="109" angle="29.9816">
-					<from>
-						<alias uid="106"/>
-					</from>
-					<to>HANPP_from_harvest</to>
-				</connector>
-				<connector uid="110" angle="26.6488">
-					<from>
-						<alias uid="107"/>
-					</from>
-					<to>HANPP_from_harvest</to>
-				</connector>
 				<aux x="171.25" y="1858.75" name="NPP remaining in ecosystems"/>
 				<connector uid="115" angle="317.862">
 					<from>
 						<alias uid="112"/>
 					</from>
-					<to>NPP_remaining_in_ecosystems</to>
-				</connector>
-				<connector uid="116" angle="298.443">
-					<from>HANPP_from_harvest</from>
 					<to>NPP_remaining_in_ecosystems</to>
 				</connector>
 				<connector uid="117" angle="285.945">
@@ -1663,17 +1610,11 @@
 						<plot color="fuchsia" pen_style="dotted" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
 							<entity name="HANPP_of_land_use_change[*]"/>
 						</plot>
-						<plot color="#008F44" pen_style="dashed" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
-							<entity name="HANPP_from_harvest[*]"/>
-						</plot>
-						<plot color="#FF7F00" isee:keep_zero_visible="true" pen_width="1" index="4" show_y_axis="true">
+						<plot color="#FF7F00" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
 							<entity name='"HANPP_of_human-induced_fires"[*]'/>
 						</plot>
-						<plot color="#7F00FF" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="5" show_y_axis="true">
+						<plot color="#7F00FF" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="4" show_y_axis="true">
 							<entity name="NPP_remaining_in_ecosystems[*]"/>
-						</plot>
-						<plot color="#0CA0FF" pen_style="dotted" isee:keep_zero_visible="true" pen_width="1" index="6" show_y_axis="true">
-							<entity name="HANPP_excluding_biomass_plantations"/>
 						</plot>
 					</graph>
 				</stacked_container>
@@ -1690,16 +1631,10 @@
 							<entity name="HANPP_of_land_use_change[*]"/>
 						</item>
 						<item>
-							<entity name="HANPP_from_harvest[*]"/>
-						</item>
-						<item>
 							<entity name='"HANPP_of_human-induced_fires"[*]'/>
 						</item>
 						<item>
 							<entity name="NPP_remaining_in_ecosystems[*]"/>
-						</item>
-						<item>
-							<entity name="HANPP_excluding_biomass_plantations"/>
 						</item>
 					</table>
 				</stacked_container>
@@ -1779,9 +1714,6 @@
 						<item>
 							<entity name='"PB3:1_Maximum_amount_of_consumptive_blue_water_use"[*]'/>
 						</item>
-						<item>
-							<entity name='"PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production"'/>
-						</item>
 					</table>
 				</stacked_container>
 				<aux x="775" y="2298.75" name="Number of values for parameters in spider diagram"/>
@@ -1793,36 +1725,6 @@
 				<connector uid="142" angle="300.256">
 					<from>base_value_water_withdrawal_per_MHa_irrigated_1980</from>
 					<to>Maximum_value_for_Mha_irrigated_1980_parameter</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="110" y="192.25" name="crop production"/>
-				<aux x="253.333" y="202.75" name="HANPP of crop harvest ALT"/>
-				<connector uid="143" angle="18.2202">
-					<from>crop_production</from>
-					<to>HANPP_of_crop_harvest_ALT</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="left" x="110" y="161.25" name="UNIT GtC per PCal crop"/>
-				<connector uid="144" angle="10.3048">
-					<from>UNIT_GtC_per_PCal_crop</from>
-					<to>HANPP_of_crop_harvest_ALT</to>
-				</connector>
-				<aux x="191.25" y="2240" name="Harvested NPP per\nunit cropland area ALT"/>
-				<connector uid="146" angle="144.462">
-					<from>GtC_to_gC</from>
-					<to>Harvested_NPP_per_unit_cropland_area_ALT</to>
-				</connector>
-				<connector uid="147" angle="153.265">
-					<from>Mha_to_m2</from>
-					<to>Harvested_NPP_per_unit_cropland_area_ALT</to>
-				</connector>
-				<connector uid="148" angle="36.2538">
-					<from>
-						<alias uid="145"/>
-					</from>
-					<to>Harvested_NPP_per_unit_cropland_area_ALT</to>
-				</connector>
-				<connector uid="149" angle="48.5763">
-					<from>Cropland</from>
-					<to>Harvested_NPP_per_unit_cropland_area_ALT</to>
 				</connector>
 				<aux x="191.25" y="2792.5" name="NPP per\nunit cropland area"/>
 				<connector uid="152" angle="349.875">
@@ -1926,9 +1828,6 @@
 				<stacked_container uid="176" x="4806.25" y="753.75">
 					<table isee:start_time="2000" isee:stop_time="2000" interval="1" report_balances="beginning" report_flows="instantaneous" width="350" height="250" comparative="true" isee:export_name="SMEX PB values for driver attribution" isee:mark_for_export="true" title="SMEX PB values for driver attribution">
 						<item type="time"/>
-						<item>
-							<entity name='"PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production"'/>
-						</item>
 					</table>
 				</stacked_container>
 				<connector uid="178" angle="28.1786">
@@ -1937,20 +1836,42 @@
 					</from>
 					<to>Harvested_NPP_per_unit_grazing_land_area</to>
 				</connector>
+				<aux x="296.333" y="311" name="HANPP from harvest"/>
+				<connector uid="179" angle="311.759">
+					<from>HANPP_of_timber</from>
+					<to>HANPP_from_harvest</to>
+				</connector>
+				<connector uid="180" angle="323.167">
+					<from>HANPP_of_cropland</from>
+					<to>HANPP_from_harvest</to>
+				</connector>
+				<connector uid="181" angle="60.1229">
+					<from>HANPP_of_grazing_land</from>
+					<to>HANPP_from_harvest</to>
+				</connector>
+				<connector uid="182" angle="6.40737">
+					<from>HANPP_from_harvest</from>
+					<to>HANPP_excluding_biomass_plantations</to>
+				</connector>
+				<connector uid="183" angle="71.7115">
+					<from>HANPP_of_land_use_change</from>
+					<to>HANPP_excluding_biomass_plantations</to>
+				</connector>
+				<connector uid="184" angle="6.37909">
+					<from>&quot;HANPP_of_human-induced_fires&quot;</from>
+					<to>HANPP_excluding_biomass_plantations</to>
+				</connector>
+				<connector uid="186" angle="321.71">
+					<from>
+						<alias uid="185"/>
+					</from>
+					<to>NPP_remaining_in_ecosystems</to>
+				</connector>
 				<alias font_style="italic" uid="37" x="119.333" y="628" width="18" height="18">
 					<of>Holocene_forested_area</of>
 				</alias>
 				<alias font_style="italic" font_weight="bold" uid="102" x="119.889" y="528.778" width="18" height="18">
 					<of>grass_net_primary_production</of>
-				</alias>
-				<alias font_style="italic" uid="105" x="69.25" y="1641" width="18" height="18">
-					<of>HANPP_of_cropland</of>
-				</alias>
-				<alias font_style="italic" uid="106" x="69.25" y="1696" width="18" height="18">
-					<of>HANPP_of_grazing_land</of>
-				</alias>
-				<alias font_style="italic" uid="107" x="69.25" y="1742.67" width="18" height="18">
-					<of>HANPP_of_timber</of>
 				</alias>
 				<alias font_style="italic" uid="111" x="153.5" y="1431" width="18" height="18">
 					<of>Potential_net_primary_production</of>
@@ -1976,10 +1897,6 @@
 				<alias font_style="italic" uid="131" x="102.25" y="2554.75" width="18" height="18">
 					<of>HANPP_of_timber</of>
 				</alias>
-				<alias color="black" background="white" font_style="italic" uid="145" x="98.5" y="2231" width="18" height="18">
-					<shape type="circle" radius="18"/>
-					<of>HANPP_of_crop_harvest_ALT</of>
-				</alias>
 				<alias font_style="italic" font_weight="bold" uid="151" x="114.75" y="2737.25" width="18" height="18">
 					<of>cropland_net_primary_production</of>
 				</alias>
@@ -2003,6 +1920,10 @@
 				</alias>
 				<alias font_style="italic" font_weight="bold" uid="177" x="109.75" y="2496" width="18" height="18">
 					<of>grazing_land_2</of>
+				</alias>
+				<alias color="black" background="white" font_style="italic" uid="185" x="157.25" y="1672.25" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>HANPP_from_harvest</of>
 				</alias>
 			</view>
 		</views>
