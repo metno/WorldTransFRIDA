@@ -5,7 +5,7 @@
 		<name>Climate</name>
 		<uuid>4b1bfdf6-0d8e-44ed-8961-df13293735b9</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.3" isee:build_number="3457" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
+		<product version="3.7.3" isee:build_number="3465" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -232,7 +232,7 @@
 	</model_units>
 	<model name="Climate">
 		<variables>
-			<module name="Sea Level" isee:label="" url="/home/benjamin/Documents/UHH/FNU/FNK/WordTrans/FRIDA/fridaGitWD-MyFork-main/FRIDA_Modules/Sea Level.itmx">
+			<module name="Sea Level" isee:label="" url="/Users/bschoenberg/code/WorldTrans/Frida/FRIDA_Modules/Sea Level.itmx">
 				<format scale_by="auto"/>
 				<connect to="Freshwater.Land_water_storage_from_water_impoundment" from="Sea_Level.Land_water_storage_from_water_impoundment"/>
 				<connect2 to="Freshwater.Land_water_storage_from_water_impoundment" from="Sea_Level.Land_water_storage_from_water_impoundment"/>
@@ -295,9 +295,12 @@ Carbon" url="/Users/bschoenberg/code/WorldTrans/Frida/FRIDA_Modules/Ocean.itmx">
 				<connect to="Ocean.UNIT_Sv_to_Cubic_metre" from="Climate_Units.UNIT_Sv_to_Cubic_metre"/>
 				<connect2 to="Ocean.UNIT_Sv_to_Cubic_metre" from="Climate_Units.UNIT_Sv_to_Cubic_metre"/>
 			</module>
-			<aux name="today" access="output" isee:autocreated="true">
+			<aux name="climate impact stoptime" access="output" isee:autocreated="true">
+				<doc>${No Sensi}
+</doc>
 				<eqn>2025</eqn>
-				<format precision="full"/>
+				<format precision="1"/>
+				<range min="1979" max="2130"/>
 				<units>year</units>
 			</aux>
 			<aux name="switch finance damage" access="output">
@@ -368,6 +371,8 @@ Carbon" url="/Users/bschoenberg/code/WorldTrans/Frida/FRIDA_Modules/Ocean.itmx">
 				<doc>${No Sensi}
 </doc>
 				<eqn>1</eqn>
+				<format precision="1"/>
+				<range min="0" max="1"/>
 				<units>dmnl</units>
 			</aux>
 			<module name="Climate Units" isee:label="">
@@ -566,7 +571,7 @@ Carbon" url="/Users/bschoenberg/code/WorldTrans/Frida/FRIDA_Modules/Ocean.itmx">
 				<connect to="Energy_Balance_Model.Total_Effective_Radiative_Forcing" from="Forcing.Total_Effective_Radiative_Forcing"/>
 				<connect2 to="Energy_Balance_Model.Total_Effective_Radiative_Forcing" from="Forcing.Total_Effective_Radiative_Forcing"/>
 			</module>
-			<module name="Emissions" isee:label="" url="/home/benjamin/Documents/UHH/FNU/FNK/WordTrans/FRIDA/fridaGitWD-MyFork-main/FRIDA_Modules/Emissions.itmx">
+			<module name="Emissions" isee:label="" url="/Users/bschoenberg/code/WorldTrans/Frida/FRIDA_Modules/Emissions.itmx">
 				<format scale_by="auto"/>
 				<connect to="Ozone_Forcing.Baseline_CO_emissions" from="Emissions.Baseline_CO_Emissions"/>
 				<connect2 to="Ozone_Forcing.Baseline_CO_emissions" from="Emissions.Baseline_CO_Emissions"/>
@@ -888,10 +893,10 @@ Carbon">
 				<connect2 to="Forest.switch_land_carbon_impact" from="switch_land_carbon_impact"/>
 				<connect to="Forest.switch_land_carbon_impact_1" from="Climate.switch_land_carbon_impact"/>
 				<connect2 to="Forest.switch_land_carbon_impact_1" from="switch_land_carbon_impact"/>
-				<connect to="Forest.today" from="Climate.today"/>
-				<connect2 to="Forest.today" from="today"/>
-				<connect to="Forest.today_1" from="Climate.today"/>
-				<connect2 to="Forest.today_1" from="today"/>
+				<connect to="Forest.today" from="Climate.climate_impact_stoptime"/>
+				<connect2 to="Forest.today" from="climate_impact_stoptime"/>
+				<connect to="Forest.today_1" from="Climate.climate_impact_stoptime"/>
+				<connect2 to="Forest.today_1" from="climate_impact_stoptime"/>
 				<connect to="Forest.Young_Forest" from="Land_Use.Young_Forest"/>
 				<connect2 to="Forest.Young_Forest" from="Land_Use.Young_Forest"/>
 				<connect to="Forest.young_forest_share" from="Land_Use.young_forest_share"/>
@@ -908,8 +913,8 @@ Carbon">
 				<connect2 to="Grass.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Grass.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
 				<connect2 to="Grass.switch_land_carbon_impact" from="switch_land_carbon_impact"/>
-				<connect to="Grass.today" from="Climate.today"/>
-				<connect2 to="Grass.today" from="today"/>
+				<connect to="Grass.today" from="Climate.climate_impact_stoptime"/>
+				<connect2 to="Grass.today" from="climate_impact_stoptime"/>
 				<connect to="Grass.UNIT_GtC_per_PCal" from="Crop.UNIT_GtC_per_PCal_crop"/>
 				<connect2 to="Grass.UNIT_GtC_per_PCal" from="Crop.UNIT_GtC_per_PCal_crop"/>
 				<connect to="Crop.soil_carbon_cropland_1" from="cropland_soil_carbon.soil_carbon_cropland"/>
@@ -960,8 +965,8 @@ Carbon">
 				<connect2 to="soil_carbon_decay.Absolute_Surface_Temperature" from="Energy_Balance_Model.Absolute_Surface_Temperature"/>
 				<connect to="soil_carbon_decay.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
 				<connect2 to="soil_carbon_decay.switch_land_carbon_impact" from="switch_land_carbon_impact"/>
-				<connect to="soil_carbon_decay.today" from="Climate.today"/>
-				<connect2 to="soil_carbon_decay.today" from="today"/>
+				<connect to="soil_carbon_decay.today" from="Climate.climate_impact_stoptime"/>
+				<connect2 to="soil_carbon_decay.today" from="climate_impact_stoptime"/>
 				<connect to="Emissions.Annual_realized_CO2_emissions_from_land_use_transitions" from="Terrestrial_Carbon_Balance.Annual_realized_CO2_emissions_from_land_use_transitions"/>
 				<connect2 to="Emissions.Annual_realized_CO2_emissions_from_land_use_transitions" from="Terrestrial_Carbon_Balance.Annual_realized_CO2_emissions_from_land_use_transitions"/>
 				<connect to="Emissions.deforestation_carbon_loss" from="Terrestrial_Carbon_Balance.deforestation_carbon_loss"/>
@@ -1070,7 +1075,7 @@ Carbon">
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1097" page_height="767" isee:page_cols="2" isee:page_rows="2" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="150" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1111,7 +1116,7 @@ Carbon">
 				</style>
 				<module label_side="center" x="490.834" y="309.419" name="Sea Level"/>
 				<module label_side="center" x="313" y="189.416" name="Ocean"/>
-				<aux x="56.5" y="562.916" name="today"/>
+				<aux x="56.5" y="562.916" name="climate impact stoptime"/>
 				<aux x="304" y="622.725" name="switch finance damage"/>
 				<aux x="439" y="618.35" name="switch energy damage"/>
 				<aux x="439" y="691.475" name="switch landuse damage"/>
@@ -1207,7 +1212,7 @@ Carbon">
 					<of>switch_land_carbon_impact</of>
 				</alias>
 				<alias font_style="italic" uid="53" x="426" y="18.5" width="18" height="18">
-					<of>today</of>
+					<of>climate_impact_stoptime</of>
 				</alias>
 			</view>
 		</views>
@@ -5379,8 +5384,8 @@ kappa3 in Cummins et al 2020 https://doi.org/10.1175/JCLI-D-19-0589.1</doc>
 				<connect2 to="soil_carbon_decay.Absolute_Surface_Temperature" from="Energy_Balance_Model.Absolute_Surface_Temperature"/>
 				<connect to="soil_carbon_decay.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
 				<connect2 to="soil_carbon_decay.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
-				<connect to="soil_carbon_decay.today" from="Climate.today"/>
-				<connect2 to="soil_carbon_decay.today" from="Climate.today"/>
+				<connect to="soil_carbon_decay.today" from="Climate.climate_impact_stoptime"/>
+				<connect2 to="soil_carbon_decay.today" from="Climate.climate_impact_stoptime"/>
 				<connect to="Terrestrial_Carbon_Balance.soil_carbon_emissions_GtC" from="soil_carbon_emissions.gross_soil_carbon_emissions_GtC"/>
 				<connect2 to="Terrestrial_Carbon_Balance.soil_carbon_emissions_GtC" from="soil_carbon_emissions.gross_soil_carbon_emissions_GtC"/>
 				<connect to="Terrestrial_Carbon_Balance.litter_emissions_GtC" from="soil_carbon_emissions.litter_emissions_GtC"/>
@@ -5412,8 +5417,8 @@ kappa3 in Cummins et al 2020 https://doi.org/10.1175/JCLI-D-19-0589.1</doc>
 				<connect2 to="Grass.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Grass.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
 				<connect2 to="Grass.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
-				<connect to="Grass.today" from="Climate.today"/>
-				<connect2 to="Grass.today" from="Climate.today"/>
+				<connect to="Grass.today" from="Climate.climate_impact_stoptime"/>
+				<connect2 to="Grass.today" from="Climate.climate_impact_stoptime"/>
 				<connect to="Grass.UNIT_GtC_per_PCal" from="Crop.UNIT_GtC_per_PCal_crop"/>
 				<connect2 to="Grass.UNIT_GtC_per_PCal" from="Crop.UNIT_GtC_per_PCal_crop"/>
 			</module>
@@ -5469,10 +5474,10 @@ kappa3 in Cummins et al 2020 https://doi.org/10.1175/JCLI-D-19-0589.1</doc>
 				<connect2 to="Forest.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
 				<connect to="Forest.switch_land_carbon_impact_1" from="Climate.switch_land_carbon_impact"/>
 				<connect2 to="Forest.switch_land_carbon_impact_1" from="Climate.switch_land_carbon_impact"/>
-				<connect to="Forest.today" from="Climate.today"/>
-				<connect2 to="Forest.today" from="Climate.today"/>
-				<connect to="Forest.today_1" from="Climate.today"/>
-				<connect2 to="Forest.today_1" from="Climate.today"/>
+				<connect to="Forest.today" from="Climate.climate_impact_stoptime"/>
+				<connect2 to="Forest.today" from="Climate.climate_impact_stoptime"/>
+				<connect to="Forest.today_1" from="Climate.climate_impact_stoptime"/>
+				<connect2 to="Forest.today_1" from="Climate.climate_impact_stoptime"/>
 				<connect to="Forest.Young_Forest" from="Land_Use.Young_Forest"/>
 				<connect2 to="Forest.Young_Forest" from="Land_Use.Young_Forest"/>
 				<connect to="Forest.young_forest_share" from="Land_Use.young_forest_share"/>
@@ -5808,7 +5813,10 @@ kappa3 in Cummins et al 2020 https://doi.org/10.1175/JCLI-D-19-0589.1</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(Atmospheric_CO2_Concentration_1 - INIT(Atmospheric_CO2_Concentration_1))*CO2_tree_net_primary_production_parameter</eqn>
+				<eqn>IF (switch_land_carbon_impact =0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+(Atmospheric_CO2_Concentration_1 - INIT(Atmospheric_CO2_Concentration_1))*CO2_tree_net_primary_production_parameter</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="change in tree net\nprimary production from CO2">
@@ -6230,7 +6238,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="576" isee:page_cols="3" isee:page_rows="3" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="229" isee:scroll_y="817" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -6634,6 +6642,18 @@ ELSE
 					<from>today_1</from>
 					<to>STA_squared_effect_on_aboveground_biomass_per_area</to>
 				</connector>
+				<connector uid="75" angle="47.2047">
+					<from>
+						<alias uid="76"/>
+					</from>
+					<to>effect_of_CO2_on_tree_net_primary_production</to>
+				</connector>
+				<connector uid="78" angle="25.0169">
+					<from>
+						<alias uid="77"/>
+					</from>
+					<to>effect_of_CO2_on_tree_net_primary_production</to>
+				</connector>
 				<alias font_style="italic" uid="15" x="646.75" y="1135.33" width="18" height="18">
 					<of>tree_net_primary_production_in_1980</of>
 				</alias>
@@ -6648,6 +6668,12 @@ ELSE
 				</alias>
 				<alias font_style="italic" font_weight="bold" label_side="top" uid="57" x="1673.43" y="570.345" width="18" height="18">
 					<of>Surface_Temperature_Anomaly_1</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="76" x="1200" y="1293.74" width="18" height="18">
+					<of>today</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="77" x="1115" y="1249" width="18" height="18">
+					<of>switch_land_carbon_impact</of>
 				</alias>
 			</view>
 		</views>
@@ -6672,7 +6698,10 @@ ELSE
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(Atmospheric_CO2_Concentration - INIT(Atmospheric_CO2_Concentration))*CO2_grass_net_primary_production_parameter</eqn>
+				<eqn>IF (switch_land_carbon_impact =0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+(Atmospheric_CO2_Concentration - INIT(Atmospheric_CO2_Concentration))*CO2_grass_net_primary_production_parameter</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="change in grass net primary production from CO2">
@@ -6865,7 +6894,7 @@ https://doi.org/10.1007/s11769-019-1063-x 0.0046283</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="576" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="215" isee:scroll_y="229" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -7054,6 +7083,18 @@ https://doi.org/10.1007/s11769-019-1063-x 0.0046283</doc>
 					<from>today</from>
 					<to>effect_of_STA_squared_on_grass_net_primary_production</to>
 				</connector>
+				<connector uid="34" angle="38.4537">
+					<from>
+						<alias uid="35"/>
+					</from>
+					<to>effect_of_CO2_on_grass_net_primary_production</to>
+				</connector>
+				<connector uid="36" angle="48.6914">
+					<from>
+						<alias uid="37"/>
+					</from>
+					<to>effect_of_CO2_on_grass_net_primary_production</to>
+				</connector>
 				<alias font_style="italic" uid="15" x="212" y="563.167" width="18" height="18">
 					<of>grass_net_primary_production_in_1980</of>
 				</alias>
@@ -7062,6 +7103,12 @@ https://doi.org/10.1007/s11769-019-1063-x 0.0046283</doc>
 				</alias>
 				<alias font_style="italic" uid="19" x="951" y="513.43" width="18" height="18">
 					<of>grass_net_primary_production_in_1980</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="37" x="836" y="754" width="18" height="18">
+					<of>switch_land_carbon_impact</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="35" x="771" y="700" width="18" height="18">
+					<of>today</of>
 				</alias>
 			</view>
 		</views>
@@ -7118,8 +7165,8 @@ https://doi.org/10.1007/s11769-019-1063-x 0.0046283</doc>
 				<connect2 to="soil_carbon_decay.Absolute_Surface_Temperature" from="Energy_Balance_Model.Absolute_Surface_Temperature"/>
 				<connect to="soil_carbon_decay.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
 				<connect2 to="soil_carbon_decay.switch_land_carbon_impact" from="Climate.switch_land_carbon_impact"/>
-				<connect to="soil_carbon_decay.today" from="Climate.today"/>
-				<connect2 to="soil_carbon_decay.today" from="Climate.today"/>
+				<connect to="soil_carbon_decay.today" from="Climate.climate_impact_stoptime"/>
+				<connect2 to="soil_carbon_decay.today" from="Climate.climate_impact_stoptime"/>
 			</module>
 			<module name="cropland soil carbon" isee:label="">
 				<format scale_by="auto"/>
@@ -10799,7 +10846,7 @@ https://doi.org/10.1126/science.1201609</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>IF (switch_land_carbon_impact =0) AND TIME &gt; today THEN
-PREVIOUS(SELF, 0)
+PREVIOUS(SELF, 1)
 ELSE
 EXP(e0*(1.0/(temp_response+10)-1.0/(Absolute_Surface_Temperature*UNIT_per_deg_C+temp_response)))</eqn>
 				<units>dmnl</units>
@@ -10930,7 +10977,7 @@ EXP(e0*(1.0/(temp_response+10)-1.0/(Absolute_Surface_Temperature*UNIT_per_deg_C+
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="576" isee:page_cols="3" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -11024,7 +11071,7 @@ EXP(e0*(1.0/(temp_response+10)-1.0/(Absolute_Surface_Temperature*UNIT_per_deg_C+
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="658.333" y="376.667" name="switch land carbon\nimpact"/>
 				<aux font_style="italic" font_weight="bold" x="684.167" y="304.167" name="today"/>
-				<connector uid="11" angle="197.592">
+				<connector uid="11" angle="198.498">
 					<from>today</from>
 					<to>climate_response_term_lpjml</to>
 				</connector>
