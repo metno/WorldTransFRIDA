@@ -17,7 +17,7 @@
 			<elem name="insufficient"/>
 			<elem name="well_protected"/>
 		</dim>
-		<dim name="Run" size="14"/>
+		<dim name="Run" size="22"/>
 	</dimensions>
 	<isee:prefs saved_runs="100" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true">
 		<isee:ignored_words>
@@ -367,8 +367,8 @@ ELSE
 				<connect2 to='Sea_level_rise_adaptation."Real_GDP_in_2021c$"' from='GDP."Real_GDP_in_2021c$"'/>
 				<connect to="Sea_level_rise_adaptation.switch_sea_level_impact" from="Climate.switch_sea_level_rise_damage"/>
 				<connect2 to="Sea_level_rise_adaptation.switch_sea_level_impact" from="Climate.switch_sea_level_rise_damage"/>
-				<connect to="Sea_level_rise_adaptation.today" from="Climate.today"/>
-				<connect2 to="Sea_level_rise_adaptation.today" from="Climate.today"/>
+				<connect to="Sea_level_rise_adaptation.today" from="Climate.climate_impact_stoptime"/>
+				<connect2 to="Sea_level_rise_adaptation.today" from="Climate.climate_impact_stoptime"/>
 				<connect to="Sea_level_rise_adaptation.Total_global_SLR" from="Sea_Level.Total_global_SLR"/>
 				<connect2 to="Sea_level_rise_adaptation.Total_global_SLR" from="Sea_Level.Total_global_SLR"/>
 				<connect to="Sea_level_rise_adaptation.Willingness_to_invest_in_flood_protection_1" from="Sea_level_rise_Impacts_and_Adaptation.Willingness_to_invest_in_flood_protection"/>
@@ -717,7 +717,7 @@ From SSP data, it seems that in SSP5-8.5 the well protected population grows unt
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>Initial_split_of_asset_distribution[Coastal_Protection_level] * INIT(Net_global_financial_assets_in_real_terms[Run]) * Initial_fraction_of_assets_that_are_on_the_coast</eqn>
+				<eqn>Initial_split_of_asset_distribution[Coastal_Protection_level] * INIT(Net_global_financial_assets_in_real_terms[Run]) * Initial_fraction_of_assets_that_are_on_the_coast[Run]</eqn>
 				<inflow>Increase_of_coastal_asset_values_through_internal_growth</inflow>
 				<outflow>Proactive_retreat_of_coastal_assets</outflow>
 				<outflow>Reactive_retreat_of_coastal_assets</outflow>
@@ -754,7 +754,7 @@ Proactive retreat is in this model actually only happening after a retreat time 
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>asset_flood_damage_sensitivity * (Effective_flood_depth_for_assets/reference_flood_depth_for_damage)^asset_flood_damage_elasticity</eqn>
+				<eqn>asset_flood_damage_sensitivity[Run] * (Effective_flood_depth_for_assets/reference_flood_depth_for_damage)^asset_flood_damage_elasticity[Run]</eqn>
 				<units>1/Year</units>
 			</aux>
 			<aux name="US GDP per capita in 2010" access="output" isee:autocreated="true">
@@ -861,14 +861,150 @@ https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD?locations=US</doc>
 			<aux name="asset flood damage elasticity">
 				<doc>${Internal Calibration Parameter}
 </doc>
-				<eqn>1</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>1.099852371</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>0.925284576</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>0.954859543</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>1.088103867</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>0.941238403</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>1.094185257</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>1.062754059</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>0.985797501</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>1.050151825</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>1.076815033</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>1.028963852</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>0.987924194</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>1.020664978</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>1.097239304</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>0.954628754</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>1.014216614</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>1.075588608</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>0.932264709</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>0.956646729</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>1.042781067</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>1.054318619</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>0.954743576</eqn>
+				</element>
 				<range min="0.9" max="1.1"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="asset flood damage sensitivity">
 				<doc>${Internal Calibration Parameter}
 </doc>
-				<eqn>0.15</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.116696358</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>0.101427078</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>0.19643383</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>0.141428185</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>0.151966858</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>0.119993782</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>0.191859818</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>0.141526222</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>0.141880417</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>0.187801743</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>0.177577782</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>0.103044128</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>0.152292633</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>0.15263958</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>0.155559921</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>0.105980682</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>0.181560326</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>0.147438812</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>0.153909302</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>0.165428925</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>0.171038246</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>0.107673454</eqn>
+				</element>
 				<range min="0.1" max="0.2"/>
 				<units>1/year</units>
 			</aux>
@@ -1026,13 +1162,81 @@ Actually_susceptible_coastal_asset_fraction *  Flood_damage_function_for_assets_
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>Fraction_of_storm_damages_that_is_not_rebuild*All_storm_damage</eqn>
+				<eqn>Fraction_of_storm_damages_that_is_not_rebuild[Run]*All_storm_damage</eqn>
 				<units>bc$/year</units>
 			</flow>
 			<aux name="Fraction of storm damages that is not rebuild">
 				<doc>${Internal Calibration Parameter}
 This is 0 in CIAM, in the assumption that everything is rebuilt.</doc>
-				<eqn>0.1</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.044255447</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>0.077326202</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>0.002784348</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>0.152633286</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>0.058602905</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>0.162642288</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>0.182349396</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>0.014487076</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>0.028466034</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>0.090901947</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>0.124120712</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>0.020986938</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>0.007704163</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>0.173075485</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>0.06833725</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>0.192454529</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>0.153570175</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>0.102116394</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>0.192279053</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>0.119261169</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>0.059436417</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>0.031367111</eqn>
+				</element>
 				<range min="0" max="0.25"/>
 				<units>1</units>
 			</aux>
@@ -1134,7 +1338,75 @@ This is 0 in CIAM, in the assumption that everything is rebuilt.</doc>
 			<aux name="initial growth rate of coastal assets">
 				<doc>${Internal Calibration Parameter}
 </doc>
-				<eqn>0.085</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.085580822</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>0.087877663</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>0.085751499</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>0.084355915</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>0.082599213</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>0.087548931</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>0.085241493</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>0.084888363</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>0.08564547</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>0.086047844</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>0.085856922</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>0.08753775</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>0.086702011</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>0.08325568</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>0.086970146</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>0.084896683</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>0.085018482</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>0.083873306</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>0.082212952</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>0.083896194</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>0.086385891</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>0.084536961</eqn>
+				</element>
 				<range min="0.082" max="0.088"/>
 				<units>1</units>
 			</aux>
@@ -1173,7 +1445,75 @@ This is 0 in CIAM, in the assumption that everything is rebuilt.</doc>
 			<aux name="Initial fraction of assets\nthat are on the coast">
 				<doc>${External Parameter}
 This is the 2010 value, but in the future we should account for coastal migration to get this right</doc>
-				<eqn>0.13</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.132457542</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>0.138757706</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>0.128745766</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>0.122804146</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>0.123089294</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>0.1240942</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>0.136995621</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>0.137324944</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>0.128187485</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>0.139700241</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>0.125228767</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>0.128622131</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>0.136720123</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>0.127066383</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>0.127601242</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>0.129382172</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>0.120286751</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>0.121383514</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>0.121022339</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>0.125832367</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>0.131161308</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>0.135399208</eqn>
+				</element>
 				<range min="0.12" max="0.14"/>
 				<units>1</units>
 			</aux>
@@ -1683,7 +2023,7 @@ This is the 2010 value, but in the future we should account for coastal migratio
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>Number_of_people_flooded_annually_in_storm_surges[Run,Coastal_Protection_level]*Fatality_rate_in_flood_events</eqn>
+				<eqn>Number_of_people_flooded_annually_in_storm_surges[Run,Coastal_Protection_level]*Fatality_rate_in_flood_events[Run]</eqn>
 				<units>Mp/year</units>
 			</flow>
 			<flow name="Proactive retreat of people from the coast" access="output" isee:autocreated="true">
@@ -1777,7 +2117,75 @@ Diaz, D. B. (2016). Estimating global damages from sea level rise with the Coast
 
 Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk Management 1(1):43–
 56</doc>
-				<eqn>0.01</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.016063389</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>0.005487709</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>0.012975338</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>0.005451214</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>0.001941254</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>0.009544926</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>0.001351906</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>0.010598377</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>0.007338768</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>0.001198784</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>0.01115559</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>0.013589508</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>0.017333511</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>0.008187771</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>0.018820305</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>0.008661728</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>0.001356335</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>0.015666061</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>0.001961853</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>0.016945419</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>0.01865218</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>0.006785091</eqn>
+				</element>
 				<range min="0.001" max="0.03"/>
 				<units>1</units>
 			</aux>
@@ -1794,13 +2202,81 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>people_flood_damage_sensitivity* (Effective_flood_depth_for_people/UNIT_metre_1)^people_flood_damage_elasticity</eqn>
+				<eqn>people_flood_damage_sensitivity[Run]* (Effective_flood_depth_for_people/UNIT_metre_1)^people_flood_damage_elasticity</eqn>
 				<units>1/Year</units>
 			</aux>
 			<aux name="people flood damage\nsensitivity">
 				<doc>${Internal Calibration Parameter}
 </doc>
-				<eqn>0.5</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>0.5</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>0.5</eqn>
+				</element>
 				<range min="0.1" max="0.5"/>
 				<units>1/year</units>
 			</aux>

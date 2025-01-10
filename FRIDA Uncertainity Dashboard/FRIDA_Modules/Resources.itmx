@@ -17,7 +17,7 @@
 			<elem name="insufficient"/>
 			<elem name="well_protected"/>
 		</dim>
-		<dim name="Run" size="14"/>
+		<dim name="Run" size="22"/>
 	</dimensions>
 	<isee:prefs saved_runs="100" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true">
 		<isee:ignored_words>
@@ -254,8 +254,8 @@
 				<connect2 to="Concrete.start_year" from="Government_Regulations.start_year"/>
 				<connect to="Concrete.switch_concrete_impact" from="Climate.switch_concrete_impact"/>
 				<connect2 to="Concrete.switch_concrete_impact" from="Climate.switch_concrete_impact"/>
-				<connect to="Concrete.today" from="Climate.today"/>
-				<connect2 to="Concrete.today" from="Climate.today"/>
+				<connect to="Concrete.today" from="Climate.climate_impact_stoptime"/>
+				<connect2 to="Concrete.today" from="Climate.climate_impact_stoptime"/>
 			</module>
 			<module name="CCS" isee:label="">
 				<format scale_by="auto"/>
@@ -402,7 +402,8 @@
 				<units>MtCO2/Year</units>
 			</flow>
 			<aux name="cost of storing carbon per unit" access="output" isee:autocreated="true">
-				<doc>https://www.iea.org/commentaries/is-carbon-capture-too-expensive
+				<doc>${External Parameter,No Sensi}
+https://www.iea.org/commentaries/is-carbon-capture-too-expensive
 middle of power generation storing cost</doc>
 				<eqn>75</eqn>
 				<units>c$/(tC/year)</units>
@@ -501,6 +502,8 @@ middle of power generation storing cost</doc>
 				<units>MtCO2/Year</units>
 			</flow>
 			<aux name="stored CO2 leakage rate">
+				<doc>${Internal Calibration Parameter,No Sensi}
+</doc>
 				<eqn>0</eqn>
 				<units>dmnl/year</units>
 			</aux>
@@ -511,7 +514,9 @@ middle of power generation storing cost</doc>
 				<eqn>Storing_CO2 * cost_of_storing_CO2_per_unit</eqn>
 				<units>c$</units>
 			</aux>
-			<aux name="GtC to tC">
+			<aux name="UNIT GtC to tC">
+				<doc>${Unit}
+</doc>
 				<eqn>1000000000</eqn>
 				<units>tC/GtC</units>
 			</aux>
@@ -534,7 +539,7 @@ middle of power generation storing cost</doc>
 				<units>GtC</units>
 			</aux>
 			<aux name="cost of storing CO2 per unit" access="output" isee:autocreated="true">
-				<eqn>GtC_to_tC / GtC_to_MtCO2 * cost_of_storing_carbon_per_unit</eqn>
+				<eqn>UNIT_GtC_to_tC / GtC_to_MtCO2 * cost_of_storing_carbon_per_unit</eqn>
 				<units>c$/(MtCO2/year)</units>
 			</aux>
 		</variables>
@@ -580,7 +585,7 @@ middle of power generation storing cost</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="2" isee:scroll_x="753" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1097" page_height="767" isee:page_cols="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -694,7 +699,7 @@ middle of power generation storing cost</doc>
 					<from>Storing_CO2</from>
 					<to>cost_of_storing_CO2</to>
 				</connector>
-				<aux x="800" y="444.167" name="GtC to tC"/>
+				<aux x="800" y="444.167" name="UNIT GtC to tC"/>
 				<aux x="368.333" y="238.667" name="storing carbon from oil\nemissions"/>
 				<connector uid="13" angle="359.867">
 					<from>storing_carbon_from_oil_emissions</from>
@@ -724,7 +729,7 @@ middle of power generation storing cost</doc>
 					<to>cost_of_storing_CO2_per_unit</to>
 				</connector>
 				<connector uid="19" angle="0">
-					<from>GtC_to_tC</from>
+					<from>UNIT_GtC_to_tC</from>
 					<to>cost_of_storing_CO2_per_unit</to>
 				</connector>
 				<connector uid="20" angle="180.932">
@@ -852,7 +857,7 @@ AGE_CUTPOINT_FOR_CONCRETE_STRUCTURES</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>SMTH3(indicated_desired_per_capita_floor_area[Run] * population[Run], 
-TIME_TO_ADJUST_DESIRED_FLOOR_AREA)</eqn>
+TIME_TO_ADJUST_DESIRED_FLOOR_AREA[Run])</eqn>
 				<isee:delay_aux/>
 				<units>Mm2</units>
 			</aux>
@@ -883,10 +888,78 @@ TIME_TO_ADJUST_DESIRED_FLOOR_AREA)</eqn>
 				<doc>${Assumption,Internal Calibration Parameter}
 This is the time delay for construction of new buildings in response to a floor area gap.
 
-Calibration Range: 0.5-10 years
+Calibration Range: 0.5-20 years
 Source: Assumption</doc>
-				<eqn>14.6616180859513</eqn>
-				<range min="0.5" max="10"/>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>14.00127972</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>14.55226455</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>14.07615801</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>14.38124016</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>15.23450749</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>14.42959747</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>14.78161437</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>15.22584319</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>15.03387693</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>14.68718394</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>14.42476124</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>15.13266857</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>14.0840289</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>14.33815369</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>14.63345471</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>14.18649445</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>15.20870664</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>15.2803633</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>14.20853799</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>15.30328615</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>14.6179833</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>14.45444573</eqn>
+				</element>
+				<range min="0.5" max="20"/>
 				<units>year</units>
 			</aux>
 			<aux name="TIME TO ADJUST\nDESIRED FLOOR AREA">
@@ -894,7 +967,75 @@ Source: Assumption</doc>
 This is the time delay for floor area demand to adjust to changes in wealth.
 Calibration range: 2 - 30 years
 Source: Assumption</doc>
-				<eqn>3.94347304975288</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>3.631326635</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>4.21959621</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>3.881484193</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>4.21192971</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>3.79687861</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>4.304315207</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>4.109483408</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>3.846316271</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>4.331391325</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>3.712690455</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>4.260156042</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>4.299959778</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>3.632534813</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>4.19447019</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>4.296774723</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>4.132125337</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>3.820334917</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>3.621785646</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>4.046075296</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>3.831098261</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>3.634395125</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>3.900109361</eqn>
+				</element>
 				<range min="2" max="30"/>
 				<units>Years</units>
 			</aux>
@@ -909,7 +1050,75 @@ Source: DOI: 10.1016/j.jclepro.2019.119146
 
 
 </doc>
-				<eqn>0.998</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.991952376</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>0.991280315</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>1.008739789</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>0.99366189</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>0.98686238</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>1.003107026</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>0.99354671</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>0.992596348</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>1.002934186</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>0.996473737</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>0.994366391</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>0.985915395</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>1.008419608</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>0.997204568</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>0.998135958</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>0.992800284</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>0.991258889</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>1.001213565</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>0.988548664</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>0.989891953</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>1.008820586</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>1.004478728</eqn>
+				</element>
 				<range min="0.452" max="1.43"/>
 				<units>Mtonne/Mm2</units>
 			</aux>
@@ -964,7 +1173,75 @@ This is the mass of concrete in the New buildings stock at the start of the simu
 
 Calibration Range: 1000 - 70000
 Source: Assumption</doc>
-				<eqn>20000.6694269533</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>18654.71688</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>18305.50282</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>20574.7519</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>22262.90936</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>17391.29145</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>21145.37091</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>19100.88746</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>20691.39982</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>21491.60455</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>19340.34971</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>22357.70764</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>19190.0743</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>17823.06347</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>19245.5206</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>21958.68953</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>22103.29184</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>22162.19134</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>20148.29328</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>22447.00753</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>20310.26431</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>18725.46616</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>22141.34887</eqn>
+				</element>
 				<range min="1000" max="70000"/>
 				<units>Mtonne</units>
 			</aux>
@@ -975,7 +1252,75 @@ This is the mass of concrete in the Old buildings stock at the start of the simu
 
 Calibration Range: 20000 - 80000
 Source: Assumption. Assumed to be significantly larger than the initial value for New Buildings</doc>
-				<eqn>50963.6563089793</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>50932.44344</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>48648.08579</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>50981.52075</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>50391.94654</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>52273.62686</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>53360.63888</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>53250.43836</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>49883.92698</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>49670.43783</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>53327.90483</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>49599.9403</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>49208.89055</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>51872.37565</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>51410.87591</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>50742.03832</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>50473.56775</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>52825.61825</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>52694.65352</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>51068.77036</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>52151.74172</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>52866.89947</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>49675.27711</eqn>
+				</element>
 				<range min="20000" max="80000"/>
 				<units>Mtonne</units>
 			</aux>
@@ -1029,7 +1374,75 @@ This is the mass of concrete in the New infrastructure stock at the start of the
 
 Calibration Range: 1000 - 16000
 Source: Assumption</doc>
-				<eqn>6502.54623003724</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>7794.156852</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>6284.672502</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>10048.6403</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>3611.900617</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>5348.509263</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>8573.14608</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>8804.25326</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>5556.832636</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>8108.005228</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>3551.129521</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>10219.4332</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>8344.094581</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>8252.67384</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>3184.604297</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>5849.610273</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>5454.091369</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>6047.084213</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>7402.192564</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>7620.151946</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>6983.518688</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>5818.703667</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>8714.50276</eqn>
+				</element>
 				<range min="1000" max="16000"/>
 				<units>Mtonne</units>
 			</aux>
@@ -1039,7 +1452,75 @@ This is the mass of concrete in the Old infrastructure stock at the start of the
 
 Calibration Range: 1000 - 15000
 Source: Assumption. Assumed to be significantly larger than the initial value for New infrastructure.</doc>
-				<eqn>12294.8402422716</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>10246.66289</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>11456.63946</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>11329.96925</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>14757.77353</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>10146.67856</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>12267.52488</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>14829.99877</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>11061.76894</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>12978.08543</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>10423.91863</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>10704.57442</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>14032.20862</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>14597.42091</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>12450.15701</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>11624.76256</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>10188.07985</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>14167.75349</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>12075.78075</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>13450.44407</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>14545.65897</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>12638.32032</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>11802.0183</eqn>
+				</element>
 				<range min="1000" max="15000"/>
 				<units>Mtonne</units>
 			</aux>
@@ -1057,7 +1538,75 @@ This represents the time it takes for the demand for infrastructure to update wh
 
 Calibration range: 1 - 10 years
 Source: Assumption</doc>
-				<eqn>5.1383825712853</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>4.966861345</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>4.930409549</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>5.363227726</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>5.320345977</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>5.347826551</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>5.324278535</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>5.360418591</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>4.836184005</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>4.885837469</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>4.934875532</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>4.920790598</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>4.893691041</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>4.931621876</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>5.327767729</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>5.013258844</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>5.281187804</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>5.202493905</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>5.251574688</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>4.914538452</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>4.981620565</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>5.416041323</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>5.185308876</eqn>
+				</element>
 				<range min="1" max="10"/>
 				<units>year</units>
 			</aux>
@@ -1067,7 +1616,75 @@ This is the time delay for construction of new infrastructure in response to a i
 
 Calibration Range: 0.5-10 years
 Source: Assumption</doc>
-				<eqn>9.45930961383885</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>9.041164054</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>9.921662655</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>9.310065317</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>9.540188213</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>9.853898005</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>9.633583291</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>9.081196393</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>9.492000574</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>8.99898869</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>9.063057606</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>9.625665907</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>9.186705463</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>9.676123578</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>9.470073034</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>9.315412145</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>9.21894027</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>9.07089807</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>9.10871941</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>9.207928202</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>9.112010866</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>9.29063499</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>9.81091051</eqn>
+				</element>
 				<range min="0.5" max="10"/>
 				<units>year</units>
 			</aux>
@@ -1081,7 +1698,6 @@ Link: https://cdn.gihub.org/outlook/live/methodology/Global+Infrastructure+Outlo
 				<eqn>BASE_AVERAGE_LIFETIME_OF_INFRASTRUCTURE *
 actual_concrete_infrastructure_longevity_policy *
 effect_of_STA_on_average_lifetime_of_concrete</eqn>
-				<range min="25" max="100"/>
 				<units>year</units>
 			</aux>
 			<aux name="Infrastructure concrete stock in use">
@@ -1099,7 +1715,75 @@ Calibration data calculated as the difference between data on &apos;In use concr
 This is the intercept parameter for the regression function linking wealth to floor area demand.
 Calibration range: -300 - -50 
 Source: Assumption</doc>
-				<eqn>-200.729776361609{-189.79}</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>-200.3554216{-189.79}</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>-200.8110411{-189.79}</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>-200.6467753{-189.79}</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>-200.5716208{-189.79}</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>-200.5792415{-189.79}</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>-200.6216284{-189.79}</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>-200.2633983{-189.79}</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>-200.7407608{-189.79}</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>-200.8754512{-189.79}</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>-200.6045337{-189.79}</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>-200.8930661{-189.79}</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>-200.9272253{-189.79}</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>-200.5710703{-189.79}</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>-200.7331663{-189.79}</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>-200.8454604{-189.79}</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>-201.0110269{-189.79}</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>-201.1003722{-189.79}</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>-200.5045549{-189.79}</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>-200.5129198{-189.79}</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>-200.5492427{-189.79}</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>-201.0233906{-189.79}</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>-200.4984507{-189.79}</eqn>
+				</element>
 				<range min="-300" max="-50"/>
 				<units>Mm2/Mp</units>
 			</aux>
@@ -1108,9 +1792,119 @@ Source: Assumption</doc>
 This parameter represents the effect of wealth on desired per capita floor area. 
 Calibration range: 1 - 45 
 Source: Assumption</doc>
-				<eqn>{22.823}
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>{22.823}
 
-25.2572561601996</eqn>
+25.22618897</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>{22.823}
+
+25.29363004</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>{22.823}
+
+25.26391444</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>{22.823}
+
+25.30484587</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>{22.823}
+
+25.25463991</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>{22.823}
+
+25.28366132</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>{22.823}
+
+25.22902443</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>{22.823}
+
+25.22589057</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>{22.823}
+
+25.30450714</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>{22.823}
+
+25.20956803</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>{22.823}
+
+25.28254335</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>{22.823}
+
+25.29711183</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>{22.823}
+
+25.26444376</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>{22.823}
+
+25.3020382</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>{22.823}
+
+25.28955353</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>{22.823}
+
+25.21748324</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>{22.823}
+
+25.25314434</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>{22.823}
+
+25.27574965</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>{22.823}
+
+25.26025524</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>{22.823}
+
+25.28732135</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>{22.823}
+
+25.21384911</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>{22.823}
+
+25.23161331</eqn>
+				</element>
 				<range min="1" max="45"/>
 				<units>Mm2/Mp</units>
 			</aux>
@@ -1221,7 +2015,75 @@ This is the concrete deterioration base rate without climate damages.
 
 Calibration Range: 0.001 - 0.1
 Source: Assumption qualitatively based on Krausmann et al (2017) (https://doi.org/10.1073/pnas.1613773114)</doc>
-				<eqn>0.0158950991238031</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.015899817</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>0.015596919</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>0.016099923</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>0.015812635</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>0.016081538</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>0.015805519</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>0.015597789</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>0.016045606</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>0.015687199</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>0.01567748</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>0.016122644</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>0.016010885</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>0.016102847</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>0.016196948</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>0.01558176</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>0.016090343</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>0.015864343</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>0.015876333</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>0.015603686</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>0.015846954</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>0.015961559</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>0.016203147</eqn>
+				</element>
 				<range min="0.001" max="0.1"/>
 				<units>dmnl/year</units>
 			</aux>
@@ -1281,7 +2143,6 @@ old_infrastructure_maintenance)</eqn>
 			</aux>
 			<aux name="CO2 INTENSITY OF\nRS BUILDINGS CONCRETE">
 				<doc>${External Parameter,Internal Calibration Parameter}
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; a2a38f188ce83395f77d5d8e05bb6357b6bc30e1
 Based on reference values for concrete mixes for infrastructure and other non-residential buildings.
 Mean: 0.104 MtonneCO2/Mtonne concrete
 Range: 0.087-0.163 MtonCO2/Mtonne concrete
@@ -1289,13 +2150,80 @@ Range: 0.087-0.163 MtonCO2/Mtonne concrete
 Source: https://www.svenskbetong.se/component/edocman/?task=document.viewdoc&amp;id=104&amp;Itemid= 
 
 Billy: this range must be high based on new emissions data from Chris Wells</doc>
-				<eqn>0.0542134551261592</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.053831291</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>0.053968882</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>0.052737848</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>0.056351157</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>0.053413563</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>0.052205178</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>0.053220653</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>0.055497628</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>0.054920018</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>0.053770218</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>0.056342469</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>0.052633501</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>0.05216551</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>0.054871579</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>0.05513735</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>0.054122961</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>0.055309062</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>0.055799146</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>0.052962517</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>0.055571401</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>0.055817625</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>0.056319555</eqn>
+				</element>
 				<range min="0.05" max="0.163"/>
 				<units>MtCO2/Mtonne</units>
 			</aux>
 			<aux name="CO2 INTENSITY OF\nINFRASTRUCTURE CONCRETE">
 				<doc>${External Parameter,Internal Calibration Parameter}
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; a2a38f188ce83395f77d5d8e05bb6357b6bc30e1
 Based on reference values for concrete mixes for infrastructure and other non-residential buildings.
 Mean: 0.145 MtonneCO2/Mtonne concrete
 Range: 0.109-0.164 MtonCO2/Mtonne concrete
@@ -1303,7 +2231,75 @@ Range: 0.109-0.164 MtonCO2/Mtonne concrete
 Source: https://www.svenskbetong.se/component/edocman/?task=document.viewdoc&amp;id=104&amp;Itemid= 
 
 Billy: this range must be high based on new emissions data from Chris Wells</doc>
-				<eqn>0.0842890302801893</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.084609482</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>0.082306435</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>0.08623559</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>0.082887499</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>0.084296727</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>0.084736068</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>0.085795295</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>0.084575215</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>0.08625616</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>0.083261257</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>0.086311198</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>0.082945543</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>0.082006919</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>0.084785087</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>0.083345551</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>0.082180417</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>0.085147071</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>0.082438574</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>0.086659063</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>0.083143265</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>0.082985298</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>0.083064259</eqn>
+				</element>
 				<range min="0.07" max="0.164"/>
 				<units>MtCO2/Mtonne</units>
 			</aux>
@@ -1358,7 +2354,75 @@ This is the regression coefficient determining the effect of wealth (GDP per cap
 
 Calibration Range: -40000 - -5000
 Source: Assumption</doc>
-				<eqn>-24055.7818588206{- 28801}</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>-24154.80472{- 28801}</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>-24141.88216{- 28801}</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>-23842.91752{- 28801}</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>-24109.04017{- 28801}</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>-23861.28632{- 28801}</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>-24329.1629{- 28801}</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>-24257.56302{- 28801}</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>-24034.5777{- 28801}</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>-23809.14058{- 28801}</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>-23901.64168{- 28801}</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>-23883.28377{- 28801}</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>-23860.39714{- 28801}</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>-24077.55375{- 28801}</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>-23921.29632{- 28801}</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>-23775.70907{- 28801}</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>-23823.95374{- 28801}</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>-23835.2505{- 28801}</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>-24244.78103{- 28801}</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>-24188.75819{- 28801}</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>-24124.53221{- 28801}</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>-23927.43124{- 28801}</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>-23858.69614{- 28801}</eqn>
+				</element>
 				<range min="-40000" max="-5000"/>
 				<units>Mtonne/(bc$/Mp/year)</units>
 			</aux>
@@ -1368,7 +2432,75 @@ This is the regression coefficient determining the effect of population size on 
 
 Calibration Range: -40 - -5
 Source: Assumption</doc>
-				<eqn> -34.7999180884332{-43.14}</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn> -34.98770357{-43.14}</eqn>
+				</element>
+				<element subscript="2">
+					<eqn> -34.59488525{-43.14}</eqn>
+				</element>
+				<element subscript="3">
+					<eqn> -34.33936769{-43.14}</eqn>
+				</element>
+				<element subscript="4">
+					<eqn> -34.93759322{-43.14}</eqn>
+				</element>
+				<element subscript="5">
+					<eqn> -34.50480341{-43.14}</eqn>
+				</element>
+				<element subscript="6">
+					<eqn> -34.91795124{-43.14}</eqn>
+				</element>
+				<element subscript="7">
+					<eqn> -35.11458997{-43.14}</eqn>
+				</element>
+				<element subscript="8">
+					<eqn> -35.26352003{-43.14}</eqn>
+				</element>
+				<element subscript="9">
+					<eqn> -34.46332028{-43.14}</eqn>
+				</element>
+				<element subscript="10">
+					<eqn> -35.01209004{-43.14}</eqn>
+				</element>
+				<element subscript="11">
+					<eqn> -34.39948504{-43.14}</eqn>
+				</element>
+				<element subscript="12">
+					<eqn> -35.03219351{-43.14}</eqn>
+				</element>
+				<element subscript="13">
+					<eqn> -34.42242108{-43.14}</eqn>
+				</element>
+				<element subscript="14">
+					<eqn> -35.41624334{-43.14}</eqn>
+				</element>
+				<element subscript="15">
+					<eqn> -34.2614473{-43.14}</eqn>
+				</element>
+				<element subscript="16">
+					<eqn> -35.37972132{-43.14}</eqn>
+				</element>
+				<element subscript="17">
+					<eqn> -34.55827847{-43.14}</eqn>
+				</element>
+				<element subscript="18">
+					<eqn> -35.16562332{-43.14}</eqn>
+				</element>
+				<element subscript="19">
+					<eqn> -34.28563834{-43.14}</eqn>
+				</element>
+				<element subscript="20">
+					<eqn> -34.27152023{-43.14}</eqn>
+				</element>
+				<element subscript="21">
+					<eqn> -35.06989753{-43.14}</eqn>
+				</element>
+				<element subscript="22">
+					<eqn> -34.33699426{-43.14}</eqn>
+				</element>
 				<range min="-40" max="-5"/>
 				<units>Mtonne/Mp</units>
 			</aux>
@@ -1378,8 +2510,97 @@ This is the regression coefficient determining the interaction effect of wealth 
 
 Calibration Range: 0.5 - 10
 Source: Assumption</doc>
-				<eqn>6.01537251853227
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>6.046221508
 {+5.652}</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>5.989095765
+{+5.652}</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>6.02982161
+{+5.652}</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>6.011775757
+{+5.652}</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>6.011576903
+{+5.652}</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>5.994133266
+{+5.652}</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>6.040362019
+{+5.652}</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>6.046214159
+{+5.652}</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>5.992276869
+{+5.652}</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>6.02271755
+{+5.652}</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>6.050146867
+{+5.652}</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>6.007083671
+{+5.652}</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>6.003970407
+{+5.652}</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>6.033176269
+{+5.652}</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>5.981961884
+{+5.652}</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>5.989196111
+{+5.652}</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>6.033370177
+{+5.652}</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>6.040014625
+{+5.652}</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>6.026079841
+{+5.652}</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>6.027746995
+{+5.652}</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>5.987226647
+{+5.652}</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>6.018227852
+{+5.652}</eqn>
+				</element>
 				<range min="4.48" max="6.824"/>
 				<units>Mtonne/(bc$/year)</units>
 			</aux>
@@ -1398,8 +2619,76 @@ Stewart, M. G., Wang, X., and Nguyen, M-N.,.: Climate change impact and risks of
 https://doi.org/10.1016/j.engstruct.2011.01.010 
 
 Wang, X., Stewart, M.G., and Nguyen, M,: Impact of climate change on corrosion and damage to concrete infrastructure in Australia, Climatic Change, 110,3, 941-957, https://link.springer.com/article/10.1007/s10584-011-0124-7  </doc>
-				<eqn>-0.075</eqn>
-				<range min="0.05" max="0.15"/>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>-0.057311153</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>-0.080414772</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>-0.08290453</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>-0.060443974</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>-0.082080841</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>-0.082612514</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>-0.052373695</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>-0.093029308</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>-0.084985161</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>-0.075331688</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>-0.050323582</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>-0.054854584</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>-0.088257217</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>-0.090516376</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>-0.099362755</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>-0.073723984</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>-0.095167637</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>-0.0966259</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>-0.08000946</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>-0.084893417</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>-0.082376385</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>-0.060530567</eqn>
+				</element>
+				<range min="-0.15" max="-0.05"/>
 				<units>dmnl/deg C</units>
 			</aux>
 			<aux name="BASE AVERAGE LIFETIME\nOF INFRASTRUCTURE">
@@ -1408,7 +2697,75 @@ This is the average lifetime of concrete infrastructure without climate impacts,
 
 Calibration range: 25-150 years
 Based on: Common ranges from the literature. E.g., Wang et al. 2012 (https://doi.org/10.1007/s10584-011-0124-7) and UCSUSA (https://www.ucsusa.org/sites/default/files/attach/gw-smart-infrastructure-table-life-expectancy.pdf).</doc>
-				<eqn>60.6266188178707</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>52.7308627</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>41.53936874</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>43.46981905</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>43.56980287</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>79.04601087</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>61.83244063</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>71.66737445</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>71.78371156</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>81.21735439</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>82.42597236</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>81.27556531</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>52.07952743</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>53.25865864</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>80.26996534</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>57.25445267</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>74.16713941</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>79.03457204</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>66.05590968</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>53.13901699</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>48.36521326</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>55.56870853</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>61.78956621</eqn>
+				</element>
 				<range min="25" max="150"/>
 				<units>year</units>
 			</aux>
@@ -1418,7 +2775,75 @@ This is the average lifetime of concrete buildings without climate impacts,
 
 Calibration range: 75-200 years
 Based on: Expert opinion. Katarina Malaga (https://www.ri.se/en/person/katarina-malaga) and cross checked with literature (Wang et al. 2012, https://doi.org/10.1007/s10584-011-0124-7). </doc>
-				<eqn>185.551125466542</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>188.7001869</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>194.0433889</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>175.3769338</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>181.33123</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>184.6978976</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>197.5151115</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>189.0192654</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>180.8974507</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>196.6213718</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>198.2391977</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>196.3167342</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>182.9544024</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>178.2426882</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>190.2098711</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>177.0235865</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>191.008477</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>193.4955702</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>174.2675722</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>190.1572334</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>196.9559386</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>191.962075</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>173.3988561</eqn>
+				</element>
 				<range min="75" max="200"/>
 				<units>year</units>
 			</aux>
@@ -1439,11 +2864,12 @@ Storm damages to concrete structures are estimated taking the monetary damages t
 				<eqn>IF (switch_concrete_impact = 0) AND TIME &gt; today THEN
 PREVIOUS(SELF, 0)
 ELSE
-SUM(All_storm_damage[Run,*])/&quot;bc$/Mtonne_concrete&quot;</eqn>
+SUM(All_storm_damage[Run,*])/&quot;UNIT_bc$/Mtonne_concrete&quot;</eqn>
 				<units>Mtonne/year</units>
 			</aux>
-			<aux name="bc$/Mtonne concrete">
-				<doc>This is the mean historic value (1980-2020) per Mtonne of concrete measured in constant asset dollars.
+			<aux name="UNIT bc$/Mtonne concrete">
+				<doc>${Unit}
+This is the mean historic value (1980-2020) per Mtonne of concrete measured in constant asset dollars.
 
 Asset dollars = Bank Assets minus Government debt.</doc>
 				<eqn>1.62</eqn>
@@ -1479,7 +2905,7 @@ Asset dollars = Bank Assets minus Government debt.</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>IF (switch_concrete_impact = 0) AND TIME &gt; today THEN
-PREVIOUS(SELF, 0)
+PREVIOUS(SELF, 1)
 ELSE
 1+CLIMATE_IMPACT_ON_CONCRETE_LIFETIME*
 (Absolute_Surface_Temperature - INIT(Absolute_Surface_Temperature))</eqn>
@@ -1537,7 +2963,7 @@ Residential_and_Service_buildings_longevity_policy</eqn>
 			</aux>
 			<group name="Storm Damages" run="false">
 				<format scale_by="auto"/>
-				<entity name='"bc$/Mtonne_concrete"'/>
+				<entity name='"UNIT_bc$/Mtonne_concrete"'/>
 				<entity name="All_storm_damage"/>
 				<entity name="storm_damages_to_concrete_buildings_and_infrastructure"/>
 			</group>
@@ -1555,8 +2981,97 @@ This is the intercept parameter for the regression function used for estimating 
 
 Calibration Range: 5000 - 20000
 Source: Assumption</doc>
-				<eqn>165310
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>165310
 {+ 243696}</eqn>
+				</element>
+				<element subscript="2">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="3">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="4">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="5">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="6">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="7">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="8">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="9">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="10">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="11">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="12">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="13">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="14">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="15">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="16">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="17">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="18">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="19">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="20">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="21">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
+				<element subscript="22">
+					<eqn>165310
+{+ 243696}</eqn>
+				</element>
 				<range min="165310" max="322082"/>
 				<units>Mtonne</units>
 			</aux>
@@ -1610,7 +3125,7 @@ Structure are considered old when they have passed half of their estimated avera
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_y="225" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="240" isee:scroll_y="352.5" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2073,9 +3588,9 @@ Structure are considered old when they have passed half of their estimated avera
 					<from>All_storm_damage</from>
 					<to>storm_damages_to_concrete_buildings_and_infrastructure</to>
 				</connector>
-				<aux x="180" y="1628.82" name="bc$/Mtonne concrete"/>
+				<aux x="180" y="1628.82" name="UNIT bc$/Mtonne concrete"/>
 				<connector uid="115" angle="37.1581">
-					<from>&quot;bc$/Mtonne_concrete&quot;</from>
+					<from>&quot;UNIT_bc$/Mtonne_concrete&quot;</from>
 					<to>storm_damages_to_concrete_buildings_and_infrastructure</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" label_side="top" x="983.42" y="345.786" name="real GDP per person"/>
