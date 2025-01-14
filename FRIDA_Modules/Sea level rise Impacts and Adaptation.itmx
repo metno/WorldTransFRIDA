@@ -3,9 +3,9 @@
 	<header>
 		<smile version="1.0" namespace="std, isee" uses_arrays="2" uses_submodels=""/>
 		<name>Sea level rise Impacts and Adaptation</name>
-		<uuid>a9bf1c1d-a714-4861-af58-9ea17fb7e590</uuid>
+		<uuid>e57b2569-782b-430f-989a-69b7712c5c52</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.3" isee:build_number="3465" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.3" isee:build_number="3457" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -357,6 +357,8 @@ ELSE
 				<connect2 to="Sea_level_rise_adaptation.Coastal_population" from="Coastal_population.Coastal_population"/>
 				<connect to="Sea_level_rise_adaptation.Coastal_assets" from="Coastal_Assets.Coastal_assets"/>
 				<connect2 to="Sea_level_rise_adaptation.Coastal_assets" from="Coastal_Assets.Coastal_assets"/>
+				<connect to="Sea_level_rise_adaptation.coastal_SLR" from="Sea_level_rise_Impacts_and_Adaptation.Coastal_SLR"/>
+				<connect2 to="Sea_level_rise_adaptation.coastal_SLR" from="Coastal_SLR"/>
 				<connect to="Sea_level_rise_adaptation.Effective_retreat_height" from="Coastal_Assets.Effective_retreat_height"/>
 				<connect2 to="Sea_level_rise_adaptation.Effective_retreat_height" from="Coastal_Assets.Effective_retreat_height"/>
 				<connect to="Sea_level_rise_adaptation.Expected_global_SLR_in_50_years" from="Sea_level_rise_Impacts_and_Adaptation.Expected_global_SLR_in_50_years"/>
@@ -365,12 +367,6 @@ ELSE
 				<connect2 to="Sea_level_rise_adaptation.Financial_bank_assets_in_real_terms" from="Coastal_Assets.Net_global_financial_assets_in_real_terms"/>
 				<connect to='Sea_level_rise_adaptation."Real_GDP_in_2021c$"' from='GDP."Real_GDP_in_2021c$"'/>
 				<connect2 to='Sea_level_rise_adaptation."Real_GDP_in_2021c$"' from='GDP."Real_GDP_in_2021c$"'/>
-				<connect to="Sea_level_rise_adaptation.switch_sea_level_impact" from="Climate.switch_sea_level_rise_damage"/>
-				<connect2 to="Sea_level_rise_adaptation.switch_sea_level_impact" from="Climate.switch_sea_level_rise_damage"/>
-				<connect to="Sea_level_rise_adaptation.today" from="Climate.climate_impact_stoptime"/>
-				<connect2 to="Sea_level_rise_adaptation.today" from="Climate.climate_impact_stoptime"/>
-				<connect to="Sea_level_rise_adaptation.Total_global_SLR" from="Sea_Level.Total_global_SLR"/>
-				<connect2 to="Sea_level_rise_adaptation.Total_global_SLR" from="Sea_Level.Total_global_SLR"/>
 				<connect to="Sea_level_rise_adaptation.Willingness_to_invest_in_flood_protection_1" from="Sea_level_rise_Impacts_and_Adaptation.Willingness_to_invest_in_flood_protection"/>
 				<connect2 to="Sea_level_rise_adaptation.Willingness_to_invest_in_flood_protection_1" from="Willingness_to_invest_in_flood_protection"/>
 			</module>
@@ -488,6 +484,122 @@ PREVIOUS(SELF, 0)
 ELSE Surface_Temperature_Anomaly_1*Sensitivity_of_expected_SLR_to_T_anomaly + Total_CO2_Emissions* Sensitivity_of_expected_SLR_to_CO2_emissions</eqn>
 				<units>metre</units>
 			</aux>
+			<aux name="SLR from AIS weights">
+				<doc>${External Parameter}
+</doc>
+				<dimensions>
+					<dim name="Coastal_Protection_level"/>
+				</dimensions>
+				<element subscript="insufficient">
+					<eqn>1.1106</eqn>
+				</element>
+				<element subscript="well_protected">
+					<eqn>1.0844</eqn>
+				</element>
+				<units>1</units>
+			</aux>
+			<aux name="SLR from GrIS weights">
+				<doc>${External Parameter}
+</doc>
+				<dimensions>
+					<dim name="Coastal_Protection_level"/>
+				</dimensions>
+				<element subscript="insufficient">
+					<eqn>1.0369</eqn>
+				</element>
+				<element subscript="well_protected">
+					<eqn>0.7654</eqn>
+				</element>
+				<units>1</units>
+			</aux>
+			<aux name="SLR thermosteric weights">
+				<doc>${External Parameter}
+</doc>
+				<dimensions>
+					<dim name="Coastal_Protection_level"/>
+				</dimensions>
+				<element subscript="insufficient">
+					<eqn>1.0</eqn>
+				</element>
+				<element subscript="well_protected">
+					<eqn>1.0</eqn>
+				</element>
+				<units>1</units>
+			</aux>
+			<aux name="SLR from MG weights">
+				<doc>${External Parameter}
+</doc>
+				<dimensions>
+					<dim name="Coastal_Protection_level"/>
+				</dimensions>
+				<element subscript="insufficient">
+					<eqn>1.0062</eqn>
+				</element>
+				<element subscript="well_protected">
+					<eqn>0.8853</eqn>
+				</element>
+				<units>1</units>
+			</aux>
+			<aux name="Coastal\nSLR">
+				<dimensions>
+					<dim name="Run"/>
+					<dim name="Coastal_Protection_level"/>
+				</dimensions>
+				<eqn>IF (switch_sea_level_impact =0) AND TIME &gt; today THEN
+PREVIOUS(SELF, 0)
+ELSE
+SLR_thermosteric[Run] * SLR_thermosteric_weights[Coastal_Protection_level] + SLR_from_LWS[Run] * SLR_from_LWS_weights[Coastal_Protection_level] + SLR_from_mountain_glaciers[Run] * SLR_from_MG_weights[Coastal_Protection_level] + SLR_from_Greenland_Ice_Sheet[Run] * SLR_from_GrIS_weights[Coastal_Protection_level] + SLR_from_Antarctic_Ice_Sheet[Run] * SLR_from_AIS_weights[Coastal_Protection_level]</eqn>
+				<units>metre</units>
+			</aux>
+			<aux name="SLR from LWS weights">
+				<doc>${External Parameter}
+</doc>
+				<dimensions>
+					<dim name="Coastal_Protection_level"/>
+				</dimensions>
+				<element subscript="insufficient">
+					<eqn>1.0</eqn>
+				</element>
+				<element subscript="well_protected">
+					<eqn>1.0</eqn>
+				</element>
+				<units>1</units>
+			</aux>
+			<stock name="SLR thermosteric" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>metre</units>
+			</stock>
+			<aux name="SLR from LWS" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>metre</units>
+			</aux>
+			<stock name="SLR from\nmountain glaciers" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>metre</units>
+			</stock>
+			<aux name="SLR from\nGreenland Ice Sheet" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>metre</units>
+			</aux>
+			<aux name="SLR from\nAntarctic Ice Sheet" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>metre</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -535,7 +647,7 @@ ELSE Surface_Temperature_Anomaly_1*Sensitivity_of_expected_SLR_to_T_anomaly + To
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="100" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="190.714" isee:scroll_y="355" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -574,8 +686,8 @@ ELSE Surface_Temperature_Anomaly_1*Sensitivity_of_expected_SLR_to_T_anomaly + To
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<text_box font_weight="bold" text_decoration="underline" text_align="center" font_size="24pt" uid="1" x="602.163" y="433.419" width="426.714" height="32.9404">Sea-level rise impacts and adaptation</text_box>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="top" x="832.263" y="555.417" name="Willingness to invest\nin flood protection"/>
+				<text_box font_weight="bold" text_decoration="underline" text_align="center" font_size="24pt" uid="1" x="590.163" y="401.419" width="426.714" height="32.9404">Sea-level rise impacts and adaptation</text_box>
+				<aux color="#55AAFF" font_color="#55AAFF" label_side="top" x="936.743" y="571.417" name="Willingness to invest\nin flood protection"/>
 				<text_box uid="4" x="912.703" y="100.588" width="609.333" height="274.333">To-Dos:
 - Add ranges for uncertainty parameters (mostly storm damage sensitivities).
 
@@ -586,15 +698,15 @@ Missing features:
 - Adapt model to work with changing behavior over time!
 - Need to account for different socioeconomic developments in bipolar setting?
 From SSP data, it seems that in SSP5-8.5 the well protected population grows until 2090, whereas insufficiently protected population decreases after ~2050. Here, both grow with the same growth rates. In SSP2-4.5 both populations peak around 2060, so a comparison to SSP2-4.5 is actually fine -&gt; If we want to include the dynamics of different SSPs, we need to have a way of moving people from insufficiently protected coasts to well protected coasts OR have a way of modifying the population growth rates.</text_box>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="top" x="832.263" y="620.047" name="Willingness to retreat under expected flooding"/>
-				<module label_side="center" x="439.093" y="721.167" width="60.5" height="50" name="Coastal Assets"/>
-				<module label_side="center" x="856.243" y="746.167" name="Coastal\npopulation"/>
-				<module label_side="center" x="667.683" y="579.583" name="Sea level rise\nadaptation"/>
+				<aux color="#55AAFF" font_color="#55AAFF" label_side="top" x="954.743" y="634.75" name="Willingness to retreat under expected flooding"/>
+				<module label_side="center" x="495.093" y="726.167" width="60.5" height="50" name="Coastal Assets"/>
+				<module label_side="center" x="912.243" y="751.167" name="Coastal\npopulation"/>
+				<module label_side="center" x="723.683" y="584.583" name="Sea level rise\nadaptation"/>
 				<connector uid="6" isee:thickness="2" angle="226.952" isee:autocreated="true">
 					<from>Sea_level_rise_adaptation</from>
 					<to>Coastal_Assets</to>
 				</connector>
-				<connector uid="7" angle="188.353" isee:autocreated="true">
+				<connector uid="7" angle="183.536" isee:autocreated="true">
 					<from>Willingness_to_invest_in_flood_protection</from>
 					<to>Sea_level_rise_adaptation</to>
 				</connector>
@@ -602,7 +714,7 @@ From SSP data, it seems that in SSP5-8.5 the well protected population grows unt
 					<from>Coastal_Assets</from>
 					<to>Coastal_population</to>
 				</connector>
-				<connector uid="9" isee:thickness="2" angle="43.2725" isee:autocreated="true">
+				<connector uid="9" isee:thickness="2" angle="40.0266" isee:autocreated="true">
 					<from>Coastal_Assets</from>
 					<to>Sea_level_rise_adaptation</to>
 				</connector>
@@ -614,15 +726,15 @@ From SSP data, it seems that in SSP5-8.5 the well protected population grows unt
 					<from>Sea_level_rise_adaptation</from>
 					<to>Coastal_population</to>
 				</connector>
-				<connector uid="12" angle="214.64" isee:autocreated="true">
+				<connector uid="12" angle="210.646" isee:autocreated="true">
 					<from>Willingness_to_retreat_under_expected_flooding</from>
 					<to>Coastal_Assets</to>
 				</connector>
-				<connector uid="13" angle="280.766" isee:autocreated="true">
+				<connector uid="13" angle="249.945" isee:autocreated="true">
 					<from>Willingness_to_retreat_under_expected_flooding</from>
 					<to>Coastal_population</to>
 				</connector>
-				<module label_side="center" x="628.933" y="897.083" width="77.5" height="44.1667" name="Sea level rise\ncosts and impacts"/>
+				<module label_side="center" x="684.933" y="902.083" width="77.5" height="44.1667" name="Sea level rise\ncosts and impacts"/>
 				<connector uid="14" isee:thickness="2" angle="222.536">
 					<from>Coastal_population</from>
 					<to>Sea_level_rise_costs_and_impacts</to>
@@ -636,7 +748,7 @@ From SSP data, it seems that in SSP5-8.5 the well protected population grows unt
 					<to>Sea_level_rise_costs_and_impacts</to>
 				</connector>
 				<text_box font_weight="bold" text_decoration="underline" text_align="center" font_size="24pt" uid="18" x="25.66" y="26.276" width="426.714" height="32.9404">Infos:</text_box>
-				<text_box font_size="18pt" uid="19" x="131.473" y="89.217" width="736.27" height="290.778">- Based the structure largely on the CIAM model, data inputs and fitted relationships from
+				<text_box font_size="18pt" uid="19" x="132.194" y="70.0503" width="736.27" height="290.778">- Based the structure largely on the CIAM model, data inputs and fitted relationships from
   DIVA database.
 
 - Current implementation is arrayed by &quot;Coastal protection level&quot; in the DIVA database. That means we separate between coastal assets and population which are (in the year 2000) protected against a 1 in 1000 year flood and those that are not.
@@ -644,68 +756,131 @@ From SSP data, it seems that in SSP5-8.5 the well protected population grows unt
 - Current implementation projects &quot;relatively&quot; small damages compared to CIAM data. This is mostly because here we have negative feedbacks, which are not accounted for in CIAM. On the other hand, some processes that would increase damages are not accounted for here.
 
 - Default version is &quot;No adapt&quot; scenario. I.e. there is no construction of additional flood protection and there is no proactive retreat of people to avoid damages.</text_box>
-				<aux font_style="italic" font_weight="bold" label_side="right" x="951.003" y="563.166" name="No SLR adaptation strategy"/>
-				<aux font_style="italic" font_weight="bold" label_side="right" x="951.003" y="519.673" name="Protection as SLR adaptation strategy"/>
-				<aux font_style="italic" font_weight="bold" label_side="right" x="951.003" y="612.75" name="Retreat as SLR adaptation strategy"/>
-				<connector uid="24" angle="189.759">
+				<aux font_style="italic" font_weight="bold" label_side="right" x="1066" y="571.417" name="No SLR adaptation strategy"/>
+				<aux font_style="italic" font_weight="bold" label_side="right" x="1066" y="523.673" name="Protection as SLR adaptation strategy"/>
+				<aux font_style="italic" font_weight="bold" label_side="right" x="1071" y="624.75" name="Retreat as SLR adaptation strategy"/>
+				<connector uid="24" angle="200.272">
 					<from>Protection_as_SLR_adaptation_strategy</from>
 					<to>Willingness_to_invest_in_flood_protection</to>
 				</connector>
-				<connector uid="25" angle="185.194">
+				<connector uid="25" angle="180">
 					<from>No_SLR_adaptation_strategy</from>
 					<to>Willingness_to_invest_in_flood_protection</to>
 				</connector>
-				<connector uid="26" angle="201.318">
+				<connector uid="26" angle="209.65">
 					<from>No_SLR_adaptation_strategy</from>
 					<to>Willingness_to_retreat_under_expected_flooding</to>
 				</connector>
-				<connector uid="27" angle="181.998">
+				<connector uid="27" angle="184.916">
 					<from>Retreat_as_SLR_adaptation_strategy</from>
 					<to>Willingness_to_retreat_under_expected_flooding</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="902.663" y="475.359" name="start year"/>
-				<connector uid="28" angle="242.418">
+				<aux font_style="italic" font_weight="bold" x="1016.66" y="461.359" name="start year"/>
+				<connector uid="28" angle="247.759">
 					<from>start_year</from>
 					<to>Willingness_to_invest_in_flood_protection</to>
 				</connector>
-				<connector uid="29" angle="258.374">
+				<connector uid="29" angle="264.668">
 					<from>start_year</from>
 					<to>Willingness_to_retreat_under_expected_flooding</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="466.119" y="436.976" name="switch sea level impact"/>
-				<aux font_style="italic" font_weight="bold" x="365.049" y="645.19" name="Total CO2 Emissions"/>
-				<aux font_style="italic" font_weight="bold" x="339.329" y="576.619" name="Surface Temperature Anomaly 1"/>
-				<aux font_style="italic" font_weight="bold" x="561.162" y="410.667" name="today"/>
-				<aux color="blue" label_side="left" x="441.639" y="488.31" name="Sensitivity of expected\nSLR to T anomaly"/>
-				<aux color="blue" label_side="left" label_angle="135" x="406.159" y="531.608" name="Sensitivity of expected\nSLR to CO2 emissions"/>
-				<aux color="blue" label_side="top" x="550.733" y="555.192" width="20.8571" height="20.8571" name="Expected global SLR\nin 50 years"/>
-				<connector uid="23" angle="282.123">
+				<aux font_style="italic" font_weight="bold" label_side="bottom" x="127.329" y="602.047" name="switch sea level impact"/>
+				<aux font_style="italic" font_weight="bold" label_side="top" x="458.51" y="483.523" name="Total CO2 Emissions"/>
+				<aux font_style="italic" font_weight="bold" label_side="top" x="379.233" y="424.419" name="Surface Temperature Anomaly 1"/>
+				<aux font_style="italic" font_weight="bold" label_side="bottom" x="136.527" y="672.167" name="today"/>
+				<aux color="blue" label_side="left" x="312.472" y="449.977" name="Sensitivity of expected\nSLR to T anomaly"/>
+				<aux color="blue" label_side="left" label_angle="135" x="276.992" y="493.275" name="Sensitivity of expected\nSLR to CO2 emissions"/>
+				<aux color="blue" label_side="bottom" x="356.566" y="572.692" width="20.8571" height="20.8571" name="Expected global SLR\nin 50 years"/>
+				<connector uid="23" angle="21.1252">
 					<from>today</from>
 					<to>Expected_global_SLR_in_50_years</to>
 				</connector>
-				<connector uid="22" angle="306.457">
+				<connector uid="22" angle="4.51529">
 					<from>switch_sea_level_impact</from>
 					<to>Expected_global_SLR_in_50_years</to>
 				</connector>
-				<connector uid="21" angle="22.084">
+				<connector uid="21" angle="204.672">
 					<from>Total_CO2_Emissions</from>
 					<to>Expected_global_SLR_in_50_years</to>
 				</connector>
-				<connector uid="20" angle="2.83836">
+				<connector uid="20" angle="265.59">
 					<from>Surface_Temperature_Anomaly_1</from>
 					<to>Expected_global_SLR_in_50_years</to>
 				</connector>
-				<connector uid="5" angle="352.532" isee:autocreated="true">
+				<connector uid="5" angle="359.765" isee:autocreated="true">
 					<from>Expected_global_SLR_in_50_years</from>
 					<to>Sea_level_rise_adaptation</to>
 				</connector>
-				<connector uid="3" color="#FF007F" angle="296.125">
+				<connector uid="3" color="#FF007F" angle="298.682">
 					<from>Sensitivity_of_expected_SLR_to_T_anomaly</from>
 					<to>Expected_global_SLR_in_50_years</to>
 				</connector>
-				<connector uid="2" color="#FF007F" angle="329.882">
+				<connector uid="2" color="#FF007F" angle="338.094">
 					<from>Sensitivity_of_expected_SLR_to_CO2_emissions</from>
 					<to>Expected_global_SLR_in_50_years</to>
+				</connector>
+				<aux x="160.125" y="1056.67" name="SLR from AIS weights"/>
+				<aux x="160.125" y="990.397" name="SLR from GrIS weights"/>
+				<aux x="161.792" y="797.417" name="SLR thermosteric weights"/>
+				<aux x="160.125" y="930.897" name="SLR from MG weights"/>
+				<aux label_side="center" x="271.666" y="738.833" width="48" height="48" name="Coastal\nSLR"/>
+				<connector uid="42" angle="34.8348">
+					<from>SLR_from_GrIS_weights</from>
+					<to>Coastal_SLR</to>
+				</connector>
+				<connector uid="43" angle="19.2343">
+					<from>SLR_from_MG_weights</from>
+					<to>Coastal_SLR</to>
+				</connector>
+				<connector uid="44" angle="305.298">
+					<from>SLR_thermosteric_weights</from>
+					<to>Coastal_SLR</to>
+				</connector>
+				<aux x="161.792" y="854.167" name="SLR from LWS weights"/>
+				<connector uid="45" angle="341.392">
+					<from>SLR_from_LWS_weights</from>
+					<to>Coastal_SLR</to>
+				</connector>
+				<connector uid="46" angle="48.9043">
+					<from>SLR_from_AIS_weights</from>
+					<to>Coastal_SLR</to>
+				</connector>
+				<connector uid="47" angle="316.314">
+					<from>switch_sea_level_impact</from>
+					<to>Coastal_SLR</to>
+				</connector>
+				<connector uid="48" angle="330.329">
+					<from>today</from>
+					<to>Coastal_SLR</to>
+				</connector>
+				<stock font_style="italic" font_weight="bold" label_side="bottom" x="388.333" y="795.416" name="SLR thermosteric"/>
+				<aux font_style="italic" font_weight="bold" x="388.333" y="858.333" name="SLR from LWS"/>
+				<stock font_style="italic" font_weight="bold" label_side="bottom" x="388.333" y="923.397" name="SLR from\nmountain glaciers"/>
+				<aux font_style="italic" font_weight="bold" x="384.167" y="1010" name="SLR from\nGreenland Ice Sheet"/>
+				<aux font_style="italic" font_weight="bold" x="384.167" y="1101.67" name="SLR from\nAntarctic Ice Sheet"/>
+				<connector uid="49" angle="243.961">
+					<from>SLR_thermosteric</from>
+					<to>Coastal_SLR</to>
+				</connector>
+				<connector uid="50" angle="190.62">
+					<from>SLR_from_LWS</from>
+					<to>Coastal_SLR</to>
+				</connector>
+				<connector uid="51" angle="159.514">
+					<from>SLR_from_mountain_glaciers</from>
+					<to>Coastal_SLR</to>
+				</connector>
+				<connector uid="52" angle="140.194">
+					<from>SLR_from_Greenland_Ice_Sheet</from>
+					<to>Coastal_SLR</to>
+				</connector>
+				<connector uid="53" angle="131.598">
+					<from>SLR_from_Antarctic_Ice_Sheet</from>
+					<to>Coastal_SLR</to>
+				</connector>
+				<connector uid="54" angle="39.6252" isee:autocreated="true">
+					<from>Coastal_SLR</from>
+					<to>Sea_level_rise_adaptation</to>
 				</connector>
 			</view>
 		</views>
@@ -1277,7 +1452,7 @@ This is the 2010 value, but in the future we should account for coastal migratio
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="215" isee:scroll_y="480" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2160,7 +2335,7 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="149" isee:scroll_y="240" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="60" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2859,33 +3034,8 @@ Data from DIVA</doc>
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>global_coastal_SLR_since_1980 [Run,Coastal_Protection_level]- Flood_protection_height_change_since_1980</eqn>
+				<eqn>coastal_SLR_since_1980- Flood_protection_height_change_since_1980</eqn>
 				<units>metre</units>
-			</aux>
-			<aux name="global coastal SLR since 1980">
-				<dimensions>
-					<dim name="Run"/>
-					<dim name="Coastal_Protection_level"/>
-				</dimensions>
-				<eqn>IF (switch_sea_level_impact =0) AND TIME &gt; today THEN
-PREVIOUS(SELF, 0)
-ELSE
-(Total_global_SLR[Run]- INIT(Total_global_SLR[Run])) * coastal_SLR_factors[Coastal_Protection_level]</eqn>
-				<units>metre</units>
-			</aux>
-			<aux name="coastal SLR factors">
-				<doc>${External Parameter}
-</doc>
-				<dimensions>
-					<dim name="Coastal_Protection_level"/>
-				</dimensions>
-				<element subscript="insufficient">
-					<eqn>1.0382</eqn>
-				</element>
-				<element subscript="well_protected">
-					<eqn>0.9298</eqn>
-				</element>
-				<units>1</units>
 			</aux>
 			<aux name="Change in net global\nflood height" access="output" isee:autocreated="true">
 				<dimensions>
@@ -2918,14 +3068,6 @@ ELSE
 				<eqn>&quot;Real_GDP_in_2021c$&quot;/(Financial_bank_assets_in_real_terms/Time_for_change_in_average_fp_height)</eqn>
 				<units>1</units>
 			</aux>
-			<aux name="today" access="input">
-				<eqn>2025</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="switch sea level impact" access="input">
-				<eqn>1</eqn>
-				<units>dmnl</units>
-			</aux>
 			<aux name="Real GDP in 2021c$" access="input">
 				<dimensions>
 					<dim name="Run"/>
@@ -2947,9 +3089,18 @@ ELSE
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>metre</units>
 			</aux>
-			<aux name="Total global SLR" access="input">
+			<aux name="coastal SLR since 1980">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Coastal_Protection_level"/>
+				</dimensions>
+				<eqn>coastal_SLR-INIT(coastal_SLR)</eqn>
+				<units>metre</units>
+			</aux>
+			<aux name="coastal SLR" access="input">
+				<dimensions>
+					<dim name="Run"/>
+					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>metre</units>
@@ -3003,7 +3154,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="10" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="179.167" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3327,24 +3478,14 @@ ELSE
 					<to>Annual_opportunity_costs_of_inundated_or_abandoned_coastal_land</to>
 				</connector>
 				<aux label_side="bottom" x="624.322" y="1453" name="Expected net global\nflood height in 50 years"/>
-				<aux color="blue" label_side="center" x="352.916" y="1369.5" width="66" height="66" name="Net global\nflood height"/>
-				<aux label_side="top" x="371.18" y="1284.4" name="global coastal SLR since 1980"/>
-				<connector uid="62" angle="277.112">
-					<from>global_coastal_SLR_since_1980</from>
-					<to>Net_global_flood_height</to>
-				</connector>
-				<aux label_side="top" x="384.1" y="1211.67" name="coastal SLR factors"/>
-				<connector uid="63" angle="262.823">
-					<from>coastal_SLR_factors</from>
-					<to>global_coastal_SLR_since_1980</to>
-				</connector>
-				<connector uid="64" angle="334.67">
+				<aux color="blue" label_side="center" x="328.916" y="1391.75" width="66" height="66" name="Net global\nflood height"/>
+				<connector uid="64" angle="346.719">
 					<from>
 						<alias uid="65"/>
 					</from>
 					<to>Net_global_flood_height</to>
 				</connector>
-				<connector uid="67" angle="25.1822">
+				<connector uid="67" angle="30.9974">
 					<from>Net_global_flood_height</from>
 					<to>Expected_net_global_flood_height_in_50_years</to>
 				</connector>
@@ -3352,7 +3493,7 @@ ELSE
 					<from>Potential_increase_of_flood_protection_height_over_next_50_years</from>
 					<to>Expected_net_global_flood_height_in_50_years</to>
 				</connector>
-				<aux label_side="bottom" x="377.416" y="1471" name="Change in net global\nflood height"/>
+				<aux label_side="bottom" x="353.416" y="1493.25" name="Change in net global\nflood height"/>
 				<connector uid="71" angle="289.973">
 					<from>Net_global_flood_height</from>
 					<to>Change_in_net_global_flood_height</to>
@@ -3416,16 +3557,6 @@ ELSE
 					<from>Time_for_change_in_average_fp_height</from>
 					<to>Increase_of_average_flood_protection_height_through_investment</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="495.833" y="1286.67" name="today"/>
-				<aux font_style="italic" font_weight="bold" x="428.333" y="1317.5" name="switch sea level impact"/>
-				<connector uid="88" angle="147.875">
-					<from>switch_sea_level_impact</from>
-					<to>global_coastal_SLR_since_1980</to>
-				</connector>
-				<connector uid="89" angle="175.365">
-					<from>today</from>
-					<to>global_coastal_SLR_since_1980</to>
-				</connector>
 				<aux font_style="italic" font_weight="bold" x="215" y="485.225" name="Real GDP in 2021c$"/>
 				<connector uid="90" angle="239.096">
 					<from>&quot;Real_GDP_in_2021c$&quot;</from>
@@ -3447,10 +3578,15 @@ ELSE
 					<from>Expected_global_SLR_in_50_years</from>
 					<to>Missing_protection_to_reach_perfect_protection_under_expected_SLR</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="271" y="1140" name="Total global SLR"/>
-				<connector uid="99" angle="313.919">
-					<from>Total_global_SLR</from>
-					<to>global_coastal_SLR_since_1980</to>
+				<aux label_side="left" x="353.416" y="1326.21" name="coastal SLR since 1980"/>
+				<connector uid="111" angle="274.93">
+					<from>coastal_SLR_since_1980</from>
+					<to>Net_global_flood_height</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="345" y="1251.25" name="coastal SLR"/>
+				<connector uid="112" angle="282.095">
+					<from>coastal_SLR</from>
+					<to>coastal_SLR_since_1980</to>
 				</connector>
 				<alias font_style="italic" label_side="left" label_angle="135" uid="20" x="657.75" y="230.667" width="18" height="18">
 					<of>GDP_per_capita_in_coastal_zones</of>
@@ -3467,7 +3603,7 @@ ELSE
 				<alias font_style="italic" uid="48" x="921" y="1019.33" width="18" height="18">
 					<of>Time_for_change_in_average_fp_height</of>
 				</alias>
-				<alias font_style="italic" label_side="top" uid="65" x="266" y="1341" width="18" height="18">
+				<alias font_style="italic" label_side="top" uid="65" x="247" y="1390.75" width="18" height="18">
 					<of>Flood_protection_height_change_since_1980</of>
 				</alias>
 				<alias color="blue" font_style="italic" uid="73" x="373" y="193" width="26" height="26">
