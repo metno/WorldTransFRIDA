@@ -631,7 +631,7 @@ SLR_thermosteric[Run] * SLR_thermosteric_weights[Coastal_Protection_level] + SLR
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="114" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="294" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -889,7 +889,7 @@ From SSP data, it seems that in SSP5-8.5 the well protected population grows unt
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
 				<eqn>IF Coastal_Protection_level = Coastal_Protection_level.well_protected THEN
-Actual_coastal_asset_growth[Run,well_protected]+Investment_going_from_badly_to_well_protected_coastal_assets[Run]
+Actual_coastal_asset_growth[Run,well_protected]+Investment_going_from_insufficiently_to_well_protected_coastal_assets[Run]
 ELSE IF Coastal_Protection_level = Coastal_Protection_level.insufficient THEN
 Actual_coastal_asset_growth[Run,insufficient]
 ELSE
@@ -953,7 +953,10 @@ https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD?locations=US</doc>
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>Theoretical_coastal_asset_value_growth* Likelihood_that_people_still_invest_in_coastal_zones</eqn>
+				<eqn>IF Likelihood_that_people_still_invest_in_coastal_zones &lt; Coastal_zone_divestment_threshold THEN 
+Theoretical_coastal_asset_value_growth *  Likelihood_that_people_still_invest_in_coastal_zones
+ELSE
+Theoretical_coastal_asset_value_growth</eqn>
 				<units>bc$/year</units>
 			</aux>
 			<aux name="GDP per capita\nin coastal zones" access="input">
@@ -1060,25 +1063,8 @@ https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD?locations=US</doc>
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>Coastal_assets* MAX(0, (Inundated_fraction_of_original_coastal_assets_distribution + relative_annual_inundation_of_assets_due_to_SLR*time_over_which_coastal_assets_retreat) - Total_removed_fraction_of_original_asset_distribution) / (1.0 - Total_removed_fraction_of_original_asset_distribution) / time_over_which_coastal_assets_retreat</eqn>
+				<eqn>Coastal_assets * MAX(0.0,  (Inundated_fraction_of_original_coastal_assets_distribution - DELAY(Total_removed_fraction_of_original_asset_distribution,  1, Initial_inundated_and_retreated_asset_fraction[Coastal_Protection_level])) / (1.0 - DELAY(Total_removed_fraction_of_original_asset_distribution,  1, Initial_inundated_and_retreated_asset_fraction[Coastal_Protection_level])) ) / time_over_which_coastal_assets_retreat</eqn>
 				<units>bc$/year</units>
-			</flow>
-			<stock name="Inundated fraction\nof original coastal assets distribution">
-				<dimensions>
-					<dim name="Run"/>
-					<dim name="Coastal_Protection_level"/>
-				</dimensions>
-				<eqn>Initial_inundated_and_retreated_asset_fraction[Coastal_Protection_level]</eqn>
-				<inflow>relative_annual_inundation_of_assets_due_to_SLR</inflow>
-				<units>1</units>
-			</stock>
-			<flow name="relative annual inundation\nof assets due to SLR">
-				<dimensions>
-					<dim name="Run"/>
-					<dim name="Coastal_Protection_level"/>
-				</dimensions>
-				<eqn>MAX(0,  (asset_inundation_max_fraction[Coastal_Protection_level] / (1.0 + EXP(-asset_inundation_logistic_growth_rate[Coastal_Protection_level]*(Net_global_flood_height - asset_inundation_halfpoint[Coastal_Protection_level]) ) ) - Inundated_fraction_of_original_coastal_assets_distribution) / time_over_which_coastal_assets_retreat )</eqn>
-				<units>1/year</units>
 			</flow>
 			<aux name="Expected susceptible fraction\nof original assets in 50 years">
 				<dimensions>
@@ -1237,11 +1223,11 @@ This is 0 in CIAM, in the assumption that everything is rebuilt.</doc>
 				<range min="0.082" max="0.088"/>
 				<units>1</units>
 			</aux>
-			<aux name="Investment going from badly to well\nprotected coastal assets">
+			<aux name="Investment going from insufficiently\nto well protected\ncoastal assets">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Likelihood_that_people_still_invest_in_coastal_zones[Run,well_protected] * (SUM(Theoretical_coastal_asset_value_growth[Run,*]) - SUM(Actual_coastal_asset_growth[Run,*]))</eqn>
+				<eqn>Fraction_of_assets_that_has_to_stay_at_the_coast * (SUM(Theoretical_coastal_asset_value_growth[Run,*]) - SUM(Actual_coastal_asset_growth[Run,*]))</eqn>
 				<units>bc$/year</units>
 			</aux>
 			<aux name="Bank\nAssets 1" access="input">
@@ -1403,6 +1389,28 @@ The value comes from taking population data for the segments in DIVA and multipl
 				</element>
 				<units>1/year</units>
 			</aux>
+			<aux name="Fraction of assets that has to stay at the coast">
+				<doc>${Internal Calibration Parameter}
+</doc>
+				<eqn>0.5</eqn>
+				<range min="0.3" max="0.9"/>
+				<units>1</units>
+			</aux>
+			<aux name="Coastal zone divestment threshold">
+				<doc>${Internal Calibration Parameter}
+</doc>
+				<eqn>0.95</eqn>
+				<range min="0.8" max="0.99"/>
+				<units>1</units>
+			</aux>
+			<aux name="Inundated fraction of original coastal assets distribution">
+				<dimensions>
+					<dim name="Run"/>
+					<dim name="Coastal_Protection_level"/>
+				</dimensions>
+				<eqn>asset_inundation_max_fraction[Coastal_Protection_level] / (1.0 + EXP(-asset_inundation_logistic_growth_rate[Coastal_Protection_level]*(Net_global_flood_height - asset_inundation_halfpoint[Coastal_Protection_level]) ) )</eqn>
+				<units>1</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -1452,7 +1460,7 @@ The value comes from taking population data for the segments in DIVA and multipl
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="719.167" isee:scroll_y="322.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1510,14 +1518,14 @@ The value comes from taking population data for the segments in DIVA and multipl
 					<from>US_GDP_per_capita_in_2010</from>
 					<to>Flood_damage_resilience</to>
 				</connector>
-				<aux color="blue" label_side="top" x="418.516" y="775.44" name="Likelihood that people still\ninvest in\ncoastal zones"/>
-				<aux color="#55AAFF" font_color="#55AAFF" label_side="left" x="281.546" y="736.586" name="Effective flood height at which only half\nthe investment would be made"/>
+				<aux color="blue" label_side="top" x="371.849" y="761.273" name="Likelihood that people still\ninvest in\ncoastal zones"/>
+				<aux color="#55AAFF" font_color="#55AAFF" label_side="left" x="234.879" y="722.419" name="Effective flood height at which only half\nthe investment would be made"/>
 				<connector uid="4" color="#FF007F" angle="344.163">
 					<from>Effective_flood_height_at_which_only_half_the_investment_would_be_made</from>
 					<to>Likelihood_that_people_still_invest_in_coastal_zones</to>
 				</connector>
 				<aux label_side="left" x="551.083" y="855.225" name="Theoretical coastal\nasset value growth"/>
-				<connector uid="5" angle="336.863">
+				<connector uid="5" angle="352.226">
 					<from>Likelihood_that_people_still_invest_in_coastal_zones</from>
 					<to>Actual_coastal_asset_growth</to>
 				</connector>
@@ -1525,12 +1533,12 @@ The value comes from taking population data for the segments in DIVA and multipl
 					<from>Coastal_assets</from>
 					<to>Theoretical_coastal_asset_value_growth</to>
 				</connector>
-				<aux label_side="top" x="505.833" y="812.75" name="Actual coastal asset growth"/>
-				<connector uid="7" angle="136.812">
+				<aux label_side="top" x="533.083" y="783.286" name="Actual coastal asset growth"/>
+				<connector uid="7" angle="104.048">
 					<from>Theoretical_coastal_asset_value_growth</from>
 					<to>Actual_coastal_asset_growth</to>
 				</connector>
-				<connector uid="8" angle="331.633">
+				<connector uid="8" angle="323.806">
 					<from>Actual_coastal_asset_growth</from>
 					<to>Increase_of_coastal_asset_values_through_internal_growth</to>
 				</connector>
@@ -1539,7 +1547,7 @@ The value comes from taking population data for the segments in DIVA and multipl
 					<from>GDP_per_capita_in_coastal_zones</from>
 					<to>Flood_damage_resilience</to>
 				</connector>
-				<aux label_side="left" x="810.088" y="1064.45" name="time over which coastal assets retreat"/>
+				<aux label_side="left" x="848.16" y="994.45" name="time over which coastal assets retreat"/>
 				<aux label_side="bottom" x="1315.21" y="668.964" name="Fraction of original asset\ndistribution that is generally susceptible to storm surge damage"/>
 				<aux label_side="top" x="1542.33" y="552.964" name="Asset storm susceptibility halfpoint"/>
 				<aux label_side="top" x="1572.69" y="488.917" name="Asset storm susceptibility\nlogistic growth rate"/>
@@ -1556,52 +1564,21 @@ The value comes from taking population data for the segments in DIVA and multipl
 					<from>Flood_damage_resilience</from>
 					<to>Asset_storm_damage_because_of_SLR</to>
 				</connector>
-				<aux x="909.642" y="1290.55" name="asset inundation halfpoint"/>
-				<aux x="854.119" y="1331.05" name="asset inundation\nlogistic growth rate"/>
-				<aux label_side="bottom" x="950.3" y="1242.88" name="asset inundation\nmax fraction"/>
-				<connector uid="16" angle="149.476">
-					<from>asset_inundation_max_fraction</from>
-					<to>relative_annual_inundation_of_assets_due_to_SLR</to>
-				</connector>
-				<connector uid="17" angle="94.4703">
-					<from>asset_inundation_logistic_growth_rate</from>
-					<to>relative_annual_inundation_of_assets_due_to_SLR</to>
-				</connector>
-				<connector uid="18" angle="121.179">
-					<from>asset_inundation_halfpoint</from>
-					<to>relative_annual_inundation_of_assets_due_to_SLR</to>
-				</connector>
+				<aux x="969.017" y="1196.38" name="asset inundation halfpoint"/>
+				<aux x="1015.79" y="1242.72" name="asset inundation\nlogistic growth rate"/>
+				<aux label_side="bottom" x="927.8" y="1133.71" name="asset inundation\nmax fraction"/>
 				<flow x="913.5" y="917.804" name="Reactive retreat\nof coastal assets">
 					<pts>
 						<pt x="913.5" y="843.107"/>
 						<pt x="913.5" y="1001.5"/>
 					</pts>
 				</flow>
-				<stock x="956.371" y="1179.17" name="Inundated fraction\nof original coastal assets distribution"/>
-				<flow label_side="top" x="842.245" y="1179.17" name="relative annual inundation\nof assets due to SLR">
-					<pts>
-						<pt x="738.619" y="1179.17"/>
-						<pt x="933.871" y="1179.17"/>
-					</pts>
-				</flow>
-				<connector uid="19" angle="285.659">
-					<from>time_over_which_coastal_assets_retreat</from>
-					<to>relative_annual_inundation_of_assets_due_to_SLR</to>
-				</connector>
-				<connector uid="20" angle="197.433">
-					<from>Inundated_fraction_of_original_coastal_assets_distribution</from>
-					<to>relative_annual_inundation_of_assets_due_to_SLR</to>
-				</connector>
-				<connector uid="21" angle="122.366">
-					<from>Inundated_fraction_of_original_coastal_assets_distribution</from>
-					<to>Reactive_retreat_of_coastal_assets</to>
-				</connector>
 				<connector uid="22" angle="260.326">
 					<from>Coastal_assets</from>
 					<to>Reactive_retreat_of_coastal_assets</to>
 				</connector>
 				<aux label_side="right" label_angle="315" x="1573.85" y="773.393" name="Expected susceptible fraction\nof original assets in 50 years"/>
-				<aux font_style="italic" font_weight="bold" label_side="right" label_angle="315" x="1621.35" y="888" name="Willingness to retreat under expected flooding"/>
+				<aux font_style="italic" font_weight="bold" label_side="right" x="1621.35" y="888" name="Willingness to retreat under expected flooding"/>
 				<connector uid="23" angle="12.3105">
 					<from>Coastal_assets</from>
 					<to>Proactive_retreat_of_coastal_assets</to>
@@ -1618,20 +1595,16 @@ The value comes from taking population data for the segments in DIVA and multipl
 					<from>Proactive_retreat_time_scale</from>
 					<to>relative_annual_proactive_retreat_of_assets</to>
 				</connector>
-				<aux x="1053.88" y="917.804" name="Total removed\nfraction of original asset\ndistribution"/>
-				<connector uid="25" angle="26.6495">
-					<from>Inundated_fraction_of_original_coastal_assets_distribution</from>
-					<to>Total_removed_fraction_of_original_asset_distribution</to>
-				</connector>
-				<connector uid="26" angle="171.452">
+				<aux x="1081.38" y="921.971" name="Total removed\nfraction of original asset\ndistribution"/>
+				<connector uid="26" angle="171.457">
 					<from>Retreated_fraction_of_original_coastal_assets_distribution</from>
 					<to>Total_removed_fraction_of_original_asset_distribution</to>
 				</connector>
-				<connector uid="27" angle="180">
+				<connector uid="27" angle="178.578">
 					<from>Total_removed_fraction_of_original_asset_distribution</from>
 					<to>Reactive_retreat_of_coastal_assets</to>
 				</connector>
-				<connector uid="28" angle="53.0262">
+				<connector uid="28" angle="64.7165">
 					<from>Total_removed_fraction_of_original_asset_distribution</from>
 					<to>Proactive_retreat_of_coastal_assets</to>
 				</connector>
@@ -1639,15 +1612,11 @@ The value comes from taking population data for the segments in DIVA and multipl
 					<from>Willingness_to_retreat_under_expected_flooding</from>
 					<to>susceptible_fraction_willing_to_retreat</to>
 				</connector>
-				<connector uid="30" angle="85.608">
-					<from>relative_annual_inundation_of_assets_due_to_SLR</from>
-					<to>Reactive_retreat_of_coastal_assets</to>
-				</connector>
 				<connector uid="31" angle="125.205">
 					<from>relative_annual_proactive_retreat_of_assets</from>
 					<to>Proactive_retreat_of_coastal_assets</to>
 				</connector>
-				<connector uid="32" angle="77.9952">
+				<connector uid="32" angle="72.7387">
 					<from>time_over_which_coastal_assets_retreat</from>
 					<to>Reactive_retreat_of_coastal_assets</to>
 				</connector>
@@ -1656,7 +1625,7 @@ The value comes from taking population data for the segments in DIVA and multipl
 					<from>Fraction_of_original_asset_distribution_that_is_generally_susceptible_to_storm_surge_damage</from>
 					<to>Actually_susceptible_coastal_asset_fraction</to>
 				</connector>
-				<connector uid="34" angle="79.4959">
+				<connector uid="34" angle="87.1255">
 					<from>Total_removed_fraction_of_original_asset_distribution</from>
 					<to>Actually_susceptible_coastal_asset_fraction</to>
 				</connector>
@@ -1675,29 +1644,24 @@ The value comes from taking population data for the segments in DIVA and multipl
 					<from>Fraction_of_storm_damages_that_is_not_rebuild</from>
 					<to>Loss_of_coastal_assets_that_are_not_rebuild_after_storm_surge</to>
 				</connector>
-				<text_box appearance="transparent" uid="38" x="511.203" y="591.429" width="233.571" height="45.1429">TODO: If this is activated (&gt;0), this should maybe also impact the susceptible fraction, and possibly the effective flood depth</text_box>
-				<aux font_style="italic" font_weight="bold" x="263.546" y="801.286" name="Expected net global\nflood height in 50 years"/>
+				<aux font_style="italic" font_weight="bold" x="216.879" y="787.119" name="Expected net global\nflood height in 50 years"/>
 				<connector uid="42" angle="9.46868">
 					<from>Expected_net_global_flood_height_in_50_years</from>
 					<to>Likelihood_that_people_still_invest_in_coastal_zones</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="675.333" y="1220.38" name="Net global\nflood height"/>
-				<connector uid="43" angle="13.8688">
-					<from>Net_global_flood_height</from>
-					<to>relative_annual_inundation_of_assets_due_to_SLR</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="top" x="1306.71" y="546.917" width="17" height="17" name="Net global\nflood height 1"/>
+				<aux font_style="italic" font_weight="bold" x="1196" y="1137.88" name="Net global\nflood height"/>
+				<aux font_style="italic" font_weight="bold" label_side="top" x="1306.71" y="586.084" width="17" height="17" name="Net global\nflood height 1"/>
 				<connector uid="44" angle="270">
 					<from>Net_global_flood_height_1</from>
 					<to>Fraction_of_original_asset_distribution_that_is_generally_susceptible_to_storm_surge_damage</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="right" label_angle="45" x="1652" y="730.857" name="Expected net global\nflood height in 50 years 1"/>
+				<aux font_style="italic" font_weight="bold" label_side="right" x="1652" y="730.857" name="Expected net global\nflood height in 50 years 1"/>
 				<connector uid="45" angle="208.56">
 					<from>Expected_net_global_flood_height_in_50_years_1</from>
 					<to>Expected_susceptible_fraction_of_original_assets_in_50_years</to>
 				</connector>
-				<aux x="1063" y="1175.67" name="Initial inundated and retreated asset fraction"/>
-				<connector uid="47" angle="28.3312">
+				<aux label_side="top" x="945.8" y="1087.83" name="Initial inundated and retreated asset fraction"/>
+				<connector uid="47" angle="29.3873">
 					<from>Total_removed_fraction_of_original_asset_distribution</from>
 					<to>relative_annual_proactive_retreat_of_assets</to>
 				</connector>
@@ -1742,22 +1706,18 @@ The value comes from taking population data for the segments in DIVA and multipl
 					<from>initial_growth_rate_of_coastal_assets</from>
 					<to>Reference_growth_rate_for_coastal_assets</to>
 				</connector>
-				<aux label_side="top" x="573.583" y="722.84" name="Investment going from badly to well\nprotected coastal assets"/>
-				<connector uid="62" angle="49.8503">
+				<aux label_side="top" x="626.916" y="737.007" name="Investment going from insufficiently\nto well protected\ncoastal assets"/>
+				<connector uid="62" angle="26.2529">
 					<from>Actual_coastal_asset_growth</from>
-					<to>Investment_going_from_badly_to_well_protected_coastal_assets</to>
+					<to>Investment_going_from_insufficiently_to_well_protected_coastal_assets</to>
 				</connector>
-				<connector uid="63" angle="51.7842">
+				<connector uid="63" angle="28.7511">
 					<from>Theoretical_coastal_asset_value_growth</from>
-					<to>Investment_going_from_badly_to_well_protected_coastal_assets</to>
+					<to>Investment_going_from_insufficiently_to_well_protected_coastal_assets</to>
 				</connector>
-				<connector uid="64" angle="310.577">
-					<from>Investment_going_from_badly_to_well_protected_coastal_assets</from>
+				<connector uid="64" angle="305.775">
+					<from>Investment_going_from_insufficiently_to_well_protected_coastal_assets</from>
 					<to>Increase_of_coastal_asset_values_through_internal_growth</to>
-				</connector>
-				<connector uid="65" angle="32.9662">
-					<from>Likelihood_that_people_still_invest_in_coastal_zones</from>
-					<to>Investment_going_from_badly_to_well_protected_coastal_assets</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="321.25" y="1005" name="Bank\nAssets 1"/>
 				<aux x="281.546" y="917.804" name="Net global financial\nassets in real terms"/>
@@ -1810,7 +1770,7 @@ The value comes from taking population data for the segments in DIVA and multipl
 					<from>Fraction_of_original_asset_distribution_that_annualy_experiences_storm_surge_damage</from>
 					<to>Fraction_of_original_asset_distribution_that_experiences_storm_surge_damage_in_1980</to>
 				</connector>
-				<connector uid="76" angle="278.531">
+				<connector uid="76" angle="270">
 					<from>
 						<alias uid="77"/>
 					</from>
@@ -1863,22 +1823,61 @@ The value comes from taking population data for the segments in DIVA and multipl
 					<from>Asset_storm_exposure_baseline_value</from>
 					<to>Fraction_of_original_asset_distribution_that_annualy_experiences_storm_surge_damage</to>
 				</connector>
-				<connector uid="89" angle="25.1454">
+				<connector uid="89" angle="68.5785">
 					<from>asset_inundation_max_fraction</from>
 					<to>Initial_inundated_and_retreated_asset_fraction</to>
 				</connector>
-				<connector uid="90" angle="14.376">
+				<connector uid="90" angle="79.6119">
 					<from>asset_inundation_halfpoint</from>
 					<to>Initial_inundated_and_retreated_asset_fraction</to>
 				</connector>
-				<connector uid="91" angle="357.722">
+				<connector uid="91" angle="75.3939">
 					<from>asset_inundation_logistic_growth_rate</from>
 					<to>Initial_inundated_and_retreated_asset_fraction</to>
 				</connector>
-				<alias font_style="italic" label_side="left" uid="70" x="265.738" y="661.393" width="18" height="18">
+				<aux color="#55AAFF" font_color="#55AAFF" label_side="top" x="523.833" y="696.631" name="Fraction of assets that has to stay at the coast"/>
+				<connector uid="92" angle="317.934">
+					<from>Fraction_of_assets_that_has_to_stay_at_the_coast</from>
+					<to>Investment_going_from_insufficiently_to_well_protected_coastal_assets</to>
+				</connector>
+				<aux color="#55AAFF" font_color="#55AAFF" label_side="top" x="412.929" y="662.56" name="Coastal zone divestment threshold"/>
+				<connector uid="93" angle="314.864">
+					<from>Coastal_zone_divestment_threshold</from>
+					<to>Actual_coastal_asset_growth</to>
+				</connector>
+				<aux x="1086.67" y="1096.67" name="Inundated fraction of original coastal assets distribution"/>
+				<connector uid="94" angle="343.598">
+					<from>asset_inundation_max_fraction</from>
+					<to>Inundated_fraction_of_original_coastal_assets_distribution</to>
+				</connector>
+				<connector uid="95" angle="12.96">
+					<from>asset_inundation_halfpoint</from>
+					<to>Inundated_fraction_of_original_coastal_assets_distribution</to>
+				</connector>
+				<connector uid="96" angle="18.5345">
+					<from>asset_inundation_logistic_growth_rate</from>
+					<to>Inundated_fraction_of_original_coastal_assets_distribution</to>
+				</connector>
+				<connector uid="97" angle="173.15">
+					<from>Net_global_flood_height</from>
+					<to>Inundated_fraction_of_original_coastal_assets_distribution</to>
+				</connector>
+				<connector uid="102" angle="144.89">
+					<from>Inundated_fraction_of_original_coastal_assets_distribution</from>
+					<to>Reactive_retreat_of_coastal_assets</to>
+				</connector>
+				<connector uid="103" angle="91.7334">
+					<from>Inundated_fraction_of_original_coastal_assets_distribution</from>
+					<to>Total_removed_fraction_of_original_asset_distribution</to>
+				</connector>
+				<connector uid="104" angle="80.6011">
+					<from>Initial_inundated_and_retreated_asset_fraction</from>
+					<to>Reactive_retreat_of_coastal_assets</to>
+				</connector>
+				<alias font_style="italic" label_side="left" uid="70" x="219.071" y="647.226" width="18" height="18">
 					<of>Expected_susceptible_fraction_of_original_assets_in_50_years</of>
 				</alias>
-				<alias font_style="italic" font_weight="bold" uid="77" x="1226.5" y="197.5" width="17" height="17">
+				<alias font_style="italic" font_weight="bold" label_side="top" uid="77" x="1234.71" y="240" width="17" height="17">
 					<of>Net_global_flood_height_1</of>
 				</alias>
 			</view>
@@ -2065,23 +2064,6 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 				</element>
 				<units>1/metre</units>
 			</aux>
-			<stock name="Inundated fraction\nof original coastal\npopulation distribution">
-				<dimensions>
-					<dim name="Run"/>
-					<dim name="Coastal_Protection_level"/>
-				</dimensions>
-				<eqn>Initial_inundated_and_retreated_people_fraction[Coastal_Protection_level]</eqn>
-				<inflow>relative_annual_inundation_of_population_due_to_SLR</inflow>
-				<units>1</units>
-			</stock>
-			<flow name="relative annual inundation\nof population due to SLR">
-				<dimensions>
-					<dim name="Run"/>
-					<dim name="Coastal_Protection_level"/>
-				</dimensions>
-				<eqn>MAX(0,  (Population_inundation_max_fraction[Coastal_Protection_level] / (1.0 + EXP(-population_inundation_logistic_growth_rate[Coastal_Protection_level]*(Net_global_flood_height - population_inundation_halfpoint[Coastal_Protection_level]) ) ) - Inundated_fraction_of_original_coastal_population_distribution) / time_over_which_coastal_people_retreat )</eqn>
-				<units>1/year</units>
-			</flow>
 			<aux name="population inundation halfpoint">
 				<doc>${External Parameter}
 </doc>
@@ -2154,7 +2136,7 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>Coastal_population* MAX(0, (Inundated_fraction_of_original_coastal_population_distribution + relative_annual_inundation_of_population_due_to_SLR*time_over_which_coastal_people_retreat) - Total_removed_fraction_of_original_population_distribution) / (1.0 - Total_removed_fraction_of_original_population_distribution) / time_over_which_coastal_people_retreat</eqn>
+				<eqn>Coastal_population* MAX(0,  Inundated_fraction_of_original_coastal_population_distribution - DELAY(Total_removed_fraction_of_original_population_distribution, 1, Initial_inundated_and_retreated_people_fraction[Coastal_Protection_level]) / (1.0 - DELAY(Total_removed_fraction_of_original_population_distribution, 1, Initial_inundated_and_retreated_people_fraction[Coastal_Protection_level])) )  / time_over_which_coastal_people_retreat</eqn>
 				<units>Mp/year</units>
 			</flow>
 			<aux name="Total removed\nfraction of original\npopulation distribution">
@@ -2334,6 +2316,14 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 				</element>
 				<units>1/year</units>
 			</aux>
+			<aux name="Inundated fraction of original coastal population distribution">
+				<dimensions>
+					<dim name="Run"/>
+					<dim name="Coastal_Protection_level"/>
+				</dimensions>
+				<eqn>Population_inundation_max_fraction[Coastal_Protection_level] / (1.0 + EXP(-population_inundation_logistic_growth_rate[Coastal_Protection_level]*(Net_global_flood_height - population_inundation_halfpoint[Coastal_Protection_level]) ) )</eqn>
+				<units>1</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -2383,7 +2373,7 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="193" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="188.75" isee:scroll_y="225" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2473,36 +2463,9 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<from>population_storm_susceptibility_halfpoint</from>
 					<to>Fraction_of_original_people_distribution_that_is_generally_susceptible_to_storm_damage</to>
 				</connector>
-				<stock x="297.458" y="430.853" name="Inundated fraction\nof original coastal\npopulation distribution"/>
-				<flow label_side="bottom" x="412.301" y="435.5" name="relative annual inundation\nof population due to SLR">
-					<pts>
-						<pt x="516.643" y="435.5"/>
-						<pt x="319.958" y="435.5"/>
-					</pts>
-				</flow>
-				<connector uid="15" angle="25.3486">
-					<from>Inundated_fraction_of_original_coastal_population_distribution</from>
-					<to>relative_annual_inundation_of_population_due_to_SLR</to>
-				</connector>
-				<aux label_side="left" label_angle="135" x="313.869" y="269" name="population inundation halfpoint"/>
-				<aux label_side="left" x="295.869" y="305" name="population inundation logistic growth rate"/>
-				<aux label_side="left" label_angle="135" x="332.514" y="226.833" name="Population inundation max fraction"/>
-				<connector uid="16" angle="311.739">
-					<from>population_inundation_logistic_growth_rate</from>
-					<to>relative_annual_inundation_of_population_due_to_SLR</to>
-				</connector>
-				<connector uid="17" angle="300.591">
-					<from>population_inundation_halfpoint</from>
-					<to>relative_annual_inundation_of_population_due_to_SLR</to>
-				</connector>
-				<connector uid="18" angle="290.925">
-					<from>Population_inundation_max_fraction</from>
-					<to>relative_annual_inundation_of_population_due_to_SLR</to>
-				</connector>
-				<connector uid="19" angle="291.843">
-					<from>Inundated_fraction_of_original_coastal_population_distribution</from>
-					<to>Reactive_retreat_of_people_from_the_coast</to>
-				</connector>
+				<aux label_side="left" label_angle="135" x="365.119" y="467.125" name="population inundation halfpoint"/>
+				<aux label_side="left" x="368.369" y="505.625" name="population inundation logistic growth rate"/>
+				<aux label_side="left" x="365.119" y="421.208" name="Population inundation max fraction"/>
 				<connector uid="20" angle="91.5766">
 					<from>Coastal_population</from>
 					<to>Proactive_retreat_of_people_from_the_coast</to>
@@ -2519,8 +2482,8 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<to>relative_annual_proactive_retreat_of_people</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" label_side="right" x="1006.97" y="431.762" name="Retreat switch"/>
-				<aux font_style="italic" font_weight="bold" label_side="left" x="851" y="380.333" name="Proactive retreat time scale"/>
-				<connector uid="22" angle="283.011">
+				<aux font_style="italic" font_weight="bold" label_side="left" x="843.5" y="389.708" name="Proactive retreat time scale"/>
+				<connector uid="22" angle="288.165">
 					<from>Proactive_retreat_time_scale</from>
 					<to>relative_annual_proactive_retreat_of_people</to>
 				</connector>
@@ -2533,10 +2496,6 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 				<aux label_side="top" x="566.539" y="547.851" name="Total removed\nfraction of original\npopulation distribution"/>
 				<connector uid="23" angle="218.93">
 					<from>Retreated_fraction_of_original_coastal_population_distribution</from>
-					<to>Total_removed_fraction_of_original_population_distribution</to>
-				</connector>
-				<connector uid="24" angle="323.827">
-					<from>Inundated_fraction_of_original_coastal_population_distribution</from>
 					<to>Total_removed_fraction_of_original_population_distribution</to>
 				</connector>
 				<connector uid="25" angle="298.751">
@@ -2556,12 +2515,6 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<to>Reactive_retreat_of_people_from_the_coast</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" label_side="top" x="847" y="678" name="Net global\nflood height"/>
-				<connector uid="29" angle="225">
-					<from>
-						<alias uid="30"/>
-					</from>
-					<to>relative_annual_inundation_of_population_due_to_SLR</to>
-				</connector>
 				<connector uid="31" angle="341.688">
 					<from>Net_global_flood_height</from>
 					<to>Fraction_of_original_people_distribution_that_is_generally_susceptible_to_storm_damage</to>
@@ -2571,14 +2524,10 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<from>Expected_net_global_flood_height_in_50_years</from>
 					<to>Expected_susceptible_fraction_of_population_in_50_years</to>
 				</connector>
-				<aux x="350.514" y="491.94" name="time over which\ncoastal people retreat"/>
-				<connector uid="34" angle="295.446">
+				<aux label_side="left" x="407.389" y="684.44" name="time over which\ncoastal people retreat"/>
+				<connector uid="34" angle="323.884">
 					<from>time_over_which_coastal_people_retreat</from>
 					<to>Reactive_retreat_of_people_from_the_coast</to>
-				</connector>
-				<connector uid="35" angle="104.918">
-					<from>time_over_which_coastal_people_retreat</from>
-					<to>relative_annual_inundation_of_population_due_to_SLR</to>
 				</connector>
 				<aux label_side="left" label_angle="225" x="759.539" y="749.105" name="Actually susceptible people fraction"/>
 				<connector uid="36" angle="313.801">
@@ -2589,7 +2538,7 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<from>Fraction_of_original_people_distribution_that_is_generally_susceptible_to_storm_damage</from>
 					<to>Actually_susceptible_people_fraction</to>
 				</connector>
-				<aux label_side="bottom" x="186.571" y="435.5" name="Initial inundated and\nretreated people fraction"/>
+				<aux label_side="bottom" x="257" y="565.851" name="Initial inundated and\nretreated people fraction"/>
 				<aux label_side="bottom" x="1078" y="781.869" name="population storm\nsusceptibility max fraction"/>
 				<connector uid="39" angle="59.9657">
 					<from>population_storm_susceptibility_logistic_growth_rate</from>
@@ -2602,10 +2551,6 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 				<connector uid="41" angle="75.9084">
 					<from>population_storm_susceptibility_max_fraction</from>
 					<to>Expected_susceptible_fraction_of_population_in_50_years</to>
-				</connector>
-				<connector uid="42" angle="267.124">
-					<from>relative_annual_inundation_of_population_due_to_SLR</from>
-					<to>Reactive_retreat_of_people_from_the_coast</to>
 				</connector>
 				<connector uid="43" angle="192.255">
 					<from>population_storm_susceptibility_max_fraction</from>
@@ -2705,19 +2650,50 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<from>population_storm_exposure_baseline_value</from>
 					<to>Fraction_of_original_people_distribution_that_annually_experiences_storm_surges</to>
 				</connector>
-				<connector uid="66" angle="230.053">
+				<connector uid="66" angle="208.404">
 					<from>population_inundation_logistic_growth_rate</from>
 					<to>Initial_inundated_and_retreated_people_fraction</to>
 				</connector>
-				<connector uid="67" angle="232.6">
+				<connector uid="67" angle="222.4">
 					<from>population_inundation_halfpoint</from>
 					<to>Initial_inundated_and_retreated_people_fraction</to>
 				</connector>
-				<connector uid="68" angle="235.031">
+				<connector uid="68" angle="233.222">
 					<from>Population_inundation_max_fraction</from>
 					<to>Initial_inundated_and_retreated_people_fraction</to>
 				</connector>
-				<alias font_style="italic" font_weight="bold" label_side="top" uid="30" x="457" y="306" width="18" height="18">
+				<aux x="422.5" y="546.875" name="Inundated fraction of original coastal population distribution"/>
+				<connector uid="69" angle="322.691">
+					<from>population_inundation_logistic_growth_rate</from>
+					<to>Inundated_fraction_of_original_coastal_population_distribution</to>
+				</connector>
+				<connector uid="70" angle="323.493">
+					<from>population_inundation_halfpoint</from>
+					<to>Inundated_fraction_of_original_coastal_population_distribution</to>
+				</connector>
+				<connector uid="71" angle="321.583">
+					<from>Population_inundation_max_fraction</from>
+					<to>Inundated_fraction_of_original_coastal_population_distribution</to>
+				</connector>
+				<connector uid="72" angle="277.997">
+					<from>
+						<alias uid="30"/>
+					</from>
+					<to>Inundated_fraction_of_original_coastal_population_distribution</to>
+				</connector>
+				<connector uid="73" angle="332.812">
+					<from>Inundated_fraction_of_original_coastal_population_distribution</from>
+					<to>Total_removed_fraction_of_original_population_distribution</to>
+				</connector>
+				<connector uid="74" angle="0.83535">
+					<from>Initial_inundated_and_retreated_people_fraction</from>
+					<to>Reactive_retreat_of_people_from_the_coast</to>
+				</connector>
+				<connector uid="75" angle="282.182">
+					<from>Inundated_fraction_of_original_coastal_population_distribution</from>
+					<to>Reactive_retreat_of_people_from_the_coast</to>
+				</connector>
+				<alias font_style="italic" font_weight="bold" label_side="top" uid="30" x="483.25" y="435.125" width="18" height="18">
 					<of>Net_global_flood_height</of>
 				</alias>
 				<alias font_style="italic" font_weight="bold" uid="49" x="883" y="1256" width="18" height="18">
@@ -3273,7 +3249,7 @@ Data from DIVA</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="62.2222" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1120" page_height="784" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="793.125" isee:scroll_y="300" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
