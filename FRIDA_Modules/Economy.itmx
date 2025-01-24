@@ -612,8 +612,6 @@
 				<connect2 to="Finance.Firms_Innovation_Orientation" from="Innovation.Firms_Innovation_Orientation"/>
 				<connect to="Finance.Government_Debt" from="Government.Government_Debt"/>
 				<connect2 to="Finance.Government_Debt" from="Government.Government_Debt"/>
-				<connect to='Finance."inflation_adjustment_$_per_c$"' from='Inflation."inflation_adjustment_$_per_c$"'/>
-				<connect2 to='Finance."inflation_adjustment_$_per_c$"' from='Inflation."inflation_adjustment_$_per_c$"'/>
 				<connect to='Finance."inflation_adjustment_b$_per_bc$_2"' from='Inflation."inflation_adjustment_b$_per_bc$"'/>
 				<connect2 to='Finance."inflation_adjustment_b$_per_bc$_2"' from='Inflation."inflation_adjustment_b$_per_bc$"'/>
 				<connect to="Finance.Inflation_Rate" from="Inflation.Inflation_Rate"/>
@@ -642,12 +640,12 @@
 				<connect2 to='Finance."Real_GDP_in_2021c$"' from='GDP."Real_GDP_in_2021c$"'/>
 				<connect to="Finance.safe_interest" from="Government.safe_interest"/>
 				<connect2 to="Finance.safe_interest" from="Government.safe_interest"/>
+				<connect to="Finance.stranded_capital" from="fossil_energy.stranded_capital"/>
+				<connect2 to="Finance.stranded_capital" from="fossil_energy.stranded_capital"/>
 				<connect to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Finance.switch_economy_damage" from="Climate.switch_finance_damage"/>
 				<connect2 to="Finance.switch_economy_damage" from="Climate.switch_finance_damage"/>
-				<connect to="Finance.tax_rate_on_newly_installed_solar_and_wind_energy_capacity" from="Government_Regulations.tax_rate_on_newly_installed_solar_and_wind_energy_capacity"/>
-				<connect2 to="Finance.tax_rate_on_newly_installed_solar_and_wind_energy_capacity" from="Government_Regulations.tax_rate_on_newly_installed_solar_and_wind_energy_capacity"/>
 				<connect to="Finance.today" from="Climate.climate_impact_stoptime"/>
 				<connect2 to="Finance.today" from="Climate.climate_impact_stoptime"/>
 				<connect to="Finance.Total_nominal_loss_of_assets_from_SLR" from="Sea_level_rise_costs_and_impacts.Total_nominal_loss_of_assets_from_SLR"/>
@@ -740,8 +738,6 @@
 			</module>
 			<module name="Inflation" isee:label="">
 				<format scale_by="auto"/>
-				<connect to='Finance."inflation_adjustment_$_per_c$"' from='Inflation."inflation_adjustment_$_per_c$"'/>
-				<connect2 to='Finance."inflation_adjustment_$_per_c$"' from='Inflation."inflation_adjustment_$_per_c$"'/>
 				<connect to='Circular_Flow."inflation_adjustment_b$_per_bc$"' from='Inflation."inflation_adjustment_b$_per_bc$"'/>
 				<connect2 to='Circular_Flow."inflation_adjustment_b$_per_bc$"' from='Inflation."inflation_adjustment_b$_per_bc$"'/>
 				<connect to='Circular_Flow."inflation_adjustment_b$_per_bc$_1"' from='Inflation."inflation_adjustment_b$_per_bc$"'/>
@@ -943,7 +939,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="340" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="85" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -6445,7 +6441,7 @@ furthermore. The structure that was previously decided on had the productivity g
 				<inflow>loans_turning_safe</inflow>
 				<outflow>safe_loans_affected_innovation</outflow>
 				<outflow>Loss_of_safe_loans_due_to_sea_level_rise</outflow>
-				<outflow>safe_loan_defaults_from_from_interest</outflow>
+				<outflow>safe_loan_defaults</outflow>
 				<units>b$</units>
 			</stock>
 			<aux name="loan maturation\ntime">
@@ -6952,7 +6948,7 @@ ELSE
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(Safe_Loans - safe_loan_defaults_from_from_interest*DT)*rate_of_safe_loans_financing_innovation</eqn>
+				<eqn>(Safe_Loans - safe_loan_defaults*DT)*rate_of_safe_loans_financing_innovation</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
@@ -7078,27 +7074,6 @@ ELSE
 </doc>
 				<eqn>1</eqn>
 				<units>1/year^2</units>
-			</aux>
-			<aux name="All Energy Investments" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>c$/Year</units>
-			</aux>
-			<aux name="ratio of energy to total investment">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>all_energy_investments_in_billion_dollars/total_investment</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="all energy investments in billion dollars">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>All_Energy_Investments*&quot;inflation_adjustment_$_per_c$&quot;/&quot;b$_to_$&quot;</eqn>
-				<units>b$/year</units>
 			</aux>
 			<stock name="safe loans\nfor financing\ninnovation">
 				<dimensions>
@@ -7400,7 +7375,7 @@ ELSE
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.06706723</eqn>
+					<eqn>0.0698057019234725</eqn>
 				</element>
 				<range min="0" max="0.1"/>
 				<units>1/year</units>
@@ -7428,19 +7403,6 @@ ELSE
 			<aux name="switch economy damage" access="input">
 				<eqn>1</eqn>
 				<units>dmnl</units>
-			</aux>
-			<aux name="b$ to $">
-				<doc>${Unit}
-</doc>
-				<eqn>1000000000</eqn>
-				<units>$/b$</units>
-			</aux>
-			<aux name="inflation adjustment $ per c$" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>$/c$</units>
 			</aux>
 			<flow name="Loss of safe loans due to sea level rise">
 				<dimensions>
@@ -7529,7 +7491,7 @@ ELSE
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/year</units>
 			</aux>
-			<flow name="good loan\ndefaults from\nfrom interest" access="output" isee:autocreated="true">
+			<flow name="good loan\ndefaults from\nfrom interest">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -7620,11 +7582,11 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
-			<flow name="safe loan\ndefaults from\nfrom interest" access="output" isee:autocreated="true">
+			<flow name="safe loan\ndefaults">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Safe_Loans*default_rate_from_interest_rate_increase</eqn>
+				<eqn>Safe_Loans*default_rate_from_interest_rate_increase+nominal_stranded_capital</eqn>
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
@@ -7636,7 +7598,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
-			<flow name="safe loans\nfor financing\ninnovation defaults from\nfrom interest" access="output" isee:autocreated="true">
+			<flow name="safe loans\nfor financing\ninnovation defaults from\nfrom interest">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -7648,7 +7610,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>good_loan_defaults_from_from_interest + safe_loan_defaults_from_from_interest + safe_loans_for_financing_innovation_defaults_from_from_interest + bad_loan_defaults_from_from_interest</eqn>
+				<eqn>good_loan_defaults_from_from_interest + safe_loan_defaults + safe_loans_for_financing_innovation_defaults_from_from_interest + bad_loan_defaults_from_from_interest</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="total non exploratory defaults" access="output" isee:autocreated="true">
@@ -7751,7 +7713,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				<eqn>0.01</eqn>
 				<units>1/year</units>
 			</aux>
-			<aux name="Nominal Gross Energy Investment" access="output" isee:autocreated="true">
+			<aux name="Nominal Gross Energy Investment">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -7778,15 +7740,6 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				<eqn>Nominal_Gross_Energy_Investment/Bank_Investment</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="tax rate on newly installed\nsolar and wind energy capacity" access="input">
-				<eqn>TIME</eqn>
-				<gf>
-					<xscale min="1980" max="2150"/>
-					<yscale min="0" max="100"/>
-					<ypts>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</ypts>
-				</gf>
-				<units>dmnl</units>
-			</aux>
 			<aux name="Bank Investment">
 				<dimensions>
 					<dim name="Run"/>
@@ -7800,6 +7753,27 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				</dimensions>
 				<eqn>SMTH1(Bank_Investment, 1, initial_non_energy_bank_investment)</eqn>
 				<isee:delay_aux/>
+				<units>b$/year</units>
+			</aux>
+			<aux name="stranded capital" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>c$/Year</units>
+			</aux>
+			<aux name="All Energy Investments" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>c$/Year</units>
+			</aux>
+			<aux name="nominal stranded capital">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>stranded_capital*&quot;inflation_adjustment_b$_per_bc$_2&quot;/&quot;UNIT_c$_per_Bc$&quot;</eqn>
 				<units>b$/year</units>
 			</aux>
 		</variables>
@@ -7851,7 +7825,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="5" isee:scroll_x="250" isee:scroll_y="568" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="5" isee:scroll_x="1294" isee:scroll_y="489" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -8113,7 +8087,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 					<from>climate_adjusted_failure_rate</from>
 					<to>failure_rate</to>
 				</connector>
-				<aux label_side="bottom" x="1037.41" y="457" name="initial\nnon energy\nbank investment"/>
+				<aux label_side="bottom" x="1019.41" y="416.929" name="initial\nnon energy\nbank investment"/>
 				<aux label_side="bottom" x="1587.18" y="566.863" name="initial good loans"/>
 				<aux x="1610.85" y="970.311" name="initial bad loans"/>
 				<aux label_side="right" x="1852.17" y="643.002" name="Initial safe assets"/>
@@ -8353,19 +8327,6 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 					<to>exploratory_loans_failure_rate</to>
 				</connector>
 				<aux label_side="left" label_angle="135" x="1536.13" y="243.667" name="normal growth rate of GDP growth rate"/>
-				<aux font_style="italic" font_weight="bold" label_side="top" x="2535.83" y="166.167" name="All Energy Investments"/>
-				<aux x="2519.17" y="410.377" name="ratio of energy to total investment"/>
-				<connector uid="121" angle="207.699">
-					<from>
-						<alias uid="122"/>
-					</from>
-					<to>ratio_of_energy_to_total_investment</to>
-				</connector>
-				<aux label_side="left" x="2525.83" y="357.5" name="all energy investments in billion dollars"/>
-				<connector uid="123" angle="264.56">
-					<from>all_energy_investments_in_billion_dollars</from>
-					<to>ratio_of_energy_to_total_investment</to>
-				</connector>
 				<stock label_side="top" x="2119.47" y="685.227" name="safe loans\nfor financing\ninnovation"/>
 				<flow x="2213.74" y="687" name="actual safe\ninvestment failure">
 					<pts>
@@ -8652,20 +8613,6 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 					<from>switch_economy_damage</from>
 					<to>effect_of_STA_on_failure_rate</to>
 				</connector>
-				<aux font_style="italic" label_side="left" x="2433.27" y="290.75" name="b$ to $"/>
-				<connector uid="200" angle="292.008">
-					<from>All_Energy_Investments</from>
-					<to>all_energy_investments_in_billion_dollars</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="2644" y="279" name="inflation adjustment $ per c$"/>
-				<connector uid="204" angle="202.249">
-					<from>&quot;inflation_adjustment_$_per_c$&quot;</from>
-					<to>all_energy_investments_in_billion_dollars</to>
-				</connector>
-				<connector uid="205" angle="322.669">
-					<from>&quot;b$_to_$&quot;</from>
-					<to>all_energy_investments_in_billion_dollars</to>
-				</connector>
 				<flow x="1905" y="584.863" name="Loss of safe loans due to sea level rise">
 					<pts>
 						<pt x="1905" y="666.727"/>
@@ -8851,7 +8798,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 						</plot>
 					</graph>
 				</stacked_container>
-				<flow x="1903.75" y="753.801" name="safe loan\ndefaults from\nfrom interest">
+				<flow x="1903.75" y="753.801" name="safe loan\ndefaults">
 					<pts>
 						<pt x="1903.75" y="701.727"/>
 						<pt x="1903.75" y="826.875"/>
@@ -8859,10 +8806,10 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				</flow>
 				<connector uid="310" angle="235.159">
 					<from>Safe_Loans</from>
-					<to>safe_loan_defaults_from_from_interest</to>
+					<to>safe_loan_defaults</to>
 				</connector>
 				<connector uid="313" angle="20.2917">
-					<from>safe_loan_defaults_from_from_interest</from>
+					<from>safe_loan_defaults</from>
 					<to>safe_loans_affected_innovation</to>
 				</connector>
 				<flow x="1242.14" y="579.137" name="exploratory loan\ndefaults from\nfrom interest">
@@ -8905,7 +8852,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				</connector>
 				<connector uid="322" angle="182.803">
 					<from>default_rate_from_interest_rate_increase</from>
-					<to>safe_loan_defaults_from_from_interest</to>
+					<to>safe_loan_defaults</to>
 				</connector>
 				<connector uid="323" angle="184.229">
 					<from>default_rate_from_interest_rate_increase</from>
@@ -8921,7 +8868,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 					<to>non_exploratory_interest_rate_change_caused_defaults</to>
 				</connector>
 				<connector uid="326" angle="294.351">
-					<from>safe_loan_defaults_from_from_interest</from>
+					<from>safe_loan_defaults</from>
 					<to>non_exploratory_interest_rate_change_caused_defaults</to>
 				</connector>
 				<connector uid="327" angle="260.74">
@@ -9076,18 +9023,11 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 					<from>&quot;UNIT_c$_per_Bc$&quot;</from>
 					<to>Nominal_Gross_Energy_Investment</to>
 				</connector>
-				<connector uid="385" angle="0">
-					<from>
-						<alias uid="386"/>
-					</from>
-					<to>Nominal_Gross_Energy_Investment</to>
-				</connector>
 				<aux x="700" y="742" name="share of investment into energy"/>
 				<connector uid="388" angle="5.76505">
 					<from>Nominal_Gross_Energy_Investment</from>
 					<to>share_of_investment_into_energy</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="604" y="531" name="tax rate on newly installed\nsolar and wind energy capacity"/>
 				<aux x="1037.41" y="579.137" name="Bank Investment"/>
 				<connector uid="411" angle="0">
 					<from>
@@ -9120,9 +9060,36 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 					<from>Bank_Investment</from>
 					<to>private_investment</to>
 				</connector>
-				<connector uid="419" angle="220.882">
+				<connector uid="419" angle="228.808">
 					<from>initial_non_energy_bank_investment</from>
 					<to>private_investment</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="2232" y="1026" name="stranded capital"/>
+				<aux font_style="italic" font_weight="bold" label_side="top" x="399.479" y="708.25" name="All Energy Investments"/>
+				<connector uid="385" angle="0">
+					<from>All_Energy_Investments</from>
+					<to>Nominal_Gross_Energy_Investment</to>
+				</connector>
+				<aux x="2155" y="961" name="nominal stranded capital"/>
+				<connector uid="422" angle="104.036">
+					<from>
+						<alias uid="423"/>
+					</from>
+					<to>nominal_stranded_capital</to>
+				</connector>
+				<connector uid="424" angle="141.34">
+					<from>stranded_capital</from>
+					<to>nominal_stranded_capital</to>
+				</connector>
+				<connector uid="425" angle="164.291">
+					<from>
+						<alias uid="420"/>
+					</from>
+					<to>nominal_stranded_capital</to>
+				</connector>
+				<connector uid="426" angle="142.524">
+					<from>nominal_stranded_capital</from>
+					<to>safe_loan_defaults</to>
 				</connector>
 				<alias label_side="right" uid="27" x="1825.17" y="1005.55" width="18" height="18">
 					<of>loan_maturation_time</of>
@@ -9157,9 +9124,6 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				<alias font_style="italic" label_side="center" uid="110" x="2709.16" y="1548.17" width="45" height="35">
 					<of>Exploratory_Loans</of>
 				</alias>
-				<alias font_style="italic" uid="122" x="2596.83" y="348.5" width="18" height="18">
-					<of>total_investment</of>
-				</alias>
 				<alias font_style="italic" uid="128" x="3032.33" y="879.417" width="45" height="35">
 					<of>safe_loans_for_financing_innovation</of>
 				</alias>
@@ -9191,14 +9155,17 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				<alias font_style="italic" uid="315" x="1380.5" y="570.137" width="18" height="18">
 					<of>default_rate_from_interest_rate_increase</of>
 				</alias>
-				<alias font_style="italic" uid="375" x="788" y="480.667" width="18" height="18">
-					<of>total_investment</of>
-				</alias>
-				<alias font_style="italic" font_weight="bold" uid="386" x="383" y="699.25" width="18" height="18">
-					<of>All_Energy_Investments</of>
-				</alias>
 				<alias font_style="italic" uid="412" x="806" y="570.137" width="18" height="18">
 					<of>Nominal_Gross_Energy_Investment</of>
+				</alias>
+				<alias font_style="italic" font_weight="bold" uid="420" x="2267" y="970" width="18" height="18">
+					<of>&quot;inflation_adjustment_b$_per_bc$_2&quot;</of>
+				</alias>
+				<alias font_style="italic" uid="421" x="2122" y="1061" width="18" height="18">
+					<of>&quot;UNIT_c$_per_Bc$&quot;</of>
+				</alias>
+				<alias font_style="italic" uid="423" x="2151" y="999" width="18" height="18">
+					<of>&quot;UNIT_c$_per_Bc$&quot;</of>
 				</alias>
 			</view>
 		</views>
@@ -12566,7 +12533,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.45961914473832</eqn>
+					<eqn>0.449960301383189</eqn>
 				</element>
 				<range min="0.35" max="0.55"/>
 				<units>dmnl</units>
@@ -12721,7 +12688,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="22.5" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
