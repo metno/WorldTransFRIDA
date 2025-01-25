@@ -257,6 +257,8 @@
 				<connect2 to="Emissions.CDD_preindustrial" from="energy_demand.CDD_preindustrial"/>
 				<connect to="energy_supply_vs_demand.demand_for_energy_1" from="energy_demand.demand_for_energy"/>
 				<connect2 to="energy_supply_vs_demand.demand_for_energy_1" from="energy_demand.demand_for_energy"/>
+				<connect to="energy_demand.All_Gross_Energy_Investments" from="energy_investments.All_Gross_Energy_Investments"/>
+				<connect2 to="energy_demand.All_Gross_Energy_Investments" from="energy_investments.All_Gross_Energy_Investments"/>
 				<connect to="energy_demand.average_marginal_net_cost_of_energy_with_historical_cost_adjustment" from="energy_investments.average_marginal_net_cost_of_energy_with_historical_cost_adjustment"/>
 				<connect2 to="energy_demand.average_marginal_net_cost_of_energy_with_historical_cost_adjustment" from="energy_investments.average_marginal_net_cost_of_energy_with_historical_cost_adjustment"/>
 				<connect to="energy_demand.per_person_use_of_energy_policy" from="Behavioral_Choices.per_person_use_of_energy_policy"/>
@@ -280,6 +282,8 @@
 				<doc>${No Sensi}
 </doc>
 				<format scale_by="auto"/>
+				<connect to="energy_demand.All_Gross_Energy_Investments" from="energy_investments.All_Gross_Energy_Investments"/>
+				<connect2 to="energy_demand.All_Gross_Energy_Investments" from="energy_investments.All_Gross_Energy_Investments"/>
 				<connect to="Finance.All_Energy_Investments" from="energy_investments.All_Gross_Energy_Investments"/>
 				<connect2 to="Finance.All_Energy_Investments" from="energy_investments.All_Gross_Energy_Investments"/>
 				<connect to="energy_demand.average_marginal_net_cost_of_energy_with_historical_cost_adjustment" from="energy_investments.average_marginal_net_cost_of_energy_with_historical_cost_adjustment"/>
@@ -821,7 +825,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="746.667" isee:scroll_y="231.667" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="12" isee:page_rows="7" isee:scroll_x="479.167" isee:scroll_y="356.667" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1748,7 +1752,7 @@ Calibration Parameter: demand for electricity
 	Calibrated To Rode	Calibrated To Clark
 1980	0.835917516796	0.835917516796
 </doc>
-				<eqn>0.789822492030705</eqn>
+				<eqn>0.858002821168995</eqn>
 				<range min="0" max="2"/>
 				<units>dmnl</units>
 			</aux>
@@ -1760,7 +1764,7 @@ For changing the Heating Cooling demand calib
 	Calibrated To Rode	Calibrated To Clarke
 1980	0.32	0.32
 </doc>
-				<eqn>0.462205012655347</eqn>
+				<eqn>0.425216812278325</eqn>
 				<range min="0.235" max="0.47"/>
 				<units>dmnl</units>
 			</aux>
@@ -2065,7 +2069,7 @@ Change_in_energy_used_for_Heating_due_to_climate_change_in_MWh + Change_in_energ
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>1+EXP(relative_change_in_energy_prices/INIT(relative_change_in_energy_prices))*sensitivity_of_effect_of_energy_prices_on_demand</eqn>
+				<eqn>1+EXP(change_in_energy_prices/reference_change_in_energy_prices)*sensitivity_of_effect_of_energy_prices_on_demand</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="initial aggregate per unit energy prices">
@@ -2079,7 +2083,7 @@ Change_in_energy_used_for_Heating_due_to_climate_change_in_MWh + Change_in_energ
 				<eqn>aggregate_per_unit_energy_prices-average_marginal_net_cost_of_energy_with_historical_cost_adjustment</eqn>
 				<units>c$/(kWh/Years)</units>
 			</aux>
-			<aux name="relative change in energy prices">
+			<aux name="change\nin energy prices">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -2090,7 +2094,7 @@ Change_in_energy_used_for_Heating_due_to_climate_change_in_MWh + Change_in_energ
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SMTH1(aggregate_per_unit_energy_prices, reference_formation_time, initial_reference_per_unit_energy_prices)</eqn>
+				<eqn>SMTH1(aggregate_per_unit_energy_prices, reference_formation_time, initial_reference_aggregate_per_unit_energy_prices)</eqn>
 				<isee:delay_aux/>
 				<units>c$/(kWh/Years)</units>
 			</aux>
@@ -2099,13 +2103,24 @@ Change_in_energy_used_for_Heating_due_to_climate_change_in_MWh + Change_in_energ
 				<units>years</units>
 			</aux>
 			<aux name="sensitivity of effect\nof energy prices on demand">
-				<eqn>0.0100004434903605</eqn>
-				<range min="0.01" max="0.03"/>
+				<eqn>0.01</eqn>
+				<range min="0.001" max="0.1"/>
 				<units>dmnl</units>
 			</aux>
-			<aux name="initial reference per unit energy prices">
-				<eqn>.134</eqn>
+			<aux name="initial reference aggregate\nper unit energy prices">
+				<eqn>.098</eqn>
 				<units>c$/(kWh/Years)</units>
+			</aux>
+			<aux name="reference change\nin energy prices">
+				<eqn>0.006</eqn>
+				<units>c$/(kWh/Years)</units>
+			</aux>
+			<aux name="All Gross Energy Investments" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>c$/Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -2156,7 +2171,7 @@ Change_in_energy_used_for_Heating_due_to_climate_change_in_MWh + Change_in_energ
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="90" isee:scroll_y="297.857" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_y="436.429" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2306,9 +2321,9 @@ Change_in_energy_used_for_Heating_due_to_climate_change_in_MWh + Change_in_energ
 					<from>Energy_use_per_HDD</from>
 					<to>Change_in_energy_used_for_Heating_due_to_climate_change</to>
 				</connector>
-				<aux x="405.831" y="374" name="energy use per CDD"/>
+				<aux x="451.099" y="352.571" name="energy use per CDD"/>
 				<aux x="518.25" y="430.875" name="Change in energy used for\ncooling due to climate change"/>
-				<connector uid="70" angle="331.62">
+				<connector uid="70" angle="310.615">
 					<from>energy_use_per_CDD</from>
 					<to>Change_in_energy_used_for_cooling_due_to_climate_change</to>
 				</connector>
@@ -2426,13 +2441,13 @@ This affects the energy use per CCD, energy use per HDD variables. Any change in
 					<from>aggregate_per_unit_energy_prices</from>
 					<to>average_energy_margins</to>
 				</connector>
-				<aux x="303.572" y="470.518" name="relative change in energy prices"/>
-				<connector uid="113" angle="287.56">
+				<aux x="290.276" y="406.286" name="change\nin energy prices"/>
+				<connector uid="113" angle="293.052">
 					<from>aggregate_per_unit_energy_prices</from>
-					<to>relative_change_in_energy_prices</to>
+					<to>change_in_energy_prices</to>
 				</connector>
-				<connector uid="114" angle="294.238">
-					<from>relative_change_in_energy_prices</from>
+				<connector uid="114" angle="288.073">
+					<from>change_in_energy_prices</from>
 					<to>effect_of_energy_prices_on_demand</to>
 				</connector>
 				<aux x="186.576" y="424.286" name="reference aggregate\nper unit energy prices"/>
@@ -2445,24 +2460,30 @@ This affects the energy use per CCD, energy use per HDD variables. Any change in
 					<from>reference_formation_time</from>
 					<to>reference_aggregate_per_unit_energy_prices</to>
 				</connector>
-				<connector uid="118" angle="340.034">
+				<connector uid="118" angle="9.84715">
 					<from>reference_aggregate_per_unit_energy_prices</from>
-					<to>relative_change_in_energy_prices</to>
+					<to>change_in_energy_prices</to>
 				</connector>
-				<aux x="405.831" y="466.875" name="sensitivity of effect\nof energy prices on demand"/>
-				<connector uid="119" angle="227.663">
+				<aux x="228.688" y="498.375" name="sensitivity of effect\nof energy prices on demand"/>
+				<connector uid="119" angle="341.68">
 					<from>sensitivity_of_effect_of_energy_prices_on_demand</from>
 					<to>effect_of_energy_prices_on_demand</to>
 				</connector>
-				<aux x="150" y="506.625" name="initial reference per unit energy prices"/>
-				<connector uid="122" angle="78.2969">
-					<from>initial_reference_per_unit_energy_prices</from>
+				<aux x="93.5714" y="501.625" name="initial reference aggregate\nper unit energy prices"/>
+				<connector uid="122" angle="51.9939">
+					<from>initial_reference_aggregate_per_unit_energy_prices</from>
 					<to>reference_aggregate_per_unit_energy_prices</to>
 				</connector>
 				<connector uid="123" angle="283.445">
 					<from>effect_of_energy_prices_on_demand</from>
 					<to>per_person_use_of_energy</to>
 				</connector>
+				<aux x="381.429" y="430.875" name="reference change\nin energy prices"/>
+				<connector uid="129" angle="243.778">
+					<from>reference_change_in_energy_prices</from>
+					<to>effect_of_energy_prices_on_demand</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="487.143" y="761.429" name="All Gross Energy Investments"/>
 			</view>
 		</views>
 	</model>
@@ -3151,301 +3172,301 @@ ELSE
 					<dim name="Historical_5yr_time_steps"/>
 				</dimensions>
 				<element subscript="Coal_fuel_extraction, 1">
-					<eqn>1.0318264</eqn>
+					<eqn>1.03201885984707</eqn>
 				</element>
 				<element subscript="Coal_fuel_extraction, 2">
-					<eqn>0.411013278</eqn>
+					<eqn>0.410483081128569</eqn>
 				</element>
 				<element subscript="Coal_fuel_extraction, 3">
-					<eqn>1.354997342</eqn>
+					<eqn>1.35393790581268</eqn>
 				</element>
 				<element subscript="Coal_fuel_extraction, 4">
-					<eqn>2.246549741</eqn>
+					<eqn>2.24784698698592</eqn>
 				</element>
 				<element subscript="Coal_fuel_extraction, 5">
-					<eqn>0.903079139</eqn>
+					<eqn>0.903196172084446</eqn>
 				</element>
 				<element subscript="Coal_fuel_extraction, 6">
-					<eqn>0.883520942</eqn>
+					<eqn>0.883348704102778</eqn>
 				</element>
 				<element subscript="Coal_fuel_extraction, 7">
-					<eqn>0.705933762</eqn>
+					<eqn>0.70720682653834</eqn>
 				</element>
 				<element subscript="Coal_fuel_extraction, 8">
-					<eqn>1.267587803</eqn>
+					<eqn>1.2683226551959</eqn>
 				</element>
 				<element subscript="Coal_fuel_extraction, 9">
-					<eqn>1.066562355</eqn>
+					<eqn>1.06412451881215</eqn>
 				</element>
 				<element subscript="Coal_energy_conversion, 1">
-					<eqn>0.462606149</eqn>
+					<eqn>0.463947136190237</eqn>
 				</element>
 				<element subscript="Coal_energy_conversion, 2">
-					<eqn>0.15641731</eqn>
+					<eqn>0.154858412884854</eqn>
 				</element>
 				<element subscript="Coal_energy_conversion, 3">
-					<eqn>0.50948496</eqn>
+					<eqn>0.50823005599832</eqn>
 				</element>
 				<element subscript="Coal_energy_conversion, 4">
-					<eqn>0.608640604</eqn>
+					<eqn>0.611436492250779</eqn>
 				</element>
 				<element subscript="Coal_energy_conversion, 5">
-					<eqn>0.298363231</eqn>
+					<eqn>0.296959925169941</eqn>
 				</element>
 				<element subscript="Coal_energy_conversion, 6">
-					<eqn>0.160462778</eqn>
+					<eqn>0.162279597850247</eqn>
 				</element>
 				<element subscript="Coal_energy_conversion, 7">
-					<eqn>0.252018593</eqn>
+					<eqn>0.251614928062193</eqn>
 				</element>
 				<element subscript="Coal_energy_conversion, 8">
-					<eqn>0.416089742</eqn>
+					<eqn>0.416979664467123</eqn>
 				</element>
 				<element subscript="Coal_energy_conversion, 9">
-					<eqn>0.395634178</eqn>
+					<eqn>0.394892840508194</eqn>
 				</element>
 				<element subscript="Oil_fuel_extraction, 1">
-					<eqn>0.08</eqn>
+					<eqn>0.0818340697643287</eqn>
 				</element>
 				<element subscript="Oil_fuel_extraction, 2">
-					<eqn>0.063144782</eqn>
+					<eqn>0.0605552273206842</eqn>
 				</element>
 				<element subscript="Oil_fuel_extraction, 3">
-					<eqn>0.08328997</eqn>
+					<eqn>0.0775025253300426</eqn>
 				</element>
 				<element subscript="Oil_fuel_extraction, 4">
-					<eqn>0.081180385</eqn>
+					<eqn>0.0821346526051848</eqn>
 				</element>
 				<element subscript="Oil_fuel_extraction, 5">
-					<eqn>0.087110374</eqn>
+					<eqn>0.0798393956695024</eqn>
 				</element>
 				<element subscript="Oil_fuel_extraction, 6">
-					<eqn>0.078814081</eqn>
+					<eqn>0.108964914826804</eqn>
 				</element>
 				<element subscript="Oil_fuel_extraction, 7">
-					<eqn>0.084823915</eqn>
+					<eqn>0.0856927190440171</eqn>
 				</element>
 				<element subscript="Oil_fuel_extraction, 8">
-					<eqn>0.094891562</eqn>
+					<eqn>0.0964144780153276</eqn>
 				</element>
 				<element subscript="Oil_fuel_extraction, 9">
-					<eqn>0.116576196</eqn>
+					<eqn>0.117493114578914</eqn>
 				</element>
 				<element subscript="Oil_energy_conversion, 1">
-					<eqn>0.25</eqn>
+					<eqn>0.248115882876751</eqn>
 				</element>
 				<element subscript="Oil_energy_conversion, 2">
-					<eqn>0.08224626</eqn>
+					<eqn>0.0726265219378542</eqn>
 				</element>
 				<element subscript="Oil_energy_conversion, 3">
-					<eqn>0.308600365</eqn>
+					<eqn>0.308941386247861</eqn>
 				</element>
 				<element subscript="Oil_energy_conversion, 4">
-					<eqn>0.329544256</eqn>
+					<eqn>0.328715348424883</eqn>
 				</element>
 				<element subscript="Oil_energy_conversion, 5">
-					<eqn>0.198137176</eqn>
+					<eqn>0.200115983660857</eqn>
 				</element>
 				<element subscript="Oil_energy_conversion, 6">
-					<eqn>0.143651989</eqn>
+					<eqn>0.144092628221568</eqn>
 				</element>
 				<element subscript="Oil_energy_conversion, 7">
-					<eqn>0.109870383</eqn>
+					<eqn>0.108696004923584</eqn>
 				</element>
 				<element subscript="Oil_energy_conversion, 8">
-					<eqn>0.135399061</eqn>
+					<eqn>0.136072927864404</eqn>
 				</element>
 				<element subscript="Oil_energy_conversion, 9">
-					<eqn>0.14558426</eqn>
+					<eqn>0.149071939494491</eqn>
 				</element>
 				<element subscript="Gas_fuel_extraction, 1">
-					<eqn>0.306789184</eqn>
+					<eqn>0.312173042598126</eqn>
 				</element>
 				<element subscript="Gas_fuel_extraction, 2">
-					<eqn>0.125206239</eqn>
+					<eqn>0.12870521137436</eqn>
 				</element>
 				<element subscript="Gas_fuel_extraction, 3">
-					<eqn>0.317261585</eqn>
+					<eqn>0.321040192311841</eqn>
 				</element>
 				<element subscript="Gas_fuel_extraction, 4">
-					<eqn>0.516278657</eqn>
+					<eqn>0.515361258121242</eqn>
 				</element>
 				<element subscript="Gas_fuel_extraction, 5">
-					<eqn>0.295503741</eqn>
+					<eqn>0.299438769573946</eqn>
 				</element>
 				<element subscript="Gas_fuel_extraction, 6">
-					<eqn>0.247967288</eqn>
+					<eqn>0.253580474563997</eqn>
 				</element>
 				<element subscript="Gas_fuel_extraction, 7">
-					<eqn>0.24691788</eqn>
+					<eqn>0.250733083475928</eqn>
 				</element>
 				<element subscript="Gas_fuel_extraction, 8">
-					<eqn>0.300532749</eqn>
+					<eqn>0.303026884572415</eqn>
 				</element>
 				<element subscript="Gas_fuel_extraction, 9">
-					<eqn>0.354420998</eqn>
+					<eqn>0.357702495227454</eqn>
 				</element>
 				<element subscript="Gas_energy_conversion, 1">
-					<eqn>0.217387944</eqn>
+					<eqn>0.217816233544887</eqn>
 				</element>
 				<element subscript="Gas_energy_conversion, 2">
-					<eqn>0.083066085</eqn>
+					<eqn>0.0820940112886802</eqn>
 				</element>
 				<element subscript="Gas_energy_conversion, 3">
-					<eqn>0.244762191</eqn>
+					<eqn>0.244384968093598</eqn>
 				</element>
 				<element subscript="Gas_energy_conversion, 4">
-					<eqn>0.51097872</eqn>
+					<eqn>0.511337360357773</eqn>
 				</element>
 				<element subscript="Gas_energy_conversion, 5">
-					<eqn>0.081812606</eqn>
+					<eqn>0.0826956561894397</eqn>
 				</element>
 				<element subscript="Gas_energy_conversion, 6">
-					<eqn>0.149353338</eqn>
+					<eqn>0.148106091967617</eqn>
 				</element>
 				<element subscript="Gas_energy_conversion, 7">
-					<eqn>0.144485076</eqn>
+					<eqn>0.144400510471562</eqn>
 				</element>
 				<element subscript="Gas_energy_conversion, 8">
-					<eqn>0.188451446</eqn>
+					<eqn>0.187344484538771</eqn>
 				</element>
 				<element subscript="Gas_energy_conversion, 9">
-					<eqn>0.254064441</eqn>
+					<eqn>0.256236657233359</eqn>
 				</element>
 				<element subscript="Solar_and_Wind, 1">
-					<eqn>0.48316033</eqn>
+					<eqn>0.481148078450543</eqn>
 				</element>
 				<element subscript="Solar_and_Wind, 2">
-					<eqn>0.484273231</eqn>
+					<eqn>0.485945236795076</eqn>
 				</element>
 				<element subscript="Solar_and_Wind, 3">
-					<eqn>1.034327136</eqn>
+					<eqn>1.03575925453438</eqn>
 				</element>
 				<element subscript="Solar_and_Wind, 4">
-					<eqn>0.447055436</eqn>
+					<eqn>0.440885294019579</eqn>
 				</element>
 				<element subscript="Solar_and_Wind, 5">
-					<eqn>0.152920516</eqn>
+					<eqn>0.149569771119371</eqn>
 				</element>
 				<element subscript="Solar_and_Wind, 6">
-					<eqn>0.117753732</eqn>
+					<eqn>0.116203487557202</eqn>
 				</element>
 				<element subscript="Solar_and_Wind, 7">
-					<eqn>0.088576486</eqn>
+					<eqn>0.0883826096352636</eqn>
 				</element>
 				<element subscript="Solar_and_Wind, 8">
-					<eqn>0.125892901</eqn>
+					<eqn>0.120104983095496</eqn>
 				</element>
 				<element subscript="Solar_and_Wind, 9">
-					<eqn>0.088172814</eqn>
+					<eqn>0.0845183514914266</eqn>
 				</element>
 				<element subscript="Hydropower, 1">
-					<eqn>1.235524014</eqn>
+					<eqn>1.23366328684772</eqn>
 				</element>
 				<element subscript="Hydropower, 2">
-					<eqn>0.294365386</eqn>
+					<eqn>0.291050014365673</eqn>
 				</element>
 				<element subscript="Hydropower, 3">
-					<eqn>1.424836829</eqn>
+					<eqn>1.42497777729102</eqn>
 				</element>
 				<element subscript="Hydropower, 4">
-					<eqn>2.927884781</eqn>
+					<eqn>2.92914519206234</eqn>
 				</element>
 				<element subscript="Hydropower, 5">
-					<eqn>0.919496746</eqn>
+					<eqn>0.916895058350594</eqn>
 				</element>
 				<element subscript="Hydropower, 6">
-					<eqn>0.416399557</eqn>
+					<eqn>0.417646333266004</eqn>
 				</element>
 				<element subscript="Hydropower, 7">
-					<eqn>0.323800094</eqn>
+					<eqn>0.326132860342319</eqn>
 				</element>
 				<element subscript="Hydropower, 8">
-					<eqn>0.368592039</eqn>
+					<eqn>0.368225748617731</eqn>
 				</element>
 				<element subscript="Hydropower, 9">
-					<eqn>0.377784464</eqn>
+					<eqn>0.374008309419724</eqn>
 				</element>
 				<element subscript="Other, 1">
-					<eqn>0.591854841</eqn>
+					<eqn>0.589721031230291</eqn>
 				</element>
 				<element subscript="Other, 2">
-					<eqn>0.366516927</eqn>
+					<eqn>0.370145622340721</eqn>
 				</element>
 				<element subscript="Other, 3">
-					<eqn>0.850059912</eqn>
+					<eqn>0.851073201537616</eqn>
 				</element>
 				<element subscript="Other, 4">
-					<eqn>2.926112062</eqn>
+					<eqn>2.92894124414705</eqn>
 				</element>
 				<element subscript="Other, 5">
-					<eqn>0.693792259</eqn>
+					<eqn>0.690677528301608</eqn>
 				</element>
 				<element subscript="Other, 6">
-					<eqn>0.457377001</eqn>
+					<eqn>0.460143342143922</eqn>
 				</element>
 				<element subscript="Other, 7">
-					<eqn>0.380384516</eqn>
+					<eqn>0.380781318760734</eqn>
 				</element>
 				<element subscript="Other, 8">
-					<eqn>0.544896989</eqn>
+					<eqn>0.542416218286655</eqn>
 				</element>
 				<element subscript="Other, 9">
-					<eqn>0.526616998</eqn>
+					<eqn>0.525612306285319</eqn>
 				</element>
 				<element subscript="Nuclear, 1">
-					<eqn>0.849651955</eqn>
+					<eqn>0.849576905905895</eqn>
 				</element>
 				<element subscript="Nuclear, 2">
-					<eqn>0.222113482</eqn>
+					<eqn>0.227854158171132</eqn>
 				</element>
 				<element subscript="Nuclear, 3">
-					<eqn>1.289680279</eqn>
+					<eqn>1.28987138764287</eqn>
 				</element>
 				<element subscript="Nuclear, 4">
-					<eqn>2.675234579</eqn>
+					<eqn>2.67401935901158</eqn>
 				</element>
 				<element subscript="Nuclear, 5">
-					<eqn>0.616765955</eqn>
+					<eqn>0.61707730234036</eqn>
 				</element>
 				<element subscript="Nuclear, 6">
-					<eqn>0.277556082</eqn>
+					<eqn>0.283440407072801</eqn>
 				</element>
 				<element subscript="Nuclear, 7">
-					<eqn>0.209895747</eqn>
+					<eqn>0.216453972614115</eqn>
 				</element>
 				<element subscript="Nuclear, 8">
-					<eqn>0.232814268</eqn>
+					<eqn>0.23296307478194</eqn>
 				</element>
 				<element subscript="Nuclear, 9">
-					<eqn>0.237882303</eqn>
+					<eqn>0.237461010083507</eqn>
 				</element>
 				<element subscript="Bio, 1">
-					<eqn>0.609654925</eqn>
+					<eqn>0.613640574024782</eqn>
 				</element>
 				<element subscript="Bio, 2">
-					<eqn>0.111618781</eqn>
+					<eqn>0.110078365786471</eqn>
 				</element>
 				<element subscript="Bio, 3">
-					<eqn>0.691374567</eqn>
+					<eqn>0.690943779304646</eqn>
 				</element>
 				<element subscript="Bio, 4">
-					<eqn>2.994073836</eqn>
+					<eqn>2.99401537583192</eqn>
 				</element>
 				<element subscript="Bio, 5">
-					<eqn>0.617416839</eqn>
+					<eqn>0.620248908561152</eqn>
 				</element>
 				<element subscript="Bio, 6">
-					<eqn>0.342950229</eqn>
+					<eqn>0.342199879658106</eqn>
 				</element>
 				<element subscript="Bio, 7">
-					<eqn>0.341810045</eqn>
+					<eqn>0.342952295923528</eqn>
 				</element>
 				<element subscript="Bio, 8">
-					<eqn>0.527813512</eqn>
+					<eqn>0.528912119731447</eqn>
 				</element>
 				<element subscript="Bio, 9">
-					<eqn>0.519900627</eqn>
+					<eqn>0.516702308422823</eqn>
 				</element>
 				<range min="0.05" max="4"/>
 				<units>dmnl</units>
@@ -3969,7 +3990,7 @@ adjusted_cost[Run,Coal_fuel_extraction] * Coal_Gross_Investments_in_Fossil_Fuel_
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="8" isee:page_rows="8" isee:scroll_x="269.444" isee:scroll_y="596.111" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="8" isee:page_rows="8" isee:scroll_x="527.222" isee:scroll_y="979.444" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -6031,7 +6052,7 @@ Arbitrary unit of energy used to calculate the differentials of cost to produce 
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="100.714" isee:scroll_y="2.14286" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="100" isee:scroll_y="117.143" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -7840,7 +7861,7 @@ Table A -19
 EPA (2023). Inventory of U.S. Greenhouse Gas Emissions and Sinks: 1990-2021. Annex 2 (Methodology for estimating CO2 emissions from fossil fuel combustion), Table A-19 &quot; C Content Coefficients by Year (MMT C/QBtu)&quot; pg A-56, U.S. Environmental Protection Agency, Washington, DC. U.S. EPA #430-R-23-001
 
 https://www.epa.gov/system/files/documents/2023-04/US-GHG-Inventory-2023-Annex-2-Emissions-Fossil-Fuel-Combustion.pdf</doc>
-				<eqn>0.02539854</eqn>
+				<eqn>0.025425017117314</eqn>
 				<range min="0.01" max="0.03"/>
 				<units>GtC/Qbtu</units>
 			</aux>
@@ -8593,7 +8614,7 @@ We apply this independent of fuel for now.</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="1128.13" isee:scroll_y="228.125" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="372.5" isee:scroll_y="555.625" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -9876,7 +9897,7 @@ Table A -19
 EPA (2023). Inventory of U.S. Greenhouse Gas Emissions and Sinks: 1990-2021. Annex 2 (Methodology for estimating CO2 emissions from fossil fuel combustion), Table A-19 &quot; C Content Coefficients by Year (MMT C/QBtu)&quot; pg A-56, U.S. Environmental Protection Agency, Washington, DC. U.S. EPA #430-R-23-001
 
 https://www.epa.gov/system/files/documents/2023-04/US-GHG-Inventory-2023-Annex-2-Emissions-Fossil-Fuel-Combustion.pdf</doc>
-				<eqn>0.01566555</eqn>
+				<eqn>0.0157180008751976</eqn>
 				<range min="0.01" max="0.03"/>
 				<units>GtC/Qbtu</units>
 			</aux>
@@ -10632,7 +10653,7 @@ We apply this independent of fuel for now.</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="1125" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="4" isee:scroll_x="967.143" isee:scroll_y="442.857" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -11892,7 +11913,7 @@ Table A -19
 EPA (2023). Inventory of U.S. Greenhouse Gas Emissions and Sinks: 1990-2021. Annex 2 (Methodology for estimating CO2 emissions from fossil fuel combustion), Table A-19 &quot; C Content Coefficients by Year (MMT C/QBtu)&quot; pg A-56, U.S. Environmental Protection Agency, Washington, DC. U.S. EPA #430-R-23-001
 
 https://www.epa.gov/system/files/documents/2023-04/US-GHG-Inventory-2023-Annex-2-Emissions-Fossil-Fuel-Combustion.pdf</doc>
-				<eqn>0.019446985</eqn>
+				<eqn>0.0193928307908857</eqn>
 				<range min="0.01" max="0.03"/>
 				<units>GtC/Qbtu</units>
 			</aux>
@@ -12692,7 +12713,7 @@ We apply this independent of fuel for now.</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="1141.88" isee:scroll_y="99.375" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="1411.25" isee:scroll_y="460.625" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -13753,7 +13774,7 @@ baseline_nuclear_energy_capacity_efficiency</eqn>
 			<aux name="Intercept Nuclear\nInstallation Costs" access="output" isee:autocreated="true">
 				<doc>${Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>-2690</eqn>
+				<eqn>-2690.01387598396</eqn>
 				<format precision="1"/>
 				<range min="-50000" max="50000"/>
 				<units>c$/kW</units>
@@ -13761,7 +13782,7 @@ baseline_nuclear_energy_capacity_efficiency</eqn>
 			<aux name="Slope of Nuclear Installation Costs" access="output" isee:autocreated="true">
 				<doc>${Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>280.4</eqn>
+				<eqn>280.437186792723</eqn>
 				<format precision="0.1"/>
 				<range min="-1000" max="1000"/>
 				<units>c$/KW/Year</units>
@@ -13769,7 +13790,7 @@ baseline_nuclear_energy_capacity_efficiency</eqn>
 			<aux name="Ceiling of Nuclear Installation Costs" access="output" isee:autocreated="true">
 				<doc>${Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>6000</eqn>
+				<eqn>5999.98569562612</eqn>
 				<format precision="1"/>
 				<range min="5000" max="10000"/>
 				<units>c$/kW</units>
@@ -13777,7 +13798,7 @@ baseline_nuclear_energy_capacity_efficiency</eqn>
 			<aux name="Floor of Nuclear Installation Costs" access="output" isee:autocreated="true">
 				<doc>${Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>2108.208541</eqn>
+				<eqn>2108.21092932387</eqn>
 				<format precision="1"/>
 				<range min="1000" max="5000"/>
 				<units>c$/kW</units>
@@ -14755,14 +14776,14 @@ CO2e_tax_burden_of_extra_energy_output_through_fuel_extraction_per_unit</eqn>
 			<aux name="Learning Rate" access="output" isee:autocreated="true">
 				<doc>${Assumption,Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>0.044657674</eqn>
+				<eqn>0.0445931675000133</eqn>
 				<range min="0.01" max="0.4"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Initial\nInstallation Costs" access="output" isee:autocreated="true">
 				<doc>${Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>1177719566</eqn>
+				<eqn>1158625953.79964</eqn>
 				<range min="100000000" max="100000000000"/>
 				<units>c$/(Mt of fuel/year)</units>
 			</aux>
@@ -14860,7 +14881,7 @@ Price per energy unit </doc>
 			<aux name="Floor Costs">
 				<doc>${Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>14817700.99</eqn>
+				<eqn>14887611.2753642</eqn>
 				<range min="1000000" max="1000000000"/>
 				<units>c$/(Mt of fuel/year)</units>
 			</aux>
@@ -15885,14 +15906,14 @@ Slope_of_Hydropower_Installation_Costs_wrt_Capacity*(Hydropower_Energy_Capacity/
 			<aux name="Base Hydropower\nInstallation Costs" access="output" isee:autocreated="true">
 				<doc>${Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>100.3356334</eqn>
+				<eqn>100.35157797786</eqn>
 				<range min="10" max="5000"/>
 				<units>c$/kW</units>
 			</aux>
 			<aux name="Slope of Hydropower\nInstallation Costs\nwrt Capacity" access="output" isee:autocreated="true">
 				<doc>${Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>0.00000163415</eqn>
+				<eqn>0.00000163596261406216</eqn>
 				<range min="1e-7" max="0.0001"/>
 				<units>c$/kW^2</units>
 			</aux>
@@ -16376,7 +16397,7 @@ Default 5% rate</doc>
 			<aux name="Initial Other Installation Costs" access="output" isee:autocreated="true">
 				<doc>${Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>1999.967293</eqn>
+				<eqn>1999.96202724269</eqn>
 				<format precision="1"/>
 				<range min="500" max="10000"/>
 				<units>c$/kW</units>
@@ -16384,7 +16405,7 @@ Default 5% rate</doc>
 			<aux name="Floor of Other\nInstallation Costs">
 				<doc>${Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>949.6987788</eqn>
+				<eqn>949.541141627231</eqn>
 				<range min="100" max="10000"/>
 				<units>c$/kW</units>
 			</aux>
@@ -16479,7 +16500,7 @@ tax_burden_on_installing_capacity</eqn>
 			<aux name="Learning Rate" access="output" isee:autocreated="true">
 				<doc>${Assumption,Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>0.078090888</eqn>
+				<eqn>0.0779077422422772</eqn>
 				<range min="0.01" max="0.4"/>
 				<units>dmnl</units>
 			</aux>
@@ -17055,21 +17076,21 @@ from MIND</doc>
 			<aux name="Renewable Energy\nLearning Rate" access="output" isee:autocreated="true">
 				<doc>${Assumption,Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>0.104592378</eqn>
+				<eqn>0.104605673999802</eqn>
 				<range min="0.05" max="0.4"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Renewable Energy\nFloor Costs" access="output" isee:autocreated="true">
 				<doc>${Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>138</eqn>
+				<eqn>137.955898342009</eqn>
 				<range min="1" max="500"/>
 				<units>c$/kW</units>
 			</aux>
 			<aux name="Initial Renewable Energy Installation Costs" access="output" isee:autocreated="true">
 				<doc>${Internal Calibration Parameter,No Sensi}
 Calibrate to the initial value of the time series on renewable reducible installation costs</doc>
-				<eqn>4498.067163</eqn>
+				<eqn>4489.81126514179</eqn>
 				<range min="100" max="100000"/>
 				<units>c$/kW</units>
 			</aux>
@@ -17151,7 +17172,7 @@ from MIND</doc>
 			<aux name="stepping on toes parameter\nin renewable energy sector">
 				<doc>${Assumption,Internal Calibration Parameter,No Sensi}
 </doc>
-				<eqn>0.49992068</eqn>
+				<eqn>0.499917314699452</eqn>
 				<range min="0.1" max="0.5"/>
 				<units>dmnl</units>
 			</aux>
