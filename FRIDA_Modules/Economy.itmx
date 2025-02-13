@@ -959,7 +959,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="133" isee:scroll_y="229" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="133" isee:scroll_y="240" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -7875,7 +7875,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="5" isee:scroll_y="452" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="5" isee:scroll_x="412" isee:scroll_y="452" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -10869,14 +10869,7 @@ effect_of_STA_on_public_consumption</eqn>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>safe_interest+effect_of_risky_government_debt_on_government_interest_rate</eqn>
-				<units>1/year</units>
-			</aux>
-			<aux name="risky\ninterest" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<eqn>safe_interest+government_risk_premium</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="banks threshold for perceiving gov debt as risky">
@@ -10897,11 +10890,11 @@ effect_of_STA_on_public_consumption</eqn>
 				<range min="0.05" max="0.15"/>
 				<units>year</units>
 			</aux>
-			<aux name="effect of risky government debt on\ngovernment interest rate">
+			<aux name="government risk premium">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(risky_interest - safe_interest) * (MAXSOFT((debt_to_GDP_ratio-banks_threshold_for_perceiving_gov_debt_as_risky), 0,sensitivity_of_banks_gov_debt_risk_perception))/debt_to_GDP_ratio</eqn>
+				<eqn>maximum_risk_premium * effect_of_debt_to_GDP_ratio_on_risk_premium</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="start year" access="input">
@@ -11147,6 +11140,27 @@ ELSE
 				<eqn>0.249829592285828</eqn>
 				<units>dmnl/year</units>
 			</aux>
+			<aux name="effect of debt to GDP ratio\non risk premium">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(MAXSOFT((debt_to_GDP_ratio-banks_threshold_for_perceiving_gov_debt_as_risky), 0,sensitivity_of_banks_gov_debt_risk_perception))/debt_to_GDP_ratio</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="maximum risk premium">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>risky_interest-safe_interest</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="risky\ninterest" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>1/year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -11196,7 +11210,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="7" isee:page_rows="7" isee:scroll_x="499.167" isee:scroll_y="525" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="7" isee:page_rows="7" isee:scroll_x="1090.83" isee:scroll_y="525" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -11998,35 +12012,12 @@ ELSE
 					<from>current_government_debt_interest_rate</from>
 					<to>average_government_debt_interest_rate</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1253.1" y="1546" name="risky\ninterest"/>
-				<aux x="1265.22" y="1391.24" name="banks threshold for perceiving gov debt as risky"/>
-				<aux x="1205.22" y="1468.1" name="sensitivity of banks\ngov debt risk perception"/>
-				<aux x="1338.1" y="1468.1" name="effect of risky government debt on\ngovernment interest rate"/>
-				<connector uid="275" angle="112.69">
-					<from>
-						<alias uid="271"/>
-					</from>
-					<to>effect_of_risky_government_debt_on_government_interest_rate</to>
-				</connector>
-				<connector uid="276" angle="338.477">
-					<from>banks_threshold_for_perceiving_gov_debt_as_risky</from>
-					<to>effect_of_risky_government_debt_on_government_interest_rate</to>
-				</connector>
-				<connector uid="277" angle="25">
-					<from>sensitivity_of_banks_gov_debt_risk_perception</from>
-					<to>effect_of_risky_government_debt_on_government_interest_rate</to>
-				</connector>
-				<connector uid="278" angle="45.1323">
-					<from>effect_of_risky_government_debt_on_government_interest_rate</from>
+				<aux x="1085.96" y="1397.16" name="banks threshold for perceiving gov debt as risky"/>
+				<aux x="1049.96" y="1474.77" name="sensitivity of banks\ngov debt risk perception"/>
+				<aux x="1338.1" y="1468.1" name="government risk premium"/>
+				<connector uid="278" angle="69.9384">
+					<from>government_risk_premium</from>
 					<to>current_government_debt_interest_rate</to>
-				</connector>
-				<connector uid="279" angle="31.3942">
-					<from>risky_interest</from>
-					<to>effect_of_risky_government_debt_on_government_interest_rate</to>
-				</connector>
-				<connector uid="280" angle="176.383">
-					<from>safe_interest</from>
-					<to>effect_of_risky_government_debt_on_government_interest_rate</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1865.83" y="1124.17" name="start year"/>
 				<connector uid="281" angle="181.146">
@@ -12303,6 +12294,39 @@ ELSE
 					<from>fraction_of_wages_as_unemployment_payments</from>
 					<to>indicated_transfer_payments_per_unemployed</to>
 				</connector>
+				<aux x="1175.72" y="1468.1" name="effect of debt to GDP ratio\non risk premium"/>
+				<connector uid="388" angle="66.2132">
+					<from>
+						<alias uid="271"/>
+					</from>
+					<to>effect_of_debt_to_GDP_ratio_on_risk_premium</to>
+				</connector>
+				<connector uid="389" angle="346.68">
+					<from>banks_threshold_for_perceiving_gov_debt_as_risky</from>
+					<to>effect_of_debt_to_GDP_ratio_on_risk_premium</to>
+				</connector>
+				<connector uid="390" angle="28.0345">
+					<from>sensitivity_of_banks_gov_debt_risk_perception</from>
+					<to>effect_of_debt_to_GDP_ratio_on_risk_premium</to>
+				</connector>
+				<connector uid="391" angle="0">
+					<from>effect_of_debt_to_GDP_ratio_on_risk_premium</from>
+					<to>government_risk_premium</to>
+				</connector>
+				<aux x="1408.62" y="1520.9" name="maximum risk premium"/>
+				<connector uid="394" angle="207.029">
+					<from>safe_interest</from>
+					<to>maximum_risk_premium</to>
+				</connector>
+				<connector uid="392" angle="167.474">
+					<from>maximum_risk_premium</from>
+					<to>government_risk_premium</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="1356.67" y="1657.5" name="risky\ninterest"/>
+				<connector uid="396" angle="59.0362">
+					<from>risky_interest</from>
+					<to>maximum_risk_premium</to>
+				</connector>
 				<alias font_style="italic" label_side="right" label_angle="315" uid="73" x="1345.42" y="1937.17" width="18" height="18">
 					<of>baseline_interest</of>
 				</alias>
@@ -12324,7 +12348,7 @@ ELSE
 					<shape type="circle" radius="18"/>
 					<of>government_spending_without_climate_impact</of>
 				</alias>
-				<alias font_style="italic" uid="271" x="1325.95" y="1537" width="18" height="18">
+				<alias font_style="italic" uid="271" x="1062.55" y="1550.33" width="18" height="18">
 					<of>debt_to_GDP_ratio</of>
 				</alias>
 				<alias font_style="italic" font_weight="bold" uid="282" x="684.75" y="748.02" width="18" height="18">
