@@ -35,6 +35,11 @@
 	<isee:multiplayer_settings include_chat="true" allow_observers="false" advance_time_increment="1" max_advance_time_in_ms="0" model_stops_when_players_drop="false" observer_start_page="home_page" enabled="false"/>
 	<isee:time_formats default_format="Builtin">
 		<isee:time_format name="Builtin" type="adaptive"/>
+		<isee:time_format name="TimeLabel1" type="grouped" start_offset="0" start_offset_units="years">
+			<isee:time_format_groupings>
+				<isee:time_format_grouping unit="years" prefix="'"/>
+			</isee:time_format_groupings>
+		</isee:time_format>
 	</isee:time_formats>
 	<isee:number_format_extenders/>
 	<default_format scale_by="1"/>
@@ -367,8 +372,8 @@ ELSE
 				<connect2 to='Sea_level_rise_adaptation."Real_GDP_in_2021c$"' from='GDP."Real_GDP_in_2021c$"'/>
 				<connect to="Sea_level_rise_adaptation.switch_sea_level_impact" from="Climate.switch_sea_level_rise_damage"/>
 				<connect2 to="Sea_level_rise_adaptation.switch_sea_level_impact" from="Climate.switch_sea_level_rise_damage"/>
-				<connect to="Sea_level_rise_adaptation.today" from="Climate.today"/>
-				<connect2 to="Sea_level_rise_adaptation.today" from="Climate.today"/>
+				<connect to="Sea_level_rise_adaptation.today" from="Climate.climate_impact_stoptime"/>
+				<connect2 to="Sea_level_rise_adaptation.today" from="Climate.climate_impact_stoptime"/>
 				<connect to="Sea_level_rise_adaptation.Total_global_SLR" from="Sea_Level.Total_global_SLR"/>
 				<connect2 to="Sea_level_rise_adaptation.Total_global_SLR" from="Sea_Level.Total_global_SLR"/>
 				<connect to="Sea_level_rise_adaptation.Willingness_to_invest_in_flood_protection_1" from="Sea_level_rise_Impacts_and_Adaptation.Willingness_to_invest_in_flood_protection"/>
@@ -717,7 +722,7 @@ From SSP data, it seems that in SSP5-8.5 the well protected population grows unt
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>Initial_split_of_asset_distribution[Coastal_Protection_level] * INIT(Net_global_financial_assets_in_real_terms[Run]) * Initial_fraction_of_assets_that_are_on_the_coast</eqn>
+				<eqn>Initial_split_of_asset_distribution[Coastal_Protection_level] * INIT(Net_global_financial_assets_in_real_terms[Run]) * Initial_fraction_of_assets_that_are_on_the_coast[Run]</eqn>
 				<inflow>Increase_of_coastal_asset_values_through_internal_growth</inflow>
 				<outflow>Proactive_retreat_of_coastal_assets</outflow>
 				<outflow>Reactive_retreat_of_coastal_assets</outflow>
@@ -754,7 +759,7 @@ Proactive retreat is in this model actually only happening after a retreat time 
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>asset_flood_damage_sensitivity * (Effective_flood_depth_for_assets/reference_flood_depth_for_damage)^asset_flood_damage_elasticity</eqn>
+				<eqn>asset_flood_damage_sensitivity[Run] * (Effective_flood_depth_for_assets/reference_flood_depth_for_damage)^asset_flood_damage_elasticity[Run]</eqn>
 				<units>1/Year</units>
 			</aux>
 			<aux name="US GDP per capita in 2010" access="output" isee:autocreated="true">
@@ -861,14 +866,24 @@ https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD?locations=US</doc>
 			<aux name="asset flood damage elasticity">
 				<doc>${Internal Calibration Parameter}
 </doc>
-				<eqn>1</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>1</eqn>
+				</element>
 				<range min="0.9" max="1.1"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="asset flood damage sensitivity">
 				<doc>${Internal Calibration Parameter}
 </doc>
-				<eqn>0.15</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.15</eqn>
+				</element>
 				<range min="0.1" max="0.2"/>
 				<units>1/year</units>
 			</aux>
@@ -1026,13 +1041,18 @@ Actually_susceptible_coastal_asset_fraction *  Flood_damage_function_for_assets_
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>Fraction_of_storm_damages_that_is_not_rebuild*All_storm_damage</eqn>
+				<eqn>Fraction_of_storm_damages_that_is_not_rebuild[Run]*All_storm_damage</eqn>
 				<units>bc$/year</units>
 			</flow>
 			<aux name="Fraction of storm damages that is not rebuild">
 				<doc>${Internal Calibration Parameter}
 This is 0 in CIAM, in the assumption that everything is rebuilt.</doc>
-				<eqn>0.1</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.1</eqn>
+				</element>
 				<range min="0" max="0.25"/>
 				<units>1</units>
 			</aux>
@@ -1134,7 +1154,12 @@ This is 0 in CIAM, in the assumption that everything is rebuilt.</doc>
 			<aux name="initial growth rate of coastal assets">
 				<doc>${Internal Calibration Parameter}
 </doc>
-				<eqn>0.085</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.085</eqn>
+				</element>
 				<range min="0.082" max="0.088"/>
 				<units>1</units>
 			</aux>
@@ -1173,7 +1198,12 @@ This is 0 in CIAM, in the assumption that everything is rebuilt.</doc>
 			<aux name="Initial fraction of assets\nthat are on the coast">
 				<doc>${External Parameter}
 This is the 2010 value, but in the future we should account for coastal migration to get this right</doc>
-				<eqn>0.13</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.13</eqn>
+				</element>
 				<range min="0.12" max="0.14"/>
 				<units>1</units>
 			</aux>
@@ -1241,7 +1271,7 @@ This is the 2010 value, but in the future we should account for coastal migratio
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="202" isee:scroll_y="660" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1533,7 +1563,7 @@ This is the 2010 value, but in the future we should account for coastal migratio
 					<to>Expected_susceptible_fraction_of_original_assets_in_50_years</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1049.17" y="211.667" name="Change in net global\nflood height 1"/>
-				<connector uid="46" angle="322.815">
+				<connector uid="46" angle="322.813">
 					<from>Change_in_net_global_flood_height_1</from>
 					<to>Change_in_effective_flood_depth_for_assets</to>
 				</connector>
@@ -1601,7 +1631,7 @@ This is the 2010 value, but in the future we should account for coastal migratio
 					<to>Reference_growth_rate_for_coastal_assets</to>
 				</connector>
 				<aux x="1067.17" y="343.571" name="Time for change in flood depth"/>
-				<connector uid="61" angle="347.083">
+				<connector uid="61" angle="347.079">
 					<from>Time_for_change_in_flood_depth</from>
 					<to>Change_in_effective_flood_depth_for_assets</to>
 				</connector>
@@ -1683,7 +1713,7 @@ This is the 2010 value, but in the future we should account for coastal migratio
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>Number_of_people_flooded_annually_in_storm_surges[Run,Coastal_Protection_level]*Fatality_rate_in_flood_events</eqn>
+				<eqn>Number_of_people_flooded_annually_in_storm_surges[Run,Coastal_Protection_level]*Fatality_rate_in_flood_events[Run]</eqn>
 				<units>Mp/year</units>
 			</flow>
 			<flow name="Proactive retreat of people from the coast" access="output" isee:autocreated="true">
@@ -1777,7 +1807,12 @@ Diaz, D. B. (2016). Estimating global damages from sea level rise with the Coast
 
 Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk Management 1(1):43–
 56</doc>
-				<eqn>0.01</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.01</eqn>
+				</element>
 				<range min="0.001" max="0.03"/>
 				<units>1</units>
 			</aux>
@@ -1794,13 +1829,18 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<dim name="Run"/>
 					<dim name="Coastal_Protection_level"/>
 				</dimensions>
-				<eqn>people_flood_damage_sensitivity* (Effective_flood_depth_for_people/UNIT_metre_1)^people_flood_damage_elasticity</eqn>
+				<eqn>people_flood_damage_sensitivity[Run]* (Effective_flood_depth_for_people/UNIT_metre_1)^people_flood_damage_elasticity</eqn>
 				<units>1/Year</units>
 			</aux>
 			<aux name="people flood damage\nsensitivity">
 				<doc>${Internal Calibration Parameter}
 </doc>
-				<eqn>0.5</eqn>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<element subscript="1">
+					<eqn>0.5</eqn>
+				</element>
 				<range min="0.1" max="0.5"/>
 				<units>1/year</units>
 			</aux>
@@ -2103,7 +2143,7 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="149" isee:scroll_y="240" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="686" isee:scroll_y="340" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2330,7 +2370,7 @@ Jonkman S, Vrijling J (2008) Loss of life due to floods. Journal of Flood Risk M
 					<to>Fraction_of_original_people_distribution_that_would_experience_storm_damage</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1060" y="1080" name="Change in net global\nflood height"/>
-				<connector uid="32" angle="59.746">
+				<connector uid="32" angle="59.7484">
 					<from>Change_in_net_global_flood_height</from>
 					<to>Change_in_effective_flood_depth_for_people</to>
 				</connector>
@@ -2935,7 +2975,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="10" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="643" isee:scroll_y="522" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
