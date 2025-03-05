@@ -5,7 +5,7 @@
 		<name>Economy</name>
 		<uuid>656dacef-005e-41a3-aedc-d19f6fd6e9f6</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.8" isee:build_number="3578" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.3" isee:build_number="3465" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -662,6 +662,8 @@
 				<connect2 to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Finance.switch_economy_damage" from="Climate.switch_finance_damage"/>
 				<connect2 to="Finance.switch_economy_damage" from="Climate.switch_finance_damage"/>
+				<connect to="Finance.tax_on_CO2e_emissions" from="Government_Regulations.tax_on_CO2e_emissions"/>
+				<connect2 to="Finance.tax_on_CO2e_emissions" from="Government_Regulations.tax_on_CO2e_emissions"/>
 				<connect to="Finance.today" from="Climate.climate_impact_stoptime"/>
 				<connect2 to="Finance.today" from="Climate.climate_impact_stoptime"/>
 				<connect to="Finance.Total_nominal_loss_of_assets_from_SLR" from="Sea_level_rise_costs_and_impacts.Total_nominal_loss_of_assets_from_SLR"/>
@@ -855,7 +857,7 @@
 			<isee:placeholder name="Economy 2 Outputs">
 				<eqn>GDP.Nominal_GDP[1] + GDP.&quot;Real_GDP_in_2021c$&quot;[1] + Circular_Flow.private_consumption[1] + Government.government_consumption[1] + Finance.total_investment[1] + Employment.annual_aggregate_wages[1] + Circular_Flow.Labour_share_of_GDP[1] + Employment.Employed[1] + Employment.Unemployed[1] + Employment.unemployment_rate[1] + Government.debt_to_GDP_ratio[1] + GDP.nominal_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1] + GDP.real_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1] + Inflation.gdp_difference[1]</eqn>
 			</isee:placeholder>
-			<module name="Sea level rise Impacts\nand Adaptation" isee:label="" url="/Users/bschoenberg/code/WorldTrans/clones/martin/WorldTransFRIDA_MBG/FRIDA_Modules/Sea level rise Impacts and Adaptation.itmx">
+			<module name="Sea level rise Impacts\nand Adaptation" isee:label="" url="/Users/magr099/Documents/GitHub/WorldTransFRIDA_MBG/FRIDA_Modules/Sea level rise Impacts and Adaptation.itmx">
 				<format scale_by="auto"/>
 				<connect to="Sea_level_rise_Impacts_and_Adaptation.No_SLR_adaptation_strategy" from="Government_Regulations.No_SLR_adaptation_strategy"/>
 				<connect2 to="Sea_level_rise_Impacts_and_Adaptation.No_SLR_adaptation_strategy" from="Government_Regulations.No_SLR_adaptation_strategy"/>
@@ -983,7 +985,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="79" isee:scroll_y="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="81" isee:scroll_y="50" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -8270,7 +8272,9 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>defaults + non_exploratory_interest_rate_change_caused_defaults</eqn>
+				<eqn>defaults
++ non_exploratory_interest_rate_change_caused_defaults
+- stranded_capital_related_defaults</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="nominal GDP\ngrowth rate 1" access="input">
@@ -8477,6 +8481,22 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>dmnl</units>
 			</aux>
+			<aux name="tax on CO2e emissions" access="input">
+				<eqn>TIME</eqn>
+				<gf>
+					<xscale min="1980" max="2150"/>
+					<yscale min="0" max="100"/>
+					<ypts>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</ypts>
+				</gf>
+				<units>c$/(tCO2e/year)</units>
+			</aux>
+			<aux name="stranded capital\nrelated defaults">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>stranded_energy_capital + stranded_energy_related_capital</eqn>
+				<units>b$/year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -8526,7 +8546,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="7" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="7" isee:scroll_y="72.5" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -8661,7 +8681,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 					<to>effect_of_lending_standards_on_bank_investment_growth_rate</to>
 				</connector>
 				<aux label_side="right" label_angle="45" x="1290.22" y="1361.45" name="effect of default rate\non lending standards"/>
-				<aux label_side="right" label_angle="315" x="1749.25" y="1313.24" name="perceived\ndefaults of new loans"/>
+				<aux label_side="left" label_angle="135" x="1749.25" y="1313.24" name="perceived\ndefaults of new loans"/>
 				<aux label_side="left" x="1777.52" y="1407" name="reporting\ndelay"/>
 				<connector uid="16" angle="106.779">
 					<from>reporting_delay</from>
@@ -9580,7 +9600,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 					<from>bad_loan_defaults_from_from_interest</from>
 					<to>non_exploratory_interest_rate_change_caused_defaults</to>
 				</connector>
-				<aux x="1807.57" y="1240.41" name="total non exploratory defaults"/>
+				<aux label_side="left" x="1807.57" y="1240.41" name="total non exploratory defaults"/>
 				<connector uid="330" angle="239.531">
 					<from>non_exploratory_interest_rate_change_caused_defaults</from>
 					<to>total_non_exploratory_defaults</to>
@@ -9766,18 +9786,18 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 					<from>All_Energy_Investments</from>
 					<to>Nominal_Gross_Energy_Investment</to>
 				</connector>
-				<aux x="2256.5" y="1019.13" name="stranded energy\ncapital"/>
-				<connector uid="422" angle="177.859">
+				<aux x="2256.07" y="1017.55" name="stranded energy\ncapital"/>
+				<connector uid="422" angle="177.244">
 					<from>
 						<alias uid="423"/>
 					</from>
 					<to>stranded_energy_capital</to>
 				</connector>
-				<connector uid="424" angle="196.561">
+				<connector uid="424" angle="195.927">
 					<from>stranded_capital</from>
 					<to>stranded_energy_capital</to>
 				</connector>
-				<connector uid="425" angle="153.418">
+				<connector uid="425" angle="152.86">
 					<from>
 						<alias uid="420"/>
 					</from>
@@ -9785,12 +9805,12 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				</connector>
 				<aux x="2169" y="1056.67" name="stranded energy\nrelated capital"/>
 				<aux x="2136.13" y="1164.3" name="effect of stranded energy\ncapital on other\nassets"/>
-				<connector uid="428" angle="140.74">
+				<connector uid="428" angle="143.181">
 					<from>stranded_energy_capital</from>
 					<to>safe_loan_defaults</to>
 				</connector>
 				<aux x="2307.5" y="1164.3" name="reference stranded\nenergy capital"/>
-				<connector uid="430" angle="289.357">
+				<connector uid="430" angle="289.314">
 					<from>stranded_energy_capital</from>
 					<to>reference_stranded_energy_capital</to>
 				</connector>
@@ -9800,7 +9820,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 					<to>reference_stranded_energy_capital</to>
 				</connector>
 				<aux x="2224.5" y="1129" name="relative stranded\nenergy capital"/>
-				<connector uid="432" angle="253.762">
+				<connector uid="432" angle="254.184">
 					<from>stranded_energy_capital</from>
 					<to>relative_stranded_energy_capital</to>
 				</connector>
@@ -9816,7 +9836,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 					<from>effect_of_stranded_energy_capital_on_other_assets</from>
 					<to>stranded_energy_related_capital</to>
 				</connector>
-				<connector uid="436" angle="203.221">
+				<connector uid="436" angle="204.194">
 					<from>stranded_energy_capital</from>
 					<to>stranded_energy_related_capital</to>
 				</connector>
@@ -9840,6 +9860,20 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				<aux font_style="italic" font_weight="bold" x="1965" y="2421.67" name="real GDP growth rate 2"/>
 				<aux font_style="italic" font_weight="bold" x="1312.5" y="2433.75" name="Real GDP in 2021c$ 1"/>
 				<aux font_style="italic" font_weight="bold" x="1447" y="1189" name="unemployment rate"/>
+				<aux font_style="italic" font_weight="bold" x="1364" y="758" name="tax on CO2e emissions"/>
+				<aux label_side="top" x="1936.92" y="1258.41" name="stranded capital\nrelated defaults"/>
+				<connector uid="441" angle="208.252">
+					<from>stranded_energy_related_capital</from>
+					<to>stranded_capital_related_defaults</to>
+				</connector>
+				<connector uid="442" angle="186.871">
+					<from>stranded_energy_capital</from>
+					<to>stranded_capital_related_defaults</to>
+				</connector>
+				<connector uid="443" angle="223.08">
+					<from>stranded_capital_related_defaults</from>
+					<to>total_non_exploratory_defaults</to>
+				</connector>
 				<alias label_side="right" uid="27" x="1825.17" y="1005.55" width="18" height="18">
 					<of>loan_maturation_time</of>
 				</alias>
@@ -10241,7 +10275,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="34" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -11875,7 +11909,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="7" isee:page_rows="7" isee:scroll_x="1221.67" isee:scroll_y="695" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="7" isee:page_rows="7" isee:scroll_x="1220.83" isee:scroll_y="537.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
