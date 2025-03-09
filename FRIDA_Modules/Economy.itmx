@@ -5,7 +5,7 @@
 		<name>Economy</name>
 		<uuid>656dacef-005e-41a3-aedc-d19f6fd6e9f6</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.8.1" isee:build_number="development" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.8" isee:build_number="3578" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -535,8 +535,6 @@
 				<connect2 to='Circular_Flow."inflation_adjustment_b$_per_bc$_1"' from='Inflation."inflation_adjustment_b$_per_bc$"'/>
 				<connect to="Circular_Flow.Inflation_Rate" from="Inflation.Inflation_Rate"/>
 				<connect2 to="Circular_Flow.Inflation_Rate" from="Inflation.Inflation_Rate"/>
-				<connect to="Circular_Flow.initial_productivity_growth" from="Employment.initial_productivity_growth"/>
-				<connect2 to="Circular_Flow.initial_productivity_growth" from="Employment.initial_productivity_growth"/>
 				<connect to="Circular_Flow.Nominal_GDP" from="GDP.Nominal_GDP"/>
 				<connect2 to="Circular_Flow.Nominal_GDP" from="GDP.Nominal_GDP"/>
 				<connect to="Circular_Flow.Population_1" from="Demographics.Population"/>
@@ -697,8 +695,6 @@
 				<connect2 to="Inflation.Employed" from="Employment.Employed"/>
 				<connect to="Sea_level_rise_costs_and_impacts.Employed" from="Employment.Employed"/>
 				<connect2 to="Sea_level_rise_costs_and_impacts.Employed" from="Employment.Employed"/>
-				<connect to="Circular_Flow.initial_productivity_growth" from="Employment.initial_productivity_growth"/>
-				<connect2 to="Circular_Flow.initial_productivity_growth" from="Employment.initial_productivity_growth"/>
 				<connect to="Inflation.realised_productivity" from="Employment.realised_productivity"/>
 				<connect2 to="Inflation.realised_productivity" from="Employment.realised_productivity"/>
 				<connect to="Circular_Flow.realised_productivity_growth" from="Employment.realised_productivity_growth"/>
@@ -1001,7 +997,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="39" isee:scroll_y="229" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="39" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1471,6 +1467,9 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 			<aux name="initial owner savings">
 				<doc>${Internal Calibration Parameter}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>46357.0465153</eqn>
 				<range min="30000" max="60000"/>
 				<units>b$</units>
@@ -1478,6 +1477,9 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 			<aux name="initial firms\nchecking accounts">
 				<doc>${Internal Calibration Parameter}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>5003.53414951</eqn>
 				<range min="4000" max="6000"/>
 				<units>b$</units>
@@ -1485,6 +1487,9 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 			<aux name="initial worker savings">
 				<doc>${Internal Calibration Parameter}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>22209.0362704</eqn>
 				<range min="20000" max="30000"/>
 				<units>b$</units>
@@ -1638,7 +1643,7 @@ SMTH1((net_worker_income*desired_savings_as_multiple_of_wages), time_to_consider
 				<range min="0.65" max="0.85"/>
 				<units>dmnl</units>
 			</aux>
-			<aux name="consumption habits adjustment time">
+			<aux name="consumption habits\nadjustment time">
 				<doc>${Assumption,Internal Calibration Parameter}
 </doc>
 				<dimensions>
@@ -1742,13 +1747,17 @@ net_worker_income*fraction_of_income_to_consumption-annual_worker_savings_to_rea
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Inflation_Rate*one_year</eqn>
+				<eqn>Inflation_Rate*time_for_inflation_to_change_consumption</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="one year">
-				<doc>${Unit}
+			<aux name="time for inflation to change\nconsumption">
+				<doc>${Internal Calibration Parameter,Unit}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>1</eqn>
+				<range min="0.5" max="2"/>
 				<units>year</units>
 			</aux>
 			<stock name="Inflation Rate" access="input">
@@ -2199,6 +2208,11 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 				<units>dmnl/Year</units>
 			</aux>
 			<aux name="normal bottom\n40 wages">
+				<doc>${Internal Calibration Parameter}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0.112361832107313</eqn>
 				<range min="0.05" max="0.15"/>
 				<units>dmnl</units>
@@ -2211,6 +2225,11 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 				<units>dmnl</units>
 			</aux>
 			<aux name="time for bottom\n40 to be affected">
+				<doc>${Internal Calibration Parameter}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>20</eqn>
 				<range min="1" max="20"/>
 				<units>years</units>
@@ -2223,36 +2242,68 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 				<units>dmnl</units>
 			</aux>
 			<aux name="yfrom">
+				<doc>${Internal Calibration Parameter}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>1.39617351302856</eqn>
 				<range min="1.1" max="2"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="yto">
+				<doc>${Internal Calibration Parameter}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0.565293587864245</eqn>
 				<range min="0" max="1"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="xmiddle">
+				<doc>${Internal Calibration Parameter}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0.798639728206527</eqn>
 				<range min="0.5" max="1.5"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="xspeed">
+				<doc>${Internal Calibration Parameter}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>11.0612046289175</eqn>
 				<range min="1" max="16"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="xstart">
+				<doc>${Internal Calibration Parameter}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0.063144440403097</eqn>
 				<range min="0" max="1"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="xfinish">
+				<doc>${Internal Calibration Parameter}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>1.83924954720287</eqn>
 				<range min="1" max="2"/>
 				<units>dmnl</units>
 			</aux>
-			<aux name="forty percent">
+			<aux name="UNIT forty percent">
+				<doc>${Unit}
+</doc>
 				<eqn>0.4</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -2260,14 +2311,14 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Population_1*forty_percent</eqn>
+				<eqn>Population_1*UNIT_forty_percent</eqn>
 				<units>Mp</units>
 			</aux>
 			<aux name="bottom 40 income\nper capita">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(bottom_40_income*dollars_per_billion/forty_percent_of_population)/persons_per_million_people</eqn>
+				<eqn>(bottom_40_income*UNIT_dollars_per_billion/forty_percent_of_population)/UNIT_persons_per_million_people</eqn>
 				<units>c$/person/year</units>
 			</aux>
 			<aux name="growth rates of income per capita among the bottom 40 per cent of the total population">
@@ -2277,13 +2328,13 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 				<eqn>TREND(bottom_40_income_per_capita, 1, 0.08)</eqn>
 				<units>1/year</units>
 			</aux>
-			<aux name="dollars per billion">
+			<aux name="UNIT dollars per billion">
 				<doc>${Unit}
 </doc>
 				<eqn>1000000000</eqn>
 				<units>c$/Bc$</units>
 			</aux>
-			<aux name="persons per\nmillion people">
+			<aux name="UNIT persons per\nmillion people">
 				<doc>${Unit}
 </doc>
 				<eqn>1000000</eqn>
@@ -2316,10 +2367,6 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>dmnl</units>
-			</aux>
-			<aux name="initial\nproductivity\ngrowth" access="input">
-				<eqn>0.02</eqn>
-				<units>dmnl/Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -2370,7 +2417,7 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="2203" isee:scroll_y="857" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="1040" isee:scroll_y="789" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2695,7 +2742,7 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 				</connector>
 				<aux label_side="left" x="1516.08" y="1626.35" name="fraction of income to consumption"/>
 				<aux label_side="right" x="984.31" y="1638.99" name="fraction of\nowner income\nto consumption"/>
-				<aux label_side="left" label_angle="225" x="853.18" y="1592.11" name="consumption habits adjustment time"/>
+				<aux label_side="left" label_angle="225" x="853.18" y="1592.11" name="consumption habits\nadjustment time"/>
 				<aux font_style="italic" font_weight="bold" x="1076.75" y="1326" name="rent 3"/>
 				<connector uid="67" angle="142.44">
 					<from>rent_3</from>
@@ -2829,9 +2876,9 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 					<from>inflation_effect_on_consumption</from>
 					<to>actual_owner_consumption</to>
 				</connector>
-				<aux label_side="right" x="871.18" y="1499.25" name="one year"/>
-				<connector uid="99" angle="242.847">
-					<from>one_year</from>
+				<aux label_side="right" x="867.18" y="1491.25" name="time for inflation to change\nconsumption"/>
+				<connector uid="99" angle="252.005">
+					<from>time_for_inflation_to_change_consumption</from>
 					<to>inflation_effect_on_consumption</to>
 				</connector>
 				<connector uid="100" angle="201.517">
@@ -3008,8 +3055,8 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 					<from>Actual_people_retreat_cost_from_SLR</from>
 					<to>owner_consumption</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="1447.75" y="1846.25" name="Total nominal people\nretreat costs"/>
-				<connector uid="146" angle="111.801">
+				<aux font_style="italic" font_weight="bold" x="1526.18" y="1855.57" name="Total nominal people\nretreat costs"/>
+				<connector uid="146" angle="156.908">
 					<from>Total_nominal_people_retreat_costs</from>
 					<to>Actual_people_retreat_cost_from_SLR</to>
 				</connector>
@@ -3543,10 +3590,10 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 					<from>effect_of_productivity_growth_on_bottom_40_share_of_wages</from>
 					<to>bottom_40_share_of_wages</to>
 				</connector>
-				<aux x="2557.5" y="1299.5" name="forty percent"/>
+				<aux x="2557.5" y="1299.5" name="UNIT forty percent"/>
 				<aux label_side="left" x="2558.5" y="1254.5" name="forty percent\nof population"/>
 				<connector uid="351" angle="88.727">
-					<from>forty_percent</from>
+					<from>UNIT_forty_percent</from>
 					<to>forty_percent_of_population</to>
 				</connector>
 				<aux label_side="right" x="2747.5" y="1254.5" name="bottom 40 income\nper capita"/>
@@ -3563,14 +3610,14 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 					<from>bottom_40_income_per_capita</from>
 					<to>growth_rates_of_income_per_capita_among_the_bottom_40_per_cent_of_the_total_population</to>
 				</connector>
-				<aux label_side="bottom" x="2697.33" y="1317.5" name="dollars per billion"/>
-				<aux label_side="left" label_angle="135" x="2675.68" y="1296.5" name="persons per\nmillion people"/>
+				<aux label_side="bottom" x="2697.33" y="1317.5" name="UNIT dollars per billion"/>
+				<aux label_side="left" label_angle="135" x="2675.68" y="1296.5" name="UNIT persons per\nmillion people"/>
 				<connector uid="355" angle="30.3189">
-					<from>persons_per_million_people</from>
+					<from>UNIT_persons_per_million_people</from>
 					<to>bottom_40_income_per_capita</to>
 				</connector>
 				<connector uid="356" angle="51.468">
-					<from>dollars_per_billion</from>
+					<from>UNIT_dollars_per_billion</from>
 					<to>bottom_40_income_per_capita</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1480.5" y="152" name="Population 1"/>
@@ -3607,7 +3654,6 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 				<text_box text_align="center" vertical_text_align="center" uid="399" x="2704.04" y="1057.32" width="75.7143" height="18">SDG 10.4.1</text_box>
 				<text_box text_align="center" vertical_text_align="center" uid="400" x="2709.64" y="1148.75" width="75.7143" height="18">SDG 10.1.1</text_box>
 				<aux font_style="italic" font_weight="bold" x="1939.75" y="1205" name="assets/\nliabilities"/>
-				<aux font_style="italic" font_weight="bold" x="2410" y="1522.5" name="initial\nproductivity\ngrowth"/>
 				<alias label_side="top" uid="8" x="2047.5" y="1330.87" width="18" height="18">
 					<of>time_to_reach_savings_goal</of>
 				</alias>
@@ -3858,7 +3904,7 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>aging_out*percentage_of_working_age_that_are_employed/one_year</eqn>
+				<eqn>aging_out*percentage_of_working_age_that_are_employed/UNIT_one_year</eqn>
 				<non_negative/>
 				<units>Mp/year</units>
 			</flow>
@@ -3931,7 +3977,7 @@ https://rshiny.ilo.org/dataexplorer15/?id=EMP_2EMP_SEX_AGE_NB_A&amp;ref_area=X01
 				<eqn>SMTH1(total_defaults*hiring_to_investment_ratio/wage_rate_in_billions_per_million_people, time_for_defaults_to_affect_firing)</eqn>
 				<units>Mp/year</units>
 			</aux>
-			<aux name="dollars per billion">
+			<aux name="UNIT dollars per billion">
 				<doc>${Unit}
 </doc>
 				<eqn>1000000000</eqn>
@@ -3941,7 +3987,7 @@ https://rshiny.ilo.org/dataexplorer15/?id=EMP_2EMP_SEX_AGE_NB_A&amp;ref_area=X01
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Wage_Rate/dollars_per_billion*persons_per_million_people</eqn>
+				<eqn>Wage_Rate/UNIT_dollars_per_billion*UNIT_persons_per_million_people</eqn>
 				<units>B$/Mp</units>
 			</aux>
 			<aux name="desired\nadditional hires">
@@ -3951,13 +3997,13 @@ https://rshiny.ilo.org/dataexplorer15/?id=EMP_2EMP_SEX_AGE_NB_A&amp;ref_area=X01
 				<eqn>(planned_investment*hiring_to_investment_ratio)/wage_rate_in_billions_per_million_people</eqn>
 				<units>Mp/year</units>
 			</aux>
-			<aux name="one year">
+			<aux name="UNIT one year">
 				<doc>${Unit}
 </doc>
 				<eqn>1</eqn>
 				<units>year</units>
 			</aux>
-			<aux name="persons per\nmillion people">
+			<aux name="UNIT persons per\nmillion people">
 				<doc>${Unit}
 </doc>
 				<eqn>1000000</eqn>
@@ -3967,14 +4013,14 @@ https://rshiny.ilo.org/dataexplorer15/?id=EMP_2EMP_SEX_AGE_NB_A&amp;ref_area=X01
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>wage_rate_in_billions_per_million_people*Employed/one_year</eqn>
+				<eqn>wage_rate_in_billions_per_million_people*Employed/UNIT_one_year</eqn>
 				<units>b$/year</units>
 			</aux>
 			<flow name="aging out of\nunemployed">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>aging_out*percentage_of_working_age_that_are_unemployed/one_year</eqn>
+				<eqn>aging_out*percentage_of_working_age_that_are_unemployed/UNIT_one_year</eqn>
 				<non_negative/>
 				<units>Mp/year</units>
 			</flow>
@@ -3982,7 +4028,7 @@ https://rshiny.ilo.org/dataexplorer15/?id=EMP_2EMP_SEX_AGE_NB_A&amp;ref_area=X01
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>aging_in*labour_force_participation_rate/one_year</eqn>
+				<eqn>aging_in*labour_force_participation_rate/UNIT_one_year</eqn>
 				<non_negative/>
 				<units>Mp/year</units>
 			</flow>
@@ -4022,7 +4068,11 @@ https://rshiny.ilo.org/dataexplorer32/?id=UNE_2EAP_SEX_AGE_RT_A&amp;ref_area=X01
 			<aux name="profit threshold\nmultiplier">
 				<doc>${Assumption}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>1</eqn>
+				<range min="0.5" max="2"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="deaths 15 to 20 years">
@@ -4043,7 +4093,7 @@ https://rshiny.ilo.org/dataexplorer32/?id=UNE_2EAP_SEX_AGE_RT_A&amp;ref_area=X01
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Passing_66*one_year</eqn>
+				<eqn>Passing_66*UNIT_one_year</eqn>
 				<units>Mp</units>
 			</aux>
 			<aux name="working age\ndeaths">
@@ -4119,7 +4169,7 @@ https://rshiny.ilo.org/dataexplorer32/?id=UNE_2EAP_SEX_AGE_RT_A&amp;ref_area=X01
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>aging_in*(1-labour_force_participation_rate)/one_year</eqn>
+				<eqn>aging_in*(1-labour_force_participation_rate)/UNIT_one_year</eqn>
 				<non_negative/>
 				<units>Mp/year</units>
 			</flow>
@@ -4135,7 +4185,7 @@ https://rshiny.ilo.org/dataexplorer32/?id=UNE_2EAP_SEX_AGE_RT_A&amp;ref_area=X01
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>aging_out*percentage_of_working_age_that_are_non_active/one_year</eqn>
+				<eqn>aging_out*percentage_of_working_age_that_are_non_active/UNIT_one_year</eqn>
 				<non_negative/>
 				<units>Mp/year</units>
 			</flow>
@@ -4149,6 +4199,9 @@ https://rshiny.ilo.org/dataexplorer32/?id=UNE_2EAP_SEX_AGE_RT_A&amp;ref_area=X01
 			<aux name="time for labour\nparticipation to change">
 				<doc>${Assumption,Internal Calibration Parameter}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>1</eqn>
 				<units>Years</units>
 			</aux>
@@ -4352,6 +4405,9 @@ https://rshiny.ilo.org/dataexplorer20/?id=EAP_2WAP_SEX_AGE_RT_A&amp;ref_area=X01
 			<aux name="initial recent\nwage growth rate">
 				<doc>${Internal Calibration Parameter}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0.013839525</eqn>
 				<units>dmnl/year</units>
 			</aux>
@@ -4359,7 +4415,7 @@ https://rshiny.ilo.org/dataexplorer20/?id=EAP_2WAP_SEX_AGE_RT_A&amp;ref_area=X01
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>INIT(Wage_Rate)*(1-initial_recent_wage_growth_rate*one_year)</eqn>
+				<eqn>INIT(Wage_Rate)*(1-initial_recent_wage_growth_rate*UNIT_one_year)</eqn>
 				<units>$/p</units>
 			</aux>
 			<aux name="working age population 2" access="input">
@@ -4637,6 +4693,9 @@ share_of_employment_in_services_intercept+share_of_employment_in_services_slope*
 			<aux name="share of\nemployment in\nagriculture slope">
 				<doc>${Internal Calibration Parameter}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>-15.3331166860372</eqn>
 				<range min="-50" max="1"/>
 				<units>Million*Person*Years/bc$</units>
@@ -4716,7 +4775,7 @@ share_of_employment_in_services_intercept+share_of_employment_in_services_slope*
 				<eqn>raw_share_of_employment_in_services/(raw_share_of_employment_in_agriculture+raw_share_of_employment_in_industry+raw_share_of_employment_in_services)</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="Employment to\nLabour Supply">
+			<aux name="UNIT Employment to\nLabour Supply">
 				<doc>${Unit}
 </doc>
 				<eqn>1</eqn>
@@ -4726,7 +4785,7 @@ share_of_employment_in_services_intercept+share_of_employment_in_services_slope*
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Employed*Employment_to_Labour_Supply</eqn>
+				<eqn>Employed*UNIT_Employment_to_Labour_Supply</eqn>
 				<units>MLabour</units>
 			</aux>
 			<aux name="Raw Labour\nSupply agriculture">
@@ -4920,9 +4979,12 @@ Fractional exposure levels to temperature for service related labour. Assumption
 				<eqn>TREND(realised_productivity, 1, initial_productivity_growth)</eqn>
 				<units>dmnl/Year</units>
 			</aux>
-			<aux name="initial\nproductivity\ngrowth" access="output" isee:autocreated="true">
+			<aux name="initial\nproductivity\ngrowth">
 				<doc>${Assumption,Internal Calibration Parameter}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0.0268379400227628</eqn>
 				<range min="0.01" max="0.03"/>
 				<units>dmnl/Year</units>
@@ -5118,6 +5180,9 @@ Fractional exposure levels to temperature for service related labour. Assumption
 			<aux name="time to fire from missed profits">
 				<doc>${Assumption,Internal Calibration Parameter}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>1</eqn>
 				<range min="0.5" max="1.5"/>
 				<units>years</units>
@@ -5132,6 +5197,9 @@ Fractional exposure levels to temperature for service related labour. Assumption
 			<aux name="sensitivity of firing to profit discrepancy">
 				<doc>${Assumption,Internal Calibration Parameter}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0.5</eqn>
 				<range min="0.25" max="1"/>
 				<units>dmnl</units>
@@ -5160,6 +5228,9 @@ Fractional exposure levels to temperature for service related labour. Assumption
 			<aux name="max firing\npercentage">
 				<doc>${Internal Calibration Parameter}
 </doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
 				<eqn>0.0440130495610323</eqn>
 				<range min="0.03" max="0.1"/>
 				<units>1/year</units>
@@ -5310,7 +5381,7 @@ Fractional exposure levels to temperature for service related labour. Assumption
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="6" isee:scroll_y="67.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="6" isee:scroll_x="1088.33" isee:scroll_y="1322.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -5410,14 +5481,14 @@ Fractional exposure levels to temperature for service related labour. Assumption
 					<to>firing_from_missed_profits</to>
 				</connector>
 				<aux label_side="top" x="799.5" y="1106.25" name="firing from\ndefaults"/>
-				<aux label_side="top" x="1885.75" y="1429.41" name="dollars per billion"/>
+				<aux label_side="top" x="1885.75" y="1429.41" name="UNIT dollars per billion"/>
 				<aux label_side="bottom" x="1915.18" y="1493.99" name="wage rate\nin billions per\nmillion people"/>
 				<connector uid="4" angle="251.268">
 					<from>Wage_Rate</from>
 					<to>wage_rate_in_billions_per_million_people</to>
 				</connector>
 				<connector uid="5" angle="294.499">
-					<from>dollars_per_billion</from>
+					<from>UNIT_dollars_per_billion</from>
 					<to>wage_rate_in_billions_per_million_people</to>
 				</connector>
 				<aux label_side="bottom" x="1683" y="1354.58" name="desired\nadditional hires"/>
@@ -5425,14 +5496,14 @@ Fractional exposure levels to temperature for service related labour. Assumption
 					<from>wage_rate_in_billions_per_million_people</from>
 					<to>desired_additional_hires</to>
 				</connector>
-				<aux label_side="bottom" x="1419.25" y="1449.93" name="one year"/>
+				<aux label_side="bottom" x="1419.25" y="1449.93" name="UNIT one year"/>
 				<connector uid="7" angle="128.975">
-					<from>one_year</from>
+					<from>UNIT_one_year</from>
 					<to>aging_out_of_employed</to>
 				</connector>
-				<aux label_side="right" x="1946.18" y="1429.41" name="persons per\nmillion people"/>
+				<aux label_side="right" x="1946.18" y="1429.41" name="UNIT persons per\nmillion people"/>
 				<connector uid="8" angle="244.358">
-					<from>persons_per_million_people</from>
+					<from>UNIT_persons_per_million_people</from>
 					<to>wage_rate_in_billions_per_million_people</to>
 				</connector>
 				<aux x="2792.22" y="630.586" name="annual\naggregate wages"/>
@@ -6136,10 +6207,10 @@ Fractional exposure levels to temperature for service related labour. Assumption
 				<stacked_container uid="165" x="3373" y="2019.67" width="501" height="425">
 					<graph width="501" height="425" type="scatter" x_axis_auto_scale="true" connect_dots="true" single_point="false" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true"/>
 				</stacked_container>
-				<aux label_side="top" x="1553.09" y="2000" name="Employment to\nLabour Supply"/>
+				<aux label_side="top" x="1553.09" y="2000" name="UNIT Employment to\nLabour Supply"/>
 				<aux label_side="left" x="1490.47" y="2063.64" name="Raw Labour Supply"/>
 				<connector uid="166" angle="225.463">
-					<from>Employment_to_Labour_Supply</from>
+					<from>UNIT_Employment_to_Labour_Supply</from>
 					<to>Raw_Labour_Supply</to>
 				</connector>
 				<aux label_side="right" x="1709" y="2063.64" name="Raw Labour\nSupply agriculture"/>
@@ -6658,7 +6729,7 @@ furthermore. The structure that was previously decided on had the productivity g
 				</alias>
 				<alias color="blue" background="white" font_style="italic" label_side="top" uid="15" x="1265.5" y="965.417" width="18" height="18">
 					<shape type="circle" radius="18"/>
-					<of>one_year</of>
+					<of>UNIT_one_year</of>
 				</alias>
 				<alias font_style="italic" label_side="top" uid="10" x="2783.22" y="560.918" width="18" height="18">
 					<of>wage_rate_in_billions_per_million_people</of>
@@ -6704,11 +6775,11 @@ furthermore. The structure that was previously decided on had the productivity g
 					<of>percentage_of_working_age_that_are_employed</of>
 				</alias>
 				<alias font_style="italic" uid="52" x="2707.63" y="619" width="18" height="18">
-					<of>one_year</of>
+					<of>UNIT_one_year</of>
 				</alias>
 				<alias color="blue" background="white" font_style="italic" label_side="top" uid="56" x="1263" y="512.767" width="18" height="18">
 					<shape type="circle" radius="18"/>
-					<of>one_year</of>
+					<of>UNIT_one_year</of>
 				</alias>
 				<alias color="blue" background="white" font_style="italic" label_side="top" uid="58" x="1417.69" y="512.767" width="18" height="18">
 					<shape type="circle" radius="18"/>
@@ -6745,7 +6816,7 @@ furthermore. The structure that was previously decided on had the productivity g
 					<of>Employed</of>
 				</alias>
 				<alias font_style="italic" uid="112" x="3311.98" y="1551.5" width="18" height="18">
-					<of>one_year</of>
+					<of>UNIT_one_year</of>
 				</alias>
 				<alias font_style="italic" uid="118" x="2916.31" y="1030.18" width="27.8571" height="22.8571">
 					<of>Wage_Rate</of>
@@ -6757,7 +6828,7 @@ furthermore. The structure that was previously decided on had the productivity g
 					<of>planned_investment</of>
 				</alias>
 				<alias font_style="italic" label_side="top" uid="211" x="2873.38" y="998.143" width="18" height="18">
-					<of>one_year</of>
+					<of>UNIT_one_year</of>
 				</alias>
 				<alias font_style="italic" uid="219" x="1721.41" y="1525.86" width="18" height="18">
 					<of>unemployment_rate</of>
