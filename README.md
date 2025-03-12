@@ -29,6 +29,7 @@ You can run and use the model locally without purchasing Stella Architect using 
       <li><a href="https://github.com/chrisdwells/climate-energy-supply">Energy Supply</a></li>
       <li><a href="https://github.com/chrisdwells/extremes-exposure">Exposure to Climate Extremes</a></li>
       <li><a href="https://github.com/chrisdwells/cdd-hdd">Cooling and Heating Degree Days</a></li>
+      <li><a href="https://github.com/chrisdwells/FRIDA-climate-impacts">Uncertainty Parameter Sets</a></li>
     </ul>
   </li>
 </ul>
