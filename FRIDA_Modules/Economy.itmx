@@ -5,7 +5,7 @@
 		<name>Economy</name>
 		<uuid>656dacef-005e-41a3-aedc-d19f6fd6e9f6</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.8" isee:build_number="3578" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.7.3" isee:build_number="3465" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -610,6 +610,8 @@
 				<connect2 to="Employment.exploratory_loan_failure" from="Finance.exploratory_loan_failure"/>
 				<connect to="Employment.exploratory_loan_defaults_from_from_interest" from="Finance.exploratory_loan_defaults_from_from_interest"/>
 				<connect2 to="Employment.exploratory_loan_defaults_from_from_interest" from="Finance.exploratory_loan_defaults_from_from_interest"/>
+				<connect to="Employment.non_exploratory_interest_rate_change_caused_defaults" from="Finance.non_exploratory_interest_rate_change_and_stranded_assets_caused_defaults"/>
+				<connect2 to="Employment.non_exploratory_interest_rate_change_caused_defaults" from="Finance.non_exploratory_interest_rate_change_and_stranded_assets_caused_defaults"/>
 				<connect to="Circular_Flow.safe_bank_assets" from="Finance.private_safe_bank_assets"/>
 				<connect2 to="Circular_Flow.safe_bank_assets" from="Finance.private_safe_bank_assets"/>
 				<connect to="Circular_Flow.private_investment_1" from="Finance.private_investment"/>
@@ -632,8 +634,6 @@
 				<connect2 to="GDP.Investment_1" from="Finance.total_investment"/>
 				<connect to="Circular_Flow.total_defaults" from="Finance.total_non_exploratory_defaults"/>
 				<connect2 to="Circular_Flow.total_defaults" from="Finance.total_non_exploratory_defaults"/>
-				<connect to="Employment.total_non_exploratory_defaults" from="Finance.total_non_exploratory_defaults"/>
-				<connect2 to="Employment.total_non_exploratory_defaults" from="Finance.total_non_exploratory_defaults"/>
 				<connect to="Finance.All_Energy_Investments" from="energy_investments.All_Gross_Energy_Investments"/>
 				<connect2 to="Finance.All_Energy_Investments" from="energy_investments.All_Gross_Energy_Investments"/>
 				<connect to="Finance.Firms_Checking_Accounts" from="Circular_Flow.Firms_Checking_Accounts"/>
@@ -755,6 +755,8 @@
 				<connect2 to="Employment.GDP" from="GDP.Nominal_GDP"/>
 				<connect to="Employment.non_bank_profits_1" from="Circular_Flow.non_bank_profits"/>
 				<connect2 to="Employment.non_bank_profits_1" from="Circular_Flow.non_bank_profits"/>
+				<connect to="Employment.non_exploratory_interest_rate_change_caused_defaults" from="Finance.non_exploratory_interest_rate_change_and_stranded_assets_caused_defaults"/>
+				<connect2 to="Employment.non_exploratory_interest_rate_change_caused_defaults" from="Finance.non_exploratory_interest_rate_change_and_stranded_assets_caused_defaults"/>
 				<connect to="Employment.Passing_66" from="Demographics.Passing_65"/>
 				<connect2 to="Employment.Passing_66" from="Demographics.Passing_65"/>
 				<connect to="Employment.Population_1" from="Emissions.Population"/>
@@ -775,8 +777,6 @@
 				<connect2 to="Employment.today" from="Climate.climate_impact_stoptime"/>
 				<connect to="Employment.total_investment_1" from="Finance.total_investment"/>
 				<connect2 to="Employment.total_investment_1" from="Finance.total_investment"/>
-				<connect to="Employment.total_non_exploratory_defaults" from="Finance.total_non_exploratory_defaults"/>
-				<connect2 to="Employment.total_non_exploratory_defaults" from="Finance.total_non_exploratory_defaults"/>
 				<connect to="Employment.UNIT_percent_1" from="Inflation.UNIT_Percent"/>
 				<connect2 to="Employment.UNIT_percent_1" from="Inflation.UNIT_Percent"/>
 				<connect to="Employment.working_age_population_2" from="Demographics.working_age_population"/>
@@ -877,7 +877,7 @@
 			<isee:placeholder name="Economy 2 Outputs">
 				<eqn>GDP.Nominal_GDP[1] + GDP.&quot;Real_GDP_in_2021c$&quot;[1] + Circular_Flow.private_consumption[1] + Government.government_consumption[1] + Finance.total_investment[1] + Employment.annual_aggregate_wages[1] + Circular_Flow.Labour_share_of_GDP[1] + Employment.Employed[1] + Employment.Unemployed[1] + Employment.unemployment_rate[1] + Government.debt_to_GDP_ratio[1] + GDP.nominal_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1] + GDP.real_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1] + Inflation.gdp_difference[1] + Circular_Flow.bottom_40_share_of_real_income[1]</eqn>
 			</isee:placeholder>
-			<module name="Sea level rise Impacts\nand Adaptation" isee:label="" url="/Users/bschoenberg/code/WorldTrans/clones/martin/WorldTransFRIDA_MBG/FRIDA_Modules/Sea level rise Impacts and Adaptation.itmx">
+			<module name="Sea level rise Impacts\nand Adaptation" isee:label="" url="/Users/magr099/Documents/GitHub/WorldTransFRIDA_MBG/FRIDA_Modules/Sea level rise Impacts and Adaptation.itmx">
 				<format scale_by="auto"/>
 				<connect to="Sea_level_rise_Impacts_and_Adaptation.No_SLR_adaptation_strategy" from="Government_Regulations.No_SLR_adaptation_strategy"/>
 				<connect2 to="Sea_level_rise_Impacts_and_Adaptation.No_SLR_adaptation_strategy" from="Government_Regulations.No_SLR_adaptation_strategy"/>
@@ -1005,7 +1005,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="342" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="25" isee:scroll_y="176" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1059,7 +1059,7 @@
 				</style>
 				<module x="482.428" y="179.723" name="GDP"/>
 				<module x="674.083" y="323.013" name="Government"/>
-				<module label_side="bottom" x="482.428" y="322.833" name="Circular Flow"/>
+				<module label_side="top" x="482.428" y="322.833" name="Circular Flow"/>
 				<module x="285.833" y="323.013" name="Finance"/>
 				<connector uid="1" isee:thickness="2" angle="350.667" isee:autocreated="true">
 					<from>GDP</from>
@@ -2443,7 +2443,7 @@ Assuming no one is migrating in 1980 b/c of SLR</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="562.5" isee:scroll_y="685" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="4" isee:page_rows="4" isee:scroll_x="517.5" isee:scroll_y="961.667" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -5222,7 +5222,7 @@ Fractional exposure levels to temperature for service related labour. Assumption
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>exploratory_loan_failure+total_non_exploratory_defaults+exploratory_loan_defaults_from_from_interest+actual_safe_investment_failure</eqn>
+				<eqn>exploratory_loan_failure+exploratory_loan_defaults_from_from_interest+actual_safe_investment_failure+non_exploratory_interest_rate_change_caused_defaults</eqn>
 				<units>b$/year</units>
 			</aux>
 			<aux name="max firing\npercentage">
@@ -5231,8 +5231,8 @@ Fractional exposure levels to temperature for service related labour. Assumption
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>0.0440130495610323</eqn>
-				<range min="0.03" max="0.1"/>
+				<eqn>0.4</eqn>
+				<range min="0.2" max="0.5"/>
 				<units>1/year</units>
 			</aux>
 			<aux name="today" access="input">
@@ -5305,13 +5305,6 @@ Fractional exposure levels to temperature for service related labour. Assumption
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/year</units>
 			</aux>
-			<aux name="total non exploratory defaults" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>b$/year</units>
-			</aux>
 			<aux name="actual safe\ninvestment failure" access="input">
 				<dimensions>
 					<dim name="Run"/>
@@ -5331,6 +5324,20 @@ Fractional exposure levels to temperature for service related labour. Assumption
 </doc>
 				<eqn>0.01</eqn>
 				<units>dmnl</units>
+			</aux>
+			<aux name="non exploratory interest rate change\ncaused defaults" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="share of employed fired">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>(employment_decline/Employed)*100</eqn>
+				<units>1/year</units>
 			</aux>
 		</variables>
 		<views>
@@ -5381,7 +5388,7 @@ Fractional exposure levels to temperature for service related labour. Assumption
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="6" isee:scroll_x="721.667" isee:scroll_y="911.667" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="6" isee:scroll_x="150" isee:scroll_y="828.333" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -6687,17 +6694,12 @@ furthermore. The structure that was previously decided on had the productivity g
 					<to>profit_firing_threshold</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" label_side="left" x="585.556" y="1124.26" name="exploratory loan\ndefaults from\nfrom interest"/>
-				<aux font_style="italic" font_weight="bold" label_side="left" x="585.556" y="1195.33" name="total non exploratory defaults"/>
-				<connector uid="283" angle="11.4822">
-					<from>total_non_exploratory_defaults</from>
-					<to>total_defaults</to>
-				</connector>
 				<connector uid="284" angle="352.618">
 					<from>exploratory_loan_defaults_from_from_interest</from>
 					<to>total_defaults</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" label_side="left" x="585.556" y="1230.75" name="actual safe\ninvestment failure"/>
-				<connector uid="285" angle="14.4288">
+				<aux font_style="italic" font_weight="bold" label_side="left" x="587.223" y="1201.58" name="actual safe\ninvestment failure"/>
+				<connector uid="285" angle="9.77505">
 					<from>actual_safe_investment_failure</from>
 					<to>total_defaults</to>
 				</connector>
@@ -6722,6 +6724,20 @@ furthermore. The structure that was previously decided on had the productivity g
 				<connector uid="290" angle="259.38">
 					<from>UNIT_percent</from>
 					<to>effect_of_climate_on_high_exposure_labour</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" label_side="left" x="587.223" y="1240.29" name="non exploratory interest rate change\ncaused defaults"/>
+				<connector uid="291" angle="24.0968">
+					<from>non_exploratory_interest_rate_change_caused_defaults</from>
+					<to>total_defaults</to>
+				</connector>
+				<aux x="987.5" y="1374.31" name="share of employed fired"/>
+				<connector uid="292" angle="248.203">
+					<from>employment_decline</from>
+					<to>share_of_employed_fired</to>
+				</connector>
+				<connector uid="293" angle="152.34">
+					<from>Employed</from>
+					<to>share_of_employed_fired</to>
 				</connector>
 				<alias color="blue" background="white" font_style="italic" label_side="left" uid="12" x="655.25" y="1050.17" width="18" height="18">
 					<shape type="circle" radius="18"/>
@@ -8160,7 +8176,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 				<non_negative/>
 				<units>b$/year</units>
 			</flow>
-			<aux name="non exploratory interest rate change\ncaused defaults">
+			<aux name="non exploratory interest rate change and stranded assets\ncaused defaults" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -8172,7 +8188,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>defaults
-+ non_exploratory_interest_rate_change_caused_defaults
++ non_exploratory_interest_rate_change_and_stranded_assets_caused_defaults
 - stranded_capital_related_defaults</eqn>
 				<units>b$/year</units>
 			</aux>
@@ -8625,7 +8641,7 @@ To control extreme policy only</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="7" isee:scroll_x="1323" isee:scroll_y="458" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="7" isee:scroll_x="659" isee:scroll_y="449" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -8945,7 +8961,7 @@ To control extreme policy only</doc>
 					<from>Investment_growth_rate</from>
 					<to>investment_and_GDP_growth_difference</to>
 				</connector>
-				<aux label_side="left" x="1308" y="912.752" name="effect of investment to\ngdp ratio on failure rate"/>
+				<aux label_side="left" label_angle="225" x="1308" y="912.752" name="effect of investment to\ngdp ratio on failure rate"/>
 				<connector uid="73" angle="334.744">
 					<from>investment_and_GDP_growth_difference</from>
 					<to>effect_of_investment_to_gdp_ratio_on_failure_rate</to>
@@ -9653,26 +9669,26 @@ To control extreme policy only</doc>
 					<from>default_rate_from_interest_rate_increase</from>
 					<to>bad_loan_defaults_from_from_interest</to>
 				</connector>
-				<aux x="1996.78" y="1074.67" name="non exploratory interest rate change\ncaused defaults"/>
+				<aux x="1996.78" y="1074.67" name="non exploratory interest rate change and stranded assets\ncaused defaults"/>
 				<connector uid="325" angle="307.257">
 					<from>good_loan_defaults_from_from_interest</from>
-					<to>non_exploratory_interest_rate_change_caused_defaults</to>
+					<to>non_exploratory_interest_rate_change_and_stranded_assets_caused_defaults</to>
 				</connector>
 				<connector uid="326" angle="286.169">
 					<from>safe_loan_defaults</from>
-					<to>non_exploratory_interest_rate_change_caused_defaults</to>
+					<to>non_exploratory_interest_rate_change_and_stranded_assets_caused_defaults</to>
 				</connector>
 				<connector uid="327" angle="249.564">
 					<from>safe_loans_for_financing_innovation_defaults_from_from_interest</from>
-					<to>non_exploratory_interest_rate_change_caused_defaults</to>
+					<to>non_exploratory_interest_rate_change_and_stranded_assets_caused_defaults</to>
 				</connector>
 				<connector uid="328" angle="350.472">
 					<from>bad_loan_defaults_from_from_interest</from>
-					<to>non_exploratory_interest_rate_change_caused_defaults</to>
+					<to>non_exploratory_interest_rate_change_and_stranded_assets_caused_defaults</to>
 				</connector>
 				<aux label_side="left" x="1807.57" y="1240.41" name="total non exploratory defaults"/>
 				<connector uid="330" angle="239.531">
-					<from>non_exploratory_interest_rate_change_caused_defaults</from>
+					<from>non_exploratory_interest_rate_change_and_stranded_assets_caused_defaults</from>
 					<to>total_non_exploratory_defaults</to>
 				</connector>
 				<stacked_container uid="332" x="1527.98" y="2515" width="631.451" height="417.5">
@@ -10550,7 +10566,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="25" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -12278,7 +12294,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="7" isee:page_rows="7" isee:scroll_x="877.5" isee:scroll_y="268.333" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="7" isee:page_rows="7" isee:scroll_x="740.833" isee:scroll_y="317.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -14217,7 +14233,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="618.333" isee:scroll_y="400" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="818" page_height="571" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="190" isee:scroll_y="423.333" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
