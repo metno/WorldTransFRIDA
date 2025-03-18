@@ -283,6 +283,8 @@
 				<connect2 to="GDP.private_investment" from="Circular_Flow.private_investment"/>
 				<connect to="GDP.public_investment" from="Government.public_investment"/>
 				<connect2 to="GDP.public_investment" from="Government.public_investment"/>
+				<connect to="GDP.start_year" from="Government_Regulations.start_year"/>
+				<connect2 to="GDP.start_year" from="Government_Regulations.start_year"/>
 				<connect to="GDP.worker_consumption" from="Circular_Flow.worker_consumption"/>
 				<connect2 to="GDP.worker_consumption" from="Circular_Flow.worker_consumption"/>
 			</module>
@@ -10449,6 +10451,49 @@ ELSE
 				<non_negative/>
 				<units>1/year</units>
 			</flow>
+			<aux name="start year" access="input">
+				<eqn>2</eqn>
+				<units>Year</units>
+			</aux>
+			<aux name="negative growth threshold">
+				<doc>${External Parameter}
+</doc>
+				<eqn>0</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="recession threshold time">
+				<doc>${External Parameter}
+</doc>
+				<eqn>.5</eqn>
+				<units>year</units>
+			</aux>
+			<aux name="future recession counter">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>PREVIOUS(SELF, 0) + 
+(current_recession_time_counter = 0 AND PREVIOUS(current_recession_time_counter, 0) &gt;= recession_threshold_time)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="current recession time counter">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF TIME &gt; start_year AND real_GDP_growth_rate &lt; negative_growth_threshold THEN
+PREVIOUS(SELF, 0) + DT
+ELSE 0</eqn>
+				<units>Year</units>
+			</aux>
+			<aux name="future time in recession">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF TIME &gt; start_year THEN 
+PREVIOUS(SELF, 0) + (real_GDP_growth_rate &lt; 0) * DT
+ELSE 
+0</eqn>
+				<units>Year</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -10498,7 +10543,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="210.833" isee:scroll_y="165.833" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -10748,22 +10793,22 @@ ELSE
 					<from>initial_real_GDP_growth_rate</from>
 					<to>real_GDP_growth_rate</to>
 				</connector>
-				<aux x="1190.29" y="355.429" name="average real gdp growth rate in calibration period"/>
-				<aux x="973.429" y="391.429" name="average nominal gdp growth rate in the calibration period"/>
-				<stock x="999.429" y="578.286" name="nominal gdp growth rate deviation\nfrom average in\ncalibration period summed"/>
-				<stock x="1347.86" y="589.286" name="real gdp growth rate deviation\nfrom average in\ncalibration period summed"/>
-				<flow label_side="bottom" x="822.965" y="582" name="accumulating nominal gdp growth rate deviation\nfrom average in\ncalibration period">
+				<aux x="1531.96" y="282.096" name="average real gdp growth rate in calibration period"/>
+				<aux x="1315.1" y="318.096" name="average nominal gdp growth rate in the calibration period"/>
+				<stock x="1341.1" y="504.953" name="nominal gdp growth rate deviation\nfrom average in\ncalibration period summed"/>
+				<stock x="1689.53" y="515.953" name="real gdp growth rate deviation\nfrom average in\ncalibration period summed"/>
+				<flow label_side="bottom" x="1164.63" y="508.667" name="accumulating nominal gdp growth rate deviation\nfrom average in\ncalibration period">
 					<pts>
-						<pt x="669" y="582"/>
-						<pt x="976.929" y="582"/>
+						<pt x="1010.67" y="508.667"/>
+						<pt x="1318.6" y="508.667"/>
 					</pts>
 				</flow>
-				<aux x="1296.29" y="451.429" name="real gdp calibration\ndata start year"/>
-				<aux x="829.286" y="457.143" name="nominal gdp calibration data start year"/>
-				<flow x="1199.4" y="589.286" name="accumulating real gdp growth rate deviation\nfrom average in\ncalibration period">
+				<aux x="1637.96" y="378.096" name="real gdp calibration\ndata start year"/>
+				<aux x="1170.95" y="383.81" name="nominal gdp calibration data start year"/>
+				<flow x="1541.06" y="515.953" name="accumulating real gdp growth rate deviation\nfrom average in\ncalibration period">
 					<pts>
-						<pt x="1073.43" y="589.286"/>
-						<pt x="1325.36" y="589.286"/>
+						<pt x="1415.1" y="515.953"/>
+						<pt x="1667.03" y="515.953"/>
 					</pts>
 				</flow>
 				<connector uid="67" angle="267.102">
@@ -10801,6 +10846,40 @@ ELSE
 						</plot>
 					</graph>
 				</stacked_container>
+				<aux font_style="italic" font_weight="bold" x="576.25" y="536.458" name="start year"/>
+				<aux x="862.25" y="458.875" name="negative growth threshold"/>
+				<aux x="959.25" y="567.5" name="recession threshold time"/>
+				<aux x="880.25" y="642.5" name="future recession counter"/>
+				<aux x="735.5" y="535.625" name="current recession time counter"/>
+				<connector uid="76" angle="0.299818">
+					<from>start_year</from>
+					<to>current_recession_time_counter</to>
+				</connector>
+				<connector uid="77" angle="211.196">
+					<from>negative_growth_threshold</from>
+					<to>current_recession_time_counter</to>
+				</connector>
+				<connector uid="78" angle="223.512">
+					<from>recession_threshold_time</from>
+					<to>future_recession_counter</to>
+				</connector>
+				<connector uid="79" angle="323.56">
+					<from>current_recession_time_counter</from>
+					<to>future_recession_counter</to>
+				</connector>
+				<aux x="623.333" y="633.208" name="future time in recession"/>
+				<connector uid="80" angle="351.359">
+					<from>real_GDP_growth_rate</from>
+					<to>current_recession_time_counter</to>
+				</connector>
+				<connector uid="81" angle="317.231">
+					<from>real_GDP_growth_rate</from>
+					<to>future_time_in_recession</to>
+				</connector>
+				<connector uid="82" angle="295.95">
+					<from>start_year</from>
+					<to>future_time_in_recession</to>
+				</connector>
 				<alias font_style="italic" label_side="top" uid="9" x="442.67" y="85" width="18" height="18">
 					<of>Nominal_GDP</of>
 				</alias>
@@ -10825,10 +10904,10 @@ ELSE
 				<alias font_style="italic" font_weight="bold" uid="52" x="401.714" y="1039.57" width="18" height="18">
 					<of>&quot;inflation_adjustment_b$_per_bc$&quot;</of>
 				</alias>
-				<alias font_style="italic" uid="72" x="729.429" y="502" width="18" height="18">
+				<alias font_style="italic" uid="72" x="1071.1" y="428.667" width="18" height="18">
 					<of>nominal_GDP_growth_rate</of>
 				</alias>
-				<alias font_style="italic" uid="73" x="1096.71" y="434" width="18" height="18">
+				<alias font_style="italic" uid="73" x="1438.38" y="360.667" width="18" height="18">
 					<of>real_GDP_growth_rate</of>
 				</alias>
 			</view>
