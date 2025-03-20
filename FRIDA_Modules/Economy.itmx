@@ -5,7 +5,7 @@
 		<name>Economy</name>
 		<uuid>656dacef-005e-41a3-aedc-d19f6fd6e9f6</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.8.1" isee:build_number="development" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.8" isee:build_number="3578" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -1011,7 +1011,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="193" isee:scroll_y="231" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="193" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -7865,20 +7865,6 @@ ELSE
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>1/year</units>
 			</aux>
-			<aux name="real GDP growth rate" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>dmnl/year</units>
-			</aux>
-			<aux name="nominal investment and\nreal GDP growth difference">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Investment_growth_rate-real_GDP_growth_rate</eqn>
-				<units>1/year</units>
-			</aux>
 			<aux name="Nominal GDP" access="input">
 				<dimensions>
 					<dim name="Run"/>
@@ -8487,6 +8473,8 @@ To control extreme policy only</doc>
 				<units>dmnl</units>
 			</aux>
 			<aux name="sensitivity of effect of safe default rate\non lending standards">
+				<doc>${Internal Calibration Parameter}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -8512,10 +8500,13 @@ To control extreme policy only</doc>
 				<units>dmnl</units>
 			</stock>
 			<aux name="normal rate of converting safe\nloans to safe loans for\nfinancing innovation">
+				<doc>${Internal Calibration Parameter}
+</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>0.03</eqn>
+				<range min="0.02" max="0.04"/>
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="rate of converting safe\nloans to safe loans for\nfinancing innovation">
@@ -8525,81 +8516,19 @@ To control extreme policy only</doc>
 				<eqn>normal_rate_of_converting_safe_loans_to_safe_loans_for_financing_innovation*Firms_Innovation_Orientation_2</eqn>
 				<units>dmnl/year</units>
 			</aux>
-			<stock name="Bank\nExploration\nOrientation 1">
+			<aux name="nominal investment and\nreal GDP growth difference">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>1</eqn>
-				<inflow>change_in_bank_exploration_orientation</inflow>
-				<units>dmnl</units>
-			</stock>
-			<flow name="change in bank\nexploration\norientation">
+				<eqn>Investment_growth_rate-real_GDP_growth_rate</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="real GDP growth rate" access="input">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(indicated_bank_exploration_orientation-Bank_Exploration_Orientation_1)/time_for_banks_to_adjust_exploration_orientation</eqn>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>dmnl/year</units>
-			</flow>
-			<aux name="indicated bank\nexploration orientation">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>reference_bank_exploration_orientation*effect_investment_and_GDP_difference_on_bank_exploration_1</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="time for banks to\nadjust exploration\norientation">
-				<doc>${Internal Calibration Parameter}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>3.00465422052076</eqn>
-				<range min="2" max="5"/>
-				<units>years</units>
-			</aux>
-			<aux name="effect investment\nand GDP difference\non bank exploration 1">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>1+ sensitivity_of_investment_and_GDP_difference_1 * (nominal_investment_and_real_GDP_growth_difference/INIT(nominal_investment_and_real_GDP_growth_difference) - 1)</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="reference bank\nexploration orientation">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>SMTH1(Bank_Exploration_Orientation_1, bank_reference_formation_time)</eqn>
-				<isee:delay_aux/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="sensitivity of investment\nand GDP difference 1">
-				<doc>${Assumption,Internal Calibration Parameter}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<element subscript="1">
-					<eqn>0.45</eqn>
-				</element>
-				<range min="0" max="3"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="normal exploration rate 1">
-				<doc>${Assumption}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>0.0369117820963221</eqn>
-				<range min="0.01" max="0.05"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="investment fraction to\nexploration 1">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>normal_exploration_rate_1*Bank_Exploration_Orientation_1</eqn>
-				<units>dmnl</units>
 			</aux>
 		</variables>
 		<views>
@@ -8650,7 +8579,7 @@ To control extreme policy only</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="9" isee:scroll_x="1852" isee:scroll_y="1768" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="9" isee:scroll_x="968" isee:scroll_y="2224" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -9336,18 +9265,6 @@ To control extreme policy only</doc>
 				<connector uid="253" angle="0">
 					<from>safe_interest</from>
 					<to>average_private_debt_safe_interest</to>
-				</connector>
-				<aux font_style="italic" font_weight="bold" x="646.179" y="959.429" name="real GDP growth rate"/>
-				<aux x="704.357" y="818" name="nominal investment and\nreal GDP growth difference"/>
-				<connector uid="259" angle="21.7413">
-					<from>
-						<alias uid="258"/>
-					</from>
-					<to>nominal_investment_and_real_GDP_growth_difference</to>
-				</connector>
-				<connector uid="260" angle="67.6398">
-					<from>real_GDP_growth_rate</from>
-					<to>nominal_investment_and_real_GDP_growth_difference</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="3265.36" y="1645" name="Nominal GDP"/>
 				<connector uid="262" angle="113.051">
@@ -10106,77 +10023,25 @@ SDG 10.5.1</text_box>
 					<from>rate_of_converting_safe_loans_to_safe_loans_for_financing_innovation</from>
 					<to>safe_loans_affected_innovation</to>
 				</connector>
-				<stock x="1025" y="452.5" name="Bank\nExploration\nOrientation 1"/>
-				<flow x="931.75" y="453.5" name="change in bank\nexploration\norientation">
-					<pts>
-						<pt x="849" y="453.5"/>
-						<pt x="1002.5" y="453.5"/>
-					</pts>
-				</flow>
-				<aux x="982" y="585.5" name="indicated bank\nexploration orientation"/>
-				<connector uid="590" angle="159.885">
-					<from>indicated_bank_exploration_orientation</from>
-					<to>change_in_bank_exploration_orientation</to>
-				</connector>
-				<aux x="881" y="361.5" name="time for banks to\nadjust exploration\norientation"/>
-				<connector uid="591" angle="310.156">
-					<from>time_for_banks_to_adjust_exploration_orientation</from>
-					<to>change_in_bank_exploration_orientation</to>
-				</connector>
-				<aux x="889" y="689.5" name="effect investment\nand GDP difference\non bank exploration 1"/>
-				<connector uid="593" angle="246.161">
-					<from>Bank_Exploration_Orientation_1</from>
-					<to>change_in_bank_exploration_orientation</to>
-				</connector>
-				<aux x="1126" y="515.5" name="reference bank\nexploration orientation"/>
-				<connector uid="599" angle="348.355">
-					<from>Bank_Exploration_Orientation_1</from>
-					<to>reference_bank_exploration_orientation</to>
-				</connector>
-				<connector uid="601" angle="231.912">
-					<from>reference_bank_exploration_orientation</from>
-					<to>indicated_bank_exploration_orientation</to>
-				</connector>
-				<connector uid="603" angle="277.402">
-					<from>
-						<alias uid="602"/>
-					</from>
-					<to>reference_bank_exploration_orientation</to>
-				</connector>
-				<connector uid="604" angle="0">
-					<from>
-						<alias uid="605"/>
-					</from>
-					<to>effect_investment_and_GDP_difference_on_bank_exploration</to>
-				</connector>
-				<connector uid="606" angle="33.1924">
-					<from>nominal_investment_and_real_GDP_growth_difference</from>
-					<to>effect_investment_and_GDP_difference_on_bank_exploration_1</to>
-				</connector>
-				<aux label_side="top" x="673" y="699.73" name="sensitivity of investment\nand GDP difference 1"/>
-				<connector uid="607" angle="2.71157">
-					<from>sensitivity_of_investment_and_GDP_difference_1</from>
-					<to>effect_investment_and_GDP_difference_on_bank_exploration_1</to>
-				</connector>
-				<connector uid="608" angle="48.1959">
-					<from>effect_investment_and_GDP_difference_on_bank_exploration_1</from>
-					<to>indicated_bank_exploration_orientation</to>
-				</connector>
-				<aux label_side="right" x="1514.07" y="1022" name="normal exploration rate 1"/>
-				<aux label_side="right" x="1438.29" y="1072.5" name="investment fraction to\nexploration 1"/>
-				<connector uid="609" angle="213.68">
-					<from>normal_exploration_rate_1</from>
-					<to>investment_fraction_to_exploration_1</to>
-				</connector>
-				<connector uid="610" angle="307.694">
-					<from>
-						<alias uid="611"/>
-					</from>
-					<to>investment_fraction_to_exploration_1</to>
-				</connector>
 				<connector uid="613" angle="302.559">
 					<from>investment_fraction_to_exploration</from>
 					<to>exploratory_bank_investment</to>
+				</connector>
+				<aux x="684.357" y="1132.88" name="nominal investment and\nreal GDP growth difference"/>
+				<connector uid="604" angle="0">
+					<from>nominal_investment_and_real_GDP_growth_difference</from>
+					<to>effect_investment_and_GDP_difference_on_bank_exploration</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="584.179" y="1082.43" name="real GDP growth rate"/>
+				<connector uid="260" angle="333.27">
+					<from>real_GDP_growth_rate</from>
+					<to>nominal_investment_and_real_GDP_growth_difference</to>
+				</connector>
+				<connector uid="259" angle="13.5874">
+					<from>
+						<alias uid="258"/>
+					</from>
+					<to>nominal_investment_and_real_GDP_growth_difference</to>
 				</connector>
 				<alias label_side="right" uid="27" x="2212.67" y="2150.55" width="18" height="18">
 					<of>loan_maturation_time</of>
@@ -10225,9 +10090,6 @@ SDG 10.5.1</text_box>
 				</alias>
 				<alias font_style="italic" label_side="top" uid="244" x="3186" y="1506" width="18" height="18">
 					<of>Bank_Assets</of>
-				</alias>
-				<alias font_style="italic" uid="258" x="536.75" y="872.25" width="18" height="18">
-					<of>Investment_growth_rate</of>
 				</alias>
 				<alias font_style="italic" uid="270" x="2423.49" y="3080.21" width="18" height="18">
 					<of>average_time_private_refinances_debt</of>
@@ -10290,14 +10152,8 @@ SDG 10.5.1</text_box>
 				<alias font_style="italic" uid="556" x="1901.1" y="2776" width="18" height="18">
 					<of>private_safe_bank_assets</of>
 				</alias>
-				<alias font_style="italic" uid="602" x="1175" y="394" width="18" height="18">
-					<of>bank_reference_formation_time</of>
-				</alias>
-				<alias font_style="italic" uid="605" x="682" y="1123.88" width="18" height="18">
-					<of>nominal_investment_and_real_GDP_growth_difference</of>
-				</alias>
-				<alias font_style="italic" uid="611" x="1360.5" y="997.5" width="45" height="35">
-					<of>Bank_Exploration_Orientation_1</of>
+				<alias font_style="italic" uid="258" x="570.389" y="1149.25" width="18" height="18">
+					<of>Investment_growth_rate</of>
 				</alias>
 			</view>
 		</views>
@@ -15023,7 +14879,7 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
