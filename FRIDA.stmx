@@ -5,7 +5,7 @@
 		<name>FRIDA</name>
 		<uuid>fe807591-4e3d-4e2c-b464-70ec4fb12094</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.8.1" isee:build_number="development" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.8" isee:build_number="3578" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -92,7 +92,7 @@
 			<isee:variable starting_value="1" ending_value="100" type="incremental" min="1" max="100" seed="12345" name="Climate_Units.selected_climate_case[1]" num_samples="100"/>
 		</isee:sensi_specs>
 	</isee:sensi_specs_list>
-	<isee:optimizer_specs_list active_index="13">
+	<isee:optimizer_specs_list active_index="7">
 		<isee:optimizer_specs name="Demographics Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
 			<isee:parameter name="Demographics.infant_mortality_alpha[1]" scaling="100000"/>
 			<isee:parameter name="Demographics.infant_mortality_gamma[1]" scaling="100000"/>
@@ -114,6 +114,7 @@
 			<isee:parameter name="Demographics.sensitivity_of_fertility_to_literacy[1]" scaling="1000"/>
 			<isee:parameter name="Demographics.initial_fertility[1]" scaling="100"/>
 			<isee:parameter name="Demographics.time_to_change_fertility[1]" scaling="100"/>
+			<isee:parameter name="Demographics.initial_average_relative_nominal_gdp_per_person[1]" scaling="100"/>
 			<isee:payoff name="Population Payoff" action="min"/>
 		</isee:optimizer_specs>
 		<isee:optimizer_specs name="Emissions Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
@@ -141,13 +142,10 @@
 			<isee:parameter name="Emissions.rate_of_change_in_energy_related_CH4_emissions[1, *]" scaling="1000"/>
 			<isee:payoff name="Emissions Payoff" action="min"/>
 		</isee:optimizer_specs>
-		<isee:optimizer_specs name="Fertility calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0">
-			<isee:parameter name="Demographics.initial_fertility[1]"/>
-			<isee:parameter name="Demographics.effect_of_GDP_on_female_population_literacy_percentage_scale_factor[1]"/>
-			<isee:parameter name="Demographics.effect_of_GDP_on_female_population_literacy_percentage_constant[1]"/>
-			<isee:parameter name="Demographics.sensitivity_of_fertility_to_inverse_GDP_per_person[1]"/>
-			<isee:parameter name="Demographics.sensitivity_of_fertility_to_literacy[1]"/>
-			<isee:payoff name="Fertility payoff" action="min"/>
+		<isee:optimizer_specs name="Literacy calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0">
+			<isee:parameter name="Demographics.effect_of_GDP_on_female_population_literacy_percentage_constant[1]" scaling="10"/>
+			<isee:parameter name="Demographics.effect_of_GDP_on_female_population_literacy_percentage_scale_factor[1]" scaling="10"/>
+			<isee:payoff name="Literacy Payoff" action="min"/>
 		</isee:optimizer_specs>
 		<isee:optimizer_specs name="Behavioral Change Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
 			<isee:parameter name="Animal_Products_Demand.sensitivity_of_demand_to_relative_scarcity[1]" scaling="10"/>
@@ -620,105 +618,105 @@
 	</isee:optimizer_specs_list>
 	<isee:payoff_specs_list>
 		<isee:payoff_specs name="Population Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Demographics.Population[1]" weight="0.00147828" compare_name="Demographics.Population[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_0_years[1]" weight="0.0940328" compare_name="Demographics.Aged_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_1_to_20_years[1]" weight="0.00273537" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_20_to_40_years[1]" weight="0.00824828" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_40_to_60_years[1]" weight="0.00591287" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_60_to_65_years[1]" weight="0.222644" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_Over_75_years[1]" weight="0.0251136" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_0_years[1]" weight="2.8538" compare_name="Demographics.deaths_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_1_to_20_years[1]" weight="3.80465" compare_name="Demographics.deaths_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_20_to_40_years[1]" weight="31.409" compare_name="Demographics.deaths_20_to_40_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_40_to_60_years[1]" weight="4.00081" compare_name="Demographics.deaths_40_to_60_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_60_to_65_years[1]" weight="8.54106" compare_name="Demographics.deaths_60_to_65_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_Over_75_years[1]" weight="1.59457" compare_name="Demographics.deaths_Over_75_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Births[1]" weight="0.0945511" compare_name="Demographics.Births[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.total_deaths[1]" weight="0.119976" compare_name="Demographics.total_deaths[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.female_population_literacy_percentage[1]" weight="0.0518425">
+			<isee:payoff_element name="Demographics.Population[1]" weight="0.0070583971166533" compare_name="Demographics.Population[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_0_years[1]" weight="0.108907040854157" compare_name="Demographics.Aged_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_1_to_20_years[1]" weight="0.00201796654834666" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_20_to_40_years[1]" weight="0.00387721439483182" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_40_to_60_years[1]" weight="0.00376236988199209" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_60_to_65_years[1]" weight="0.169422867610727" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_Over_75_years[1]" weight="0.204331433003298" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_0_years[1]" weight="47.9975591626885" compare_name="Demographics.deaths_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_1_to_20_years[1]" weight="59.1575392523421" compare_name="Demographics.deaths_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_20_to_40_years[1]" weight="55.6235574458565" compare_name="Demographics.deaths_20_to_40_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_40_to_60_years[1]" weight="5.48275734641781" compare_name="Demographics.deaths_40_to_60_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_60_to_65_years[1]" weight="22.0888866051027" compare_name="Demographics.deaths_60_to_65_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_Over_75_years[1]" weight="1.21562797035461" compare_name="Demographics.deaths_Over_75_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Births[1]" weight="0.107469348066457" compare_name="Demographics.Births[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.total_deaths[1]" weight="0.244811782464994" compare_name="Demographics.total_deaths[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.female_population_literacy_percentage[1]" weight="0.6815073073229">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Demographics.Aged_65_to_75_years[1]" weight="0.124604">
+			<isee:payoff_element name="Demographics.Aged_65_to_75_years[1]" weight="0.0965063078985592">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Demographics.deaths_65_to_75_years[1]" weight="3.65171">
+			<isee:payoff_element name="Demographics.deaths_65_to_75_years[1]" weight="4.41856060981626">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Land Use and Agriculture Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Land_Use.Forest_Land[1]" weight="0.0234217343966008">
+			<isee:payoff_element name="Land_Use.Forest_Land[1]" weight="0.0269473224958723">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Crop.crop_production[1]" weight="0.00000798329804531585">
+			<isee:payoff_element name="Crop.crop_production[1]" weight="0.00000808073292759067">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Land_Use.Cropland[1]" weight="0.00602223149781989">
+			<isee:payoff_element name="Land_Use.Cropland[1]" weight="0.00596232897691694">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Freshwater.total_water_withdrawal[1]" weight="1.38433971780071e-22">
+			<isee:payoff_element name="Freshwater.total_water_withdrawal[1]" weight="1.15955904098345e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Animal_Products.animal_products_production[1]" weight="0.00272005831405983">
+			<isee:payoff_element name="Animal_Products.animal_products_production[1]" weight="0.00259335215104447">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Freshwater.fraction_of_water_withdrawal_for_agriculture[1]" weight="9232141.65293962">
+			<isee:payoff_element name="Freshwater.fraction_of_water_withdrawal_for_agriculture[1]" weight="226460.802467309">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Freshwater.available_water_supply[1]" weight="3.40700597910169e-23">
+			<isee:payoff_element name="Freshwater.available_water_supply[1]" weight="3.2880620522266e-23">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Land_Nutrients.man_made_fertilizer_use[1]" weight="0.0799080725395791">
+			<isee:payoff_element name="Land_Nutrients.man_made_fertilizer_use[1]" weight="0.0783634607379866">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Land_Nutrients.manure_fertilizer_use[1]" weight="1.65297200913761">
+			<isee:payoff_element name="Land_Nutrients.manure_fertilizer_use[1]" weight="1.68198745136668">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Land_Nutrients.fertilizer_use[1]" weight="0.0616005345684356">
+			<isee:payoff_element name="Land_Nutrients.fertilizer_use[1]" weight="0.060845393750153">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Freshwater.irrigated_cropland[1]" weight="0.0152294368333011">
+			<isee:payoff_element name="Freshwater.irrigated_cropland[1]" weight="0.0145706784551317">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Animal_Products.aquatic_animal_product_share[1]" weight="338688.455319294">
+			<isee:payoff_element name="Animal_Products.aquatic_animal_product_share[1]" weight="341480.210382957">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Sea_Level.Sea_level_anomaly_from_LWS[1]" weight="416793.53093044">
+			<isee:payoff_element name="Sea_Level.Sea_level_anomaly_from_LWS[1]" weight="415083.254360689">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Sea_Level.Land_water_storage_from_water_impoundment[1]" weight="8.4430698378297e-24">
+			<isee:payoff_element name="Sea_Level.Land_water_storage_from_water_impoundment[1]" weight="8.52930947902548e-24">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.Crops_used_for_Seed_or_Lost[1]" weight="0.000156176406974102">
+			<isee:payoff_element name="Food_Demand.Crops_used_for_Seed_or_Lost[1]" weight="0.000165415347666577">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.crop_demand_for_food[1]" weight="0.000283035518986752">
+			<isee:payoff_element name="Food_Demand.crop_demand_for_food[1]" weight="0.000235230141700862">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.feed_production[1]" weight="0.000193793752103848">
+			<isee:payoff_element name="Food_Demand.feed_production[1]" weight="0.00016945864598343">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.animal_products_demand[1]" weight="0.00707838217118727">
+			<isee:payoff_element name="Food_Demand.animal_products_demand[1]" weight="0.00580172774530315">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Emissions.CO2_Emissions_from_Food_and_Land_Use[1]" weight="0.00000144422127262909">
+			<isee:payoff_element name="Emissions.CO2_Emissions_from_Food_and_Land_Use[1]" weight="0.00000166287795392331">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Emissions.land_carbon_sink[1]" weight="1.72177067409644">
+			<isee:payoff_element name="Emissions.land_carbon_sink[1]" weight="1.72580503131431">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Terrestrial_Carbon_Balance.deforestation_carbon_loss[1]" weight="29.2817117458186">
+			<isee:payoff_element name="Terrestrial_Carbon_Balance.deforestation_carbon_loss[1]" weight="32.0902006413667">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Terrestrial_Carbon_Balance.forest_regrowth_carbon_uptake[1]" weight="3941.2362926776">
+			<isee:payoff_element name="Terrestrial_Carbon_Balance.forest_regrowth_carbon_uptake[1]" weight="3754.14202700062">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Terrestrial_Carbon_Balance.Terrestrial_carbon_balance[1]" weight="1.57002376195257">
+			<isee:payoff_element name="Terrestrial_Carbon_Balance.Terrestrial_carbon_balance[1]" weight="1.59939309634099">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Crop.cropland_net_primary_production[1]" weight="46.1886088522571">
+			<isee:payoff_element name="Crop.cropland_net_primary_production[1]" weight="52.9485968422659">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Terrestrial_Carbon_Balance.Terrestrial_net_primary_production[1]" weight="1916.02282532031">
+			<isee:payoff_element name="Terrestrial_Carbon_Balance.Terrestrial_net_primary_production[1]" weight="18966.7276772362">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
@@ -775,34 +773,31 @@
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
-		<isee:payoff_specs name="Fertility payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Demographics.fertility[1]" weight="130.374">
-				<isee:time_range type="terminal_value"/>
-			</isee:payoff_element>
-			<isee:payoff_element name="Demographics.female_population_literacy_percentage[1]" weight="0.0606899">
+		<isee:payoff_specs name="Literacy Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
+			<isee:payoff_element name="Demographics.female_population_literacy_percentage[1]" weight="0.681507307321808">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Behavioral Change Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Animal_Products.animal_products_production[1]" weight="0.00191110654824372">
+			<isee:payoff_element name="Animal_Products.animal_products_production[1]" weight="0.00165447641001053">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Animal_Products_Demand.average_daily_demand_per_capita[1]" weight="0.0149820042556298">
+			<isee:payoff_element name="Animal_Products_Demand.average_daily_demand_per_capita[1]" weight="0.0134399158055494">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Crop.crop_production[1]" weight="0.00000804744177011731">
+			<isee:payoff_element name="Crop.crop_production[1]" weight="0.00000857869895702062">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.vegetal_product_demand_per_person_per_day[1]" weight="0.00126746311784169">
+			<isee:payoff_element name="Food_Demand.vegetal_product_demand_per_person_per_day[1]" weight="0.00126388114800984">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.direct_food_demand_per_person_per_day[1]" weight="0.00123810866547508">
+			<isee:payoff_element name="Food_Demand.direct_food_demand_per_person_per_day[1]" weight="0.00127338918344404">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.crop_demand_for_food[1]" weight="0.000270604461196859">
+			<isee:payoff_element name="Food_Demand.crop_demand_for_food[1]" weight="0.000292967241541727">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.animal_products_demand[1]" weight="0.00277227455419599">
+			<isee:payoff_element name="Food_Demand.animal_products_demand[1]" weight="0.00230167205157478">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
