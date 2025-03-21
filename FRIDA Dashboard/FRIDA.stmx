@@ -18,6 +18,8 @@
 			<elem name="insufficient"/>
 			<elem name="well_protected"/>
 		</dim>
+		<dim name="ColdMortalityImpactCase" size="11"/>
+		<dim name="CropImpactsCase" size="11"/>
 		<dim name="EnergySource">
 			<elem name="Coal_fuel_extraction"/>
 			<elem name="Coal_energy_conversion"/>
@@ -31,6 +33,9 @@
 			<elem name="Solar"/>
 			<elem name="Wind"/>
 		</dim>
+		<dim name="EnergySupplyHydroDamage" size="11"/>
+		<dim name="EnergySupplyThermoDamage" size="11"/>
+		<dim name="ExtremesExposureImpactCase" size="11"/>
 		<dim name="FossilFuelTypes">
 			<elem name="Gas"/>
 			<elem name="Oil"/>
@@ -39,6 +44,7 @@
 		<dim name="Future_Decades" size="9"/>
 		<dim name="Historical_5yr_time_steps" size="9"/>
 		<dim name="Historical_Decades" size="4"/>
+		<dim name="HotMortalityImpactCase" size="11"/>
 		<dim name="labouExposureLevel">
 			<elem name="No_Exposure"/>
 			<elem name="Low_Exposure"/>
@@ -84,14 +90,14 @@
 	<isee:number_format_extenders/>
 	<default_format scale_by="1"/>
 	<data>
-		<import isee:overwrite="false" isee:timevarying="true" resource="r../Data/frida_input_data.csv"/>
+		<import isee:overwrite="false" isee:timevarying="true" resource="/Users/bschoenberg/code/WorldTrans/Frida/Data/frida_input_data.csv"/>
 	</data>
 	<isee:sensi_specs_list active_index="0">
 		<isee:sensi_specs name="Climate Sensitivity" method="grid">
 			<isee:variable starting_value="1" ending_value="100" type="incremental" min="1" max="100" seed="12345" name="Climate_Units.selected_climate_case[1]" num_samples="100"/>
 		</isee:sensi_specs>
 	</isee:sensi_specs_list>
-	<isee:optimizer_specs_list active_index="3">
+	<isee:optimizer_specs_list active_index="7">
 		<isee:optimizer_specs name="Demographics Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
 			<isee:parameter name="Demographics.infant_mortality_alpha[1]" scaling="100000"/>
 			<isee:parameter name="Demographics.infant_mortality_gamma[1]" scaling="100000"/>
@@ -113,6 +119,7 @@
 			<isee:parameter name="Demographics.sensitivity_of_fertility_to_literacy[1]" scaling="1000"/>
 			<isee:parameter name="Demographics.initial_fertility[1]" scaling="100"/>
 			<isee:parameter name="Demographics.time_to_change_fertility[1]" scaling="100"/>
+			<isee:parameter name="Demographics.initial_average_relative_nominal_gdp_per_person[1]" scaling="100"/>
 			<isee:payoff name="Population Payoff" action="min"/>
 		</isee:optimizer_specs>
 		<isee:optimizer_specs name="Emissions Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
@@ -140,13 +147,10 @@
 			<isee:parameter name="Emissions.rate_of_change_in_energy_related_CH4_emissions[1, *]" scaling="1000"/>
 			<isee:payoff name="Emissions Payoff" action="min"/>
 		</isee:optimizer_specs>
-		<isee:optimizer_specs name="Fertility calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0">
-			<isee:parameter name="Demographics.initial_fertility[1]"/>
-			<isee:parameter name="Demographics.effect_of_GDP_on_female_population_literacy_percentage_scale_factor[1]"/>
-			<isee:parameter name="Demographics.effect_of_GDP_on_female_population_literacy_percentage_constant[1]"/>
-			<isee:parameter name="Demographics.sensitivity_of_fertility_to_inverse_GDP_per_person[1]"/>
-			<isee:parameter name="Demographics.sensitivity_of_fertility_to_literacy[1]"/>
-			<isee:payoff name="Fertility payoff" action="min"/>
+		<isee:optimizer_specs name="Literacy calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0">
+			<isee:parameter name="Demographics.effect_of_GDP_on_female_population_literacy_percentage_constant[1]" scaling="10"/>
+			<isee:parameter name="Demographics.effect_of_GDP_on_female_population_literacy_percentage_scale_factor[1]" scaling="10"/>
+			<isee:payoff name="Literacy Payoff" action="min"/>
 		</isee:optimizer_specs>
 		<isee:optimizer_specs name="Behavioral Change Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
 			<isee:parameter name="Animal_Products_Demand.sensitivity_of_demand_to_relative_scarcity[1]" scaling="10"/>
@@ -329,14 +333,12 @@
 			<isee:parameter name="Circular_Flow.time_to_reach_savings_goal[1]" scaling="10"/>
 			<isee:parameter name="Circular_Flow.desired_savings_as_multiple_of_wages[1]" scaling="10"/>
 			<isee:parameter name="Circular_Flow.time_to_pay_out_profits[1]" scaling="10"/>
-			<isee:parameter name="Government.GDP_perception_time[1]" scaling="10"/>
 			<isee:parameter name="Finance.initial_risk_premium[1]" scaling="100"/>
 			<isee:parameter name="Finance.loan_maturation_time[1]"/>
 			<isee:parameter name="Finance.elasticity_of_desired_bank_growth_rate_to_changes_in_lending_standards[1]" scaling="10"/>
 			<isee:parameter name="Finance.time_to_change_lending_standards[1]" scaling="10"/>
 			<isee:parameter name="Finance.max_change_in_lending_standards[1]" scaling="100"/>
 			<isee:parameter name="Finance.reporting_delay[1]" scaling="100"/>
-			<isee:parameter name="Finance.bank_expectation_formation_time[1]"/>
 			<isee:parameter name="Finance.normal_failure_rate[1]" scaling="100"/>
 			<isee:parameter name="Finance.max_change_in_failure_rate[1]" scaling="100"/>
 			<isee:parameter name="Finance.elasticity_of_bankruptcy_rate_on_risk_premium[1]" scaling="10"/>
@@ -346,14 +348,10 @@
 			<isee:parameter name="Employment.max_change_in_fractional_wage_growth[1]" scaling="1000"/>
 			<isee:parameter name="Employment.hiring_to_investment_ratio[1]" scaling="1000"/>
 			<isee:parameter name="Employment.labour_force_participation_fixed[1]" scaling="100"/>
-			<isee:parameter name="Finance.max_change_in_bank_investment_as_fraction_of_normal[1]" scaling="10"/>
 			<isee:parameter name="Inflation.initial_inflation_index[1]" scaling="100"/>
 			<isee:parameter name="Employment.initial_unemployment_rate[1]" scaling="100"/>
 			<isee:parameter name="Inflation.initial_inflation_rate[1]" scaling="1000"/>
 			<isee:parameter name="Government.initial_safe_interest[1]" scaling="1000"/>
-			<isee:parameter name="Innovation.sensitivity_of_innovation_decrease_to_cash_growth[1]" scaling="100"/>
-			<isee:parameter name="Innovation.sensitivity_of_firms_innovation_orientation_to_cash_deceleration[1]" scaling="100"/>
-			<isee:parameter name="Innovation.normal_time_to_decrease_innovation_orientation[1]" scaling="100"/>
 			<isee:parameter name="Finance.time_for_safe_loans_that_will_fail_to_actually_fail[1]"/>
 			<isee:parameter name="Employment.threshold_unemployment_rate[1]" scaling="100"/>
 			<isee:parameter name="Employment.Initial_Wage_Rate[1]" scaling="0.001"/>
@@ -362,7 +360,6 @@
 			<isee:parameter name="Inflation.agriculture_share_of_GDP_starting_point_determinant[1]" scaling="10"/>
 			<isee:parameter name="Inflation.agriculture_share_of_GDP_slope[1]" scaling="10"/>
 			<isee:parameter name="Employment.sensitivity_of_hiring_to_unemployment_rate[1]"/>
-			<isee:parameter name="Employment.max_firing_percentage[1]" scaling="100"/>
 			<isee:parameter name="Inflation.deflation_adjustment_time[1]"/>
 			<isee:parameter name="Finance.initial_bank_investment_growth_rate[1]" scaling="100"/>
 			<isee:parameter name="Government.averaging_time_to_adjust_tax_based_on_income[1]" scaling="100"/>
@@ -370,7 +367,6 @@
 			<isee:parameter name="Government.sensitivity_of_STA_on_public_consumption[1]" scaling="100"/>
 			<isee:parameter name="Finance.sensitivity_of_effect_of_sta_on_failure_rate[1]" scaling="100"/>
 			<isee:parameter name="GDP.initial_real_GDP_growth_rate[1]" scaling="100"/>
-			<isee:parameter name="Finance.strength_of_effect_of_recent_GDP_growth_on_lending_standards[1]" scaling="100"/>
 			<isee:parameter name="Finance.reporting_delay[1]" scaling="100"/>
 			<isee:parameter name="Circular_Flow.yfrom[1]" scaling="100"/>
 			<isee:parameter name="Circular_Flow.yto[1]" scaling="100"/>
@@ -381,6 +377,36 @@
 			<isee:parameter name="Circular_Flow.normal_bottom_40_wages[1]" scaling="1000"/>
 			<isee:parameter name="Circular_Flow.time_for_bottom_40_to_be_affected[1]"/>
 			<isee:parameter name="Employment.initial_productivity_growth[1]" scaling="100"/>
+			<isee:parameter name="Finance.equity_ratio_gap_effect_below_exponent[1]" scaling="10"/>
+			<isee:parameter name="Finance.equity_gap_below_max_effect[1]" scaling="10"/>
+			<isee:parameter name="Finance.equity_gap_effect_max_x_magnitude[1]" scaling="1000"/>
+			<isee:parameter name="Finance.equity_ratio_gap_effect_above_exponent[1]" scaling="10"/>
+			<isee:parameter name="Finance.equity_gap_above_min_effect[1]" scaling="10"/>
+			<isee:parameter name="Finance.effect_of_lending_standards_on_failure_rate_curvature[1]" scaling="10"/>
+			<isee:parameter name="Finance.effect_of_lending_standards_on_failure_rate_range[1]" scaling="10"/>
+			<isee:parameter name="Finance.effect_of_default_rate_on_lending_standards_curvature[1]" scaling="10"/>
+			<isee:parameter name="Finance.effect_of_default_rate_on_lending_standards_range[1]" scaling="10"/>
+			<isee:parameter name="Inflation.inflation_adjustment_time[1]" scaling="10"/>
+			<isee:parameter name="Inflation.weight_of_marginal_energy_cost_inflation[1]" scaling="10"/>
+			<isee:parameter name="Finance.normal_exploration_rate[1]" scaling="100"/>
+			<isee:parameter name="Finance.exploration_effect_midpoint[1]" scaling="100"/>
+			<isee:parameter name="Finance.sensitivity_of_exploratory_loan_failure_to_GDP_growth[1]" scaling="100"/>
+			<isee:parameter name="Finance.scale_of_exploratory_loan_failure[1]" scaling="100"/>
+			<isee:parameter name="Inflation.weight_of_irrigation_water_used_per_unit_of_crop_production_inflation_contribution[1]" scaling="100"/>
+			<isee:parameter name="Inflation.weight_of_fertilizer_used_per_unit_of_crop_production[1]" scaling="100"/>
+			<isee:parameter name="Inflation.weight_of_cropland_inflation_contribution[1]" scaling="100"/>
+			<isee:parameter name="Inflation.weight_of_grazing_land_inflation_contribution[1]" scaling="100"/>
+			<isee:parameter name="Finance.sensitivity_of_effect_of_safe_default_rate_on_lending_standards[1]" scaling="100"/>
+			<isee:parameter name="Finance.safe_asset_default_rate_threshold[1]" scaling="1000"/>
+			<isee:parameter name="Finance.sensitivity_of_effect_of_stranded_energy_capital_on_other_assets[1]" scaling="100"/>
+			<isee:parameter name="Innovation.sensitivity_of_effect_of_cash_reserve_growth_rate_on_firms_innovation_orientation[1]" scaling="100"/>
+			<isee:parameter name="Innovation.firms_reference_formation_time[1]"/>
+			<isee:parameter name="Innovation.time_for_firms_to_adjust_innovation_orientation[1]" scaling="100"/>
+			<isee:parameter name="Innovation.reference_cash_reserve_growth_rate[1]" scaling="1000"/>
+			<isee:parameter name="Finance.bank_reference_formation_time[1]"/>
+			<isee:parameter name="Government.baseline_interest[1]" scaling="100"/>
+			<isee:parameter name="Government.inflation_weight[1]" scaling="1000"/>
+			<isee:parameter name="Government.unemployment_weight[1]" scaling="1000"/>
 			<isee:payoff name="Economic Payoff" action="min"/>
 		</isee:optimizer_specs>
 		<isee:optimizer_specs name="Employment Sector Shares" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0">
@@ -472,14 +498,12 @@
 			<isee:parameter name="Circular_Flow.time_to_reach_savings_goal[1]" scaling="10"/>
 			<isee:parameter name="Circular_Flow.desired_savings_as_multiple_of_wages[1]" scaling="10"/>
 			<isee:parameter name="Circular_Flow.time_to_pay_out_profits[1]" scaling="10"/>
-			<isee:parameter name="Government.GDP_perception_time[1]" scaling="10"/>
 			<isee:parameter name="Finance.initial_risk_premium[1]" scaling="100"/>
 			<isee:parameter name="Finance.loan_maturation_time[1]"/>
 			<isee:parameter name="Finance.elasticity_of_desired_bank_growth_rate_to_changes_in_lending_standards[1]" scaling="10"/>
 			<isee:parameter name="Finance.time_to_change_lending_standards[1]" scaling="10"/>
 			<isee:parameter name="Finance.max_change_in_lending_standards[1]" scaling="100"/>
 			<isee:parameter name="Finance.reporting_delay[1]" scaling="100"/>
-			<isee:parameter name="Finance.bank_expectation_formation_time[1]"/>
 			<isee:parameter name="Finance.normal_failure_rate[1]" scaling="100"/>
 			<isee:parameter name="Finance.max_change_in_failure_rate[1]" scaling="100"/>
 			<isee:parameter name="Finance.elasticity_of_bankruptcy_rate_on_risk_premium[1]" scaling="10"/>
@@ -489,14 +513,10 @@
 			<isee:parameter name="Employment.max_change_in_fractional_wage_growth[1]" scaling="1000"/>
 			<isee:parameter name="Employment.hiring_to_investment_ratio[1]" scaling="1000"/>
 			<isee:parameter name="Employment.labour_force_participation_fixed[1]" scaling="100"/>
-			<isee:parameter name="Finance.max_change_in_bank_investment_as_fraction_of_normal[1]" scaling="10"/>
 			<isee:parameter name="Inflation.initial_inflation_index[1]" scaling="100"/>
 			<isee:parameter name="Employment.initial_unemployment_rate[1]" scaling="100"/>
 			<isee:parameter name="Inflation.initial_inflation_rate[1]" scaling="1000"/>
 			<isee:parameter name="Government.initial_safe_interest[1]" scaling="1000"/>
-			<isee:parameter name="Innovation.sensitivity_of_innovation_decrease_to_cash_growth[1]" scaling="100"/>
-			<isee:parameter name="Innovation.sensitivity_of_firms_innovation_orientation_to_cash_deceleration[1]" scaling="100"/>
-			<isee:parameter name="Innovation.normal_time_to_decrease_innovation_orientation[1]" scaling="100"/>
 			<isee:parameter name="Finance.time_for_safe_loans_that_will_fail_to_actually_fail[1]"/>
 			<isee:parameter name="Employment.threshold_unemployment_rate[1]" scaling="100"/>
 			<isee:parameter name="Employment.Initial_Wage_Rate[1]" scaling="0.001"/>
@@ -505,7 +525,6 @@
 			<isee:parameter name="Inflation.agriculture_share_of_GDP_starting_point_determinant[1]" scaling="10"/>
 			<isee:parameter name="Inflation.agriculture_share_of_GDP_slope[1]" scaling="10"/>
 			<isee:parameter name="Employment.sensitivity_of_hiring_to_unemployment_rate[1]"/>
-			<isee:parameter name="Employment.max_firing_percentage[1]" scaling="100"/>
 			<isee:parameter name="Inflation.deflation_adjustment_time[1]"/>
 			<isee:parameter name="Finance.initial_bank_investment_growth_rate[1]" scaling="100"/>
 			<isee:parameter name="Government.averaging_time_to_adjust_tax_based_on_income[1]" scaling="100"/>
@@ -513,7 +532,6 @@
 			<isee:parameter name="Government.sensitivity_of_STA_on_public_consumption[1]" scaling="100"/>
 			<isee:parameter name="Finance.sensitivity_of_effect_of_sta_on_failure_rate[1]" scaling="100"/>
 			<isee:parameter name="GDP.initial_real_GDP_growth_rate[1]" scaling="100"/>
-			<isee:parameter name="Finance.strength_of_effect_of_recent_GDP_growth_on_lending_standards[1]" scaling="100"/>
 			<isee:parameter name="Finance.reporting_delay[1]" scaling="100"/>
 			<isee:parameter name="Circular_Flow.yfrom[1]" scaling="100"/>
 			<isee:parameter name="Circular_Flow.yto[1]" scaling="100"/>
@@ -524,6 +542,11 @@
 			<isee:parameter name="Circular_Flow.normal_bottom_40_wages[1]" scaling="1000"/>
 			<isee:parameter name="Circular_Flow.time_for_bottom_40_to_be_affected[1]"/>
 			<isee:parameter name="Employment.initial_productivity_growth[1]" scaling="100"/>
+			<isee:parameter name="Finance.equity_ratio_gap_effect_below_exponent[1]" scaling="10"/>
+			<isee:parameter name="Finance.equity_gap_below_max_effect[1]" scaling="10"/>
+			<isee:parameter name="Finance.equity_gap_effect_max_x_magnitude[1]" scaling="1000"/>
+			<isee:parameter name="Finance.equity_ratio_gap_effect_above_exponent[1]" scaling="10"/>
+			<isee:parameter name="Finance.equity_gap_above_min_effect[1]" scaling="10"/>
 			<isee:parameter name="bio_fuel_energy.stepping_on_toes_parameter[1]" scaling="100"/>
 			<isee:parameter name="bio_fuel_energy.Learning_Rate[1]" scaling="100"/>
 			<isee:parameter name="bio_fuel_energy.Floor_Costs[1]" scaling="1e-7"/>
@@ -592,7 +615,7 @@
 			<isee:parameter name="Circular_Flow.xstart[1]" scaling="100"/>
 			<isee:parameter name="Circular_Flow.xmiddle[1]" scaling="100"/>
 			<isee:parameter name="Circular_Flow.xfinish[1]" scaling="100"/>
-			<isee:parameter name="Circular_Flow.xspeed[1]" scaling="10"/>
+			<isee:parameter name="Circular_Flow.xspeed[1]"/>
 			<isee:parameter name="Circular_Flow.normal_bottom_40_wages[1]" scaling="1000"/>
 			<isee:parameter name="Circular_Flow.time_for_bottom_40_to_be_affected[1]"/>
 			<isee:payoff name="SDG 10.1.1" action="min"/>
@@ -600,105 +623,105 @@
 	</isee:optimizer_specs_list>
 	<isee:payoff_specs_list>
 		<isee:payoff_specs name="Population Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Demographics.Population[1]" weight="0.00147828" compare_name="Demographics.Population[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_0_years[1]" weight="0.0940328" compare_name="Demographics.Aged_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_1_to_20_years[1]" weight="0.00273537" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_20_to_40_years[1]" weight="0.00824828" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_40_to_60_years[1]" weight="0.00591287" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_60_to_65_years[1]" weight="0.222644" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Aged_Over_75_years[1]" weight="0.0251136" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_0_years[1]" weight="2.8538" compare_name="Demographics.deaths_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_1_to_20_years[1]" weight="3.80465" compare_name="Demographics.deaths_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_20_to_40_years[1]" weight="31.409" compare_name="Demographics.deaths_20_to_40_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_40_to_60_years[1]" weight="4.00081" compare_name="Demographics.deaths_40_to_60_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_60_to_65_years[1]" weight="8.54106" compare_name="Demographics.deaths_60_to_65_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.deaths_Over_75_years[1]" weight="1.59457" compare_name="Demographics.deaths_Over_75_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.Births[1]" weight="0.0945511" compare_name="Demographics.Births[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.total_deaths[1]" weight="0.119976" compare_name="Demographics.total_deaths[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
-			<isee:payoff_element name="Demographics.female_population_literacy_percentage[1]" weight="0.0518425">
+			<isee:payoff_element name="Demographics.Population[1]" weight="0.0070583971166533" compare_name="Demographics.Population[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_0_years[1]" weight="0.108907040854157" compare_name="Demographics.Aged_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_1_to_20_years[1]" weight="0.00201796654834666" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_20_to_40_years[1]" weight="0.00387721439483182" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_40_to_60_years[1]" weight="0.00376236988199209" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_60_to_65_years[1]" weight="0.169422867610727" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Aged_Over_75_years[1]" weight="0.204331433003298" compare_name="Demographics.Aged_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_0_years[1]" weight="47.9975591626885" compare_name="Demographics.deaths_0_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_1_to_20_years[1]" weight="59.1575392523421" compare_name="Demographics.deaths_1_to_20_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_20_to_40_years[1]" weight="55.6235574458565" compare_name="Demographics.deaths_20_to_40_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_40_to_60_years[1]" weight="5.48275734641781" compare_name="Demographics.deaths_40_to_60_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_60_to_65_years[1]" weight="22.0888866051027" compare_name="Demographics.deaths_60_to_65_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.deaths_Over_75_years[1]" weight="1.21562797035461" compare_name="Demographics.deaths_Over_75_years[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.Births[1]" weight="0.107469348066457" compare_name="Demographics.Births[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.total_deaths[1]" weight="0.244811782464994" compare_name="Demographics.total_deaths[1]" compare_run="Calibration Data" tolerance="0" type="ls"/>
+			<isee:payoff_element name="Demographics.female_population_literacy_percentage[1]" weight="0.6815073073229">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Demographics.Aged_65_to_75_years[1]" weight="0.124604">
+			<isee:payoff_element name="Demographics.Aged_65_to_75_years[1]" weight="0.0965063078985592">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Demographics.deaths_65_to_75_years[1]" weight="3.65171">
+			<isee:payoff_element name="Demographics.deaths_65_to_75_years[1]" weight="4.41856060981626">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Land Use and Agriculture Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Land_Use.Forest_Land[1]" weight="0.0225121108480817">
+			<isee:payoff_element name="Land_Use.Forest_Land[1]" weight="0.0269473224958723">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Crop.crop_production[1]" weight="0.00000864656826758441">
+			<isee:payoff_element name="Crop.crop_production[1]" weight="0.00000808073292759067">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Land_Use.Cropland[1]" weight="0.00616597055474795">
+			<isee:payoff_element name="Land_Use.Cropland[1]" weight="0.00596232897691694">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Freshwater.total_water_withdrawal[1]" weight="1.01945006014313e-22">
+			<isee:payoff_element name="Freshwater.total_water_withdrawal[1]" weight="1.15955904098345e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Animal_Products.animal_products_production[1]" weight="0.0051028723210315">
+			<isee:payoff_element name="Animal_Products.animal_products_production[1]" weight="0.00259335215104447">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Freshwater.fraction_of_water_withdrawal_for_agriculture[1]" weight="1415875.57838179">
+			<isee:payoff_element name="Freshwater.fraction_of_water_withdrawal_for_agriculture[1]" weight="226460.802467309">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Freshwater.available_water_supply[1]" weight="3.63730630986775e-23">
+			<isee:payoff_element name="Freshwater.available_water_supply[1]" weight="3.2880620522266e-23">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Land_Nutrients.man_made_fertilizer_use[1]" weight="0.0803669674274846">
+			<isee:payoff_element name="Land_Nutrients.man_made_fertilizer_use[1]" weight="0.0783634607379866">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Land_Nutrients.manure_fertilizer_use[1]" weight="1.63599284122681">
+			<isee:payoff_element name="Land_Nutrients.manure_fertilizer_use[1]" weight="1.68198745136668">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Land_Nutrients.fertilizer_use[1]" weight="0.0624242765510669">
+			<isee:payoff_element name="Land_Nutrients.fertilizer_use[1]" weight="0.060845393750153">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Freshwater.irrigated_cropland[1]" weight="0.015969333617003">
+			<isee:payoff_element name="Freshwater.irrigated_cropland[1]" weight="0.0145706784551317">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Animal_Products.aquatic_animal_product_share[1]" weight="423497.743484687">
+			<isee:payoff_element name="Animal_Products.aquatic_animal_product_share[1]" weight="341480.210382957">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Sea_Level.Sea_level_anomaly_from_LWS[1]" weight="416390.7847557">
+			<isee:payoff_element name="Sea_Level.Sea_level_anomaly_from_LWS[1]" weight="415083.254360689">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Sea_Level.Land_water_storage_from_water_impoundment[1]" weight="9.40024371290464e-24">
+			<isee:payoff_element name="Sea_Level.Land_water_storage_from_water_impoundment[1]" weight="8.52930947902548e-24">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.Crops_used_for_Seed_or_Lost[1]" weight="0.000149727627118452">
+			<isee:payoff_element name="Food_Demand.Crops_used_for_Seed_or_Lost[1]" weight="0.000165415347666577">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.crop_demand_for_food[1]" weight="0.000543020327521294">
+			<isee:payoff_element name="Food_Demand.crop_demand_for_food[1]" weight="0.000235230141700862">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.feed_production[1]" weight="0.000219395781039549">
+			<isee:payoff_element name="Food_Demand.feed_production[1]" weight="0.00016945864598343">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.animal_products_demand[1]" weight="0.00798454453258397">
+			<isee:payoff_element name="Food_Demand.animal_products_demand[1]" weight="0.00580172774530315">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Emissions.CO2_Emissions_from_Food_and_Land_Use[1]" weight="0.00000178574298039382">
+			<isee:payoff_element name="Emissions.CO2_Emissions_from_Food_and_Land_Use[1]" weight="0.00000166287795392331">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Emissions.land_carbon_sink[1]" weight="1.78777367782451">
+			<isee:payoff_element name="Emissions.land_carbon_sink[1]" weight="1.72580503131431">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Terrestrial_Carbon_Balance.deforestation_carbon_loss[1]" weight="44.2365394015384">
+			<isee:payoff_element name="Terrestrial_Carbon_Balance.deforestation_carbon_loss[1]" weight="32.0902006413667">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Terrestrial_Carbon_Balance.forest_regrowth_carbon_uptake[1]" weight="4229.00040917134">
+			<isee:payoff_element name="Terrestrial_Carbon_Balance.forest_regrowth_carbon_uptake[1]" weight="3754.14202700062">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Terrestrial_Carbon_Balance.Terrestrial_carbon_balance[1]" weight="1.62302379201859">
+			<isee:payoff_element name="Terrestrial_Carbon_Balance.Terrestrial_carbon_balance[1]" weight="1.59939309634099">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Crop.cropland_net_primary_production[1]" weight="41.6686661720184">
+			<isee:payoff_element name="Crop.cropland_net_primary_production[1]" weight="52.9485968422659">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Terrestrial_Carbon_Balance.Terrestrial_net_primary_production[1]" weight="4636.51532620256">
+			<isee:payoff_element name="Terrestrial_Carbon_Balance.Terrestrial_net_primary_production[1]" weight="18966.7276772362">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
@@ -755,34 +778,31 @@
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
-		<isee:payoff_specs name="Fertility payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Demographics.fertility[1]" weight="130.374">
-				<isee:time_range type="terminal_value"/>
-			</isee:payoff_element>
-			<isee:payoff_element name="Demographics.female_population_literacy_percentage[1]" weight="0.0606899">
+		<isee:payoff_specs name="Literacy Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
+			<isee:payoff_element name="Demographics.female_population_literacy_percentage[1]" weight="0.681507307321808">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Behavioral Change Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Animal_Products.animal_products_production[1]" weight="0.00479882321675652">
+			<isee:payoff_element name="Animal_Products.animal_products_production[1]" weight="0.00165447641001053">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Animal_Products_Demand.average_daily_demand_per_capita[1]" weight="0.0313542493752733">
+			<isee:payoff_element name="Animal_Products_Demand.average_daily_demand_per_capita[1]" weight="0.0134399158055494">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Crop.crop_production[1]" weight="0.00000805031695405075">
+			<isee:payoff_element name="Crop.crop_production[1]" weight="0.00000857869895702062">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.vegetal_product_demand_per_person_per_day[1]" weight="0.00144597662905033">
+			<isee:payoff_element name="Food_Demand.vegetal_product_demand_per_person_per_day[1]" weight="0.00126388114800984">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.direct_food_demand_per_person_per_day[1]" weight="0.00154826312870696">
+			<isee:payoff_element name="Food_Demand.direct_food_demand_per_person_per_day[1]" weight="0.00127338918344404">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.crop_demand_for_food[1]" weight="0.000216425228566696">
+			<isee:payoff_element name="Food_Demand.crop_demand_for_food[1]" weight="0.000292967241541727">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Food_Demand.animal_products_demand[1]" weight="0.00700560145383705">
+			<isee:payoff_element name="Food_Demand.animal_products_demand[1]" weight="0.00230167205157478">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
@@ -820,86 +840,86 @@
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Concrete Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Concrete.concrete_waste_generation[1]" weight="0.000333229952777371">
+			<isee:payoff_element name="Concrete.concrete_waste_generation[1]" weight="0.00033323">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Concrete.In_use_concrete_stock[1]" weight="8.8351076251633e-8">
+			<isee:payoff_element name="Concrete.In_use_concrete_stock[1]" weight="8.83511e-8">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Concrete.residential_concrete_stock_in_use[1]" weight="5.63560236767948e-8">
+			<isee:payoff_element name="Concrete.residential_concrete_stock_in_use[1]" weight="5.6356e-8">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Concrete.total_yearly_concrete_use[1]" weight="1.85668275843582e-7">
+			<isee:payoff_element name="Concrete.total_yearly_concrete_use[1]" weight="1.85668e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Concrete.Infrastructure_concrete_stock_in_use[1]" weight="1.32074930075736e-7">
+			<isee:payoff_element name="Concrete.Infrastructure_concrete_stock_in_use[1]" weight="1.32075e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Concrete.new_RS_construction[1]" weight="0.00000185320784188252">
+			<isee:payoff_element name="Concrete.new_RS_construction[1]" weight="0.00000185321">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Concrete.CO2_emissions[1]" weight="0.000173047032143154">
+			<isee:payoff_element name="Concrete.CO2_emissions[1]" weight="0.000173047">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Economic Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Circular_Flow.private_consumption[1]" weight="1.65487267737354e-7">
+			<isee:payoff_element name="Circular_Flow.private_consumption[1]" weight="3.43203911271639e-8">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Employment.Employed[1]" weight="0.000267730297693649">
+			<isee:payoff_element name="Employment.Employed[1]" weight="0.000535373660109046">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Employment.Unemployed[1]" weight="0.0123901201565626">
+			<isee:payoff_element name="Employment.Unemployed[1]" weight="0.00600650394685531">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Employment.unemployment_rate[1]" weight="80428.1525719627">
+			<isee:payoff_element name="Employment.unemployment_rate[1]" weight="27228.8987056714">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Finance.total_investment[1]" weight="3.76182709917512e-7">
+			<isee:payoff_element name="Finance.total_investment[1]" weight="4.08358026129085e-8">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="GDP.Nominal_GDP[1]" weight="8.1354874159575e-8">
+			<isee:payoff_element name="GDP.Nominal_GDP[1]" weight="6.56615168865972e-9">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Government.government_consumption[1]" weight="0.00000348022735681655">
+			<isee:payoff_element name="Government.government_consumption[1]" weight="2.55800666437005e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Inflation.agriculture_percentage_of_GDP[1]" weight="1.54630677541421">
+			<isee:payoff_element name="Inflation.agriculture_percentage_of_GDP[1]" weight="1.02407437659456">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name='GDP."Real_GDP_in_2021c$"[1]' weight="1.45636160890185e-7">
+			<isee:payoff_element name='GDP."Real_GDP_in_2021c$"[1]' weight="6.10270257704065e-9">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Government.debt_to_GDP_ratio[1]" weight="241.530443078038">
+			<isee:payoff_element name="Government.debt_to_GDP_ratio[1]" weight="398.500907314794">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Inflation.gdp_difference[1]" weight="0.00652809188068193">
+			<isee:payoff_element name="Inflation.gdp_difference[1]" weight="2.91856544377838e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="GDP.nominal_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1]" weight="78.9386874934729">
+			<isee:payoff_element name="GDP.nominal_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1]" weight="243.116130708947">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="GDP.real_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1]" weight="720.526385718895">
+			<isee:payoff_element name="GDP.real_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1]" weight="108.084497666367">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Employment.annual_aggregate_wages[1]" weight="2.11928064096456e-7">
+			<isee:payoff_element name="Employment.annual_aggregate_wages[1]" weight="3.93461209633714e-8">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Circular_Flow.Labour_share_of_GDP[1]" weight="13377.1377095481">
+			<isee:payoff_element name="Circular_Flow.Labour_share_of_GDP[1]" weight="3492.16927539809">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Circular_Flow.bottom_40_share_of_real_income[1]" weight="194117.790120384">
+			<isee:payoff_element name="Circular_Flow.bottom_40_share_of_real_income[1]" weight="3475.28747532695">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Employment Sector Shares" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Employment.share_of_employment_in_agriculture[1]" weight="13483.590067832">
+			<isee:payoff_element name="Employment.share_of_employment_in_agriculture[1]" weight="13483.6">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Employment.share_of_employment_in_industry[1]" weight="28466.9093431354">
+			<isee:payoff_element name="Employment.share_of_employment_in_industry[1]" weight="28466.9">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Employment.share_of_employment_in_services[1]" weight="35986.6808727367">
+			<isee:payoff_element name="Employment.share_of_employment_in_services[1]" weight="35986.7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
@@ -912,353 +932,353 @@
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Energy Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="fossil_energy.Secondary_Fossil_Energy_Output[1]" weight="5.8741756384502e-7">
+			<isee:payoff_element name="fossil_energy.Secondary_Fossil_Energy_Output[1]" weight="5.93123783953822e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_coal.Secondary_Fossil_Energy_Output[1]" weight="8.81547332631512e-7">
+			<isee:payoff_element name="fossil_energy_coal.Secondary_Fossil_Energy_Output[1]" weight="0.00000237813966042235">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_oil.Secondary_Fossil_Energy_Output[1]" weight="0.0000038633407629657">
+			<isee:payoff_element name="fossil_energy_oil.Secondary_Fossil_Energy_Output[1]" weight="0.00000256574790970751">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_gas.Secondary_Fossil_Energy_Output[1]" weight="0.00000314059315418389">
+			<isee:payoff_element name="fossil_energy_gas.Secondary_Fossil_Energy_Output[1]" weight="0.0000115365648994085">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="renewable_energy.Renewable_Energy_Output[1]" weight="0.0000429983145892432">
+			<isee:payoff_element name="renewable_energy.Renewable_Energy_Output[1]" weight="0.00000948226308512633">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="wind_energy.Wind_Energy_Output[1]" weight="0.000139558093339732">
+			<isee:payoff_element name="wind_energy.Wind_Energy_Output[1]" weight="0.000159708475476811">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="solar_energy.Solar_Energy_Output[1]" weight="0.000103854635372246">
+			<isee:payoff_element name="solar_energy.Solar_Energy_Output[1]" weight="0.0000207293727767836">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="hydropower_energy.Hydropower_Energy_Output[1]" weight="0.0000316807603004067">
+			<isee:payoff_element name="hydropower_energy.Hydropower_Energy_Output[1]" weight="0.000130912628598398">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="nuclear_energy.Nuclear_Energy_Output[1]" weight="0.00000742272745103287">
+			<isee:payoff_element name="nuclear_energy.Nuclear_Energy_Output[1]" weight="0.0000590961886168241">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="bio_fuel_energy.bio_fuel_primary_energy[1]" weight="5765094.13295364">
+			<isee:payoff_element name="bio_fuel_energy.bio_fuel_primary_energy[1]" weight="15353643.135233">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="bio_fuel_energy.bio_fuel_secondary_energy_output[1]" weight="0.000522483235071603">
+			<isee:payoff_element name="bio_fuel_energy.bio_fuel_secondary_energy_output[1]" weight="0.00145045384870976">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_supply.Total_Energy_Output[1]" weight="6.49847572881415e-7">
+			<isee:payoff_element name="energy_supply.Total_Energy_Output[1]" weight="4.66471699236615e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="renewable_energy.Total_Renewable_Energy_Capacity[1]" weight="0.000121258116476779">
+			<isee:payoff_element name="renewable_energy.Total_Renewable_Energy_Capacity[1]" weight="0.000486405329147047">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="solar_energy.Solar_Energy_Capacity[1]" weight="0.000174605717528972">
+			<isee:payoff_element name="solar_energy.Solar_Energy_Capacity[1]" weight="0.000107571664019812">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="wind_energy.Wind_Energy_Capacity[1]" weight="0.000063280645289034">
+			<isee:payoff_element name="wind_energy.Wind_Energy_Capacity[1]" weight="0.000106511721135456">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="hydropower_energy.Hydropower_Energy_Capacity[1]" weight="0.00115052236792268">
+			<isee:payoff_element name="hydropower_energy.Hydropower_Energy_Capacity[1]" weight="0.00113200224573693">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="bio_fuel_energy.bio_fuel_production[1]" weight="0.00526953545169442">
+			<isee:payoff_element name="bio_fuel_energy.bio_fuel_production[1]" weight="0.0189064308561727">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="nuclear_energy.Nuclear_Energy_Capacity[1]" weight="0.000545980357744581">
+			<isee:payoff_element name="nuclear_energy.Nuclear_Energy_Capacity[1]" weight="0.0183272228340283">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="nuclear_energy.Nuclear_Installation_Costs[1]" weight="0.00000948276443899163">
+			<isee:payoff_element name="nuclear_energy.Nuclear_Installation_Costs[1]" weight="0.00000811106276902032">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy.Primary_Fossil_Energy_FUEL[1]" weight="7302.56757785625">
+			<isee:payoff_element name="fossil_energy.Primary_Fossil_Energy_FUEL[1]" weight="6350.38890221125">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_coal.Primary_Fossil_Energy_FUEL[1]" weight="9098.50441586633">
+			<isee:payoff_element name="fossil_energy_coal.Primary_Fossil_Energy_FUEL[1]" weight="18827.1993279295">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_oil.Primary_Fossil_Energy_FUEL[1]" weight="45347.2725678253">
+			<isee:payoff_element name="fossil_energy_oil.Primary_Fossil_Energy_FUEL[1]" weight="48141.1750988519">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_gas.Primary_Fossil_Energy_FUEL[1]" weight="40257.2265634445">
+			<isee:payoff_element name="fossil_energy_gas.Primary_Fossil_Energy_FUEL[1]" weight="120053.031498506">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_demand.demand_for_energy[1]" weight="5.44268923993139e-7">
+			<isee:payoff_element name="energy_demand.demand_for_energy[1]" weight="4.62572431726619e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="2.79631838643404e-23">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="2.78754619355004e-23">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Coal_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="1.45329581163651e-21">
+			<isee:payoff_element name="energy_investments.Coal_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="1.27644733613913e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Oil_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="6.77176156295132e-23">
+			<isee:payoff_element name="energy_investments.Oil_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="8.26785972426893e-23">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gas_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="3.60644568738219e-22">
+			<isee:payoff_element name="energy_investments.Gas_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="2.42725571043805e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_Fossil_Energy_Capital[1]" weight="4.48877021799311e-21">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_Fossil_Energy_Capital[1]" weight="1.21604110671325e-20">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Coal_Gross_Investments_in_Fossil_Energy_Capital[1]" weight="3.37427547545871e-21">
+			<isee:payoff_element name="energy_investments.Coal_Gross_Investments_in_Fossil_Energy_Capital[1]" weight="4.13286184688474e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_Fossil_Energy_Capital_oil_and_gas[1]" weight="1.47865498707353e-21">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_Fossil_Energy_Capital_oil_and_gas[1]" weight="8.29085871213174e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_Renewables[1]" weight="3.5886062047742e-22">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_Renewables[1]" weight="3.21049747821188e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Investments_in_Nuclear_Capacity[1]" weight="4.49416592811716e-21">
+			<isee:payoff_element name="energy_investments.Investments_in_Nuclear_Capacity[1]" weight="1.30016829813589e-20">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_Hydropower_Energy_capacity[1]" weight="7.05232571445761e-21">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_Hydropower_Energy_capacity[1]" weight="5.81036154577472e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_Solar_Energy_Capacity[1]" weight="4.10280464538946e-21">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_Solar_Energy_Capacity[1]" weight="1.56350425473676e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_wind_Energy_Capacity[1]" weight="5.1050621267002e-22">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_wind_Energy_Capacity[1]" weight="5.64565899309947e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_Biofuel_Capacity[1]" weight="5.7469412924508e-21">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_Biofuel_Capacity[1]" weight="8.76012136738472e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="wind_energy.Installation_Cost_of_Wind_capacity[1]" weight="0.0000100278032658423">
+			<isee:payoff_element name="wind_energy.Installation_Cost_of_Wind_capacity[1]" weight="0.00000942306446582998">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="solar_energy.Installation_Cost_of_Solar_capacity[1]" weight="0.00000887475519516772">
+			<isee:payoff_element name="solar_energy.Installation_Cost_of_Solar_capacity[1]" weight="0.00000752955498819715">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="hydropower_energy.Hydropower_Installation_Costs[1]" weight="0.0000206398353736598">
+			<isee:payoff_element name="hydropower_energy.Hydropower_Installation_Costs[1]" weight="0.0000211462388404552">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.share_of_GDP_invested_in_fuel_extraction[1]" weight="162223.012889222">
+			<isee:payoff_element name="energy_investments.share_of_GDP_invested_in_fuel_extraction[1]" weight="148296.822326275">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.share_of_GDP_invested_in_Energy_without_fuel[1]" weight="19255798.009195">
+			<isee:payoff_element name="energy_investments.share_of_GDP_invested_in_Energy_without_fuel[1]" weight="5516180.78569367">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon[1]" weight="18.3857815900448">
+			<isee:payoff_element name="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon[1]" weight="32.5966490501903">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon[1]" weight="104.767007822084">
+			<isee:payoff_element name="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon[1]" weight="138.973848285972">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon[1]" weight="167.357452408119">
+			<isee:payoff_element name="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon[1]" weight="766.830371643833">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="65534.177568926">
+			<isee:payoff_element name="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="68129.9823506854">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_coal.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="14049.1895034852">
+			<isee:payoff_element name="fossil_energy_coal.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="13984.0185471805">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_oil.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="44642.1105153008">
+			<isee:payoff_element name="fossil_energy_oil.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="45242.7945577853">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_gas.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="72223.5193852049">
+			<isee:payoff_element name="fossil_energy_gas.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="84777.531929099">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="Econ &amp; Energy Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Circular_Flow.private_consumption[1]" weight="1.30607268558846e-7">
+			<isee:payoff_element name="Circular_Flow.private_consumption[1]" weight="1.30607e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Employment.Employed[1]" weight="0.000352347170315315">
+			<isee:payoff_element name="Employment.Employed[1]" weight="0.000352347">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Employment.Unemployed[1]" weight="0.0112694903785482">
+			<isee:payoff_element name="Employment.Unemployed[1]" weight="0.0112695">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Employment.unemployment_rate[1]" weight="81331.4911368671">
+			<isee:payoff_element name="Employment.unemployment_rate[1]" weight="81331.5">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Finance.total_investment[1]" weight="2.51210184346151e-7">
+			<isee:payoff_element name="Finance.total_investment[1]" weight="2.5121e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="GDP.Nominal_GDP[1]" weight="6.00868231032076e-8">
+			<isee:payoff_element name="GDP.Nominal_GDP[1]" weight="6.00868e-8">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Government.government_consumption[1]" weight="0.00000482055476774274">
+			<isee:payoff_element name="Government.government_consumption[1]" weight="0.00000482055">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Inflation.agriculture_percentage_of_GDP[1]" weight="1.56670689782202">
+			<isee:payoff_element name="Inflation.agriculture_percentage_of_GDP[1]" weight="1.56671">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name='GDP."Real_GDP_in_2021c$"[1]' weight="1.65022225865677e-7">
+			<isee:payoff_element name='GDP."Real_GDP_in_2021c$"[1]' weight="1.65022e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Government.debt_to_GDP_ratio[1]" weight="209.016280529015">
+			<isee:payoff_element name="Government.debt_to_GDP_ratio[1]" weight="209.016">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Inflation.gdp_difference[1]" weight="0.00000294294743886966">
+			<isee:payoff_element name="Inflation.gdp_difference[1]" weight="0.00000294295">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="GDP.nominal_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1]" weight="82.238283644469">
+			<isee:payoff_element name="GDP.nominal_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1]" weight="82.2383">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="GDP.real_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1]" weight="516.921073995555">
+			<isee:payoff_element name="GDP.real_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1]" weight="516.921">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Employment.annual_aggregate_wages[1]" weight="2.02846583195009e-7">
+			<isee:payoff_element name="Employment.annual_aggregate_wages[1]" weight="2.02847e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Circular_Flow.Labour_share_of_GDP[1]" weight="11092.3245950494">
+			<isee:payoff_element name="Circular_Flow.Labour_share_of_GDP[1]" weight="11092.3">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Circular_Flow.bottom_40_share_of_real_income[1]" weight="328359.144310211">
+			<isee:payoff_element name="Circular_Flow.bottom_40_share_of_real_income[1]" weight="328359">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy.Secondary_Fossil_Energy_Output[1]" weight="3.68594557967718e-7">
+			<isee:payoff_element name="fossil_energy.Secondary_Fossil_Energy_Output[1]" weight="3.68595e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_coal.Secondary_Fossil_Energy_Output[1]" weight="0.00000190057754809624">
+			<isee:payoff_element name="fossil_energy_coal.Secondary_Fossil_Energy_Output[1]" weight="0.00000190058">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_oil.Secondary_Fossil_Energy_Output[1]" weight="0.00000179839031734522">
+			<isee:payoff_element name="fossil_energy_oil.Secondary_Fossil_Energy_Output[1]" weight="0.00000179839">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_gas.Secondary_Fossil_Energy_Output[1]" weight="0.0000061793856345903">
+			<isee:payoff_element name="fossil_energy_gas.Secondary_Fossil_Energy_Output[1]" weight="0.00000617939">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="renewable_energy.Renewable_Energy_Output[1]" weight="0.00000260675444921639">
+			<isee:payoff_element name="renewable_energy.Renewable_Energy_Output[1]" weight="0.00000260675">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="wind_energy.Wind_Energy_Output[1]" weight="0.00017901921689609">
+			<isee:payoff_element name="wind_energy.Wind_Energy_Output[1]" weight="0.000179019">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="solar_energy.Solar_Energy_Output[1]" weight="0.00000971063585365961">
+			<isee:payoff_element name="solar_energy.Solar_Energy_Output[1]" weight="0.00000971064">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="hydropower_energy.Hydropower_Energy_Output[1]" weight="0.000139088876211202">
+			<isee:payoff_element name="hydropower_energy.Hydropower_Energy_Output[1]" weight="0.000139089">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="nuclear_energy.Nuclear_Energy_Output[1]" weight="0.0000281630277428385">
+			<isee:payoff_element name="nuclear_energy.Nuclear_Energy_Output[1]" weight="0.000028163">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="bio_fuel_energy.bio_fuel_primary_energy[1]" weight="21286383.3638747">
+			<isee:payoff_element name="bio_fuel_energy.bio_fuel_primary_energy[1]" weight="21286400">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="bio_fuel_energy.bio_fuel_secondary_energy_output[1]" weight="0.00131788719349607">
+			<isee:payoff_element name="bio_fuel_energy.bio_fuel_secondary_energy_output[1]" weight="0.00131789">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_supply.Total_Energy_Output[1]" weight="2.46996370274357e-7">
+			<isee:payoff_element name="energy_supply.Total_Energy_Output[1]" weight="2.46996e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="renewable_energy.Total_Renewable_Energy_Capacity[1]" weight="0.000024466947412742">
+			<isee:payoff_element name="renewable_energy.Total_Renewable_Energy_Capacity[1]" weight="0.0000244669">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="solar_energy.Solar_Energy_Capacity[1]" weight="0.0000134434887929496">
+			<isee:payoff_element name="solar_energy.Solar_Energy_Capacity[1]" weight="0.0000134435">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="wind_energy.Wind_Energy_Capacity[1]" weight="0.000123615639489004">
+			<isee:payoff_element name="wind_energy.Wind_Energy_Capacity[1]" weight="0.000123616">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="hydropower_energy.Hydropower_Energy_Capacity[1]" weight="0.00141365673229315">
+			<isee:payoff_element name="hydropower_energy.Hydropower_Energy_Capacity[1]" weight="0.00141366">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="bio_fuel_energy.bio_fuel_production[1]" weight="0.00135449709367473">
+			<isee:payoff_element name="bio_fuel_energy.bio_fuel_production[1]" weight="0.0013545">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="nuclear_energy.Nuclear_Energy_Capacity[1]" weight="0.0036330071023629">
+			<isee:payoff_element name="nuclear_energy.Nuclear_Energy_Capacity[1]" weight="0.00363301">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="nuclear_energy.Nuclear_Installation_Costs[1]" weight="0.00000830275089794882">
+			<isee:payoff_element name="nuclear_energy.Nuclear_Installation_Costs[1]" weight="0.00000830275">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy.Primary_Fossil_Energy_FUEL[1]" weight="3932.10043342458">
+			<isee:payoff_element name="fossil_energy.Primary_Fossil_Energy_FUEL[1]" weight="3932.1">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_coal.Primary_Fossil_Energy_FUEL[1]" weight="15950.0407301906">
+			<isee:payoff_element name="fossil_energy_coal.Primary_Fossil_Energy_FUEL[1]" weight="15950">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_oil.Primary_Fossil_Energy_FUEL[1]" weight="30192.4792957018">
+			<isee:payoff_element name="fossil_energy_oil.Primary_Fossil_Energy_FUEL[1]" weight="30192.5">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_gas.Primary_Fossil_Energy_FUEL[1]" weight="62684.2776951496">
+			<isee:payoff_element name="fossil_energy_gas.Primary_Fossil_Energy_FUEL[1]" weight="62684.3">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_demand.demand_for_energy[1]" weight="3.30292528084404e-7">
+			<isee:payoff_element name="energy_demand.demand_for_energy[1]" weight="3.30293e-7">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="2.06699504568279e-23">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="2.067e-23">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Coal_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="9.69020419242308e-22">
+			<isee:payoff_element name="energy_investments.Coal_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="9.6902e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Oil_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="6.58816226268439e-23">
+			<isee:payoff_element name="energy_investments.Oil_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="6.58816e-23">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gas_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="1.73852082322639e-22">
+			<isee:payoff_element name="energy_investments.Gas_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1]" weight="1.73852e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_Fossil_Energy_Capital[1]" weight="2.40641700751853e-21">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_Fossil_Energy_Capital[1]" weight="2.40642e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Coal_Gross_Investments_in_Fossil_Energy_Capital[1]" weight="2.72318710168741e-21">
+			<isee:payoff_element name="energy_investments.Coal_Gross_Investments_in_Fossil_Energy_Capital[1]" weight="2.72319e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_Fossil_Energy_Capital_oil_and_gas[1]" weight="9.93283173821542e-21">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_Fossil_Energy_Capital_oil_and_gas[1]" weight="9.93283e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_Renewables[1]" weight="5.73937989666711e-22">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_Renewables[1]" weight="5.73938e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Investments_in_Nuclear_Capacity[1]" weight="1.44221665497257e-20">
+			<isee:payoff_element name="energy_investments.Investments_in_Nuclear_Capacity[1]" weight="1.44222e-20">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_Hydropower_Energy_capacity[1]" weight="4.05813839232341e-21">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_Hydropower_Energy_capacity[1]" weight="4.05814e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_Solar_Energy_Capacity[1]" weight="9.38172014891592e-22">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_Solar_Energy_Capacity[1]" weight="9.38172e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_wind_Energy_Capacity[1]" weight="4.20192171047555e-22">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_wind_Energy_Capacity[1]" weight="4.20192e-22">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.Gross_Investments_in_Biofuel_Capacity[1]" weight="4.82587814264412e-21">
+			<isee:payoff_element name="energy_investments.Gross_Investments_in_Biofuel_Capacity[1]" weight="4.82588e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="wind_energy.Installation_Cost_of_Wind_capacity[1]" weight="0.0000130749742554267">
+			<isee:payoff_element name="wind_energy.Installation_Cost_of_Wind_capacity[1]" weight="0.000013075">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="solar_energy.Installation_Cost_of_Solar_capacity[1]" weight="0.00000241061662387157">
+			<isee:payoff_element name="solar_energy.Installation_Cost_of_Solar_capacity[1]" weight="0.00000241062">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="hydropower_energy.Hydropower_Installation_Costs[1]" weight="0.0000217454167559587">
+			<isee:payoff_element name="hydropower_energy.Hydropower_Installation_Costs[1]" weight="0.0000217454">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.share_of_GDP_invested_in_fuel_extraction[1]" weight="127585.464069368">
+			<isee:payoff_element name="energy_investments.share_of_GDP_invested_in_fuel_extraction[1]" weight="127585">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="energy_investments.share_of_GDP_invested_in_Energy_without_fuel[1]" weight="1980862.26987386">
+			<isee:payoff_element name="energy_investments.share_of_GDP_invested_in_Energy_without_fuel[1]" weight="1980860">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon[1]" weight="28.4463664113041">
+			<isee:payoff_element name="fossil_energy_coal.Fossil_Fuel_Extraction_Carbon[1]" weight="28.4464">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon[1]" weight="131.217156672205">
+			<isee:payoff_element name="fossil_energy_oil.Fossil_Fuel_Extraction_Carbon[1]" weight="131.217">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon[1]" weight="334.001229978021">
+			<isee:payoff_element name="fossil_energy_gas.Fossil_Fuel_Extraction_Carbon[1]" weight="334.001">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="62396.6161129362">
+			<isee:payoff_element name="fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="62396.6">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_coal.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="13650.6440902013">
+			<isee:payoff_element name="fossil_energy_coal.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="13650.6">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_oil.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="44053.2953747698">
+			<isee:payoff_element name="fossil_energy_oil.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="44053.3">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="fossil_energy_gas.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="77770.7780609212">
+			<isee:payoff_element name="fossil_energy_gas.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1]" weight="77770.8">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
 		<isee:payoff_specs name="SDG 10.1.1" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
-			<isee:payoff_element name="Circular_Flow.bottom_40_share_of_real_income[1]" weight="82500.3510720798">
+			<isee:payoff_element name="Circular_Flow.bottom_40_share_of_real_income[1]" weight="558203.1452268">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
@@ -1561,6 +1581,10 @@
 				<connect2 to="Damages.switch_energy_damage" from="Climate.switch_energy_damage"/>
 				<connect to="Damages.today" from="Climate.climate_impact_stoptime"/>
 				<connect2 to="Damages.today" from="Climate.climate_impact_stoptime"/>
+				<connect to="efficiency_reduction_in_power_plants.selected_energy_supply_hydroelectric_damages_case" from="Climate_Units.selected_energy_supply_hydroelectric_damages_case"/>
+				<connect2 to="efficiency_reduction_in_power_plants.selected_energy_supply_hydroelectric_damages_case" from="Climate_Units.selected_energy_supply_hydroelectric_damages_case"/>
+				<connect to="efficiency_reduction_in_power_plants.selected_energy_supply_damages_case" from="Climate_Units.selected_energy_supply_thermoelectric_damages_case"/>
+				<connect2 to="efficiency_reduction_in_power_plants.selected_energy_supply_damages_case" from="Climate_Units.selected_energy_supply_thermoelectric_damages_case"/>
 				<connect to="efficiency_reduction_in_power_plants.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="efficiency_reduction_in_power_plants.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="efficiency_reduction_in_power_plants.switch_energy_damage" from="Climate.switch_energy_damage"/>
@@ -1843,6 +1867,10 @@
 				<connect2 to="Demographics.Nominal_GDP" from="GDP.Nominal_GDP"/>
 				<connect to='Demographics."Real_GDP_in_2021c$"' from='GDP."Real_GDP_in_2021c$"'/>
 				<connect2 to='Demographics."Real_GDP_in_2021c$"' from='GDP."Real_GDP_in_2021c$"'/>
+				<connect to="Demographics.selected_cold_mortality_impact_case" from="Climate_Units.selected_cold_mortality_impact_case"/>
+				<connect2 to="Demographics.selected_cold_mortality_impact_case" from="Climate_Units.selected_cold_mortality_impact_case"/>
+				<connect to="Demographics.selected_hot_mortality_impact_case" from="Climate_Units.selected_hot_mortality_impact_case"/>
+				<connect2 to="Demographics.selected_hot_mortality_impact_case" from="Climate_Units.selected_hot_mortality_impact_case"/>
 				<connect to="Demographics.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Demographics.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Demographics.switch_demography_damage" from="Climate.switch_demography_damage"/>
@@ -1918,6 +1946,8 @@
 				<connect2 to="Crop.switch_landuse_damage" from="Climate.switch_landuse_damage"/>
 				<connect to="Freshwater.switch_landuse_damage" from="Climate.switch_landuse_damage"/>
 				<connect2 to="Freshwater.switch_landuse_damage" from="Climate.switch_landuse_damage"/>
+				<connect to="Climate_Risk_Perception.switch_sea_level_rise_climate_risk_perception" from="Climate.switch_sea_level_rise_climate_risk_perception"/>
+				<connect2 to="Climate_Risk_Perception.switch_sea_level_rise_climate_risk_perception" from="Climate.switch_sea_level_rise_climate_risk_perception"/>
 				<connect to="Sea_level_rise_costs_and_impacts.switch_sea_level_rise_fatalities_damage" from="Climate.switch_sea_level_rise_fatalities_damage"/>
 				<connect2 to="Sea_level_rise_costs_and_impacts.switch_sea_level_rise_fatalities_damage" from="Climate.switch_sea_level_rise_fatalities_damage"/>
 				<connect to="Sea_level_rise_costs_and_impacts.switch_sea_level_rise_finance_damage" from="Climate.switch_sea_level_rise_finance_damage"/>
@@ -1938,6 +1968,16 @@
 				<connect2 to="fossil_energy_gas.MtSO2_to_tSO2" from="Climate_Units.MtSO2_to_tSO2"/>
 				<connect to="fossil_energy_oil.MtSO2_to_tSO2" from="Climate_Units.MtSO2_to_tSO2"/>
 				<connect2 to="fossil_energy_oil.MtSO2_to_tSO2" from="Climate_Units.MtSO2_to_tSO2"/>
+				<connect to="Demographics.selected_cold_mortality_impact_case" from="Climate_Units.selected_cold_mortality_impact_case"/>
+				<connect2 to="Demographics.selected_cold_mortality_impact_case" from="Climate_Units.selected_cold_mortality_impact_case"/>
+				<connect to="Crop.selected_crops_damages_case" from="Climate_Units.selected_crops_damages_case"/>
+				<connect2 to="Crop.selected_crops_damages_case" from="Climate_Units.selected_crops_damages_case"/>
+				<connect to="efficiency_reduction_in_power_plants.selected_energy_supply_hydroelectric_damages_case" from="Climate_Units.selected_energy_supply_hydroelectric_damages_case"/>
+				<connect2 to="efficiency_reduction_in_power_plants.selected_energy_supply_hydroelectric_damages_case" from="Climate_Units.selected_energy_supply_hydroelectric_damages_case"/>
+				<connect to="efficiency_reduction_in_power_plants.selected_energy_supply_damages_case" from="Climate_Units.selected_energy_supply_thermoelectric_damages_case"/>
+				<connect2 to="efficiency_reduction_in_power_plants.selected_energy_supply_damages_case" from="Climate_Units.selected_energy_supply_thermoelectric_damages_case"/>
+				<connect to="Demographics.selected_hot_mortality_impact_case" from="Climate_Units.selected_hot_mortality_impact_case"/>
+				<connect2 to="Demographics.selected_hot_mortality_impact_case" from="Climate_Units.selected_hot_mortality_impact_case"/>
 				<connect to="bio_fuel_energy.ktN2O_to_tCO2e" from="Climate_Units.UNIT_ktN2O_to_tCO2e"/>
 				<connect2 to="bio_fuel_energy.ktN2O_to_tCO2e" from="Climate_Units.UNIT_ktN2O_to_tCO2e"/>
 				<connect to="fossil_energy_coal.UNIT_ktN2O_to_tCO2e" from="Climate_Units.UNIT_ktN2O_to_tCO2e"/>
@@ -2351,6 +2391,8 @@
 				<connect2 to="Crop.Absolute_Surface_Temperature" from="Energy_Balance_Model.Absolute_Surface_Temperature"/>
 				<connect to="Crop.Atmospheric_CO2_Concentration_1" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
 				<connect2 to="Crop.Atmospheric_CO2_Concentration_1" from="CO2_Forcing.Atmospheric_CO2_Concentration"/>
+				<connect to="Crop.selected_crops_damages_case" from="Climate_Units.selected_crops_damages_case"/>
+				<connect2 to="Crop.selected_crops_damages_case" from="Climate_Units.selected_crops_damages_case"/>
 				<connect to="Crop.switch_landuse_damage" from="Climate.switch_landuse_damage"/>
 				<connect2 to="Crop.switch_landuse_damage" from="Climate.switch_landuse_damage"/>
 				<connect to="Crop.today" from="Climate.climate_impact_stoptime"/>
@@ -2771,6 +2813,8 @@
 				<connect2 to="fossil_energy_oil.Policy_Start_Year" from="Government_Regulations.start_year"/>
 				<connect to="Freshwater.start_year" from="Government_Regulations.start_year"/>
 				<connect2 to="Freshwater.start_year" from="Government_Regulations.start_year"/>
+				<connect to="GDP.start_year" from="Government_Regulations.start_year"/>
+				<connect2 to="GDP.start_year" from="Government_Regulations.start_year"/>
 				<connect to="Government.start_year" from="Government_Regulations.start_year"/>
 				<connect2 to="Government.start_year" from="Government_Regulations.start_year"/>
 				<connect to="hydropower_energy.start_year" from="Government_Regulations.start_year"/>
@@ -2795,8 +2839,6 @@
 				<connect2 to="Circular_Flow.switch_tax_policy" from="Government_Regulations.switch_wage_tax_policy"/>
 				<connect to="bio_fuel_energy.tax_on_CO2e_emissions" from="Government_Regulations.tax_on_CO2e_emissions"/>
 				<connect2 to="bio_fuel_energy.tax_on_CO2e_emissions" from="Government_Regulations.tax_on_CO2e_emissions"/>
-				<connect to="Finance.tax_on_CO2e_emissions" from="Government_Regulations.tax_on_CO2e_emissions"/>
-				<connect2 to="Finance.tax_on_CO2e_emissions" from="Government_Regulations.tax_on_CO2e_emissions"/>
 				<connect to="fossil_energy_coal.tax_on_CO2e_emissions" from="Government_Regulations.tax_on_CO2e_emissions"/>
 				<connect2 to="fossil_energy_coal.tax_on_CO2e_emissions" from="Government_Regulations.tax_on_CO2e_emissions"/>
 				<connect to="fossil_energy_gas.tax_on_CO2e_emissions" from="Government_Regulations.tax_on_CO2e_emissions"/>
@@ -2880,6 +2922,8 @@
 				<connect2 to="Climate_Risk_Perception.switch_behavioral_impact" from="Climate.switch_behavioral_impact"/>
 				<connect to="Climate_Risk_Perception.switch_environmental_consciousness_policy" from="Behavioral_Choices.switch_environmental_consciousness_policy"/>
 				<connect2 to="Climate_Risk_Perception.switch_environmental_consciousness_policy" from="Behavioral_Choices.switch_environmental_consciousness_policy"/>
+				<connect to="Climate_Risk_Perception.switch_sea_level_rise_climate_risk_perception" from="Climate.switch_sea_level_rise_climate_risk_perception"/>
+				<connect2 to="Climate_Risk_Perception.switch_sea_level_rise_climate_risk_perception" from="Climate.switch_sea_level_rise_climate_risk_perception"/>
 				<connect to="Climate_Risk_Perception.today" from="Climate.climate_impact_stoptime"/>
 				<connect2 to="Climate_Risk_Perception.today" from="Climate.climate_impact_stoptime"/>
 				<connect to="Food_Demand.Average_Daily_Demand_Per_Capita" from="Total_Food_Demand.average_daily_demand_per_capita"/>
@@ -3014,8 +3058,6 @@
 				<connect2 to="Finance.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Finance.switch_economy_damage" from="Climate.switch_finance_damage"/>
 				<connect2 to="Finance.switch_economy_damage" from="Climate.switch_finance_damage"/>
-				<connect to="Finance.tax_on_CO2e_emissions" from="Government_Regulations.tax_on_CO2e_emissions"/>
-				<connect2 to="Finance.tax_on_CO2e_emissions" from="Government_Regulations.tax_on_CO2e_emissions"/>
 				<connect to="Finance.today" from="Climate.climate_impact_stoptime"/>
 				<connect2 to="Finance.today" from="Climate.climate_impact_stoptime"/>
 				<connect to="Demographics.Nominal_GDP" from="GDP.Nominal_GDP"/>
@@ -3024,6 +3066,8 @@
 				<connect2 to='Demographics."Real_GDP_in_2021c$"' from='GDP."Real_GDP_in_2021c$"'/>
 				<connect to='energy_investments."Real_GDP_in_2021c$"' from='GDP."Real_GDP_in_2021c$"'/>
 				<connect2 to='energy_investments."Real_GDP_in_2021c$"' from='GDP."Real_GDP_in_2021c$"'/>
+				<connect to="GDP.start_year" from="Government_Regulations.start_year"/>
+				<connect2 to="GDP.start_year" from="Government_Regulations.start_year"/>
 				<connect to="energy_investments.expenditure_on_subsidies_for_investments_in_bio_fuel_energy_capacity" from="Government.expenditure_on_subsidies_for_investments_in_bio_fuel_energy_capacity"/>
 				<connect2 to="energy_investments.expenditure_on_subsidies_for_investments_in_bio_fuel_energy_capacity" from="Government.expenditure_on_subsidies_for_investments_in_bio_fuel_energy_capacity"/>
 				<connect to="energy_investments.expenditure_on_subsidies_for_investments_in_coal_energy_conversion" from="Government.expenditure_on_subsidies_for_investments_in_coal_energy_conversion"/>
@@ -3252,13 +3296,7 @@
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Demographics.real_GDP_per_person[Run] + Animal_Products_Demand.Desired_Demand_from_Accessibility[Run] + Animal_Products_Demand.desired_demand_from_descriptive_norm[Run] + Animal_Products_Demand.desired_demand_from_personal_norm[Run] + Animal_Products_Demand.perceived_consumption_risk[Run] + Animal_Products_Demand.Perceived_Social_Value[Run] + Animal_Products_Demand.weight_of_accessibility[Run] + Animal_Products.animal_products_production[Run] + Animal_Products.aquatic_animal_product_share[Run] + Animal_Products_Demand.Desired_Average_Daily_Demand_Per_Capita[Run] + Animal_Products.animal_products_balance[Run] + bio_fuel_energy.bio_fuel_primary_energy[Run] + bio_fuel_energy.bio_fuel_production[Run] + bio_fuel_energy.bio_fuel_secondary_energy_output[Run] + CCS.Storing_CO2[Run] + CH4_Forcing.Atmospheric_CH4_Concentration[Run] + CH4_Forcing.CH4_Effective_Radiative_Forcing[Run] + Circular_Flow.&quot;bank_profits_in_2021c$&quot;[Run] + Circular_Flow.bottom_40_share_of_real_income[Run] + Circular_Flow.growth_rates_of_income_per_capita_among_the_bottom_40_per_cent_of_the_total_population[Run] + Circular_Flow.income_inequality[Run] + Circular_Flow.Labour_share_of_GDP[Run] + Circular_Flow.&quot;non_bank_profits_in_2021c$&quot;[Run] + Circular_Flow.&quot;owner_savings_interest_in_2021c$&quot;[Run] + Circular_Flow.private_consumption[Run] + Circular_Flow.&quot;profit_tax_in_2021c$&quot;[Run] + Circular_Flow.Redistributive_impact_of_fiscal_policy[Run] + Circular_Flow.&quot;rent_in_in_2021c$&quot;[Run] + Circular_Flow.&quot;rent_tax_in_2021c$&quot;[Run] + Circular_Flow.&quot;transfers_in_2021c$&quot;[Run] + Circular_Flow.&quot;wage_tax_in_2021c$&quot;[Run] + Circular_Flow.&quot;wages_in_2021c$&quot;[Run] + Circular_Flow.&quot;worker_savings_interest_in_2021c$&quot;[Run] + Circular_Flow.worker_share_of_net_income[Run] + Climate_Risk_Perception.perceived_climate_change_risk[Run] + Climate_Risk_Perception.Perceived_Climate_Extremes_Exposure[Run] + Climate_Risk_Perception.Perceived_SLR_Flooding_Exposure[Run] + Climate_Risk_Perception.Perceived_Temperature_Anomaly[Run] + Climate_Risk_Perception.Reference_Climate_Extremes_Exposure[Run] + Climate_Risk_Perception.Reference_SLR_Flooding_Exposure[Run] + Climate_Risk_Perception.Reference_Temperature_Anomaly[Run] + CO2_Forcing.Atmospheric_CO2_Concentration[Run] + CO2_Forcing.Atmospheric_CO2_growth_GtC[Run] + CO2_Forcing.CO2_Effective_Radiative_Forcing[Run] + Coastal_Assets.Coastal_assets[Run,insufficient] + Coastal_Assets.Coastal_assets[Run,well_protected] + Coastal_population.Coastal_population[Run,insufficient] + Coastal_population.Coastal_population[Run,well_protected] + Concrete.CO2_emissions[Run] + Concrete.concrete_waste_generation[Run] + Concrete.In_use_concrete_stock[Run] + Concrete.Infrastructure_concrete_stock_in_use[Run] + Concrete.new_RS_construction[Run] + Concrete.residential_concrete_stock_in_use[Run] + Concrete.total_yearly_concrete_use[Run] + Crop.crop_production[Run] + Crop.crop_balance[Run] + Crop.cropland_net_primary_production[Run] + degraded_land_soil_carbon.degraded_land_litter[Run] + Demographics.Aged_0_years[Run] + Demographics.Aged_1_to_20_years[Run] + Demographics.Aged_20_to_40_years[Run] + Demographics.Aged_40_to_60_years[Run] + Demographics.Aged_60_to_65_years[Run] + Demographics.Aged_65_to_75_years[Run] + Demographics.Aged_Over_75_years[Run] + Demographics.Births[Run] + Demographics.deaths_0_years[Run] + Demographics.deaths_1_to_20_years[Run] + Demographics.deaths_20_to_40_years[Run] + Demographics.deaths_40_to_60_years[Run] + Demographics.deaths_60_to_65_years[Run] + Demographics.deaths_65_to_75_years[Run] + Demographics.deaths_Over_75_years[Run] + Demographics.female_population_literacy_percentage[Run] + Demographics.fertility[Run] + Demographics.nominal_GDP_per_person[Run] + Demographics.Population[Run] + Demographics.real_GDP_per_person[Run] + Demographics.total_deaths[Run] + Emissions.CH4_Emissions_from_Energy[Run] + Emissions.CH4_Emissions_from_Food_and_Land_Use[Run] + Emissions.CH4_Emissions_from_Other[Run] + Emissions.CO_Emissions[Run] + Emissions.CO2_emissions_from_Energy[Run] + Emissions.CO2_Emissions_from_Food_and_Land_Use_GtC[Run] + Emissions.CO2_Emissions_from_Food_and_Land_Use[Run] + Emissions.CO2_Emissions_from_Other_GtC[Run] + Emissions.HFC134a_eq_Emissions[Run] + Emissions.land_carbon_sink[Run] + Emissions.N2O_Emissions_from_Energy[Run] + Emissions.N2O_Emissions_from_Food_and_Land_Use[Run] + Emissions.N2O_Emissions_from_Other[Run] + Emissions.NOx_AFOLU_Emissions[Run] + Emissions.NOx_non_AFOLU_Emissions[Run] + Emissions.Realized_CO2_Emissions_from_Energy_GtC[Run] + Emissions.SO2_Emissions_from_Energy[Run] + Emissions.SO2_Emissions_from_Food_and_Land_Use[Run] + Emissions.Total_CH4_Emissions[Run] + Emissions.Total_CO2_Emissions_GtC[Run] + Emissions.Total_CO2_Emissions[Run] + Emissions.Total_N2O_Emissions[Run] + Emissions.Total_NOx_Emissions[Run] + Emissions.Total_SO2_Emissions[Run] + Emissions.VOC_Emissions[Run] + Employment.annual_aggregate_wages[Run] + Employment.Employed[Run] + Employment.Productivity[Run] + Employment.share_of_employment_in_agriculture[Run] + Employment.share_of_employment_in_industry[Run] + Employment.share_of_employment_in_services[Run] + Employment.Unemployed[Run] + Employment.unemployment_rate[Run] + Employment.Wage_Rate[Run] + Energy_Balance_Model.Surface_Temperature_Anomaly[Run] + energy_demand.demand_for_energy[Run] + energy_investments.Coal_Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Coal_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.Gas_Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Gas_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.Gross_Investments_in_Biofuel_Capacity[Run] + energy_investments.Gross_Investments_in_Fossil_Energy_Capital_oil_and_gas[Run] + energy_investments.Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.Gross_Investments_in_Hydropower_Energy_capacity[Run] + energy_investments.Gross_Investments_in_Renewables[Run] + energy_investments.Gross_Investments_in_Solar_Energy_Capacity[Run] + energy_investments.Gross_Investments_in_wind_Energy_Capacity[Run] + energy_investments.Investments_in_Fossil_Energy[Run] + energy_investments.Investments_in_Nuclear_Capacity[Run] + energy_investments.Oil_Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Oil_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.share_of_GDP_invested_in_Energy_without_fuel[Run] + energy_investments.share_of_GDP_invested_in_fuel_extraction[Run] + energy_supply.Total_Energy_Output[Run] + energy_supply.Renewable_Energy_Output_Share[Run] + Finance.Non_performing_loans_net_of_provisions_to_capital[Run] + Finance.Non_performing_loans_to_total_gross_loans[Run] + Finance.Regulatory_Tier_1_capital_to_assets[Run] + Finance.Return_on_assets_to_short_term_liabilities[Run] + Finance.total_investment[Run] + Food_Demand.animal_product_demand_per_person_per_day[Run] + Food_Demand.animal_products_demand[Run] + Food_Demand.crop_demand_for_food[Run] + Food_Demand.crop_used_for_non_energy_other[Run] + Food_Demand.crops_for_energy[Run] + Food_Demand.Crops_used_for_Seed_or_Lost[Run] + Food_Demand.direct_food_demand_per_person_per_day[Run] + Food_Demand.feed_production[Run] + Food_Demand.vegetal_product_demand_per_person_per_day[Run] + Forcing.Anthropogenic_Effective_Radiative_Forcing[Run] + Forcing.Total_Effective_Radiative_Forcing[Run] + Forest.mature_forest_net_primary_production[Run] + Forest.young_forest_net_primary_production[Run] + fossil_energy_coal.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy_coal.Fossil_Fuel_Extraction_Carbon[Run] + fossil_energy_coal.Primary_Fossil_Energy_FUEL[Run] + fossil_energy_coal.Secondary_Fossil_Energy_Output[Run] + fossil_energy_gas.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy_gas.Fossil_Fuel_Extraction_Carbon[Run] + fossil_energy_gas.Primary_Fossil_Energy_FUEL[Run] + fossil_energy_gas.Secondary_Fossil_Energy_Output[Run] + fossil_energy_oil.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy_oil.Fossil_Fuel_Extraction_Carbon[Run] + fossil_energy_oil.Primary_Fossil_Energy_FUEL[Run] + fossil_energy_oil.Secondary_Fossil_Energy_Output[Run] + fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy.Primary_Fossil_Energy_FUEL[Run] + fossil_energy.Secondary_Fossil_Energy_Output[Run] + Freshwater.agricultural_water_withdrawal[Run] + Freshwater.available_water_supply[Run] + Freshwater.fraction_of_water_withdrawal_for_agriculture[Run] + Freshwater.irrigated_cropland[Run] + Freshwater.non_agricultural_water_withdrawl[Run] + Freshwater.total_water_withdrawal[Run] + GDP.&quot;government_transfers_in_2021c$&quot;[Run] + GDP.nominal_GDP_growth_rate[Run] + GDP.Nominal_GDP[Run] + GDP.&quot;owner_consumption_in_2021c$&quot;[Run] + GDP.&quot;private_investment_in_in_2021c$&quot;[Run] + GDP.&quot;public_investment_in_2021c$&quot;[Run] + GDP.real_GDP_growth_rate[Run] + GDP.&quot;Real_GDP_in_2021c$&quot;[Run] + GDP.&quot;worker_consumption_excluding_transfers_in_2021c$&quot;[Run] + Government.debt_to_GDP_ratio[Run] + Government.government_consumption[Run] + Government.&quot;government_spending_because_of_climate_in_2021c$&quot;[Run] + Government.&quot;government_spending_without_climate_impact_in_2021c$&quot;[Run] + Government.public_expenditure[Run] + Government.total_public_tax_income[Run] + Grass.grassland_net_primary_production[Run] + hydropower_energy.Hydropower_Energy_Capacity[Run] + hydropower_energy.Hydropower_Energy_Output[Run] + hydropower_energy.Hydropower_Installation_Costs[Run] + Inflation.agriculture_percentage_of_GDP[Run] + Inflation.gdp_difference[Run] + Inflation.Inflation_Rate[Run] + Inflation.Inflation_Index[Run] + Land_Nutrients.fertilizer_use[Run] + Land_Nutrients.man_made_fertilizer_use[Run] + Land_Nutrients.manure_fertilizer_use[Run] + Land_Use.Cropland[Run] + Land_Use.Degraded_Land[Run] + Land_Use.Forest_Land[Run] + Land_Use.Grassland[Run] + Land_Use.Mature_Forest[Run] + Land_Use.Young_Forest[Run] + N2O_Forcing.Atmospheric_N2O_Concentration[Run] + N2O_Forcing.N2O_Effective_Radiative_Forcing[Run] + nuclear_energy.Nuclear_Energy_Capacity[Run] + nuclear_energy.Nuclear_Energy_Output[Run] + nuclear_energy.Nuclear_Installation_Costs[Run] + Ocean.Air_sea_co2_flux[Run] + Ocean.Cold_surface_ocean_pH[Run] + Ocean.Warm_surface_ocean_pH[Run] + Planetary_Boundaries.&quot;PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production&quot;[Run] + Planetary_Boundaries.&quot;PB2:1_Fraction_remaining_forest_cover&quot;[Run] + Planetary_Boundaries.&quot;PB3:1_Maximum_amount_of_consumptive_blue_water_use&quot;[Run] + Planetary_Boundaries.&quot;PB4:1_Intentionally_fixed_N_applied_to_the_agricultural_system&quot;[Run] + Planetary_Boundaries.&quot;PB4:2_P_flow_from_fertilizers_to_erodible_soils&quot;[Run] + renewable_energy.Renewable_Energy_Output[Run] + renewable_energy.Total_Renewable_Energy_Capacity[Run] + Sea_level_rise_costs_and_impacts.Productivity_reduction_factor_from_coastal_flooding[Run] + Sea_level_rise_costs_and_impacts.Total_fatalities_due_to_coastal_floods[Run] + Sea_level_rise_costs_and_impacts.Total_nominal_loss_of_assets_from_SLR[Run] + Sea_level_rise_costs_and_impacts.Total_nominal_people_retreat_costs[Run] + Sea_level_rise_costs_and_impacts.Total_nominal_SLR_protection_cost[Run] + Sea_level_rise_costs_and_impacts.Total_number_of_people_flooded[Run] + Sea_Level.Land_water_storage_from_water_impoundment[Run] + Sea_Level.Sea_level_anomaly_from_Antarctic_Ice_Sheet[Run] + Sea_Level.Sea_level_anomaly_from_Greenland_Ice_Sheet[Run] + Sea_Level.Sea_level_anomaly_from_LWS[Run] + Sea_Level.Sea_level_anomaly_from_mountain_glaciers[Run] + Sea_Level.Sea_level_anomaly_from_thermal_expansion[Run] + Sea_Level.Total_global_sea_level_anomaly[Run] + solar_energy.Installation_Cost_of_Solar_capacity[Run] + solar_energy.Solar_Energy_Capacity[Run] + solar_energy.Solar_Energy_Output[Run] + Terrestrial_Carbon_Balance.Annual_carbon_uptake_in_peatlands[Run] + Terrestrial_Carbon_Balance.deforestation_carbon_loss[Run] + Terrestrial_Carbon_Balance.forest_regrowth_carbon_uptake[Run] + Terrestrial_Carbon_Balance.Terrestrial_carbon_balance[Run] + Terrestrial_Carbon_Balance.Terrestrial_net_primary_production[Run] + Total_Food_Demand.Desired_Demand_from_Accessibility[Run] + Total_Food_Demand.desired_demand_from_descriptive_norm[Run] + Total_Food_Demand.desired_demand_from_personal_norm[Run] + Total_Food_Demand.perceived_consumption_risk[Run] + Total_Food_Demand.Perceived_Social_Value[Run] + Total_Food_Demand.weight_of_accessibility[Run] + wind_energy.Installation_Cost_of_Wind_capacity[Run] + wind_energy.Wind_Energy_Capacity[Run] + wind_energy.Wind_Energy_Output[Run]</eqn>
-			</isee:placeholder>
-			<isee:placeholder name="Dashboard Right Placeholder">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>Energy_Balance_Model.Surface_Temperature_Anomaly[Run] + Animal_Products_Demand.Desired_Demand_from_Accessibility[Run] + Animal_Products_Demand.desired_demand_from_descriptive_norm[Run] + Animal_Products_Demand.desired_demand_from_personal_norm[Run] + Animal_Products_Demand.perceived_consumption_risk[Run] + Animal_Products_Demand.Perceived_Social_Value[Run] + Animal_Products_Demand.weight_of_accessibility[Run] + Animal_Products.animal_products_production[Run] + Animal_Products.aquatic_animal_product_share[Run] + Animal_Products_Demand.Desired_Average_Daily_Demand_Per_Capita[Run] + Animal_Products.animal_products_balance[Run] + bio_fuel_energy.bio_fuel_primary_energy[Run] + bio_fuel_energy.bio_fuel_production[Run] + bio_fuel_energy.bio_fuel_secondary_energy_output[Run] + CCS.Storing_CO2[Run] + CH4_Forcing.Atmospheric_CH4_Concentration[Run] + CH4_Forcing.CH4_Effective_Radiative_Forcing[Run] + Circular_Flow.&quot;bank_profits_in_2021c$&quot;[Run] + Circular_Flow.bottom_40_share_of_real_income[Run] + Circular_Flow.growth_rates_of_income_per_capita_among_the_bottom_40_per_cent_of_the_total_population[Run] + Circular_Flow.income_inequality[Run] + Circular_Flow.Labour_share_of_GDP[Run] + Circular_Flow.&quot;non_bank_profits_in_2021c$&quot;[Run] + Circular_Flow.&quot;owner_savings_interest_in_2021c$&quot;[Run] + Circular_Flow.private_consumption[Run] + Circular_Flow.&quot;profit_tax_in_2021c$&quot;[Run] + Circular_Flow.Redistributive_impact_of_fiscal_policy[Run] + Circular_Flow.&quot;rent_in_in_2021c$&quot;[Run] + Circular_Flow.&quot;rent_tax_in_2021c$&quot;[Run] + Circular_Flow.&quot;transfers_in_2021c$&quot;[Run] + Circular_Flow.&quot;wage_tax_in_2021c$&quot;[Run] + Circular_Flow.&quot;wages_in_2021c$&quot;[Run] + Circular_Flow.&quot;worker_savings_interest_in_2021c$&quot;[Run] + Circular_Flow.worker_share_of_net_income[Run] + Climate_Risk_Perception.perceived_climate_change_risk[Run] + Climate_Risk_Perception.Perceived_Climate_Extremes_Exposure[Run] + Climate_Risk_Perception.Perceived_SLR_Flooding_Exposure[Run] + Climate_Risk_Perception.Perceived_Temperature_Anomaly[Run] + Climate_Risk_Perception.Reference_Climate_Extremes_Exposure[Run] + Climate_Risk_Perception.Reference_SLR_Flooding_Exposure[Run] + Climate_Risk_Perception.Reference_Temperature_Anomaly[Run] + CO2_Forcing.Atmospheric_CO2_Concentration[Run] + CO2_Forcing.Atmospheric_CO2_growth_GtC[Run] + CO2_Forcing.CO2_Effective_Radiative_Forcing[Run] + Coastal_Assets.Coastal_assets[Run,insufficient] + Coastal_Assets.Coastal_assets[Run,well_protected] + Coastal_population.Coastal_population[Run,insufficient] + Coastal_population.Coastal_population[Run,well_protected] + Concrete.CO2_emissions[Run] + Concrete.concrete_waste_generation[Run] + Concrete.In_use_concrete_stock[Run] + Concrete.Infrastructure_concrete_stock_in_use[Run] + Concrete.new_RS_construction[Run] + Concrete.residential_concrete_stock_in_use[Run] + Concrete.total_yearly_concrete_use[Run] + Crop.crop_production[Run] + Crop.crop_balance[Run] + Crop.cropland_net_primary_production[Run] + degraded_land_soil_carbon.degraded_land_litter[Run] + Demographics.Aged_0_years[Run] + Demographics.Aged_1_to_20_years[Run] + Demographics.Aged_20_to_40_years[Run] + Demographics.Aged_40_to_60_years[Run] + Demographics.Aged_60_to_65_years[Run] + Demographics.Aged_65_to_75_years[Run] + Demographics.Aged_Over_75_years[Run] + Demographics.Births[Run] + Demographics.deaths_0_years[Run] + Demographics.deaths_1_to_20_years[Run] + Demographics.deaths_20_to_40_years[Run] + Demographics.deaths_40_to_60_years[Run] + Demographics.deaths_60_to_65_years[Run] + Demographics.deaths_65_to_75_years[Run] + Demographics.deaths_Over_75_years[Run] + Demographics.female_population_literacy_percentage[Run] + Demographics.fertility[Run] + Demographics.nominal_GDP_per_person[Run] + Demographics.Population[Run] + Demographics.real_GDP_per_person[Run] + Demographics.total_deaths[Run] + Emissions.CH4_Emissions_from_Energy[Run] + Emissions.CH4_Emissions_from_Food_and_Land_Use[Run] + Emissions.CH4_Emissions_from_Other[Run] + Emissions.CO_Emissions[Run] + Emissions.CO2_emissions_from_Energy[Run] + Emissions.CO2_Emissions_from_Food_and_Land_Use_GtC[Run] + Emissions.CO2_Emissions_from_Food_and_Land_Use[Run] + Emissions.CO2_Emissions_from_Other_GtC[Run] + Emissions.HFC134a_eq_Emissions[Run] + Emissions.land_carbon_sink[Run] + Emissions.N2O_Emissions_from_Energy[Run] + Emissions.N2O_Emissions_from_Food_and_Land_Use[Run] + Emissions.N2O_Emissions_from_Other[Run] + Emissions.NOx_AFOLU_Emissions[Run] + Emissions.NOx_non_AFOLU_Emissions[Run] + Emissions.Realized_CO2_Emissions_from_Energy_GtC[Run] + Emissions.SO2_Emissions_from_Energy[Run] + Emissions.SO2_Emissions_from_Food_and_Land_Use[Run] + Emissions.Total_CH4_Emissions[Run] + Emissions.Total_CO2_Emissions_GtC[Run] + Emissions.Total_CO2_Emissions[Run] + Emissions.Total_N2O_Emissions[Run] + Emissions.Total_NOx_Emissions[Run] + Emissions.Total_SO2_Emissions[Run] + Emissions.VOC_Emissions[Run] + Employment.annual_aggregate_wages[Run] + Employment.Employed[Run] + Employment.Productivity[Run] + Employment.share_of_employment_in_agriculture[Run] + Employment.share_of_employment_in_industry[Run] + Employment.share_of_employment_in_services[Run] + Employment.Unemployed[Run] + Employment.unemployment_rate[Run] + Employment.Wage_Rate[Run] + Energy_Balance_Model.Surface_Temperature_Anomaly[Run] + energy_demand.demand_for_energy[Run] + energy_investments.Coal_Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Coal_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.Gas_Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Gas_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.Gross_Investments_in_Biofuel_Capacity[Run] + energy_investments.Gross_Investments_in_Fossil_Energy_Capital_oil_and_gas[Run] + energy_investments.Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.Gross_Investments_in_Hydropower_Energy_capacity[Run] + energy_investments.Gross_Investments_in_Renewables[Run] + energy_investments.Gross_Investments_in_Solar_Energy_Capacity[Run] + energy_investments.Gross_Investments_in_wind_Energy_Capacity[Run] + energy_investments.Investments_in_Fossil_Energy[Run] + energy_investments.Investments_in_Nuclear_Capacity[Run] + energy_investments.Oil_Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Oil_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.share_of_GDP_invested_in_Energy_without_fuel[Run] + energy_investments.share_of_GDP_invested_in_fuel_extraction[Run] + energy_supply.Total_Energy_Output[Run] + energy_supply.Renewable_Energy_Output_Share[Run] + Finance.Non_performing_loans_net_of_provisions_to_capital[Run] + Finance.Non_performing_loans_to_total_gross_loans[Run] + Finance.Regulatory_Tier_1_capital_to_assets[Run] + Finance.Return_on_assets_to_short_term_liabilities[Run] + Finance.total_investment[Run] + Food_Demand.animal_product_demand_per_person_per_day[Run] + Food_Demand.animal_products_demand[Run] + Food_Demand.crop_demand_for_food[Run] + Food_Demand.crop_used_for_non_energy_other[Run] + Food_Demand.crops_for_energy[Run] + Food_Demand.Crops_used_for_Seed_or_Lost[Run] + Food_Demand.direct_food_demand_per_person_per_day[Run] + Food_Demand.feed_production[Run] + Food_Demand.vegetal_product_demand_per_person_per_day[Run] + Forcing.Anthropogenic_Effective_Radiative_Forcing[Run] + Forcing.Total_Effective_Radiative_Forcing[Run] + Forest.mature_forest_net_primary_production[Run] + Forest.young_forest_net_primary_production[Run] + fossil_energy_coal.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy_coal.Fossil_Fuel_Extraction_Carbon[Run] + fossil_energy_coal.Primary_Fossil_Energy_FUEL[Run] + fossil_energy_coal.Secondary_Fossil_Energy_Output[Run] + fossil_energy_gas.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy_gas.Fossil_Fuel_Extraction_Carbon[Run] + fossil_energy_gas.Primary_Fossil_Energy_FUEL[Run] + fossil_energy_gas.Secondary_Fossil_Energy_Output[Run] + fossil_energy_oil.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy_oil.Fossil_Fuel_Extraction_Carbon[Run] + fossil_energy_oil.Primary_Fossil_Energy_FUEL[Run] + fossil_energy_oil.Secondary_Fossil_Energy_Output[Run] + fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy.Primary_Fossil_Energy_FUEL[Run] + fossil_energy.Secondary_Fossil_Energy_Output[Run] + Freshwater.agricultural_water_withdrawal[Run] + Freshwater.available_water_supply[Run] + Freshwater.fraction_of_water_withdrawal_for_agriculture[Run] + Freshwater.irrigated_cropland[Run] + Freshwater.non_agricultural_water_withdrawl[Run] + Freshwater.total_water_withdrawal[Run] + GDP.&quot;government_transfers_in_2021c$&quot;[Run] + GDP.nominal_GDP_growth_rate[Run] + GDP.Nominal_GDP[Run] + GDP.&quot;owner_consumption_in_2021c$&quot;[Run] + GDP.&quot;private_investment_in_in_2021c$&quot;[Run] + GDP.&quot;public_investment_in_2021c$&quot;[Run] + GDP.real_GDP_growth_rate[Run] + GDP.&quot;Real_GDP_in_2021c$&quot;[Run] + GDP.&quot;worker_consumption_excluding_transfers_in_2021c$&quot;[Run] + Government.debt_to_GDP_ratio[Run] + Government.government_consumption[Run] + Government.&quot;government_spending_because_of_climate_in_2021c$&quot;[Run] + Government.&quot;government_spending_without_climate_impact_in_2021c$&quot;[Run] + Government.public_expenditure[Run] + Government.total_public_tax_income[Run] + Grass.grassland_net_primary_production[Run] + hydropower_energy.Hydropower_Energy_Capacity[Run] + hydropower_energy.Hydropower_Energy_Output[Run] + hydropower_energy.Hydropower_Installation_Costs[Run] + Inflation.agriculture_percentage_of_GDP[Run] + Inflation.gdp_difference[Run] + Inflation.Inflation_Rate[Run] + Inflation.Inflation_Index[Run] + Land_Nutrients.fertilizer_use[Run] + Land_Nutrients.man_made_fertilizer_use[Run] + Land_Nutrients.manure_fertilizer_use[Run] + Land_Use.Cropland[Run] + Land_Use.Degraded_Land[Run] + Land_Use.Forest_Land[Run] + Land_Use.Grassland[Run] + Land_Use.Mature_Forest[Run] + Land_Use.Young_Forest[Run] + N2O_Forcing.Atmospheric_N2O_Concentration[Run] + N2O_Forcing.N2O_Effective_Radiative_Forcing[Run] + nuclear_energy.Nuclear_Energy_Capacity[Run] + nuclear_energy.Nuclear_Energy_Output[Run] + nuclear_energy.Nuclear_Installation_Costs[Run] + Ocean.Air_sea_co2_flux[Run] + Ocean.Cold_surface_ocean_pH[Run] + Ocean.Warm_surface_ocean_pH[Run] + Planetary_Boundaries.&quot;PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production&quot;[Run] + Planetary_Boundaries.&quot;PB2:1_Fraction_remaining_forest_cover&quot;[Run] + Planetary_Boundaries.&quot;PB3:1_Maximum_amount_of_consumptive_blue_water_use&quot;[Run] + Planetary_Boundaries.&quot;PB4:1_Intentionally_fixed_N_applied_to_the_agricultural_system&quot;[Run] + Planetary_Boundaries.&quot;PB4:2_P_flow_from_fertilizers_to_erodible_soils&quot;[Run] + renewable_energy.Renewable_Energy_Output[Run] + renewable_energy.Total_Renewable_Energy_Capacity[Run] + Sea_level_rise_costs_and_impacts.Productivity_reduction_factor_from_coastal_flooding[Run] + Sea_level_rise_costs_and_impacts.Total_fatalities_due_to_coastal_floods[Run] + Sea_level_rise_costs_and_impacts.Total_nominal_loss_of_assets_from_SLR[Run] + Sea_level_rise_costs_and_impacts.Total_nominal_people_retreat_costs[Run] + Sea_level_rise_costs_and_impacts.Total_nominal_SLR_protection_cost[Run] + Sea_level_rise_costs_and_impacts.Total_number_of_people_flooded[Run] + Sea_Level.Land_water_storage_from_water_impoundment[Run] + Sea_Level.Sea_level_anomaly_from_Antarctic_Ice_Sheet[Run] + Sea_Level.Sea_level_anomaly_from_Greenland_Ice_Sheet[Run] + Sea_Level.Sea_level_anomaly_from_LWS[Run] + Sea_Level.Sea_level_anomaly_from_mountain_glaciers[Run] + Sea_Level.Sea_level_anomaly_from_thermal_expansion[Run] + Sea_Level.Total_global_sea_level_anomaly[Run] + solar_energy.Installation_Cost_of_Solar_capacity[Run] + solar_energy.Solar_Energy_Capacity[Run] + solar_energy.Solar_Energy_Output[Run] + Terrestrial_Carbon_Balance.Annual_carbon_uptake_in_peatlands[Run] + Terrestrial_Carbon_Balance.deforestation_carbon_loss[Run] + Terrestrial_Carbon_Balance.forest_regrowth_carbon_uptake[Run] + Terrestrial_Carbon_Balance.Terrestrial_carbon_balance[Run] + Terrestrial_Carbon_Balance.Terrestrial_net_primary_production[Run] + Total_Food_Demand.Desired_Demand_from_Accessibility[Run] + Total_Food_Demand.desired_demand_from_descriptive_norm[Run] + Total_Food_Demand.desired_demand_from_personal_norm[Run] + Total_Food_Demand.perceived_consumption_risk[Run] + Total_Food_Demand.Perceived_Social_Value[Run] + Total_Food_Demand.weight_of_accessibility[Run] + wind_energy.Installation_Cost_of_Wind_capacity[Run] + wind_energy.Wind_Energy_Capacity[Run] + wind_energy.Wind_Energy_Output[Run]</eqn>
+				<eqn>Demographics.real_GDP_per_person[Run] + Energy_Balance_Model.Surface_Temperature_Anomaly[Run] + Animal_Products_Demand.Desired_Demand_from_Accessibility[Run] + Animal_Products_Demand.desired_demand_from_descriptive_norm[Run] + Animal_Products_Demand.desired_demand_from_personal_norm[Run] + Animal_Products_Demand.perceived_consumption_risk[Run] + Animal_Products_Demand.Perceived_Social_Value[Run] + Animal_Products_Demand.weight_of_accessibility[Run] + Animal_Products.animal_products_production[Run] + Animal_Products.aquatic_animal_product_share[Run] + Animal_Products_Demand.Desired_Average_Daily_Demand_Per_Capita[Run] + Animal_Products.animal_products_balance[Run] + bio_fuel_energy.bio_fuel_primary_energy[Run] + bio_fuel_energy.bio_fuel_production[Run] + bio_fuel_energy.bio_fuel_secondary_energy_output[Run] + CCS.Storing_CO2[Run] + CH4_Forcing.Atmospheric_CH4_Concentration[Run] + CH4_Forcing.CH4_Effective_Radiative_Forcing[Run] + Circular_Flow.&quot;bank_profits_in_2021c$&quot;[Run] + Circular_Flow.bottom_40_share_of_real_income[Run] + Circular_Flow.growth_rates_of_income_per_capita_among_the_bottom_40_per_cent_of_the_total_population[Run] + Circular_Flow.income_inequality[Run] + Circular_Flow.Labour_share_of_GDP[Run] + Circular_Flow.&quot;non_bank_profits_in_2021c$&quot;[Run] + Circular_Flow.&quot;owner_savings_interest_in_2021c$&quot;[Run] + Circular_Flow.private_consumption[Run] + Circular_Flow.&quot;profit_tax_in_2021c$&quot;[Run] + Circular_Flow.Redistributive_impact_of_fiscal_policy[Run] + Circular_Flow.&quot;rent_in_in_2021c$&quot;[Run] + Circular_Flow.&quot;rent_tax_in_2021c$&quot;[Run] + Circular_Flow.&quot;transfers_in_2021c$&quot;[Run] + Circular_Flow.&quot;wage_tax_in_2021c$&quot;[Run] + Circular_Flow.&quot;wages_in_2021c$&quot;[Run] + Circular_Flow.&quot;worker_savings_interest_in_2021c$&quot;[Run] + Circular_Flow.worker_share_of_net_income[Run] + Climate_Risk_Perception.perceived_climate_change_risk[Run] + Climate_Risk_Perception.Perceived_Climate_Extremes_Exposure[Run] + Climate_Risk_Perception.Perceived_SLR_Flooding_Exposure[Run] + Climate_Risk_Perception.Perceived_Temperature_Anomaly[Run] + Climate_Risk_Perception.Reference_Climate_Extremes_Exposure[Run] + Climate_Risk_Perception.Reference_SLR_Flooding_Exposure[Run] + Climate_Risk_Perception.Reference_Temperature_Anomaly[Run] + CO2_Forcing.Atmospheric_CO2_Concentration[Run] + CO2_Forcing.Atmospheric_CO2_growth_GtC[Run] + CO2_Forcing.CO2_Effective_Radiative_Forcing[Run] + Coastal_Assets.Coastal_assets[Run,insufficient] + Coastal_Assets.Coastal_assets[Run,well_protected] + Coastal_population.Coastal_population[Run,insufficient] + Coastal_population.Coastal_population[Run,well_protected] + Concrete.CO2_emissions[Run] + Concrete.concrete_waste_generation[Run] + Concrete.In_use_concrete_stock[Run] + Concrete.Infrastructure_concrete_stock_in_use[Run] + Concrete.new_RS_construction[Run] + Concrete.residential_concrete_stock_in_use[Run] + Concrete.total_yearly_concrete_use[Run] + Crop.crop_production[Run] + Crop.crop_balance[Run] + Crop.cropland_net_primary_production[Run] + degraded_land_soil_carbon.degraded_land_litter[Run] + Demographics.Aged_0_years[Run] + Demographics.Aged_1_to_20_years[Run] + Demographics.Aged_20_to_40_years[Run] + Demographics.Aged_40_to_60_years[Run] + Demographics.Aged_60_to_65_years[Run] + Demographics.Aged_65_to_75_years[Run] + Demographics.Aged_Over_75_years[Run] + Demographics.Births[Run] + Demographics.deaths_0_years[Run] + Demographics.deaths_1_to_20_years[Run] + Demographics.deaths_20_to_40_years[Run] + Demographics.deaths_40_to_60_years[Run] + Demographics.deaths_60_to_65_years[Run] + Demographics.deaths_65_to_75_years[Run] + Demographics.deaths_Over_75_years[Run] + Demographics.female_population_literacy_percentage[Run] + Demographics.fertility[Run] + Demographics.nominal_GDP_per_person[Run] + Demographics.Population[Run] + Demographics.real_GDP_per_person[Run] + Demographics.total_deaths[Run] + Emissions.CH4_Emissions_from_Energy[Run] + Emissions.CH4_Emissions_from_Food_and_Land_Use[Run] + Emissions.CH4_Emissions_from_Other[Run] + Emissions.CO_Emissions[Run] + Emissions.CO2_emissions_from_Energy[Run] + Emissions.CO2_Emissions_from_Food_and_Land_Use_GtC[Run] + Emissions.CO2_Emissions_from_Food_and_Land_Use[Run] + Emissions.CO2_Emissions_from_Other_GtC[Run] + Emissions.HFC134a_eq_Emissions[Run] + Emissions.land_carbon_sink[Run] + Emissions.N2O_Emissions_from_Energy[Run] + Emissions.N2O_Emissions_from_Food_and_Land_Use[Run] + Emissions.N2O_Emissions_from_Other[Run] + Emissions.NOx_AFOLU_Emissions[Run] + Emissions.NOx_non_AFOLU_Emissions[Run] + Emissions.Realized_CO2_Emissions_from_Energy_GtC[Run] + Emissions.SO2_Emissions_from_Energy[Run] + Emissions.SO2_Emissions_from_Food_and_Land_Use[Run] + Emissions.Total_CH4_Emissions[Run] + Emissions.Total_CO2_Emissions_GtC[Run] + Emissions.Total_CO2_Emissions[Run] + Emissions.Total_N2O_Emissions[Run] + Emissions.Total_NOx_Emissions[Run] + Emissions.Total_SO2_Emissions[Run] + Emissions.VOC_Emissions[Run] + Employment.annual_aggregate_wages[Run] + Employment.Employed[Run] + Employment.Productivity[Run] + Employment.share_of_employment_in_agriculture[Run] + Employment.share_of_employment_in_industry[Run] + Employment.share_of_employment_in_services[Run] + Employment.Unemployed[Run] + Employment.unemployment_rate[Run] + Employment.Wage_Rate[Run] + Energy_Balance_Model.Surface_Temperature_Anomaly[Run] + energy_demand.demand_for_energy[Run] + energy_investments.Coal_Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Coal_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.Gas_Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Gas_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.Gross_Investments_in_Biofuel_Capacity[Run] + energy_investments.Gross_Investments_in_Fossil_Energy_Capital_oil_and_gas[Run] + energy_investments.Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.Gross_Investments_in_Hydropower_Energy_capacity[Run] + energy_investments.Gross_Investments_in_Renewables[Run] + energy_investments.Gross_Investments_in_Solar_Energy_Capacity[Run] + energy_investments.Gross_Investments_in_wind_Energy_Capacity[Run] + energy_investments.Investments_in_Fossil_Energy[Run] + energy_investments.Investments_in_Nuclear_Capacity[Run] + energy_investments.Oil_Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Oil_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.share_of_GDP_invested_in_Energy_without_fuel[Run] + energy_investments.share_of_GDP_invested_in_fuel_extraction[Run] + energy_supply.Total_Energy_Output[Run] + energy_supply.Renewable_Energy_Output_Share[Run] + Finance.Non_performing_loans_net_of_provisions_to_capital[Run] + Finance.Non_performing_loans_to_total_gross_loans[Run] + Finance.Regulatory_Tier_1_capital_to_assets[Run] + Finance.Return_on_assets_to_short_term_liabilities[Run] + Finance.total_investment[Run] + Food_Demand.animal_product_demand_per_person_per_day[Run] + Food_Demand.animal_products_demand[Run] + Food_Demand.crop_demand_for_food[Run] + Food_Demand.crop_used_for_non_energy_other[Run] + Food_Demand.crops_for_energy[Run] + Food_Demand.Crops_used_for_Seed_or_Lost[Run] + Food_Demand.direct_food_demand_per_person_per_day[Run] + Food_Demand.feed_production[Run] + Food_Demand.vegetal_product_demand_per_person_per_day[Run] + Forcing.Anthropogenic_Effective_Radiative_Forcing[Run] + Forcing.Total_Effective_Radiative_Forcing[Run] + Forest.mature_forest_net_primary_production[Run] + Forest.young_forest_net_primary_production[Run] + fossil_energy_coal.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy_coal.Fossil_Fuel_Extraction_Carbon[Run] + fossil_energy_coal.Primary_Fossil_Energy_FUEL[Run] + fossil_energy_coal.Secondary_Fossil_Energy_Output[Run] + fossil_energy_gas.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy_gas.Fossil_Fuel_Extraction_Carbon[Run] + fossil_energy_gas.Primary_Fossil_Energy_FUEL[Run] + fossil_energy_gas.Secondary_Fossil_Energy_Output[Run] + fossil_energy_oil.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy_oil.Fossil_Fuel_Extraction_Carbon[Run] + fossil_energy_oil.Primary_Fossil_Energy_FUEL[Run] + fossil_energy_oil.Secondary_Fossil_Energy_Output[Run] + fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy.Primary_Fossil_Energy_FUEL[Run] + fossil_energy.Secondary_Fossil_Energy_Output[Run] + Freshwater.agricultural_water_withdrawal[Run] + Freshwater.available_water_supply[Run] + Freshwater.fraction_of_water_withdrawal_for_agriculture[Run] + Freshwater.irrigated_cropland[Run] + Freshwater.non_agricultural_water_withdrawl[Run] + Freshwater.total_water_withdrawal[Run] + GDP.&quot;government_transfers_in_2021c$&quot;[Run] + GDP.nominal_GDP_growth_rate[Run] + GDP.Nominal_GDP[Run] + GDP.&quot;owner_consumption_in_2021c$&quot;[Run] + GDP.&quot;private_investment_in_in_2021c$&quot;[Run] + GDP.&quot;public_investment_in_2021c$&quot;[Run] + GDP.real_GDP_growth_rate[Run] + GDP.&quot;Real_GDP_in_2021c$&quot;[Run] + GDP.&quot;worker_consumption_excluding_transfers_in_2021c$&quot;[Run] + Government.debt_to_GDP_ratio[Run] + Government.government_consumption[Run] + Government.&quot;government_spending_because_of_climate_in_2021c$&quot;[Run] + Government.&quot;government_spending_without_climate_impact_in_2021c$&quot;[Run] + Government.public_expenditure[Run] + Government.total_public_tax_income[Run] + Grass.grassland_net_primary_production[Run] + hydropower_energy.Hydropower_Energy_Capacity[Run] + hydropower_energy.Hydropower_Energy_Output[Run] + hydropower_energy.Hydropower_Installation_Costs[Run] + Inflation.agriculture_percentage_of_GDP[Run] + Inflation.gdp_difference[Run] + Inflation.Inflation_Rate[Run] + Inflation.Inflation_Index[Run] + Land_Nutrients.fertilizer_use[Run] + Land_Nutrients.man_made_fertilizer_use[Run] + Land_Nutrients.manure_fertilizer_use[Run] + Land_Use.Cropland[Run] + Land_Use.Degraded_Land[Run] + Land_Use.Forest_Land[Run] + Land_Use.Grassland[Run] + Land_Use.Mature_Forest[Run] + Land_Use.Young_Forest[Run] + N2O_Forcing.Atmospheric_N2O_Concentration[Run] + N2O_Forcing.N2O_Effective_Radiative_Forcing[Run] + nuclear_energy.Nuclear_Energy_Capacity[Run] + nuclear_energy.Nuclear_Energy_Output[Run] + nuclear_energy.Nuclear_Installation_Costs[Run] + Ocean.Air_sea_co2_flux[Run] + Ocean.Cold_surface_ocean_pH[Run] + Ocean.Warm_surface_ocean_pH[Run] + Planetary_Boundaries.&quot;PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production&quot;[Run] + Planetary_Boundaries.&quot;PB2:1_Fraction_remaining_forest_cover&quot;[Run] + Planetary_Boundaries.&quot;PB3:1_Maximum_amount_of_consumptive_blue_water_use&quot;[Run] + Planetary_Boundaries.&quot;PB4:1_Intentionally_fixed_N_applied_to_the_agricultural_system&quot;[Run] + Planetary_Boundaries.&quot;PB4:2_P_flow_from_fertilizers_to_erodible_soils&quot;[Run] + renewable_energy.Renewable_Energy_Output[Run] + renewable_energy.Total_Renewable_Energy_Capacity[Run] + Sea_level_rise_costs_and_impacts.Productivity_reduction_factor_from_coastal_flooding[Run] + Sea_level_rise_costs_and_impacts.Total_fatalities_due_to_coastal_floods[Run] + Sea_level_rise_costs_and_impacts.Total_nominal_loss_of_assets_from_SLR[Run] + Sea_level_rise_costs_and_impacts.Total_nominal_people_retreat_costs[Run] + Sea_level_rise_costs_and_impacts.Total_nominal_SLR_protection_cost[Run] + Sea_level_rise_costs_and_impacts.Total_number_of_people_flooded[Run] + Sea_Level.Land_water_storage_from_water_impoundment[Run] + Sea_Level.Sea_level_anomaly_from_Antarctic_Ice_Sheet[Run] + Sea_Level.Sea_level_anomaly_from_Greenland_Ice_Sheet[Run] + Sea_Level.Sea_level_anomaly_from_LWS[Run] + Sea_Level.Sea_level_anomaly_from_mountain_glaciers[Run] + Sea_Level.Sea_level_anomaly_from_thermal_expansion[Run] + Sea_Level.Total_global_sea_level_anomaly[Run] + solar_energy.Installation_Cost_of_Solar_capacity[Run] + solar_energy.Solar_Energy_Capacity[Run] + solar_energy.Solar_Energy_Output[Run] + Terrestrial_Carbon_Balance.Annual_carbon_uptake_in_peatlands[Run] + Terrestrial_Carbon_Balance.deforestation_carbon_loss[Run] + Terrestrial_Carbon_Balance.forest_regrowth_carbon_uptake[Run] + Terrestrial_Carbon_Balance.Terrestrial_carbon_balance[Run] + Terrestrial_Carbon_Balance.Terrestrial_net_primary_production[Run] + Total_Food_Demand.Desired_Demand_from_Accessibility[Run] + Total_Food_Demand.desired_demand_from_descriptive_norm[Run] + Total_Food_Demand.desired_demand_from_personal_norm[Run] + Total_Food_Demand.perceived_consumption_risk[Run] + Total_Food_Demand.Perceived_Social_Value[Run] + Total_Food_Demand.weight_of_accessibility[Run] + wind_energy.Installation_Cost_of_Wind_capacity[Run] + wind_energy.Wind_Energy_Capacity[Run] + wind_energy.Wind_Energy_Output[Run]</eqn>
 			</isee:placeholder>
 			<aux name="Simulation End">
 				<doc>${No Sensi}
@@ -3268,6 +3306,12 @@ This is what determines when the model stops calculating</doc>
 				<range min="2023" max="2200"/>
 				<units>years</units>
 			</aux>
+			<isee:placeholder name="Dashboard Right Placeholder">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Energy_Balance_Model.Surface_Temperature_Anomaly[Run] + Demographics.real_GDP_per_capita[Run] + Animal_Products_Demand.Desired_Demand_from_Accessibility[Run] + Animal_Products_Demand.desired_demand_from_descriptive_norm[Run] + Animal_Products_Demand.desired_demand_from_personal_norm[Run] + Animal_Products_Demand.perceived_consumption_risk[Run] + Animal_Products_Demand.Perceived_Social_Value[Run] + Animal_Products_Demand.weight_of_accessibility[Run] + Animal_Products.animal_products_production[Run] + Animal_Products.aquatic_animal_product_share[Run] + Animal_Products_Demand.Desired_Average_Daily_Demand_Per_Capita[Run] + Animal_Products.animal_products_balance[Run] + bio_fuel_energy.bio_fuel_primary_energy[Run] + bio_fuel_energy.bio_fuel_production[Run] + bio_fuel_energy.bio_fuel_secondary_energy_output[Run] + CCS.Storing_CO2[Run] + CH4_Forcing.Atmospheric_CH4_Concentration[Run] + CH4_Forcing.CH4_Effective_Radiative_Forcing[Run] + Circular_Flow.&quot;bank_profits_in_2021c$&quot;[Run] + Circular_Flow.bottom_40_share_of_real_income[Run] + Circular_Flow.growth_rates_of_income_per_capita_among_the_bottom_40_per_cent_of_the_total_population[Run] + Circular_Flow.income_inequality[Run] + Circular_Flow.Labour_share_of_GDP[Run] + Circular_Flow.&quot;non_bank_profits_in_2021c$&quot;[Run] + Circular_Flow.&quot;owner_savings_interest_in_2021c$&quot;[Run] + Circular_Flow.private_consumption[Run] + Circular_Flow.&quot;profit_tax_in_2021c$&quot;[Run] + Circular_Flow.Redistributive_impact_of_fiscal_policy[Run] + Circular_Flow.&quot;rent_in_in_2021c$&quot;[Run] + Circular_Flow.&quot;rent_tax_in_2021c$&quot;[Run] + Circular_Flow.&quot;transfers_in_2021c$&quot;[Run] + Circular_Flow.&quot;wage_tax_in_2021c$&quot;[Run] + Circular_Flow.&quot;wages_in_2021c$&quot;[Run] + Circular_Flow.&quot;worker_savings_interest_in_2021c$&quot;[Run] + Circular_Flow.worker_share_of_net_income[Run] + Climate_Risk_Perception.perceived_climate_change_risk[Run] + Climate_Risk_Perception.Perceived_Climate_Extremes_Exposure[Run] + Climate_Risk_Perception.Perceived_SLR_Flooding_Exposure[Run] + Climate_Risk_Perception.Perceived_Temperature_Anomaly[Run] + Climate_Risk_Perception.Reference_Climate_Extremes_Exposure[Run] + Climate_Risk_Perception.Reference_SLR_Flooding_Exposure[Run] + Climate_Risk_Perception.Reference_Temperature_Anomaly[Run] + CO2_Forcing.Atmospheric_CO2_Concentration[Run] + CO2_Forcing.Atmospheric_CO2_growth_GtC[Run] + CO2_Forcing.CO2_Effective_Radiative_Forcing[Run] + Coastal_Assets.Coastal_assets[Run,insufficient] + Coastal_Assets.Coastal_assets[Run,well_protected] + Coastal_population.Coastal_population[Run,insufficient] + Coastal_population.Coastal_population[Run,well_protected] + Concrete.CO2_emissions[Run] + Concrete.concrete_waste_generation[Run] + Concrete.In_use_concrete_stock[Run] + Concrete.Infrastructure_concrete_stock_in_use[Run] + Concrete.new_RS_construction[Run] + Concrete.residential_concrete_stock_in_use[Run] + Concrete.total_yearly_concrete_use[Run] + Crop.crop_production[Run] + Crop.crop_balance[Run] + Crop.cropland_net_primary_production[Run] + degraded_land_soil_carbon.degraded_land_litter[Run] + Demographics.Aged_0_years[Run] + Demographics.Aged_1_to_20_years[Run] + Demographics.Aged_20_to_40_years[Run] + Demographics.Aged_40_to_60_years[Run] + Demographics.Aged_60_to_65_years[Run] + Demographics.Aged_65_to_75_years[Run] + Demographics.Aged_Over_75_years[Run] + Demographics.Births[Run] + Demographics.deaths_0_years[Run] + Demographics.deaths_1_to_20_years[Run] + Demographics.deaths_20_to_40_years[Run] + Demographics.deaths_40_to_60_years[Run] + Demographics.deaths_60_to_65_years[Run] + Demographics.deaths_65_to_75_years[Run] + Demographics.deaths_Over_75_years[Run] + Demographics.female_population_literacy_percentage[Run] + Demographics.fertility[Run] + Demographics.nominal_GDP_per_person[Run] + Demographics.Population[Run] + Demographics.real_GDP_per_person[Run] + Demographics.total_deaths[Run] + Emissions.CH4_Emissions_from_Energy[Run] + Emissions.CH4_Emissions_from_Food_and_Land_Use[Run] + Emissions.CH4_Emissions_from_Other[Run] + Emissions.CO_Emissions[Run] + Emissions.CO2_emissions_from_Energy[Run] + Emissions.CO2_Emissions_from_Food_and_Land_Use_GtC[Run] + Emissions.CO2_Emissions_from_Food_and_Land_Use[Run] + Emissions.CO2_Emissions_from_Other_GtC[Run] + Emissions.HFC134a_eq_Emissions[Run] + Emissions.land_carbon_sink[Run] + Emissions.N2O_Emissions_from_Energy[Run] + Emissions.N2O_Emissions_from_Food_and_Land_Use[Run] + Emissions.N2O_Emissions_from_Other[Run] + Emissions.NOx_AFOLU_Emissions[Run] + Emissions.NOx_non_AFOLU_Emissions[Run] + Emissions.Realized_CO2_Emissions_from_Energy_GtC[Run] + Emissions.SO2_Emissions_from_Energy[Run] + Emissions.SO2_Emissions_from_Food_and_Land_Use[Run] + Emissions.Total_CH4_Emissions[Run] + Emissions.Total_CO2_Emissions_GtC[Run] + Emissions.Total_CO2_Emissions[Run] + Emissions.Total_N2O_Emissions[Run] + Emissions.Total_NOx_Emissions[Run] + Emissions.Total_SO2_Emissions[Run] + Emissions.VOC_Emissions[Run] + Employment.annual_aggregate_wages[Run] + Employment.Employed[Run] + Employment.Productivity[Run] + Employment.share_of_employment_in_agriculture[Run] + Employment.share_of_employment_in_industry[Run] + Employment.share_of_employment_in_services[Run] + Employment.Unemployed[Run] + Employment.unemployment_rate[Run] + Employment.Wage_Rate[Run] + Energy_Balance_Model.Surface_Temperature_Anomaly[Run] + energy_demand.demand_for_energy[Run] + energy_investments.Coal_Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Coal_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.Gas_Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Gas_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.Gross_Investments_in_Biofuel_Capacity[Run] + energy_investments.Gross_Investments_in_Fossil_Energy_Capital_oil_and_gas[Run] + energy_investments.Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.Gross_Investments_in_Hydropower_Energy_capacity[Run] + energy_investments.Gross_Investments_in_Renewables[Run] + energy_investments.Gross_Investments_in_Solar_Energy_Capacity[Run] + energy_investments.Gross_Investments_in_wind_Energy_Capacity[Run] + energy_investments.Investments_in_Fossil_Energy[Run] + energy_investments.Investments_in_Nuclear_Capacity[Run] + energy_investments.Oil_Gross_Investments_in_Fossil_Energy_Capital[Run] + energy_investments.Oil_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[Run] + energy_investments.share_of_GDP_invested_in_Energy_without_fuel[Run] + energy_investments.share_of_GDP_invested_in_fuel_extraction[Run] + energy_supply.Total_Energy_Output[Run] + energy_supply.Renewable_Energy_Output_Share[Run] + Finance.Non_performing_loans_net_of_provisions_to_capital[Run] + Finance.Non_performing_loans_to_total_gross_loans[Run] + Finance.Regulatory_Tier_1_capital_to_assets[Run] + Finance.Return_on_assets_to_short_term_liabilities[Run] + Finance.total_investment[Run] + Food_Demand.animal_product_demand_per_person_per_day[Run] + Food_Demand.animal_products_demand[Run] + Food_Demand.crop_demand_for_food[Run] + Food_Demand.crop_used_for_non_energy_other[Run] + Food_Demand.crops_for_energy[Run] + Food_Demand.Crops_used_for_Seed_or_Lost[Run] + Food_Demand.direct_food_demand_per_person_per_day[Run] + Food_Demand.feed_production[Run] + Food_Demand.vegetal_product_demand_per_person_per_day[Run] + Forcing.Anthropogenic_Effective_Radiative_Forcing[Run] + Forcing.Total_Effective_Radiative_Forcing[Run] + Forest.mature_forest_net_primary_production[Run] + Forest.young_forest_net_primary_production[Run] + fossil_energy_coal.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy_coal.Fossil_Fuel_Extraction_Carbon[Run] + fossil_energy_coal.Primary_Fossil_Energy_FUEL[Run] + fossil_energy_coal.Secondary_Fossil_Energy_Output[Run] + fossil_energy_gas.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy_gas.Fossil_Fuel_Extraction_Carbon[Run] + fossil_energy_gas.Primary_Fossil_Energy_FUEL[Run] + fossil_energy_gas.Secondary_Fossil_Energy_Output[Run] + fossil_energy_oil.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy_oil.Fossil_Fuel_Extraction_Carbon[Run] + fossil_energy_oil.Primary_Fossil_Energy_FUEL[Run] + fossil_energy_oil.Secondary_Fossil_Energy_Output[Run] + fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[Run] + fossil_energy.Primary_Fossil_Energy_FUEL[Run] + fossil_energy.Secondary_Fossil_Energy_Output[Run] + Freshwater.agricultural_water_withdrawal[Run] + Freshwater.available_water_supply[Run] + Freshwater.fraction_of_water_withdrawal_for_agriculture[Run] + Freshwater.irrigated_cropland[Run] + Freshwater.non_agricultural_water_withdrawl[Run] + Freshwater.total_water_withdrawal[Run] + GDP.&quot;government_transfers_in_2021c$&quot;[Run] + GDP.nominal_GDP_growth_rate[Run] + GDP.Nominal_GDP[Run] + GDP.&quot;owner_consumption_in_2021c$&quot;[Run] + GDP.&quot;private_investment_in_in_2021c$&quot;[Run] + GDP.&quot;public_investment_in_2021c$&quot;[Run] + GDP.real_GDP_growth_rate[Run] + GDP.&quot;Real_GDP_in_2021c$&quot;[Run] + GDP.&quot;worker_consumption_excluding_transfers_in_2021c$&quot;[Run] + Government.debt_to_GDP_ratio[Run] + Government.government_consumption[Run] + Government.&quot;government_spending_because_of_climate_in_2021c$&quot;[Run] + Government.&quot;government_spending_without_climate_impact_in_2021c$&quot;[Run] + Government.public_expenditure[Run] + Government.total_public_tax_income[Run] + Grass.grassland_net_primary_production[Run] + hydropower_energy.Hydropower_Energy_Capacity[Run] + hydropower_energy.Hydropower_Energy_Output[Run] + hydropower_energy.Hydropower_Installation_Costs[Run] + Inflation.agriculture_percentage_of_GDP[Run] + Inflation.gdp_difference[Run] + Inflation.Inflation_Rate[Run] + Inflation.Inflation_Index[Run] + Land_Nutrients.fertilizer_use[Run] + Land_Nutrients.man_made_fertilizer_use[Run] + Land_Nutrients.manure_fertilizer_use[Run] + Land_Use.Cropland[Run] + Land_Use.Degraded_Land[Run] + Land_Use.Forest_Land[Run] + Land_Use.Grassland[Run] + Land_Use.Mature_Forest[Run] + Land_Use.Young_Forest[Run] + N2O_Forcing.Atmospheric_N2O_Concentration[Run] + N2O_Forcing.N2O_Effective_Radiative_Forcing[Run] + nuclear_energy.Nuclear_Energy_Capacity[Run] + nuclear_energy.Nuclear_Energy_Output[Run] + nuclear_energy.Nuclear_Installation_Costs[Run] + Ocean.Air_sea_co2_flux[Run] + Ocean.Cold_surface_ocean_pH[Run] + Ocean.Warm_surface_ocean_pH[Run] + Planetary_Boundaries.&quot;PB1:1_HANPP_as_fraction_of_Holocene_net_primary_production&quot;[Run] + Planetary_Boundaries.&quot;PB2:1_Fraction_remaining_forest_cover&quot;[Run] + Planetary_Boundaries.&quot;PB3:1_Maximum_amount_of_consumptive_blue_water_use&quot;[Run] + Planetary_Boundaries.&quot;PB4:1_Intentionally_fixed_N_applied_to_the_agricultural_system&quot;[Run] + Planetary_Boundaries.&quot;PB4:2_P_flow_from_fertilizers_to_erodible_soils&quot;[Run] + renewable_energy.Renewable_Energy_Output[Run] + renewable_energy.Total_Renewable_Energy_Capacity[Run] + Sea_level_rise_costs_and_impacts.Productivity_reduction_factor_from_coastal_flooding[Run] + Sea_level_rise_costs_and_impacts.Total_fatalities_due_to_coastal_floods[Run] + Sea_level_rise_costs_and_impacts.Total_nominal_loss_of_assets_from_SLR[Run] + Sea_level_rise_costs_and_impacts.Total_nominal_people_retreat_costs[Run] + Sea_level_rise_costs_and_impacts.Total_nominal_SLR_protection_cost[Run] + Sea_level_rise_costs_and_impacts.Total_number_of_people_flooded[Run] + Sea_Level.Land_water_storage_from_water_impoundment[Run] + Sea_Level.Sea_level_anomaly_from_Antarctic_Ice_Sheet[Run] + Sea_Level.Sea_level_anomaly_from_Greenland_Ice_Sheet[Run] + Sea_Level.Sea_level_anomaly_from_LWS[Run] + Sea_Level.Sea_level_anomaly_from_mountain_glaciers[Run] + Sea_Level.Sea_level_anomaly_from_thermal_expansion[Run] + Sea_Level.Total_global_sea_level_anomaly[Run] + solar_energy.Installation_Cost_of_Solar_capacity[Run] + solar_energy.Solar_Energy_Capacity[Run] + solar_energy.Solar_Energy_Output[Run] + Terrestrial_Carbon_Balance.Annual_carbon_uptake_in_peatlands[Run] + Terrestrial_Carbon_Balance.deforestation_carbon_loss[Run] + Terrestrial_Carbon_Balance.forest_regrowth_carbon_uptake[Run] + Terrestrial_Carbon_Balance.Terrestrial_carbon_balance[Run] + Terrestrial_Carbon_Balance.Terrestrial_net_primary_production[Run] + Total_Food_Demand.Desired_Demand_from_Accessibility[Run] + Total_Food_Demand.desired_demand_from_descriptive_norm[Run] + Total_Food_Demand.desired_demand_from_personal_norm[Run] + Total_Food_Demand.perceived_consumption_risk[Run] + Total_Food_Demand.Perceived_Social_Value[Run] + Total_Food_Demand.weight_of_accessibility[Run] + wind_energy.Installation_Cost_of_Wind_capacity[Run] + wind_energy.Wind_Energy_Capacity[Run] + wind_energy.Wind_Energy_Output[Run]</eqn>
+			</isee:placeholder>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -3311,7 +3355,7 @@ This is what determines when the model stops calculating</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="8" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="8" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3335,7 +3379,6 @@ This is what determines when the model stops calculating</doc>
 						<isee:series_styles>
 							<isee:series_style color="blue" thickness="1"/>
 							<isee:series_style color="red" thickness="1"/>
-							<isee:series_style color="fuchsia" thickness="1"/>
 							<isee:series_style color="#008F44" thickness="1"/>
 							<isee:series_style color="#FF7F00" thickness="1"/>
 							<isee:series_style color="#7F00FF" thickness="1"/>
@@ -3359,7 +3402,7 @@ This is what determines when the model stops calculating</doc>
 					</graph>
 				</stacked_container>
 				<isee:placeholder x="904.75" y="652.833" name="Calibrated Variables"/>
-				<isee:selector x="837.5" y="560" width="328" height="30" select_placeholder="true" placeholder="Calibrated_Variables"/>
+				<isee:selector x="842.5" y="551.25" width="328" height="30" select_placeholder="true" placeholder="Calibrated_Variables"/>
 				<stacked_container uid="80" x="28.5" y="1680.5" width="568" height="300">
 					<graph font_size="24pt" legend_position="none" isee:hide_border="true" axis_title_font_size="18pt" axis_label_font_size="14pt" width="568" height="300" comparative="true" type="box" show_grid="true" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="9" num_y_grid_lines="6" num_x_labels="5" num_y_labels="6" title="a) Surface Temperature Anomaly (°C)" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<isee:time_points>
@@ -4166,14 +4209,14 @@ This is what determines when the model stops calculating</doc>
 					<to>Planetary_Boundaries</to>
 				</connector>
 				<isee:placeholder x="973" y="978.583" name="Dashboard Left Placeholder"/>
-				<isee:placeholder x="1135.5" y="978.583" name="Dashboard Right Placeholder"/>
 				<connector uid="165" color="#797979" font_color="#797979" isee:thickness="2" angle="183.527" isee:autocreated="true">
 					<from>Behavioral_Choices</from>
 					<to>Behavioral_Change</to>
 				</connector>
-				<aux x="1005.83" y="49.1667" name="Simulation End"/>
+				<aux x="1006.5" y="48.1667" name="Simulation End"/>
+				<isee:placeholder x="1135.5" y="978.583" name="Dashboard Right Placeholder"/>
 			</view>
-			<view isee:template_view="template:1" isee:name="Fossil Energy" background="#F7F7F7" page_width="1066" page_height="600" isee:scroll_x="1.42857" isee:scroll_y="45" zoom="140" home_view="true" type="interface">
+			<view isee:template_view="template:1" isee:name="Fossil Energy" background="#F7F7F7" page_width="1066" page_height="600" zoom="170" home_view="true" type="interface">
 				<style>
 					<isee:stacked_container item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
 				</style>
@@ -4205,7 +4248,7 @@ This is what determines when the model stops calculating</doc>
 				</graphical_input>
 				<isee:selector x="629" y="416" width="80" height="30" select_placeholder="true" placeholder="Government_Regulations.rate_of_decommissioning_extraction_capital"/>
 			</view>
-			<view isee:template_view="template:1" isee:name="Renewables &amp; CCS" background="#F7F7F7" page_width="1066" page_height="600" zoom="140" type="interface">
+			<view isee:template_view="template:1" isee:name="Renewables &amp; CCS" background="#F7F7F7" page_width="1066" page_height="600" zoom="170" type="interface">
 				<style>
 					<isee:stacked_container item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
 				</style>
@@ -4220,7 +4263,7 @@ This is what determines when the model stops calculating</doc>
 				</graphical_input>
 				<isee:selector x="170" y="418" width="126" height="30" select_placeholder="true" placeholder="Government_Regulations.share_of_emissions_stored"/>
 			</view>
-			<view isee:template_view="template:1" isee:name="Human Behavior" background="#F7F7F7" page_width="1066" page_height="600" isee:scroll_x="183.572" zoom="140" type="interface">
+			<view isee:template_view="template:1" isee:name="Human Behavior" background="#F7F7F7" page_width="1066" page_height="600" zoom="140" type="interface">
 				<style>
 					<isee:stacked_container item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
 				</style>
@@ -4268,7 +4311,7 @@ This is what determines when the model stops calculating</doc>
 					<entity name="Behavioral_Choices.switch_environmental_consciousness_policy"/>
 					<reset_to after="never">0</reset_to>
 				</switch>
-				<graphical_input x="892.5" y="453.333" width="125" height="125" isee:conditional_immediately_update_on_user_input="true" isee:conditional_use_active_value="true" isee:conditional_entity="Behavioral_Choices.switch_environmental_consciousness_policy" title="Environment Consciousness Policy (dmnl)" isee:lock_x_values="true" isee:navigate_to="false" show_name="true" isee:fill_intensity="0.5" isee:series_color="black" isee:input_precision="1" isee:x_axis_title="" isee:y_axis_title="">
+				<graphical_input x="892.5" y="453.333" width="125" height="125" isee:conditional_immediately_update_on_user_input="true" isee:conditional_use_active_value="true" isee:conditional_entity="Behavioral_Choices.switch_environmental_consciousness_policy" title="Environment Consciousness Policy (dmnl)" isee:lock_x_values="true" isee:navigate_to="false" show_name="true" isee:fill_intensity="0.5" isee:series_color="black" isee:input_precision="0.01" isee:x_axis_title="" isee:y_axis_title="">
 					<entity name="Behavioral_Choices.additional_environmental_consciousness_policy"/>
 					<reset_to after="never">0</reset_to>
 				</graphical_input>
@@ -4302,7 +4345,7 @@ This is what determines when the model stops calculating</doc>
 					<reset_to after="never">0</reset_to>
 				</graphical_input>
 			</view>
-			<view isee:template_view="template:1" isee:name="Government" background="#F7F7F7" page_width="1066" page_height="600" zoom="105" type="interface">
+			<view isee:template_view="template:1" isee:name="Government" background="#F7F7F7" page_width="1066" page_height="600" zoom="140" type="interface">
 				<style>
 					<isee:stacked_container item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
 				</style>
@@ -4569,6 +4612,27 @@ This is what determines when the model stops calculating</doc>
 			<isee:stories/>
 		</views>
 	</model>
+	<isee:user_controlled>
+		<ent name="Simulation End" preserve="true"/>
+		<ent name="Government Regulations.tax on CO2e emissions" preserve="true"/>
+		<ent name="Government Regulations.tax rate on newly installed solar energy capacity" preserve="true"/>
+		<ent name="Government Regulations.tax rate on newly installed wind energy capacity" preserve="true"/>
+		<ent name="Climate.switch sea level rise protection cost damage" preserve="true"/>
+		<ent name="Climate.switch sea level rise fatalities damage" preserve="true"/>
+		<ent name="Climate.switch sea level rise relocation cost damage" preserve="true"/>
+		<ent name="Climate.switch sea level rise productivity reduction damage" preserve="true"/>
+		<ent name="Climate.switch sea level rise finance damage" preserve="true"/>
+		<ent name="Climate.switch sea level rise damage" preserve="true"/>
+		<ent name="Climate.switch government damage" preserve="true"/>
+		<ent name="Climate.switch demography damage" preserve="true"/>
+		<ent name="Climate.switch finance damage" preserve="true"/>
+		<ent name="Climate.switch labor damage" preserve="true"/>
+		<ent name="Climate.switch energy damage" preserve="true"/>
+		<ent name="Climate.switch concrete impact" preserve="true"/>
+		<ent name="Climate.switch landuse damage" preserve="true"/>
+		<ent name="Climate.switch behavioral impact" preserve="true"/>
+		<ent name="Climate.climate impact stoptime" preserve="true"/>
+	</isee:user_controlled>
 	<macro name="INFLATION_IMPACT_GROWTH_RATE">
 		<eqn>trend in input</eqn>
 		<parm>input</parm>
