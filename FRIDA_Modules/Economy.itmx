@@ -8513,7 +8513,7 @@ To control extreme policy only</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>normal_rate_of_converting_safe_loans_to_safe_loans_for_financing_innovation*Firms_Innovation_Orientation_2</eqn>
+				<eqn>MAX(0, normal_rate_of_converting_safe_loans_to_safe_loans_for_financing_innovation*Firms_Innovation_Orientation_2)</eqn>
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="nominal investment and\nreal GDP growth difference">
@@ -10475,6 +10475,18 @@ ELSE
 0</eqn>
 				<units>Year</units>
 			</aux>
+			<aux name="historical\nnominal GDP growth rate\nexplosion stopper">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF TIME &lt;= start_year AND
+(nominal_GDP_growth_rate &gt; .3 OR nominal_GDP_growth_rate &lt; -0.3) 
+THEN
+5/0
+ELSE
+0</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -10861,6 +10873,17 @@ ELSE
 					<from>start_year</from>
 					<to>future_time_in_recession</to>
 				</connector>
+				<aux x="705.833" y="402.958" name="historical\nnominal GDP growth rate\nexplosion stopper"/>
+				<connector uid="83" angle="45.8529">
+					<from>start_year</from>
+					<to>historical_nominal_GDP_growth_rate_explosion_stopper</to>
+				</connector>
+				<connector uid="84" angle="315.158">
+					<from>
+						<alias uid="85"/>
+					</from>
+					<to>historical_nominal_GDP_growth_rate_explosion_stopper</to>
+				</connector>
 				<alias font_style="italic" label_side="top" uid="9" x="442.67" y="85" width="18" height="18">
 					<of>Nominal_GDP</of>
 				</alias>
@@ -10890,6 +10913,9 @@ ELSE
 				</alias>
 				<alias font_style="italic" uid="73" x="1438.38" y="360.667" width="18" height="18">
 					<of>real_GDP_growth_rate</of>
+				</alias>
+				<alias font_style="italic" uid="85" x="628.5" y="326" width="18" height="18">
+					<of>nominal_GDP_growth_rate</of>
 				</alias>
 			</view>
 		</views>
@@ -14170,6 +14196,16 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 				<eqn>energy_demand_growth_rate[Run]-energy_supply_growth_rate[Run]</eqn>
 				<units>dmnl/year</units>
 			</aux>
+			<aux name="hyper inflation deflation\nexplosion stopper">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF Inflation_Rate &gt; 0.5 OR Inflation_Rate &lt; -0.5 THEN
+5/0
+ELSE
+0</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -14723,9 +14759,19 @@ agriculture_share_of_GDP_starting_point_determinant*EXP(agriculture_share_of_GDP
 					<from>energy_market_balance</from>
 					<to>marginal_energy_cost_inflation_contribution</to>
 				</connector>
+				<aux x="1304.43" y="740.833" name="hyper inflation deflation\nexplosion stopper"/>
+				<connector uid="117" angle="0">
+					<from>
+						<alias uid="118"/>
+					</from>
+					<to>hyper_inflation_deflation_explosion_stopper</to>
+				</connector>
 				<alias color="blue" background="white" font_style="italic" uid="79" x="809.75" y="1305.5" width="18" height="18">
 					<shape type="circle" radius="18"/>
 					<of>time_to_measure_growth_rate</of>
+				</alias>
+				<alias font_style="italic" uid="118" x="1173.33" y="723.333" width="45" height="35">
+					<of>Inflation_Rate</of>
 				</alias>
 			</view>
 		</views>
