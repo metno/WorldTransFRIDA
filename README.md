@@ -6,53 +6,42 @@ This repository contains the FRIDA model (Feedback-based knowledge Repository fo
 The model is being developed using <a href="https://www.iseesystems.com/store/products/stella-architect.aspx">Stella Architect</a>.
 
 You can run and use the model locally without purchasing Stella Architect using the <a href="https://www.iseesystems.com/softwares/player/iseeplayer.aspx">isee Player</a>
-## Attributions
 
-### Calibration Data
+## Input data processing
 <ul>
   <li>
-    World Bank
+    <a href="https://github.com/chrisdwells/FRIDA-emissions">Calibration Emissions, Concentrations, and Forcings</a>
+  </li>
+  <li>
+    <a href="https://github.com/chrisdwells/calibrate-FRIDA-climate">Climate Module Calibration</a>
+  </li>
+  <li>
+    <a href="https://github.com/chrisdwells/FRIDA-forcings">Simplified Climate Forcings</a>
+  </li>
+  <li>
+    <a href="https://github.com/chrisdwells/FRIDA-misc-forcings">Miscellaneous Climate Forcings</a>
+  </li>
+  <li>
+    Climate Impacts processing
     <ul>
-      <li><a href="https://data.worldbank.org/indicator/NY.GDP.MKTP.PP.CD">GDP, PPP (current international $)</a></li>
-      <li><a href="https://data.worldbank.org/indicator/NY.GDP.MKTP.PP.KD">GDP, PPP (constant 2021 international $)</a></li>
-      <li><a href="https://data.worldbank.org/indicator/NY.GDP.MKTP.CD">GDP (current US$)</a></li>
+      <li><a href="https://github.com/chrisdwells/climate-labour-impacts">Labour Productivity</a></li>
+      <li><a href="https://github.com/chrisdwells/temperature-mortality">Mortality</a></li>
+      <li><a href="https://github.com/chrisdwells/climate-energy-supply">Energy Supply</a></li>
+      <li><a href="https://github.com/chrisdwells/extremes-exposure">Exposure to Climate Extremes</a></li>
+      <li><a href="https://github.com/chrisdwells/cdd-hdd">Cooling and Heating Degree Days</a></li>
+      <li><a href="https://github.com/chrisdwells/FRIDA-climate-impacts">Uncertainty Parameter Sets</a></li>
     </ul>
   </li>
-  <li>
-    <a href="https://www.rug.nl/ggdc/productivity/pwt/?lang=en">Penn World Table (GDP components)</a>
-  </li>
-  <li>
-    <a href="https://population.un.org/wpp/Download/Standard/MostUsed/">UN Population Data</a>
-  </li>
-  <li>
-    <a href="https://www.climatewatchdata.org/ghg-emissions?end_year=2018&gases=co2&start_year=1990">Climate Watch</a>
-  </li>
-  <li>
-      <a href="https://ourworldindata.org/grapher/labor-share-of-gdp?country=~OWID_WRL">Our World in Data</a>
-  </li>
-  <li>
-    <a href="https://pris.iaea.org/PRIS/WorldStatistics/WorldTrendNuclearPowerCapacity.aspx">Power Reactor Information System (PRIS)</a> 
-  </li>
-  <li>
-    <a href="https://www.fao.org/home/en/">The Food and Agriculture Organization (FAO) </a> 
-  </li>
-  <li> 
-    <a href="https://www.iea.org/data-and-statistics/charts/installed-power-generation-capacity-by-source-in-the-stated-policies-scenario-2000-2040">IEA–International Energy Agency</a> 
-  </li>
-  <li>
-    <a href="https://zenodo.org/record/5705391#.Y9wBpS-l2Rs">IPCC Working Group 1 (WG1) Sixth Assessment Report (AR6)</a>
-  </li>
-  <li>
-    <a href="https://www.rcmip.org/">RCMIP</a>
-  </li>
-  <li>
-    <a href="https://github.com/chrisroadmap/ar6">IPCC AR6 WG1 Chapter 7</a>
-  </li>
 </ul>
 
-### Initialization Data
+## Output data processing
 <ul>
   <li>
-    <a href="https://population.un.org/wpp/Download/Standard/MostUsed/">UN Population Data</a>
+    <a href="https://github.com/BenjaminBlanz/WorldTransFrida-Uncertainty">Uncertainty Analysis</a>
   </li>
 </ul>
+ 
+## Calibration Data
+
+See the Documentation tab in the <a href="https://github.com/metno/WorldTransFRIDA/blob/main/Data/Calibration%20Data.csv">Calibration Data file</a>
+ 

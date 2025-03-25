@@ -5,7 +5,7 @@
 		<name>Sea Level</name>
 		<uuid>656dacef-005e-41a3-aedc-d19f6fd6e9f6</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.7.3" isee:build_number="3465" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.8" isee:build_number="3578" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -16,7 +16,7 @@
 		<dim name="ClimateCase" size="100"/>
 		<dim name="Run" size="1"/>
 	</dimensions>
-	<isee:prefs live_at_start="true" saved_runs="100" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true">
+	<isee:prefs live_at_start="true" saved_runs="100" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_secure_mode="true" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true">
 		<isee:ignored_words>
 			<isee:ignored_word>WolrdTrans</isee:ignored_word>
 			<isee:ignored_word>WorldTrans</isee:ignored_word>
@@ -32,9 +32,9 @@
 	<isee:multiplayer_settings include_chat="true" allow_observers="false" advance_time_increment="1" max_advance_time_in_ms="0" model_stops_when_players_drop="false" observer_start_page="home_page" enabled="false"/>
 	<isee:time_formats default_format="Builtin">
 		<isee:time_format name="Builtin" type="adaptive"/>
-		<isee:time_format name="TimeLabel1" type="grouped" start_offset="0" start_offset_units="years">
+		<isee:time_format name="TimeLabel1" type="grouped" start_offset="0" start_offset_units="Years">
 			<isee:time_format_groupings>
-				<isee:time_format_grouping unit="years" prefix="'"/>
+				<isee:time_format_grouping unit="Years" prefix="'"/>
 			</isee:time_format_groupings>
 		</isee:time_format>
 	</isee:time_formats>
@@ -232,7 +232,7 @@
 	</model_units>
 	<model name="Sea_Level">
 		<variables>
-			<aux name="Total global SLR" access="output">
+			<aux name="Total global\nsea level\nanomaly" access="output">
 				<doc>${Calibrated Output,Explanatory Variable}
 Total global sea-level rise with reference to 1993.
 
@@ -241,10 +241,10 @@ For a python version of the code and all references see: https://github.com/lnnr
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SLR_thermosteric+SLR_from_Greenland_Ice_Sheet+SLR_from_Antarctic_Ice_Sheet+SLR_from_mountain_glaciers+SLR_from_LWS</eqn>
+				<eqn>Sea_level_anomaly_from_thermal_expansion+Sea_level_anomaly_from_Greenland_Ice_Sheet+Sea_level_anomaly_from_Antarctic_Ice_Sheet+Sea_level_anomaly_from_mountain_glaciers+Sea_level_anomaly_from_LWS</eqn>
 				<units>metre</units>
 			</aux>
-			<stock name="SLR from GrIS SMB">
+			<stock name="Sea level anomaly from GrIS SMB">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -261,10 +261,10 @@ Fettweis et al. (2013): &quot;Estimating the Greenland ice sheet surface mass ba
 				</dimensions>
 				<eqn>IF T_anomaly_for_SLR &lt;= 0 THEN 0
 ELSE 
-nu_GrIS_SMB *UNIT_Kelvin *  (T_anomaly_for_SLR/UNIT_Kelvin)^phi_GrIS_SMB * SQRT(1.0 - SLR_from_GrIS_SMB/maximum_GrIS_volume)</eqn>
+nu_GrIS_SMB *UNIT_Kelvin *  (T_anomaly_for_SLR/UNIT_Kelvin)^phi_GrIS_SMB * SQRT(1.0 - Sea_level_anomaly_from_GrIS_SMB/maximum_GrIS_sea_level_contribution)</eqn>
 				<units>metre/Year</units>
 			</flow>
-			<aux name="SLR from\nAntarctic Ice Sheet">
+			<aux name="Sea level anomaly from\nAntarctic Ice Sheet" access="output" isee:autocreated="true">
 				<doc>${Calibrated Output,Explanatory Variable}
 Based on the BRICKv0.3 implementation (Wong et al., 2017), using the DAIS model (Shaffer, 2014).
 
@@ -274,10 +274,10 @@ Wong, T. E., Bakker, A. M. R., Ruckert, K., Applegate, P., Slangen, A. B. A., an
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>AntIS_max_contribution_to_SLR * (1.0 - AntIS_Volume/AntIS_initial_volume) + initial_SLR_from_AntIS</eqn>
+				<eqn>AntIS_max_contribution_to_sea_level_anomaly * (1.0 - AntIS_Volume/AntIS_initial_volume) + initial_sea_level_anomaly_from_AntIS</eqn>
 				<units>metre</units>
 			</aux>
-			<stock name="SLR from\nmountain glaciers">
+			<stock name="Sea level anomaly from mountain glaciers" access="output" isee:autocreated="true">
 				<doc>${Calibrated Output,Explanatory Variable}
 The uncertainty of the temperature input will lead to uncertainties in this component that already cover the given IPCC uncertainty range for this SLR component. Hence none of the input parameters is a calibration parameter.
 
@@ -290,11 +290,11 @@ Wigley and Raper (2005): &quot;Extended scenarios for glacier melt due to anthro
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>initial_SLR_from_MG</eqn>
-				<inflow>yearly_MG_mass_loss</inflow>
+				<eqn>initial_sea_level_anomaly_from_MG</eqn>
+				<inflow>yearly_SLR_from_mountain_glaciers</inflow>
 				<units>metre</units>
 			</stock>
-			<flow name="yearly MG\nmass loss">
+			<flow name="yearly SLR from mountain glaciers">
 				<doc>The uncertainty of the temperature input will lead to uncertainties in this component that already cover the given IPCC uncertainty range for this SLR component. Hence none of the input parameters is a calibration parameter.
 
 
@@ -306,7 +306,7 @@ Wigley and Raper (2005): &quot;Extended scenarios for glacier melt due to anthro
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>MG_Tdep_rate * (UNIT_Kelvin *(T_anomaly_for_SLR/UNIT_Kelvin)^MG_temperature_nonlinearity) * (1 - SLR_from_mountain_glaciers/MG_max_sea_leve_rise)^MG_volume_nonlinearity</eqn>
+				<eqn>MG_Tdep_rate * (UNIT_Kelvin *(MAX(0, T_anomaly_for_SLR)/UNIT_Kelvin)^MG_temperature_nonlinearity) * (1 - Sea_level_anomaly_from_mountain_glaciers/MG_max_sea_level_anomaly)^MG_volume_nonlinearity</eqn>
 				<units>metre/Year</units>
 			</flow>
 			<aux name="T anomaly for SLR">
@@ -318,52 +318,49 @@ Wigley and Raper (2005): &quot;Extended scenarios for glacier melt due to anthro
 				<units>K</units>
 			</aux>
 			<aux name="MG Tdep rate min">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.0004</eqn>
 				<units>metre/year/K</units>
 			</aux>
-			<aux name="MG max sea leve rise">
-				<doc>${External Parameter}
+			<aux name="MG max sea level anomaly">
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.41</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="MG volume\nnonlinearity">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>1.646</eqn>
 				<units>dmnl</units>
 			</aux>
-			<flow name="yearly thermosteric\nsea level change">
+			<flow name="yearly thermosteric\nsea level rise">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>energy_input_to_SLR_conversion_factor*yearly_ocean_energy_input</eqn>
 				<units>metre/Year</units>
 			</flow>
-			<stock name="SLR thermosteric">
+			<stock name="Sea level anomaly from thermal expansion" access="output" isee:autocreated="true">
 				<doc>${Calibrated Output,Explanatory Variable}
 </doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>initial_thermosteric_SLR</eqn>
-				<inflow>yearly_thermosteric_sea_level_change</inflow>
+				<eqn>initial_thermosteric_sea_level_anomaly</eqn>
+				<inflow>yearly_thermosteric_sea_level_rise</inflow>
 				<units>metre</units>
 			</stock>
 			<aux name="energy input to SLR\nconversion factor min">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 Kuhlbrodt, T., and Gregory, J. M. (2012), Ocean heat uptake and its consequences for the magnitude of sea level rise and climate change, Geophys. Res. Lett., 39, L18608, doi:10.1029/2012GL052952.
 
 Meyssignac et al. (2019): Measuring Global Ocean Heat Content to Estimate the Earth Energy Imbalance. Front. Mar. Sci. 6:432. doi: 10.3389/fmars.2019.00432</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>0.1</eqn>
-				</element>
-				<range min="0.09" max="0.12"/>
+				<eqn>0.1</eqn>
 				<units>metre / YJ</units>
 			</aux>
 			<aux name="net downward\nradiative flux">
@@ -408,7 +405,7 @@ N = -k1T1 + (1-epsilon)*k3*(T2-T3)</doc>
 				<eqn>1e-24</eqn>
 				<units>YJ / J</units>
 			</aux>
-			<aux name="SLR from\nGreenland Ice Sheet">
+			<aux name="Sea level anomaly from\nGreenland Ice Sheet" access="output" isee:autocreated="true">
 				<doc>${Calibrated Output,Explanatory Variable}
 Based on MAGICC6 model, reference:
 
@@ -416,7 +413,7 @@ Nauels et al. (2017): &quot;Synthesizing long-term sea level rise projections â€
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>initial_SLR_from_GrIS+SLR_from_GrIS_SMB+SLR_from_GrIS_DIS</eqn>
+				<eqn>initial_sea_level_anomaly_from_GrIS+Sea_level_anomaly_from_GrIS_SMB+Sea_level_anomaly_from_GrIS_DIS</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="nu GrIS SMB">
@@ -429,13 +426,13 @@ Nauels et al. (2017): &quot;Synthesizing long-term sea level rise projections â€
 				<units>metre/K/Year</units>
 			</aux>
 			<aux name="phi GrIS SMB">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>2</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="maximum GrIS volume">
-				<doc>${External Parameter}
+			<aux name="maximum GrIS sea level contribution">
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>7.36</eqn>
 				<units>metre</units>
@@ -446,7 +443,7 @@ Nauels et al. (2017): &quot;Synthesizing long-term sea level rise projections â€
 				<eqn>1</eqn>
 				<units>K</units>
 			</aux>
-			<stock name="SLR from GrIS DIS">
+			<stock name="Sea level anomaly from GrIS DIS">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -455,7 +452,7 @@ Nauels et al. (2017): &quot;Synthesizing long-term sea level rise projections â€
 				<units>metre</units>
 			</stock>
 			<aux name="GrIS outlet max">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.42</eqn>
 				<units>metre</units>
@@ -470,43 +467,43 @@ Nauels et al. (2017): &quot;Synthesizing long-term sea level rise projections â€
 				<units>1/year</units>
 			</aux>
 			<aux name="epsilon GrIS SID">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.39</eqn>
 				<units>1/K</units>
 			</aux>
 			<aux name="density water">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>1030</eqn>
 				<units>kg / m^3</units>
 			</aux>
 			<aux name="density ice">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>917</eqn>
 				<units>kg / m^3</units>
 			</aux>
 			<aux name="density rock">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>4000</eqn>
 				<units>kg / m^3</units>
 			</aux>
 			<aux name="T freezing seawater">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>-1.8</eqn>
 				<units>Celsius</units>
 			</aux>
 			<aux name="reference AntIS radius">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>1864000</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="modern AntOcean\nsubsurface T">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.72</eqn>
 				<units>Celsius</units>
@@ -526,13 +523,13 @@ Nauels et al. (2017): &quot;Synthesizing long-term sea level rise projections â€
 				<units>dmnl</units>
 			</aux>
 			<aux name="T to TAnt c1">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>14.279</eqn>
 				<units>K</units>
 			</aux>
 			<aux name="T to TAnt c2">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.774</eqn>
 				<units>K/Celsius</units>
@@ -565,7 +562,7 @@ Nauels et al. (2017): &quot;Synthesizing long-term sea level rise projections â€
 				<units>Celsius / K</units>
 			</aux>
 			<aux name="AntOcean T conversion param b">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.5</eqn>
 				<units>Celsius</units>
@@ -580,19 +577,19 @@ Nauels et al. (2017): &quot;Synthesizing long-term sea level rise projections â€
 				<units>metre</units>
 			</aux>
 			<aux name="AntIS param mu">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>8.7</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="AntIS param nu">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.012</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="AntIS param P0">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 P0 is the (ice equivalent) precipitation at 0 â—¦C
 
 Shaffer (2014)</doc>
@@ -600,19 +597,19 @@ Shaffer (2014)</doc>
 				<units>metre/year</units>
 			</aux>
 			<aux name="AntIS param gamma">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>2</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="AntIS param alpha">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.5</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="AntIS param kappa">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 Îº is chosen assuming a relationship
 between columnar water content (that increases exponentially with temperature) and precipitation
 
@@ -621,25 +618,25 @@ Shaffer (2014)</doc>
 				<units>1/Celsius</units>
 			</aux>
 			<aux name="AntIS param f0">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>1.2</eqn>
 				<units>metre/year</units>
 			</aux>
 			<aux name="AntIS param c">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>95</eqn>
 				<units>metre/Celsius</units>
 			</aux>
 			<aux name="AntIS param b0">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>775</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="AntIS param slope">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.0006</eqn>
 				<units>dmnl</units>
@@ -660,7 +657,7 @@ Shaffer (2014)</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(AntIS_param_b0-Total_global_SLR)/AntIS_param_slope</eqn>
+				<eqn>(AntIS_param_b0-Total_global_sea_level_anomaly)/AntIS_param_slope</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="AntIS P">
@@ -748,7 +745,7 @@ ELSE
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>AntIS_param_slope*AntIS_Radius-AntIS_param_b0+Total_global_SLR</eqn>
+				<eqn>AntIS_param_slope*AntIS_Radius-AntIS_param_b0+Total_global_sea_level_anomaly</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="AntIS speed">
@@ -776,7 +773,7 @@ ELSE
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>UNIT_per_year * (Total_global_SLR - DELAY(Total_global_SLR, 1))</eqn>
+				<eqn>UNIT_per_year * (Total_global_sea_level_anomaly - DELAY(Total_global_sea_level_anomaly, 1))</eqn>
 				<units>metre/year</units>
 			</aux>
 			<stock name="AntIS Volume">
@@ -816,13 +813,13 @@ ELSE
 				<units>1/year</units>
 			</aux>
 			<aux name="AntIS initial volume">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>24791700000000000</eqn>
 				<units>metre^3</units>
 			</aux>
-			<aux name="AntIS max\ncontribution to SLR">
-				<doc>${External Parameter}
+			<aux name="AntIS max\ncontribution to sea level anomaly">
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>57</eqn>
 				<units>metre</units>
@@ -846,61 +843,55 @@ ELSE
 				<eqn>1</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="initial SLR from GrIS">
-				<doc>${External Parameter}
+			<aux name="initial sea level anomaly from GrIS">
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>-0.0028</eqn>
-				</element>
+				<eqn>-0.0028</eqn>
 				<range min="-0.01" max="0"/>
 				<units>metre</units>
 			</aux>
-			<aux name="initial SLR from AntIS">
-				<doc>${External Parameter}
+			<aux name="initial sea level anomaly from AntIS">
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>-0.00182</eqn>
-				</element>
+				<eqn>-0.00182</eqn>
 				<range min="-0.005" max="0.01"/>
 				<units>metre</units>
 			</aux>
-			<aux name="initial SLR from MG">
-				<doc>${External Parameter}
+			<aux name="initial sea level anomaly from MG">
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>-0.0035</eqn>
-				</element>
+				<eqn>-0.0035</eqn>
 				<range min="-0.005" max="-0.001"/>
 				<units>metre</units>
 			</aux>
-			<aux name="initial thermosteric SLR">
-				<doc>${External Parameter}
+			<aux name="initial thermosteric sea level anomaly">
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>-0.008</eqn>
-				</element>
+				<eqn>-0.008</eqn>
 				<range min="-0.015" max="-0.005"/>
 				<units>metre</units>
 			</aux>
 			<aux name="MG temperature\nnonlinearity">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>1.5</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Include MICI behaviour">
+				<doc>${No Sensi}
+</doc>
 				<eqn>0</eqn>
 				<range min="0" max="1"/>
 				<units>dmnl</units>
@@ -910,7 +901,7 @@ ELSE
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>IF Antarctic_air_temperature &gt; MICI_AntIS_critical_Tant THEN
-Include_MICI_behaviour * MICI_AntIS_disintegration * AntIS_initial_volume / AntIS_max_contribution_to_SLR ELSE 0</eqn>
+Include_MICI_behaviour * MICI_AntIS_disintegration * AntIS_initial_volume / AntIS_max_contribution_to_sea_level_anomaly ELSE 0</eqn>
 				<units>metre^3/year</units>
 			</aux>
 			<aux name="MICI AntIS\ndisintegration">
@@ -928,13 +919,13 @@ Include_MICI_behaviour * MICI_AntIS_disintegration * AntIS_initial_volume / AntI
 				<units>Celsius</units>
 			</aux>
 			<aux name="rho GrIS SID min">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.0001</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="nu GrIS SMB min">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.00005</eqn>
 				<units>metre/K/Year</units>
@@ -1030,21 +1021,18 @@ Include_MICI_behaviour * MICI_AntIS_disintegration * AntIS_initial_volume / AntI
 				<units>1</units>
 			</aux>
 			<aux name="energy input to SLR\nconversion factor max">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 Kuhlbrodt, T., and Gregory, J. M. (2012), Ocean heat uptake and its consequences for the magnitude of sea level rise and climate change, Geophys. Res. Lett., 39, L18608, doi:10.1029/2012GL052952.
 
 Meyssignac et al. (2019): Measuring Global Ocean Heat Content to Estimate the Earth Energy Imbalance. Front. Mar. Sci. 6:432. doi: 10.3389/fmars.2019.00432</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>0.12</eqn>
-				</element>
-				<range min="0.09" max="0.12"/>
+				<eqn>0.12</eqn>
 				<units>metre / YJ</units>
 			</aux>
 			<aux name="MG Tdep rate max">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.001</eqn>
 				<units>metre/year/K</units>
@@ -1064,13 +1052,13 @@ Meyssignac et al. (2019): Measuring Global Ocean Heat Content to Estimate the Ea
 				<units>metre/YJ</units>
 			</aux>
 			<aux name="rho GrIS SID max">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.0005</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="nu GrIS SMB max">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.0002</eqn>
 				<units>metre/K/Year</units>
@@ -1080,7 +1068,7 @@ Meyssignac et al. (2019): Measuring Global Ocean Heat Content to Estimate the Ea
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>IF T_anomaly_for_SLR &gt; MICI_GrIS_Tcrit THEN
-MAX(0, MICI_GrIS_discharge_rate[Run] * ( GrIS_outlet_max-SLR_from_GrIS_DIS))
+MAX(0, MICI_GrIS_discharge_rate[Run] * ( GrIS_outlet_max-Sea_level_anomaly_from_GrIS_DIS))
 ELSE
 0.0</eqn>
 				<units>metre/year</units>
@@ -1090,18 +1078,18 @@ ELSE
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>MAX(0,  
-rho_GrIS_SID[Run] * (GrIS_outlet_max-SLR_from_GrIS_DIS) * EXP(epsilon_GrIS_SID*T_anomaly_for_SLR))
+rho_GrIS_SID[Run] * (GrIS_outlet_max-Sea_level_anomaly_from_GrIS_DIS) * EXP(epsilon_GrIS_SID*T_anomaly_for_SLR))
 + MICI_disintegration_discharge*Include_MICI_behaviour</eqn>
 				<units>metre/year</units>
 			</flow>
 			<aux name="MICI GrIS Tcrit min">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>4</eqn>
 				<units>K</units>
 			</aux>
 			<aux name="MICI GrIS Tcrit max">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>2.5</eqn>
 				<units>K</units>
@@ -1114,13 +1102,13 @@ rho_GrIS_SID[Run] * (GrIS_outlet_max-SLR_from_GrIS_DIS) * EXP(epsilon_GrIS_SID*T
 				<units>K</units>
 			</aux>
 			<aux name="MICI GrIS\ndischarge rate min">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.001</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="MICI GrIS\ndischarge rate max">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.01</eqn>
 				<units>1/year</units>
@@ -1133,63 +1121,63 @@ rho_GrIS_SID[Run] * (GrIS_outlet_max-SLR_from_GrIS_DIS) * EXP(epsilon_GrIS_SID*T
 				<units>1/year</units>
 			</aux>
 			<aux name="MICI AntIS critical Tant min">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>-14</eqn>
 				<units>Celsius</units>
 			</aux>
 			<aux name="MICI AntIS critical Tant max">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>-15</eqn>
 				<units>Celsius</units>
 			</aux>
 			<aux name="MICI AntIS disintegration min">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0</eqn>
 				<units>metre/year</units>
 			</aux>
 			<aux name="MICI AntIS disintegration max">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.008</eqn>
 				<units>metre/year</units>
 			</aux>
 			<aux name="AntOcean T\nconversion param a min">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.15</eqn>
 				<units>Celsius / K</units>
 			</aux>
 			<aux name="AntOcean T\nconversion param a max">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>0.3</eqn>
 				<units>Celsius / K</units>
 			</aux>
 			<aux name="AntIS param h0 max">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>1900</eqn>
 				<units>metre</units>
 			</aux>
 			<aux name="AntIS param h0 min">
-				<doc>${External Parameter}
+				<doc>${External Parameter,No Sensi}
 </doc>
 				<eqn>1600</eqn>
 				<units>metre</units>
 			</aux>
-			<aux name="SLR from LWS" access="output" isee:autocreated="true">
+			<aux name="Sea level anomaly from LWS" access="output" isee:autocreated="true">
 				<doc>${Calibrated Output,Explanatory Variable}
 </doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SLR_from_groundwater_withdrawal + SLR_from_water_impoundment + initial_SLR_from_LWS</eqn>
+				<eqn>Sea_level_anomaly_from_groundwater_withdrawal + Sea_level_anomaly_from_water_impoundment + initial_sea_level_anomaly_from_LWS</eqn>
 				<units>metre</units>
 			</aux>
-			<aux name="SLR from\ngroundwater withdrawal">
+			<aux name="Sea level anomaly from\ngroundwater withdrawal">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -1224,25 +1212,23 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 				<units>m^3/year</units>
 			</flow>
 			<aux name="Initial water storage from water impoundment">
-				<doc>${Internal Calibration Parameter}
+				<doc>${External Parameter,Internal Calibration Parameter,No Sensi}
 </doc>
 				<eqn>3950000000000</eqn>
 				<range min="2500000000000" max="5500000000000"/>
 				<units>m^3</units>
 			</aux>
-			<aux name="initial SLR from LWS">
-				<doc>${Internal Calibration Parameter}
+			<aux name="initial sea level anomaly from LWS">
+				<doc>${External Parameter,Internal Calibration Parameter,No Sensi}
 </doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>-0.00538179</eqn>
-				</element>
+				<eqn>-0.00535664676034004</eqn>
 				<range min="-0.1" max="0.1"/>
 				<units>metre</units>
 			</aux>
-			<aux name="SLR from water impoundment">
+			<aux name="Sea level anomaly from water impoundment">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
@@ -1256,7 +1242,7 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>3001923201</eqn>
+					<eqn>3001307524.20914</eqn>
 				</element>
 				<range min="2000000000" max="5000000000"/>
 				<units>m^3/GW</units>
@@ -1329,7 +1315,7 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="7" isee:page_rows="4" isee:scroll_x="410" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="7" isee:page_rows="4" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1368,21 +1354,21 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="summed" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<aux label_side="center" x="512.494" y="542.167" width="65.9167" height="65.9167" name="Total global SLR"/>
-				<stock label_side="top" x="870.84" y="208.071" name="SLR from GrIS SMB"/>
+				<aux label_side="center" x="512.494" y="542.167" width="65.9167" height="65.9167" name="Total global\nsea level\nanomaly"/>
+				<stock label_side="top" x="870.84" y="208.071" name="Sea level anomaly from GrIS SMB"/>
 				<flow x="1023.73" y="208.071" name="yearly SLR from\nGrIS SMB">
 					<pts>
 						<pt x="1166.12" y="208.071"/>
 						<pt x="893.34" y="208.071"/>
 					</pts>
 				</flow>
-				<aux label_side="top" x="722.283" y="686.065" width="27.2857" height="27.2857" name="SLR from\nAntarctic Ice Sheet"/>
+				<aux label_side="top" x="722.283" y="686.065" width="27.2857" height="27.2857" name="Sea level anomaly from\nAntarctic Ice Sheet"/>
 				<connector uid="127" angle="146.812">
-					<from>SLR_from_Antarctic_Ice_Sheet</from>
-					<to>Total_global_SLR</to>
+					<from>Sea_level_anomaly_from_Antarctic_Ice_Sheet</from>
+					<to>Total_global_sea_level_anomaly</to>
 				</connector>
-				<stock label_side="bottom" x="288.425" y="913.474" name="SLR from\nmountain glaciers"/>
-				<flow x="179.338" y="919" name="yearly MG\nmass loss">
+				<stock label_side="bottom" x="288.425" y="913.474" name="Sea level anomaly from mountain glaciers"/>
+				<flow x="179.338" y="919" name="yearly SLR from mountain glaciers">
 					<pts>
 						<pt x="80.75" y="919"/>
 						<pt x="265.925" y="919"/>
@@ -1390,31 +1376,31 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 				</flow>
 				<aux label_side="bottom" x="596.786" y="479.944" name="T anomaly for SLR"/>
 				<connector uid="128" angle="153.199">
-					<from>SLR_from_mountain_glaciers</from>
-					<to>yearly_MG_mass_loss</to>
+					<from>Sea_level_anomaly_from_mountain_glaciers</from>
+					<to>yearly_SLR_from_mountain_glaciers</to>
 				</connector>
 				<connector uid="129" angle="52.7778">
-					<from>SLR_from_mountain_glaciers</from>
-					<to>Total_global_SLR</to>
+					<from>Sea_level_anomaly_from_mountain_glaciers</from>
+					<to>Total_global_sea_level_anomaly</to>
 				</connector>
 				<aux color="blue" label_side="left" x="114.479" y="1012.25" name="MG Tdep rate min"/>
-				<aux label_side="right" label_angle="45" x="179.338" y="836.736" name="MG max sea leve rise"/>
+				<aux label_side="right" label_angle="45" x="179.338" y="836.736" name="MG max sea level anomaly"/>
 				<aux color="blue" label_side="left" label_angle="135" x="120.313" y="868.321" name="MG volume\nnonlinearity"/>
 				<connector uid="131" angle="286.661">
-					<from>MG_max_sea_leve_rise</from>
-					<to>yearly_MG_mass_loss</to>
+					<from>MG_max_sea_level_anomaly</from>
+					<to>yearly_SLR_from_mountain_glaciers</to>
 				</connector>
 				<connector uid="132" angle="359.946">
 					<from>MG_volume_nonlinearity</from>
-					<to>yearly_MG_mass_loss</to>
+					<to>yearly_SLR_from_mountain_glaciers</to>
 				</connector>
-				<flow x="194.987" y="583.334" name="yearly thermosteric\nsea level change">
+				<flow x="194.987" y="583.334" name="yearly thermosteric\nsea level rise">
 					<pts>
 						<pt x="60.8333" y="583.334"/>
 						<pt x="317.14" y="583.334"/>
 					</pts>
 				</flow>
-				<stock x="339.64" y="583.084" name="SLR thermosteric"/>
+				<stock label_side="top" x="339.64" y="583.084" name="Sea level anomaly from thermal expansion"/>
 				<aux color="blue" label_side="bottom" x="90.0277" y="656.375" name="energy input to SLR\nconversion factor min"/>
 				<aux label_side="left" label_angle="135" x="213.398" y="383.141" name="net downward\nradiative flux"/>
 				<connector uid="133" angle="34.834">
@@ -1422,14 +1408,14 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					<to>energy_input_to_SLR_conversion_factor</to>
 				</connector>
 				<connector uid="140" angle="2.21449">
-					<from>SLR_thermosteric</from>
-					<to>Total_global_SLR</to>
+					<from>Sea_level_anomaly_from_thermal_expansion</from>
+					<to>Total_global_sea_level_anomaly</to>
 				</connector>
 				<aux label_side="left" x="121.146" y="444.361" name="UNIT seconds per year"/>
 				<aux label_side="bottom" x="231.398" y="491.584" name="yearly ocean\nenergy input"/>
 				<connector uid="143" angle="248.354">
 					<from>yearly_ocean_energy_input</from>
-					<to>yearly_thermosteric_sea_level_change</to>
+					<to>yearly_thermosteric_sea_level_rise</to>
 				</connector>
 				<aux label_side="left" x="121.146" y="469.917" name="earth surface area"/>
 				<connector uid="144" angle="336.814">
@@ -1458,26 +1444,26 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					<from>
 						<alias uid="151"/>
 					</from>
-					<to>yearly_MG_mass_loss</to>
+					<to>yearly_SLR_from_mountain_glaciers</to>
 				</connector>
-				<aux label_side="left" label_angle="135" x="767.667" y="266.514" name="SLR from\nGreenland Ice Sheet"/>
+				<aux label_side="left" label_angle="135" x="767.667" y="266.514" name="Sea level anomaly from\nGreenland Ice Sheet"/>
 				<connector uid="152" angle="209.529">
-					<from>SLR_from_GrIS_SMB</from>
-					<to>SLR_from_Greenland_Ice_Sheet</to>
+					<from>Sea_level_anomaly_from_GrIS_SMB</from>
+					<to>Sea_level_anomaly_from_Greenland_Ice_Sheet</to>
 				</connector>
 				<connector uid="153" angle="284.452">
-					<from>SLR_from_Greenland_Ice_Sheet</from>
-					<to>Total_global_SLR</to>
+					<from>Sea_level_anomaly_from_Greenland_Ice_Sheet</from>
+					<to>Total_global_sea_level_anomaly</to>
 				</connector>
 				<aux color="blue" label_side="left" x="1000.44" y="116.278" name="nu GrIS SMB"/>
 				<aux color="blue" label_side="right" x="1068.06" y="142.714" name="phi GrIS SMB"/>
-				<aux label_side="left" x="967.11" y="151.778" name="maximum GrIS volume"/>
+				<aux label_side="left" x="967.11" y="151.778" name="maximum GrIS sea level contribution"/>
 				<connector uid="154" angle="28.3428">
-					<from>SLR_from_GrIS_SMB</from>
+					<from>Sea_level_anomaly_from_GrIS_SMB</from>
 					<to>yearly_SLR_from_GrIS_SMB</to>
 				</connector>
 				<connector uid="155" angle="359.223">
-					<from>maximum_GrIS_volume</from>
+					<from>maximum_GrIS_sea_level_contribution</from>
 					<to>yearly_SLR_from_GrIS_SMB</to>
 				</connector>
 				<connector uid="156" angle="303.287">
@@ -1499,7 +1485,7 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					<from>UNIT_Kelvin</from>
 					<to>yearly_SLR_from_GrIS_SMB</to>
 				</connector>
-				<stock x="870.84" y="328.111" name="SLR from GrIS DIS"/>
+				<stock label_side="top" x="870.84" y="328.111" name="Sea level anomaly from GrIS DIS"/>
 				<aux color="blue" label_side="top" x="1238" y="310.111" name="GrIS outlet max"/>
 				<aux color="blue" label_side="right" x="1002.01" y="407.446" name="rho GrIS SID"/>
 				<aux color="blue" label_side="right" x="967.11" y="273.472" name="epsilon GrIS SID"/>
@@ -1969,16 +1955,16 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 				<aux label_side="left" label_angle="135" x="940.88" y="689.583" name="AntIS initial volume"/>
 				<connector uid="283" angle="182.828">
 					<from>AntIS_initial_volume</from>
-					<to>SLR_from_Antarctic_Ice_Sheet</to>
+					<to>Sea_level_anomaly_from_Antarctic_Ice_Sheet</to>
 				</connector>
 				<connector uid="284" angle="143.841">
 					<from>AntIS_Volume</from>
-					<to>SLR_from_Antarctic_Ice_Sheet</to>
+					<to>Sea_level_anomaly_from_Antarctic_Ice_Sheet</to>
 				</connector>
-				<aux label_side="top" x="811.553" y="665.875" name="AntIS max\ncontribution to SLR"/>
+				<aux label_side="top" x="811.553" y="665.875" name="AntIS max\ncontribution to sea level anomaly"/>
 				<connector uid="291" angle="204.101">
-					<from>AntIS_max_contribution_to_SLR</from>
-					<to>SLR_from_Antarctic_Ice_Sheet</to>
+					<from>AntIS_max_contribution_to_sea_level_anomaly</from>
+					<to>Sea_level_anomaly_from_Antarctic_Ice_Sheet</to>
 				</connector>
 				<aux x="2043.34" y="739.503" name="UNIT per m"/>
 				<connector uid="294" angle="90">
@@ -2034,61 +2020,61 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 				<stacked_container uid="360" x="2570.67" y="91.25" width="391.25" height="206.34">
 					<graph width="391.25" height="206.34" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="SLR_from_LWS[1]"/>
+							<entity name="Sea_level_anomaly_from_LWS[1]"/>
 						</plot>
 					</graph>
 				</stacked_container>
 				<stacked_container uid="361" x="1709.42" y="87.5893" width="391.25" height="213.661">
 					<graph width="391.25" height="213.661" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="SLR_thermosteric[1]"/>
+							<entity name="Sea_level_anomaly_from_thermal_expansion[1]"/>
 						</plot>
 					</graph>
 				</stacked_container>
 				<stacked_container uid="362" x="1713.83" y="328.33" width="382.43" height="216.161">
 					<graph width="382.43" height="216.161" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="SLR_from_mountain_glaciers[1]"/>
+							<entity name="Sea_level_anomaly_from_mountain_glaciers[1]"/>
 						</plot>
 					</graph>
 				</stacked_container>
 				<stacked_container uid="363" x="2130.67" y="88.17" width="394.524" height="212.5">
 					<graph width="394.524" height="212.5" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="SLR_from_Greenland_Ice_Sheet[1]"/>
+							<entity name="Sea_level_anomaly_from_Greenland_Ice_Sheet[1]"/>
 						</plot>
 					</graph>
 				</stacked_container>
 				<stacked_container uid="364" x="2136.98" y="327.75" width="394.464" height="217.321">
 					<graph width="394.464" height="217.321" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="SLR_from_Antarctic_Ice_Sheet[1]"/>
+							<entity name="Sea_level_anomaly_from_Antarctic_Ice_Sheet[1]"/>
 						</plot>
 					</graph>
 				</stacked_container>
 				<stacked_container uid="365" x="2570.8" y="322.125" width="390.987" height="220.571">
 					<graph width="390.987" height="220.571" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
-							<entity name="Total_global_SLR[1]"/>
+							<entity name="Total_global_sea_level_anomaly[1]"/>
 						</plot>
 					</graph>
 				</stacked_container>
-				<aux label_side="left" label_angle="135" x="767.667" y="213.583" name="initial SLR from GrIS"/>
+				<aux label_side="left" label_angle="135" x="767.667" y="213.583" name="initial sea level anomaly from GrIS"/>
 				<connector uid="366" angle="309.101">
-					<from>initial_SLR_from_GrIS</from>
-					<to>SLR_from_Greenland_Ice_Sheet</to>
+					<from>initial_sea_level_anomaly_from_GrIS</from>
+					<to>Sea_level_anomaly_from_Greenland_Ice_Sheet</to>
 				</connector>
-				<aux x="730" y="759.583" name="initial SLR from AntIS"/>
+				<aux x="730" y="759.583" name="initial sea level anomaly from AntIS"/>
 				<connector uid="367" angle="91.6563">
-					<from>initial_SLR_from_AntIS</from>
-					<to>SLR_from_Antarctic_Ice_Sheet</to>
+					<from>initial_sea_level_anomaly_from_AntIS</from>
+					<to>Sea_level_anomaly_from_Antarctic_Ice_Sheet</to>
 				</connector>
-				<aux x="332.973" y="949.208" name="initial SLR from MG"/>
-				<aux x="288.795" y="606.417" name="initial thermosteric SLR"/>
+				<aux x="341.14" y="957.875" name="initial sea level anomaly from MG"/>
+				<aux x="288.795" y="606.417" name="initial thermosteric sea level anomaly"/>
 				<aux label_side="left" label_angle="135" x="128.833" y="818.736" name="MG temperature\nnonlinearity"/>
 				<connector uid="368" angle="322.329">
 					<from>MG_temperature_nonlinearity</from>
-					<to>yearly_MG_mass_loss</to>
+					<to>yearly_SLR_from_mountain_glaciers</to>
 				</connector>
 				<text_box font_weight="bold" text_decoration="underline" font_size="14pt" uid="376" x="367.41" y="29.3011" width="226.885" height="27.1429">Marine Ice Cliff Instability?</text_box>
 				<aux color="#55AAFF" font_color="#55AAFF" label_side="right" x="385.666" y="96.881" name="Include MICI behaviour"/>
@@ -2120,7 +2106,7 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					<to>AntIS_disintegration_volume_through_MICI</to>
 				</connector>
 				<connector uid="383" angle="15.2541">
-					<from>AntIS_max_contribution_to_SLR</from>
+					<from>AntIS_max_contribution_to_sea_level_anomaly</from>
 					<to>AntIS_disintegration_volume_through_MICI</to>
 				</connector>
 				<connector uid="384" angle="315">
@@ -2133,7 +2119,7 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					<from>
 						<alias uid="398"/>
 					</from>
-					<to>yearly_MG_mass_loss</to>
+					<to>yearly_SLR_from_mountain_glaciers</to>
 				</connector>
 				<aux label_side="bottom" x="976.88" y="460.778" name="rho GrIS SID min"/>
 				<connector uid="400" angle="64.773">
@@ -2145,33 +2131,33 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					<from>nu_GrIS_SMB_min</from>
 					<to>nu_GrIS_SMB</to>
 				</connector>
-				<aux x="385.333" y="413.821" name="Change in Surface Temperature"/>
-				<aux x="385.333" y="509.584" name="Change in Deep Ocean Temperature"/>
-				<aux x="385.333" y="462.361" name="Change in Upper Ocean Temperature"/>
-				<aux label_side="bottom" x="385.333" y="353.389" name="Heat Capacity of Deep Ocean"/>
-				<aux x="385.333" y="258.278" name="Heat Capacity of Surface"/>
-				<aux x="385.333" y="306.126" name="Heat Capacity of Upper Ocean"/>
-				<connector uid="402" angle="205.193">
+				<aux x="371.762" y="357.392" name="Change in Surface Temperature"/>
+				<aux x="371.762" y="453.155" name="Change in Deep Ocean Temperature"/>
+				<aux x="371.762" y="405.932" name="Change in Upper Ocean Temperature"/>
+				<aux label_side="bottom" x="371.762" y="296.96" name="Heat Capacity of Deep Ocean"/>
+				<aux x="371.762" y="201.849" name="Heat Capacity of Surface"/>
+				<aux x="371.762" y="249.697" name="Heat Capacity of Upper Ocean"/>
+				<connector uid="402" angle="218.067">
 					<from>Heat_Capacity_of_Surface</from>
 					<to>net_downward_radiative_flux</to>
 				</connector>
-				<connector uid="403" angle="193.573">
+				<connector uid="403" angle="209.563">
 					<from>Heat_Capacity_of_Upper_Ocean</from>
 					<to>net_downward_radiative_flux</to>
 				</connector>
-				<connector uid="404" angle="176.161">
+				<connector uid="404" angle="194.898">
 					<from>Heat_Capacity_of_Deep_Ocean</from>
 					<to>net_downward_radiative_flux</to>
 				</connector>
-				<connector uid="405" angle="159.297">
+				<connector uid="405" angle="178.649">
 					<from>Change_in_Surface_Temperature</from>
 					<to>net_downward_radiative_flux</to>
 				</connector>
-				<connector uid="406" angle="140.73">
+				<connector uid="406" angle="157.278">
 					<from>Change_in_Upper_Ocean_Temperature</from>
 					<to>net_downward_radiative_flux</to>
 				</connector>
-				<connector uid="407" angle="137.326">
+				<connector uid="407" angle="156.149">
 					<from>Change_in_Deep_Ocean_Temperature</from>
 					<to>net_downward_radiative_flux</to>
 				</connector>
@@ -2203,9 +2189,9 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					<from>MG_Tdep_rate_max</from>
 					<to>MG_Tdep_rate</to>
 				</connector>
-				<connector uid="500" angle="100.623">
+				<connector uid="500" angle="109.259">
 					<from>MG_Tdep_rate</from>
-					<to>yearly_MG_mass_loss</to>
+					<to>yearly_SLR_from_mountain_glaciers</to>
 				</connector>
 				<connector uid="501" angle="160.868">
 					<from>
@@ -2214,9 +2200,9 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					<to>MG_Tdep_rate</to>
 				</connector>
 				<aux x="171.479" y="640.542" name="energy input to SLR\nconversion factor"/>
-				<connector uid="503" angle="60.4038">
+				<connector uid="503" angle="67.6615">
 					<from>energy_input_to_SLR_conversion_factor</from>
-					<to>yearly_thermosteric_sea_level_change</to>
+					<to>yearly_thermosteric_sea_level_rise</to>
 				</connector>
 				<aux label_side="bottom" x="940.88" y="428.944" name="rho GrIS SID max"/>
 				<connector uid="504" angle="16.5343">
@@ -2242,8 +2228,8 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 				</connector>
 				<aux x="1138.29" y="389.446" name="MICI disintegration discharge"/>
 				<connector uid="512" angle="149.162">
-					<from>SLR_from_GrIS_DIS</from>
-					<to>SLR_from_Greenland_Ice_Sheet</to>
+					<from>Sea_level_anomaly_from_GrIS_DIS</from>
+					<to>Sea_level_anomaly_from_Greenland_Ice_Sheet</to>
 				</connector>
 				<flow x="1021.92" y="328.111" name="yearly SLR from GrIS DIS">
 					<pts>
@@ -2274,7 +2260,7 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					<to>yearly_SLR_from_GrIS_DIS</to>
 				</connector>
 				<connector uid="518" angle="23.0407">
-					<from>SLR_from_GrIS_DIS</from>
+					<from>Sea_level_anomaly_from_GrIS_DIS</from>
 					<to>yearly_SLR_from_GrIS_DIS</to>
 				</connector>
 				<aux x="1220" y="501.667" name="MICI GrIS Tcrit min"/>
@@ -2324,7 +2310,7 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					<to>MICI_disintegration_discharge</to>
 				</connector>
 				<connector uid="528" angle="336.181">
-					<from>SLR_from_GrIS_DIS</from>
+					<from>Sea_level_anomaly_from_GrIS_DIS</from>
 					<to>MICI_disintegration_discharge</to>
 				</connector>
 				<connector uid="529" angle="289.577">
@@ -2404,17 +2390,17 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					<to>AntIS_param_h0</to>
 				</connector>
 				<text_box font_weight="bold" text_decoration="underline" font_size="14pt" uid="550" x="62.536" y="1109.92" width="250.39" height="20">Sea-level rise from land water storage</text_box>
-				<aux label_side="right" label_angle="315" x="205.398" y="1224.29" name="SLR from LWS"/>
-				<aux x="138.338" y="1315.67" name="SLR from\ngroundwater withdrawal"/>
+				<aux label_side="right" x="205.398" y="1224.29" name="Sea level anomaly from LWS"/>
+				<aux x="138.338" y="1315.67" name="Sea level anomaly from\ngroundwater withdrawal"/>
 				<stock label_side="top" x="309.056" y="1432.34" name="Land water storage from\nwater impoundment"/>
 				<connector uid="551" angle="87.0186">
-					<from>SLR_from_groundwater_withdrawal</from>
-					<to>SLR_from_LWS</to>
+					<from>Sea_level_anomaly_from_groundwater_withdrawal</from>
+					<to>Sea_level_anomaly_from_LWS</to>
 				</connector>
 				<aux x="213.5" y="1297.67" name="Cubic metre to SLR"/>
 				<connector uid="552" angle="155.614">
 					<from>Cubic_metre_to_SLR</from>
-					<to>SLR_from_groundwater_withdrawal</to>
+					<to>Sea_level_anomaly_from_groundwater_withdrawal</to>
 				</connector>
 				<flow x="379.306" y="1433.34" name="Water catchment in\nglobal dams">
 					<pts>
@@ -2423,23 +2409,23 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					</pts>
 				</flow>
 				<aux x="259.556" y="1459.78" name="Initial water storage from water impoundment"/>
-				<aux x="106.361" y="1211.83" name="initial SLR from LWS"/>
+				<aux x="106.361" y="1211.83" name="initial sea level anomaly from LWS"/>
 				<connector uid="553" angle="2.80865">
-					<from>initial_SLR_from_LWS</from>
-					<to>SLR_from_LWS</to>
+					<from>initial_sea_level_anomaly_from_LWS</from>
+					<to>Sea_level_anomaly_from_LWS</to>
 				</connector>
-				<aux x="277.556" y="1338.96" name="SLR from water impoundment"/>
+				<aux x="277.556" y="1338.96" name="Sea level anomaly from water impoundment"/>
 				<connector uid="555" angle="114.823">
-					<from>SLR_from_water_impoundment</from>
-					<to>SLR_from_LWS</to>
+					<from>Sea_level_anomaly_from_water_impoundment</from>
+					<to>Sea_level_anomaly_from_LWS</to>
 				</connector>
 				<connector uid="556" angle="104.455">
 					<from>Land_water_storage_from_water_impoundment</from>
-					<to>SLR_from_water_impoundment</to>
+					<to>Sea_level_anomaly_from_water_impoundment</to>
 				</connector>
 				<connector uid="557" angle="352.093">
 					<from>Cubic_metre_to_SLR</from>
-					<to>SLR_from_water_impoundment</to>
+					<to>Sea_level_anomaly_from_water_impoundment</to>
 				</connector>
 				<aux x="340.556" y="1513.5" name="Water catchment per\nGW of hydropower"/>
 				<connector uid="558" angle="51.0708">
@@ -2449,7 +2435,7 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 				<stock font_style="italic" font_weight="bold" x="66.6667" y="1415" name="total groundwater anomaly"/>
 				<connector uid="559" angle="65.7256">
 					<from>total_groundwater_anomaly</from>
-					<to>SLR_from_groundwater_withdrawal</to>
+					<to>Sea_level_anomaly_from_groundwater_withdrawal</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="475" y="1490" name="Installation of\nHydropower Capacity"/>
 				<connector uid="560" angle="147.095">
@@ -2457,8 +2443,8 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					<to>Water_catchment_in_global_dams</to>
 				</connector>
 				<connector uid="561" angle="34.1952">
-					<from>SLR_from_LWS</from>
-					<to>Total_global_SLR</to>
+					<from>Sea_level_anomaly_from_LWS</from>
+					<to>Total_global_sea_level_anomaly</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="566.667" y="426.667" name="Surface Temperature Anomaly"/>
 				<connector uid="582" angle="298.74">
@@ -2577,7 +2563,7 @@ https://doi.org/10.1016/j.rser.2024.114439</doc>
 					<of>scale_factor_Antarctic_ice_sheet</of>
 				</alias>
 				<alias font_style="italic" uid="547" x="947.042" y="1131.21" width="16.75" height="16.75">
-					<of>Total_global_SLR</of>
+					<of>Total_global_sea_level_anomaly</of>
 				</alias>
 			</view>
 		</views>
