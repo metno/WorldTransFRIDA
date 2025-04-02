@@ -28,6 +28,9 @@ You can run and use the model locally without purchasing Stella Architect using 
     <a href="https://github.com/lnnrtrmm/FRISIA">Sea level Rise (Impacts) Model</a>
   </li>
   <li>
+    <a href="https://github.com/jnnsbrr/frida_biosphere_data">Biosphere Data Processing</a>
+  </li>
+  <li>
     Climate Impacts processing
     <ul>
       <li><a href="https://github.com/chrisdwells/climate-labour-impacts">Labour Productivity</a></li>
