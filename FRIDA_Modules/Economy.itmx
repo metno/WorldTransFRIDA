@@ -3953,7 +3953,6 @@ https://rshiny.ilo.org/dataexplorer15/?id=EMP_2EMP_SEX_AGE_NB_A&amp;ref_area=X01
 				<outflow>employment_decline</outflow>
 				<outflow>aging_out_of_employed</outflow>
 				<outflow>employed_deaths</outflow>
-				<non_negative/>
 				<units>Mp</units>
 			</stock>
 			<aux name="profit firing\nthreshold">
@@ -4534,7 +4533,7 @@ https://rshiny.ilo.org/dataexplorer20/?id=EAP_2WAP_SEX_AGE_RT_A&amp;ref_area=X01
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SMTH1(desired_fractional_wage_growth_from_supply_and_demand+agreed_wage_growth_from_inflation, wage_adjustment_negotiation_time)</eqn>
+				<eqn>SMTH1(MINSOFT(desired_fractional_wage_growth_from_supply_and_demand+agreed_wage_growth_from_inflation, cap_on_wage_growth, cap_on_wage_growth/10),  wage_adjustment_negotiation_time)</eqn>
 				<isee:delay_aux/>
 				<units>1/year</units>
 			</aux>
@@ -5159,8 +5158,7 @@ Fractional exposure levels to temperature for service related labour. Assumption
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>desired_additional_hires*effect_of_labour_supply_on_hiring^sensitivity_of_hiring_to_unemployment_rate</eqn>
-				<isee:delay_aux/>
+				<eqn>MIN(Unemployed[Run]*max_fraction_hireable+firing, desired_additional_hires*effect_of_labour_supply_on_hiring^sensitivity_of_hiring_to_unemployment_rate)</eqn>
 				<units>Mp/year</units>
 			</aux>
 			<aux name="firing">
@@ -5318,7 +5316,7 @@ Fractional exposure levels to temperature for service related labour. Assumption
 			<aux name="max firing rate">
 				<doc>${Assumption}
 Interface explosion stopper</doc>
-				<eqn>0.5</eqn>
+				<eqn>1</eqn>
 				<units>dmnl/year</units>
 			</aux>
 			<aux name="private\nsafe bank assets" access="input">
@@ -5334,6 +5332,14 @@ Interface explosion stopper</doc>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$/year</units>
+			</aux>
+			<aux name="cap on wage growth">
+				<eqn>1</eqn>
+				<units>1/year</units>
+			</aux>
+			<aux name="max fraction\nhireable">
+				<eqn>1</eqn>
+				<units>1/year</units>
 			</aux>
 		</variables>
 		<views>
@@ -6524,7 +6530,7 @@ furthermore. The structure that was previously decided on had the productivity g
 					<from>firing_from_missed_profits</from>
 					<to>firing</to>
 				</connector>
-				<connector uid="243" angle="0.859372">
+				<connector uid="243" angle="0.860483">
 					<from>firing</from>
 					<to>employment_decline</to>
 				</connector>
@@ -6725,6 +6731,24 @@ furthermore. The structure that was previously decided on had the productivity g
 				<connector uid="297" angle="12.3808">
 					<from>safe_loan_defaults_1</from>
 					<to>total_defaults</to>
+				</connector>
+				<aux x="2099.75" y="940.257" name="cap on wage growth"/>
+				<connector uid="298" angle="301.025">
+					<from>cap_on_wage_growth</from>
+					<to>fractional_wage_growth</to>
+				</connector>
+				<aux x="1638.64" y="1252.77" name="max fraction\nhireable"/>
+				<connector uid="299" angle="14.1326">
+					<from>Unemployed</from>
+					<to>hiring</to>
+				</connector>
+				<connector uid="300" angle="234.214">
+					<from>max_fraction_hireable</from>
+					<to>hiring</to>
+				</connector>
+				<connector uid="301" angle="355.741">
+					<from>firing</from>
+					<to>hiring</to>
 				</connector>
 				<alias color="blue" background="white" font_style="italic" label_side="left" uid="12" x="655.25" y="1050.17" width="18" height="18">
 					<shape type="circle" radius="18"/>
@@ -8336,7 +8360,7 @@ MAX(0,-1*extra_risky_interest_above_interest_at_origination*time_to_measure_chan
 			<aux name="max safe loan defaults\ncaused by stranded capital">
 				<doc>${Assumption,No Sensi}
 To control extreme policy only</doc>
-				<eqn>0.33</eqn>
+				<eqn>1</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="equity gap effect\nzero effect x">
