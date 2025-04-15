@@ -51,6 +51,9 @@ You can run and use the model locally without purchasing Stella Architect using 
   <li>
     <a href="https://github.com/adakudlum/make_plots_from_FRIDA_output">Plotting</a>
   </li>
+  <li>
+    <a href="https://github.com/BenjaminBlanz/WorldTransFRIDA-SimpleDashboard">Simple Dashboard</a>
+  </li>
 </ul>
  
 ## Calibration Data
