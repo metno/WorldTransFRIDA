@@ -54,6 +54,9 @@ You can run and use the model locally without purchasing Stella Architect using 
   <li>
     <a href="https://github.com/BenjaminBlanz/WorldTransFRIDA-SimpleDashboard">Simple Dashboard</a>
   </li>
+  <li>
+    <a href="https://github.com/BenjaminBlanz/WorldTransFRIDA-ILE">Interactive Learning Environment</a>
+  </li>
 </ul>
  
 ## Calibration Data
