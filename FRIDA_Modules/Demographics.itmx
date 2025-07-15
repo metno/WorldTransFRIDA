@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE">
 	<header>
-		<smile version="1.0" namespace="std, isee" uses_arrays="1" uses_conveyor=""/>
+		<smile version="1.0" namespace="std, isee" uses_arrays="2" uses_conveyor=""/>
 		<name>Demographics</name>
 		<uuid>1fd320fd-cd6f-4e4c-851b-17445ddaf4ba</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.8" isee:build_number="3578" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.8.1" isee:build_number="3632" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
@@ -20,9 +20,13 @@
 		<dim name="PopCohortLen20" size="20"/>
 		<dim name="PopCohortLen25" size="25"/>
 		<dim name="PopCohortLen5" size="5"/>
+		<dim name="Region">
+			<elem name="World"/>
+			<elem name="Brazil"/>
+		</dim>
 		<dim name="Run" size="1"/>
 	</dimensions>
-	<isee:prefs saved_runs="100" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_secure_mode="true" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true">
+	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_secure_mode="true" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rifp="true">
 		<isee:ignored_words>
 			<isee:ignored_word>WolrdTrans</isee:ignored_word>
 			<isee:ignored_word>WorldTrans</isee:ignored_word>
@@ -238,6 +242,7 @@
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>Aged_20_to_40_in_1980[*]</eqn>
 				<inflow>Passing_20</inflow>
@@ -251,12 +256,18 @@
 			<aux name="fraction women">
 				<doc>${Assumption}
 </doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>0.496</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="fertile period">
 				<doc>${Assumption}
 Not in the uncertainty analysis because this corresponds to the number of fertile women variable</doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>20</eqn>
 				<units>year</units>
 			</aux>
@@ -271,6 +282,7 @@ United Nations, Department of Economic and Social Affairs, Population Division (
 UN fertility </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>initial_fertility</eqn>
 				<inflow>change_in_fertility</inflow>
@@ -279,6 +291,7 @@ UN fertility </doc>
 			<flow name="Passing 60">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>0</eqn>
 				<non_negative/>
@@ -287,6 +300,7 @@ UN fertility </doc>
 			<flow name="Passing 40">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>0</eqn>
 				<non_negative/>
@@ -295,6 +309,7 @@ UN fertility </doc>
 			<flow name="Passing 65" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>0</eqn>
 				<non_negative/>
@@ -305,6 +320,7 @@ UN fertility </doc>
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>Aged_60_to_65_in_1980[*]</eqn>
 				<inflow>Passing_60</inflow>
@@ -318,6 +334,7 @@ UN fertility </doc>
 			<flow name="Passing 20">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>0</eqn>
 				<non_negative/>
@@ -328,6 +345,7 @@ UN fertility </doc>
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>Aged_40_to_60_in_1980[*]</eqn>
 				<inflow>Passing_40</inflow>
@@ -354,8 +372,9 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>(number_of_fertile_women*fertility)/fertile_period</eqn>
+				<eqn>(number_of_fertile_women*fertility)/fertile_period[Region]</eqn>
 				<non_negative/>
 				<units>Mp/Year</units>
 			</flow>
@@ -363,21 +382,23 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>birth_rate-death_rate</eqn>
+				<eqn>birth_rate[Run, World]-death_rate[Run, World]</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="birth rate">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>Births/Population</eqn>
+				<eqn>Births/Population[Run]</eqn>
 				<units>1/year</units>
 			</aux>
 			<aux name="death rate">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>total_deaths/Population</eqn>
+				<eqn>total_deaths/Population[Run]</eqn>
 				<units>1/year</units>
 			</aux>
 			<stock name="Aged 1 to 20 years" access="output" isee:autocreated="true">
@@ -385,6 +406,7 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>Aged_1_to_20_in_1980[*]</eqn>
 				<inflow>Passing_0</inflow>
@@ -398,8 +420,9 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 			<aux name="Dependency ratio">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>(Population-working_age_population)/working_age_population</eqn>
+				<eqn>(Population[Run]-working_age_population)/working_age_population</eqn>
 				<units>1</units>
 			</aux>
 			<flow name="deaths\n1 to 20 years" access="output">
@@ -407,6 +430,7 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>&quot;1_to_20_death_rate&quot;</eqn>
 				<non_negative/>
@@ -418,6 +442,7 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>&quot;60_to_65_death_rate&quot;</eqn>
 				<non_negative/>
@@ -429,6 +454,7 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>&quot;40_to_60_death_rate&quot;</eqn>
 				<non_negative/>
@@ -440,6 +466,7 @@ Proto E, Rustichini A. 2013. A reassessment of the relationship between GDP and 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>&quot;20_to_40_death_rate&quot;</eqn>
 				<non_negative/>
@@ -455,52 +482,68 @@ Cohort lengths for Conveyors</doc>
 			<aux name="1 to 20 death\nrate">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>&quot;1_to_20_normal_death_rate&quot;*&quot;Effect_of_Temperature_on_mortality_0-65&quot;*effect_of_GDP_per_person_on_1_to_20_mortality+global_death_rate_from_coastal_flooding</eqn>
+				<eqn>&quot;1_to_20_normal_death_rate&quot;[Region]*&quot;Effect_of_Temperature_on_mortality_0-65&quot;*effect_of_GDP_per_person_on_1_to_20_mortality+global_death_rate_from_coastal_flooding</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="20 to 40 death\nrate">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>&quot;20_to_40_normal_death_rate&quot;*&quot;Effect_of_Temperature_on_mortality_0-65&quot;*effect_of_GDP_per_person_on_20_to_40_mortality+global_death_rate_from_coastal_flooding_1</eqn>
+				<eqn>&quot;20_to_40_normal_death_rate&quot;[Region]*&quot;Effect_of_Temperature_on_mortality_0-65&quot;*effect_of_GDP_per_person_on_20_to_40_mortality+global_death_rate_from_coastal_flooding_1</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="40 to 60 death\nrate">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>&quot;40_to_60_normal_death_rate&quot;*&quot;Effect_of_Temperature_on_mortality_0-65&quot;*effect_of_GDP_per_person_on_40_to_60_mortality+global_death_rate_from_coastal_flooding_1</eqn>
+				<eqn>&quot;40_to_60_normal_death_rate&quot;[Region]*&quot;Effect_of_Temperature_on_mortality_0-65&quot;*effect_of_GDP_per_person_on_40_to_60_mortality+global_death_rate_from_coastal_flooding_1</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="60 to 65 death\nrate">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>&quot;60_to_65_normal_death_rate&quot;*&quot;Effect_of_Temperature_on_mortality_0-65&quot;*effect_of_GDP_per_person_on_60_to_65_mortality+global_death_rate_from_coastal_flooding_2</eqn>
+				<eqn>&quot;60_to_65_normal_death_rate&quot;[Region]*&quot;Effect_of_Temperature_on_mortality_0-65&quot;*effect_of_GDP_per_person_on_60_to_65_mortality+global_death_rate_from_coastal_flooding_2</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="1 to 20 normal death\nrate">
 				<doc>${Assumption}
 This has no range and isn&apos;t in the calibration because its covered by its associated alpha parameter</doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>0.00587601800076975</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="20 to 40 normal death\nrate">
 				<doc>${Assumption}
 This has no range and isn&apos;t in the calibration because its covered by its associated alpha parameter</doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>0.0015269215261185</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="40 to 60 normal death\nrate">
 				<doc>${Assumption}
 This has no range and isn&apos;t in the calibration because its covered by its associated alpha parameter</doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>0.00919684905322054</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="60 to 65 normal death\nrate">
 				<doc>${Internal Calibration Parameter}
 This has no range and isn&apos;t in the calibration because its covered by its associated alpha parameter</doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>0.0200881120643786</eqn>
 				<units>Per Year</units>
 			</aux>
@@ -737,6 +780,7 @@ United Nations, Department of Economic and Social Affairs, Population Division (
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>Aged_Over_75_in_1980[*]</eqn>
 				<inflow>Passing_75</inflow>
@@ -750,6 +794,7 @@ United Nations, Department of Economic and Social Affairs, Population Division (
 			<flow name="Passing 100">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>0</eqn>
 				<non_negative/>
@@ -760,6 +805,7 @@ United Nations, Department of Economic and Social Affairs, Population Division (
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>Over_75_death_rate</eqn>
 				<non_negative/>
@@ -860,6 +906,7 @@ United Nations, Department of Economic and Social Affairs, Population Division (
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>Aged_0_in_1980</eqn>
 				<inflow>Births</inflow>
@@ -878,6 +925,7 @@ Eberlein RL, Thompson JP. 2013. Precise modeling of aging populations. System Dy
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>0</eqn>
 				<non_negative/>
@@ -901,6 +949,7 @@ Cohort lengths for Conveyors</doc>
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>&quot;0_death_rate&quot;</eqn>
 				<non_negative/>
@@ -913,20 +962,24 @@ Cohort lengths for Conveyors</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>Aged_0_years + Aged_1_to_20_years + Aged_20_to_40_years + Aged_40_to_60_years + Aged_60_to_65_years + Aged_65_to_75_years + Aged_Over_75_years</eqn>
+				<eqn>Aged_0_years[Run, World] + Aged_1_to_20_years[Run, World] + Aged_20_to_40_years[Run, World] + Aged_40_to_60_years[Run, World] + Aged_60_to_65_years[Run, World] + Aged_65_to_75_years[Run, World] + Aged_Over_75_years[Run, World]</eqn>
 				<isee:summing/>
 				<units>Mp</units>
 			</aux>
 			<aux name="0 death\nrate">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>&quot;0_normal_death_rate&quot;*&quot;Effect_of_Temperature_on_mortality_0-65&quot;*effect_of_GDP_per_person_on_infant_mortality+global_death_rate_from_coastal_flooding</eqn>
+				<eqn>&quot;0_normal_death_rate&quot;[Region]*&quot;Effect_of_Temperature_on_mortality_0-65&quot;*effect_of_GDP_per_person_on_infant_mortality+global_death_rate_from_coastal_flooding</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="0 normal death\nrate">
 				<doc>${Assumption}
 This has no range and isn&apos;t in the calibration because its covered by its associated alpha parameter</doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>0.0852871555499175</eqn>
 				<units>Per Year</units>
 			</aux>
@@ -935,6 +988,7 @@ This has no range and isn&apos;t in the calibration because its covered by its a
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>deaths_0_years + deaths_1_to_20_years + deaths_20_to_40_years + deaths_40_to_60_years + deaths_60_to_65_years + deaths_65_to_75_years + deaths_Over_75_years</eqn>
 				<isee:summing/>
@@ -945,8 +999,12 @@ This has no range and isn&apos;t in the calibration because its covered by its a
 Calibration Parameter: fertility</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
+				<element subscript="1, World">
+					<eqn>3.86548518260393</eqn>
+				</element>
+				<element subscript="1, Brazil">
 					<eqn>3.86548518260393</eqn>
 				</element>
 				<range min="0" max="10"/>
@@ -955,8 +1013,9 @@ Calibration Parameter: fertility</doc>
 			<aux name="relative real GDP per person">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>real_GDP_per_person/INIT(real_GDP_per_person)</eqn>
+				<eqn>real_GDP_per_person[Run]/INIT(real_GDP_per_person[Run])</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="sensitivity of fertility\nto inverse\nGDP per person">
@@ -964,8 +1023,12 @@ Calibration Parameter: fertility</doc>
 Calibration Parameter: fertility</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
+				<element subscript="1, World">
+					<eqn>-0.416987950973114</eqn>
+				</element>
+				<element subscript="1, Brazil">
 					<eqn>-0.416987950973114</eqn>
 				</element>
 				<range min="-2" max="0"/>
@@ -976,8 +1039,12 @@ Calibration Parameter: fertility</doc>
 Calibration Parameter: deaths 0 years</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
+				<element subscript="1, World">
+					<eqn>0.750394564495844</eqn>
+				</element>
+				<element subscript="1, Brazil">
 					<eqn>0.750394564495844</eqn>
 				</element>
 				<range min="0" max="2"/>
@@ -988,8 +1055,12 @@ Calibration Parameter: deaths 0 years</doc>
 Calibration Parameter: deaths 0 years</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
+				<element subscript="1, World">
+					<eqn>-1.44726010839169</eqn>
+				</element>
+				<element subscript="1, Brazil">
 					<eqn>-1.44726010839169</eqn>
 				</element>
 				<range min="-3" max="0"/>
@@ -1002,6 +1073,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>infant_mortality_alpha*average_relative_real_GDP_per_person^infant_mortality_gamma</eqn>
 				<units>dmnl</units>
@@ -1011,10 +1083,9 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 Calibration Parameter: deaths 1-20 years</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>0.509664010101724</eqn>
-				</element>
+				<eqn>0.509664010101724</eqn>
 				<range min="0" max="3"/>
 				<units>dmnl</units>
 			</aux>
@@ -1023,10 +1094,9 @@ Calibration Parameter: deaths 1-20 years</doc>
 Calibration Parameter: deaths 1-20 years</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>-1.6600887557018</eqn>
-				</element>
+				<eqn>-1.6600887557018</eqn>
 				<range min="-3" max="0"/>
 				<units>dmnl</units>
 			</aux>
@@ -1037,6 +1107,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>&quot;1_to_20_mortality_alpha&quot;*average_relative_real_GDP_per_person^&quot;1_to_20_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
@@ -1046,10 +1117,9 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 Calibration Parameter: deaths 20-40 years</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>1.73425845327561</eqn>
-				</element>
+				<eqn>1.73425845327561</eqn>
 				<range min="0" max="3"/>
 				<units>dmnl</units>
 			</aux>
@@ -1058,10 +1128,9 @@ Calibration Parameter: deaths 20-40 years</doc>
 Calibration Parameter: deaths 20-40 years</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>-0.768847799914535</eqn>
-				</element>
+				<eqn>-0.768847799914535</eqn>
 				<range min="-3" max="0"/>
 				<units>dmnl</units>
 			</aux>
@@ -1072,6 +1141,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>&quot;20_to_40_mortality_alpha&quot;*average_relative_real_GDP_per_person^&quot;20_to_40_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
@@ -1081,10 +1151,9 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 Calibration Parameter: deaths 40-60 years</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>0.799577591516758</eqn>
-				</element>
+				<eqn>0.799577591516758</eqn>
 				<range min="0" max="3"/>
 				<units>dmnl</units>
 			</aux>
@@ -1093,10 +1162,9 @@ Calibration Parameter: deaths 40-60 years</doc>
 Calibration Parameter: deaths 40-60 years</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>-0.704331319619958</eqn>
-				</element>
+				<eqn>-0.704331319619958</eqn>
 				<range min="-3" max="0"/>
 				<units>dmnl</units>
 			</aux>
@@ -1107,6 +1175,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>&quot;40_to_60_mortality_alpha&quot;*average_relative_real_GDP_per_person^&quot;40_to_60_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
@@ -1116,10 +1185,9 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 Calibration Parameter: deaths 60-80 years</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>0.972528515477681</eqn>
-				</element>
+				<eqn>0.972528515477681</eqn>
 				<range min="0" max="3"/>
 				<units>dmnl</units>
 			</aux>
@@ -1128,10 +1196,9 @@ Calibration Parameter: deaths 60-80 years</doc>
 Calibration Parameter: deaths 60-80 years</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>-0.698924628252629</eqn>
-				</element>
+				<eqn>-0.698924628252629</eqn>
 				<range min="-3" max="0"/>
 				<units>dmnl</units>
 			</aux>
@@ -1142,6 +1209,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>&quot;60_to_65_mortality_alpha&quot;*average_relative_real_GDP_per_person^&quot;60_to_65_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
@@ -1151,8 +1219,12 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 Calibration Parameter: deaths over 80 years</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
+				<element subscript="1, World">
+					<eqn>0.501025513144929</eqn>
+				</element>
+				<element subscript="1, Brazil">
 					<eqn>0.501025513144929</eqn>
 				</element>
 				<range min="0" max="3"/>
@@ -1163,8 +1235,12 @@ Calibration Parameter: deaths over 80 years</doc>
 Calibration Parameter: deaths over 80 years</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
+				<element subscript="1, World">
+					<eqn>-0.521727360380367</eqn>
+				</element>
+				<element subscript="1, Brazil">
 					<eqn>-0.521727360380367</eqn>
 				</element>
 				<range min="-3" max="0"/>
@@ -1177,6 +1253,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>Over_75_mortality_alpha*average_relative_real_GDP_per_person^Over_75_mortality_gamma</eqn>
 				<units>dmnl</units>
@@ -1184,26 +1261,32 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 			<aux name="Over 75 death\nrate">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>Over_75_normal_death_rate*Effect_of_Temperature_on_mortality_75_plus*effect_of_GDP_per_person_on_Over_75_mortality+global_death_rate_from_coastal_flooding_2</eqn>
+				<eqn>Over_75_normal_death_rate[Region]*Effect_of_Temperature_on_mortality_75_plus*effect_of_GDP_per_person_on_Over_75_mortality+global_death_rate_from_coastal_flooding_2</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="Over 75 normal death\nrate">
 				<doc>${Assumption}
 This has no range and isn&apos;t in the calibration because its covered by its associated alpha parameter</doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>0.209495838027771</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="number of fertile women">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>(AGECOUNT(Aged_20_to_40_years, 0,  16) + AGECOUNT(Aged_1_to_20_years, 16, 19))*fraction_women</eqn>
+				<eqn>(AGECOUNT(Aged_20_to_40_years, 0,  16) + AGECOUNT(Aged_1_to_20_years, 16, 19))*fraction_women[Region]</eqn>
 				<units>Mp</units>
 			</aux>
 			<aux name="working age population" access="output">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>AGECOUNT(Aged_1_to_20_years, 17, 19) +
 Aged_20_to_40_years+
@@ -1215,6 +1298,7 @@ AGECOUNT(Aged_65_to_75_years, 0, 5)</eqn>
 			<flow name="change in fertility">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>(indicated_fertility-fertility)/time_to_change_fertility</eqn>
 				<units>Per Year</units>
@@ -1224,8 +1308,12 @@ AGECOUNT(Aged_65_to_75_years, 0, 5)</eqn>
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
+				<element subscript="1, World">
+					<eqn>23.9972099925095</eqn>
+				</element>
+				<element subscript="1, Brazil">
 					<eqn>23.9972099925095</eqn>
 				</element>
 				<range min="15" max="25"/>
@@ -1234,6 +1322,7 @@ AGECOUNT(Aged_65_to_75_years, 0, 5)</eqn>
 			<aux name="effect of GDP\non change in fertility">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>sensitivity_of_fertility_to_inverse_GDP_per_person/average_relative_real_GDP_per_person
 {sensitivity_of_fertility_to_GDP_per_person_alpha*LN(relative_GDP_per_person)}{+sensitivity_of_fertility_to_GDP_per_person_beta}</eqn>
@@ -1242,6 +1331,7 @@ AGECOUNT(Aged_65_to_75_years, 0, 5)</eqn>
 			<aux name="indicated fertility">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>{initial_fertility*effect_of_GDP_on_change_in_fertility*effect_of_literacy_on_change_in_fertility}
 initial_fertility+effect_of_GDP_on_change_in_fertility+effect_of_literacy_on_change_in_fertility</eqn>
@@ -1250,19 +1340,26 @@ initial_fertility+effect_of_GDP_on_change_in_fertility+effect_of_literacy_on_cha
 			<aux name="real GDP per capita">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>real_GDP_per_person*&quot;UNIT_c$_per_bc$&quot;/UNIT_p_per_mp</eqn>
+				<eqn>real_GDP_per_person[Run]*&quot;UNIT_c$_per_bc$&quot;[Region]/UNIT_p_per_mp[Region]</eqn>
 				<units>c$/person/year</units>
 			</aux>
 			<aux name="UNIT c$ per bc$">
 				<doc>${Unit}
 </doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>1000000000</eqn>
 				<units>c$/bc$</units>
 			</aux>
 			<aux name="UNIT p per mp">
 				<doc>${Unit}
 </doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>1000000</eqn>
 				<units>p/Mp</units>
 			</aux>
@@ -1271,6 +1368,7 @@ initial_fertility+effect_of_GDP_on_change_in_fertility+effect_of_literacy_on_cha
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>100-MAX(0, MIN(100, (100/(effect_of_GDP_on_female_population_literacy_percentage_constant+effect_of_GDP_on_female_population_literacy_percentage_scale_factor*average_relative_real_GDP_per_person))))</eqn>
 				<units>dmnl</units>
@@ -1280,8 +1378,12 @@ initial_fertility+effect_of_GDP_on_change_in_fertility+effect_of_literacy_on_cha
 Calibration Parameter: fertility</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
+				<element subscript="1, World">
+					<eqn>-0.018845205</eqn>
+				</element>
+				<element subscript="1, Brazil">
 					<eqn>-0.018845205</eqn>
 				</element>
 				<range min="-0.05" max="0"/>
@@ -1290,6 +1392,7 @@ Calibration Parameter: fertility</doc>
 			<aux name="effect of literacy\non change in fertility">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>sensitivity_of_fertility_to_literacy*female_population_literacy_percentage
 {+sensitivity_of_fertility_to_literacy_beta}</eqn>
@@ -1298,6 +1401,7 @@ Calibration Parameter: fertility</doc>
 			<aux name="average relative\nreal GDP per person">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>SMTH1(relative_real_GDP_per_person, averaging_time, initial_average_relative_real_gdp_per_person)</eqn>
 				<isee:delay_aux/>
@@ -1308,8 +1412,12 @@ Calibration Parameter: fertility</doc>
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
+				<element subscript="1, World">
+					<eqn>7</eqn>
+				</element>
+				<element subscript="1, Brazil">
 					<eqn>7</eqn>
 				</element>
 				<range min="7" max="20"/>
@@ -1328,39 +1436,73 @@ Slope coefficient for temperature impact on hot mortality, based on Bressler et 
 DOI: https://doi.org/10.1038/s41598-021-99156-5. </doc>
 				<dimensions>
 					<dim name="HotMortalityImpactCase"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>0.0264628725582064</eqn>
+				<element subscript="1, World">
+					<eqn>0.026462873</eqn>
 				</element>
-				<element subscript="2">
-					<eqn>0.0287541715760187</eqn>
+				<element subscript="1, Brazil">
+					<eqn>0.026462873</eqn>
 				</element>
-				<element subscript="3">
-					<eqn>0.0298418981674064</eqn>
+				<element subscript="2, World">
+					<eqn>0.028754172</eqn>
 				</element>
-				<element subscript="4">
-					<eqn>0.0306531779514288</eqn>
+				<element subscript="2, Brazil">
+					<eqn>0.028754172</eqn>
 				</element>
-				<element subscript="5">
-					<eqn>0.0313491133480878</eqn>
+				<element subscript="3, World">
+					<eqn>0.029841898</eqn>
 				</element>
-				<element subscript="6">
-					<eqn>0.0319957449130546</eqn>
+				<element subscript="3, Brazil">
+					<eqn>0.029841898</eqn>
 				</element>
-				<element subscript="7">
-					<eqn>0.0326346322406656</eqn>
+				<element subscript="4, World">
+					<eqn>0.030653178</eqn>
 				</element>
-				<element subscript="8">
-					<eqn>0.0333053764317491</eqn>
+				<element subscript="4, Brazil">
+					<eqn>0.030653178</eqn>
 				</element>
-				<element subscript="9">
-					<eqn>0.0340661828010705</eqn>
+				<element subscript="5, World">
+					<eqn>0.031349113</eqn>
 				</element>
-				<element subscript="10">
-					<eqn>0.0350525420557447</eqn>
+				<element subscript="5, Brazil">
+					<eqn>0.031349113</eqn>
 				</element>
-				<element subscript="11">
-					<eqn>0.0370159904159965</eqn>
+				<element subscript="6, World">
+					<eqn>0.031995745</eqn>
+				</element>
+				<element subscript="6, Brazil">
+					<eqn>0.031995745</eqn>
+				</element>
+				<element subscript="7, World">
+					<eqn>0.032634632</eqn>
+				</element>
+				<element subscript="7, Brazil">
+					<eqn>0.032634632</eqn>
+				</element>
+				<element subscript="8, World">
+					<eqn>0.033305376</eqn>
+				</element>
+				<element subscript="8, Brazil">
+					<eqn>0.033305376</eqn>
+				</element>
+				<element subscript="9, World">
+					<eqn>0.034066183</eqn>
+				</element>
+				<element subscript="9, Brazil">
+					<eqn>0.034066183</eqn>
+				</element>
+				<element subscript="10, World">
+					<eqn>0.035052542</eqn>
+				</element>
+				<element subscript="10, Brazil">
+					<eqn>0.035052542</eqn>
+				</element>
+				<element subscript="11, World">
+					<eqn>0.03701599</eqn>
+				</element>
+				<element subscript="11, Brazil">
+					<eqn>0.03701599</eqn>
 				</element>
 				<units>1/(deg C)</units>
 			</aux>
@@ -1370,39 +1512,73 @@ Slope coefficient for temperature squared impact on hot mortality, based on Bres
 DOI: https://doi.org/10.1038/s41598-021-99156-5. </doc>
 				<dimensions>
 					<dim name="HotMortalityImpactCase"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>-0.00183168607774057</eqn>
+				<element subscript="1, World">
+					<eqn>-0.001831686</eqn>
 				</element>
-				<element subscript="2">
-					<eqn>-0.00135670012299632</eqn>
+				<element subscript="1, Brazil">
+					<eqn>-0.001831686</eqn>
 				</element>
-				<element subscript="3">
-					<eqn>-0.00111659222465014</eqn>
+				<element subscript="2, World">
+					<eqn>-0.0013567</eqn>
 				</element>
-				<element subscript="4">
-					<eqn>-0.00093127039747728</eqn>
+				<element subscript="2, Brazil">
+					<eqn>-0.0013567</eqn>
 				</element>
-				<element subscript="5">
-					<eqn>-0.000768080110580449</eqn>
+				<element subscript="3, World">
+					<eqn>-0.001116592</eqn>
 				</element>
-				<element subscript="6">
-					<eqn>-0.000613013248463632</eqn>
+				<element subscript="3, Brazil">
+					<eqn>-0.001116592</eqn>
 				</element>
-				<element subscript="7">
-					<eqn>-0.000456618208019155</eqn>
+				<element subscript="4, World">
+					<eqn>-0.00093127</eqn>
 				</element>
-				<element subscript="8">
-					<eqn>-0.00028910840706051</eqn>
+				<element subscript="4, Brazil">
+					<eqn>-0.00093127</eqn>
 				</element>
-				<element subscript="9">
-					<eqn>-0.0000951365182159858</eqn>
+				<element subscript="5, World">
+					<eqn>-0.00076808</eqn>
 				</element>
-				<element subscript="10">
-					<eqn>0.000162322193905265</eqn>
+				<element subscript="5, Brazil">
+					<eqn>-0.00076808</eqn>
 				</element>
-				<element subscript="11">
-					<eqn>0.000693169260836952</eqn>
+				<element subscript="6, World">
+					<eqn>-0.000613013</eqn>
+				</element>
+				<element subscript="6, Brazil">
+					<eqn>-0.000613013</eqn>
+				</element>
+				<element subscript="7, World">
+					<eqn>-0.000456618</eqn>
+				</element>
+				<element subscript="7, Brazil">
+					<eqn>-0.000456618</eqn>
+				</element>
+				<element subscript="8, World">
+					<eqn>-0.000289108</eqn>
+				</element>
+				<element subscript="8, Brazil">
+					<eqn>-0.000289108</eqn>
+				</element>
+				<element subscript="9, World">
+					<eqn>-0.0000951365</eqn>
+				</element>
+				<element subscript="9, Brazil">
+					<eqn>-0.0000951365</eqn>
+				</element>
+				<element subscript="10, World">
+					<eqn>0.000162322</eqn>
+				</element>
+				<element subscript="10, Brazil">
+					<eqn>0.000162322</eqn>
+				</element>
+				<element subscript="11, World">
+					<eqn>0.000693169</eqn>
+				</element>
+				<element subscript="11, Brazil">
+					<eqn>0.000693169</eqn>
 				</element>
 				<units>1/(deg C^2)</units>
 			</aux>
@@ -1410,8 +1586,9 @@ DOI: https://doi.org/10.1038/s41598-021-99156-5. </doc>
 				<doc>https://doi.org/10.1038/s41598-021-99156-5</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>Hot_mortality_sensitivity_to_T[selected_hot_mortality_impact_case]*Surface_Temperature_Anomaly + Hot_mortality_sensitivity_to_T2[selected_hot_mortality_impact_case]*(Surface_Temperature_Anomaly)^2</eqn>
+				<eqn>Hot_mortality_sensitivity_to_T[selected_hot_mortality_impact_case[Run],Region]*Surface_Temperature_Anomaly[Run] + Hot_mortality_sensitivity_to_T2[selected_hot_mortality_impact_case[Run],Region]*(Surface_Temperature_Anomaly[Run])^2</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Cold mortality sensitivity to T">
@@ -1420,39 +1597,73 @@ Slope coefficient for temperature impact on cold mortality, based on Bressler et
 DOI: https://doi.org/10.1038/s41598-021-99156-5. </doc>
 				<dimensions>
 					<dim name="ColdMortalityImpactCase"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>-0.0197382337701379</eqn>
+				<element subscript="1, World">
+					<eqn>-0.019738234</eqn>
 				</element>
-				<element subscript="2">
-					<eqn>-0.0194392058770391</eqn>
+				<element subscript="1, Brazil">
+					<eqn>-0.019738234</eqn>
 				</element>
-				<element subscript="3">
-					<eqn>-0.0192924594404403</eqn>
+				<element subscript="2, World">
+					<eqn>-0.019439206</eqn>
 				</element>
-				<element subscript="4">
-					<eqn>-0.0191810024358006</eqn>
+				<element subscript="2, Brazil">
+					<eqn>-0.019439206</eqn>
 				</element>
-				<element subscript="5">
-					<eqn>-0.0190840507810338</eqn>
+				<element subscript="3, World">
+					<eqn>-0.019292459</eqn>
 				</element>
-				<element subscript="6">
-					<eqn>-0.018992884922771</eqn>
+				<element subscript="3, Brazil">
+					<eqn>-0.019292459</eqn>
 				</element>
-				<element subscript="7">
-					<eqn>-0.0189018174060371</eqn>
+				<element subscript="4, World">
+					<eqn>-0.019181002</eqn>
 				</element>
-				<element subscript="8">
-					<eqn>-0.0188051856858469</eqn>
+				<element subscript="4, Brazil">
+					<eqn>-0.019181002</eqn>
 				</element>
-				<element subscript="9">
-					<eqn>-0.0186943699066305</eqn>
+				<element subscript="5, World">
+					<eqn>-0.019084051</eqn>
 				</element>
-				<element subscript="10">
-					<eqn>-0.0185489122411661</eqn>
+				<element subscript="5, Brazil">
+					<eqn>-0.019084051</eqn>
 				</element>
-				<element subscript="11">
-					<eqn>-0.0182540669517031</eqn>
+				<element subscript="6, World">
+					<eqn>-0.018992885</eqn>
+				</element>
+				<element subscript="6, Brazil">
+					<eqn>-0.018992885</eqn>
+				</element>
+				<element subscript="7, World">
+					<eqn>-0.018901817</eqn>
+				</element>
+				<element subscript="7, Brazil">
+					<eqn>-0.018901817</eqn>
+				</element>
+				<element subscript="8, World">
+					<eqn>-0.018805186</eqn>
+				</element>
+				<element subscript="8, Brazil">
+					<eqn>-0.018805186</eqn>
+				</element>
+				<element subscript="9, World">
+					<eqn>-0.01869437</eqn>
+				</element>
+				<element subscript="9, Brazil">
+					<eqn>-0.01869437</eqn>
+				</element>
+				<element subscript="10, World">
+					<eqn>-0.018548912</eqn>
+				</element>
+				<element subscript="10, Brazil">
+					<eqn>-0.018548912</eqn>
+				</element>
+				<element subscript="11, World">
+					<eqn>-0.018254067</eqn>
+				</element>
+				<element subscript="11, Brazil">
+					<eqn>-0.018254067</eqn>
 				</element>
 				<units>1/(deg C)</units>
 			</aux>
@@ -1462,39 +1673,73 @@ Slope coefficient for temperature squared impact on cold mortality, based on Bre
 DOI: https://doi.org/10.1038/s41598-021-99156-5. </doc>
 				<dimensions>
 					<dim name="ColdMortalityImpactCase"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>0.00182541932966226</eqn>
+				<element subscript="1, World">
+					<eqn>0.001825419</eqn>
 				</element>
-				<element subscript="2">
-					<eqn>0.00187130206549961</eqn>
+				<element subscript="1, Brazil">
+					<eqn>0.001825419</eqn>
 				</element>
-				<element subscript="3">
-					<eqn>0.0018939761238223</eqn>
+				<element subscript="2, World">
+					<eqn>0.001871302</eqn>
 				</element>
-				<element subscript="4">
-					<eqn>0.0019112779513359</eqn>
+				<element subscript="2, Brazil">
+					<eqn>0.001871302</eqn>
 				</element>
-				<element subscript="5">
-					<eqn>0.00192638981202263</eqn>
+				<element subscript="3, World">
+					<eqn>0.001893976</eqn>
 				</element>
-				<element subscript="6">
-					<eqn>0.00194065614295813</eqn>
+				<element subscript="3, Brazil">
+					<eqn>0.001893976</eqn>
 				</element>
-				<element subscript="7">
-					<eqn>0.00195496514163508</eqn>
+				<element subscript="4, World">
+					<eqn>0.001911278</eqn>
 				</element>
-				<element subscript="8">
-					<eqn>0.00197021581238652</eqn>
+				<element subscript="4, Brazil">
+					<eqn>0.001911278</eqn>
 				</element>
-				<element subscript="9">
-					<eqn>0.00198779584373297</eqn>
+				<element subscript="5, World">
+					<eqn>0.00192639</eqn>
 				</element>
-				<element subscript="10">
-					<eqn>0.00201102902927072</eqn>
+				<element subscript="5, Brazil">
+					<eqn>0.00192639</eqn>
 				</element>
-				<element subscript="11">
-					<eqn>0.00205872607855388</eqn>
+				<element subscript="6, World">
+					<eqn>0.001940656</eqn>
+				</element>
+				<element subscript="6, Brazil">
+					<eqn>0.001940656</eqn>
+				</element>
+				<element subscript="7, World">
+					<eqn>0.001954965</eqn>
+				</element>
+				<element subscript="7, Brazil">
+					<eqn>0.001954965</eqn>
+				</element>
+				<element subscript="8, World">
+					<eqn>0.001970216</eqn>
+				</element>
+				<element subscript="8, Brazil">
+					<eqn>0.001970216</eqn>
+				</element>
+				<element subscript="9, World">
+					<eqn>0.001987796</eqn>
+				</element>
+				<element subscript="9, Brazil">
+					<eqn>0.001987796</eqn>
+				</element>
+				<element subscript="10, World">
+					<eqn>0.002011029</eqn>
+				</element>
+				<element subscript="10, Brazil">
+					<eqn>0.002011029</eqn>
+				</element>
+				<element subscript="11, World">
+					<eqn>0.002058726</eqn>
+				</element>
+				<element subscript="11, Brazil">
+					<eqn>0.002058726</eqn>
 				</element>
 				<units>1/(deg C^2)</units>
 			</aux>
@@ -1502,54 +1747,74 @@ DOI: https://doi.org/10.1038/s41598-021-99156-5. </doc>
 				<doc>https://doi.org/10.1038/s41598-021-99156-5</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn> Cold_mortality_sensitivity_to_T[selected_cold_mortality_impact_case]*Surface_Temperature_Anomaly + Cold_mortality_sensitivity_to_T2[selected_cold_mortality_impact_case]*(Surface_Temperature_Anomaly^2)</eqn>
+				<eqn> Cold_mortality_sensitivity_to_T[selected_cold_mortality_impact_case[Run],Region]*Surface_Temperature_Anomaly[Run] + Cold_mortality_sensitivity_to_T2[selected_cold_mortality_impact_case[Run],Region]*(Surface_Temperature_Anomaly[Run]^2)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Effect of Temperature on\nmortality 0-65">
 				<doc>https://doi.org/10.1038/s41467-024-45901-z</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>IF (switch_demography_damage = 0) AND TIME &gt; today THEN
-PREVIOUS(SELF, 1)
-ELSE
-1 + (&quot;Factor_for_hot_mortality_0-65&quot;*Temperature_impact_on_hot_mortality + &quot;Factor_for_cold_mortality_0-65&quot;*Temperature_impact_on_cold_mortality)</eqn>
+				<eqn>IF (switch_demography_damage= 0 )AND TIME &gt; today THEN PREVIOUS (
+SELF[Run,Region],1) ELSE 1
++
+( &quot;Factor_for_hot_mortality_0-65&quot; [Region]*Temperature_impact_on_hot_mortality+&quot;Factor_for_cold_mortality_0-65&quot; [ Region]*Temperature_impact_on_cold_mortality)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Factor for cold\nmortality 0-65">
 				<doc>${Climate Impact Parameter,External Parameter}
 Factor for scaling the temperature effects for a given population cohort. Values are based on Chen et al. (2024), DOI: https://doi.org/10.1038/s41467-024-45901-z</doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>0.916740283</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Factor for cold\nmortality 75 plus">
 				<doc>${Climate Impact Parameter,External Parameter}
 Factor for scaling the temperature effects for a given population cohort. Values are based on Chen et al. (2024), DOI: https://doi.org/10.1038/s41467-024-45901-z</doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>2.20017668</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Factor for cold\nmortality 65-75">
 				<doc>${Climate Impact Parameter,External Parameter}
 Factor for scaling the temperature effects for a given population cohort. Values are based on Chen et al. (2024), DOI: https://doi.org/10.1038/s41467-024-45901-z</doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>1.741806538</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Factor for hot\nmortality 0-65">
 				<doc>${Climate Impact Parameter,External Parameter}
 Factor for scaling the temperature effects for a given population cohort. Values are based on Chen et al. (2024), DOI: https://doi.org/10.1038/s41467-024-45901-z</doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>0.965032403</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Factor for hot\nmortality 75 plus">
 				<doc>${Climate Impact Parameter,External Parameter}
 Factor for scaling the temperature effects for a given population cohort. Values are based on Chen et al. (2024), DOI: https://doi.org/10.1038/s41467-024-45901-z</doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>1.737058325</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Factor for hot\nmortality 65-75">
 				<doc>${Climate Impact Parameter,External Parameter}
 Factor for scaling the temperature effects for a given population cohort. Values are based on Chen et al. (2024), DOI: https://doi.org/10.1038/s41467-024-45901-z</doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>1.158038883</eqn>
 				<units>dmnl</units>
 			</aux>
@@ -1557,22 +1822,24 @@ Factor for scaling the temperature effects for a given population cohort. Values
 				<doc>https://doi.org/10.1038/s41467-024-45901-z</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>IF (switch_demography_damage = 0) AND TIME &gt; today THEN
-PREVIOUS(SELF, 1)
-ELSE
-1 + (&quot;Factor_for_hot_mortality_65-75&quot;*Temperature_impact_on_hot_mortality + &quot;Factor_for_cold_mortality_65-75&quot;*Temperature_impact_on_cold_mortality)</eqn>
+				<eqn>IF (switch_demography_damage= 0 )AND TIME &gt; today THEN PREVIOUS (
+SELF[Run,Region],1) ELSE 1
++
+( &quot;Factor_for_hot_mortality_65-75&quot; [Region]*Temperature_impact_on_hot_mortality+&quot;Factor_for_cold_mortality_65-75&quot; [ Region]*Temperature_impact_on_cold_mortality)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Effect of Temperature on\nmortality 75 plus">
 				<doc>https://doi.org/10.1038/s41467-024-45901-z</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>IF (switch_demography_damage = 0) AND TIME &gt; today THEN
-PREVIOUS(SELF, 1)
-ELSE
-1 + (Factor_for_hot_mortality_75_plus*Temperature_impact_on_hot_mortality + Factor_for_cold_mortality_75_plus*Temperature_impact_on_cold_mortality)</eqn>
+				<eqn>IF (switch_demography_damage= 0 )AND TIME &gt; today THEN PREVIOUS (
+SELF[Run,Region],1) ELSE 1
++
+( Factor_for_hot_mortality_75_plus [Region]*Temperature_impact_on_hot_mortality+Factor_for_cold_mortality_75_plus [ Region]*Temperature_impact_on_cold_mortality)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="60-65 cohort length">
@@ -1631,6 +1898,7 @@ United Nations, Department of Economic and Social Affairs, Population Division (
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>Aged_65_to_75_in_1980[*]</eqn>
 				<inflow>Passing_65</inflow>
@@ -1644,6 +1912,7 @@ United Nations, Department of Economic and Social Affairs, Population Division (
 			<flow name="Passing 75">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>0</eqn>
 				<non_negative/>
@@ -1660,6 +1929,7 @@ Cohort lengths for Conveyors</doc>
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>&quot;65_to_75_death_rate&quot;</eqn>
 				<non_negative/>
@@ -1669,13 +1939,17 @@ Cohort lengths for Conveyors</doc>
 			<aux name="65 to 75 death\nrate">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>&quot;65_to_75_normal_death_rate&quot;*&quot;Effect_of_Temperature_on_mortality_65-75&quot;*effect_of_GDP_per_person_on_65_to_75_mortality+global_death_rate_from_coastal_flooding_2</eqn>
+				<eqn>&quot;65_to_75_normal_death_rate&quot;[Region]*&quot;Effect_of_Temperature_on_mortality_65-75&quot;*effect_of_GDP_per_person_on_65_to_75_mortality+global_death_rate_from_coastal_flooding_2</eqn>
 				<units>Per Year</units>
 			</aux>
 			<aux name="65 to 75 normal death\nrate">
 				<doc>${Assumption}
 This has no range and isn&apos;t in the calibration because its covered by its associated alpha parameter</doc>
+				<dimensions>
+					<dim name="Region"/>
+				</dimensions>
 				<eqn>0.0292009038387139</eqn>
 				<units>Per Year</units>
 			</aux>
@@ -1684,10 +1958,9 @@ This has no range and isn&apos;t in the calibration because its covered by its a
 Calibration Parameter: deaths 60-80 years</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>1.09139038213875</eqn>
-				</element>
+				<eqn>1.09139038213875</eqn>
 				<range min="0" max="3"/>
 				<units>dmnl</units>
 			</aux>
@@ -1696,10 +1969,9 @@ Calibration Parameter: deaths 60-80 years</doc>
 Calibration Parameter: deaths 60-80 years</doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
-					<eqn>-0.696338365907746</eqn>
-				</element>
+				<eqn>-0.696338365907746</eqn>
 				<range min="-3" max="0"/>
 				<units>dmnl</units>
 			</aux>
@@ -1710,6 +1982,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>&quot;65_to_75_mortality_alpha&quot;*average_relative_real_GDP_per_person^&quot;65_to_75_mortality_gamma&quot;</eqn>
 				<units>dmnl</units>
@@ -1742,8 +2015,9 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<eqn>Nominal_GDP/Population</eqn>
+				<eqn>Nominal_GDP[Run]/Population[Run]</eqn>
 				<units>b$/Mp/year</units>
 			</aux>
 			<aux name="today" access="input">
@@ -1755,8 +2029,12 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
+				<element subscript="1, World">
+					<eqn>4.3771710217966</eqn>
+				</element>
+				<element subscript="1, Brazil">
 					<eqn>4.3771710217966</eqn>
 				</element>
 				<range min="0" max="5"/>
@@ -1767,8 +2045,12 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
-				<element subscript="1">
+				<element subscript="1, World">
+					<eqn>-1.18404692170427</eqn>
+				</element>
+				<element subscript="1, Brazil">
 					<eqn>-1.18404692170427</eqn>
 				</element>
 				<range min="-5" max="5"/>
@@ -1781,6 +2063,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 			<aux name="global death rate from coastal flooding" access="input">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>1/year</units>
@@ -1788,6 +2071,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 			<aux name="global death rate from coastal flooding 1" access="input">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>1/year</units>
@@ -1795,6 +2079,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 			<aux name="global death rate from coastal flooding 2" access="input">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>1/year</units>
@@ -1802,6 +2087,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 			<aux name="old age\ndependents" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>Aged_Over_75_years+(Aged_65_to_75_years-AGECOUNT(Aged_65_to_75_years, 0, 5))</eqn>
 				<units>Mp</units>
@@ -1809,6 +2095,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 			<aux name="child age\ndependents" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>Aged_0_years+(Aged_1_to_20_years - AGECOUNT(Aged_1_to_20_years, 17, 19))</eqn>
 				<units>Mp</units>
@@ -1818,6 +2105,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 </doc>
 				<dimensions>
 					<dim name="Run"/>
+					<dim name="Region"/>
 				</dimensions>
 				<eqn>0.833323168072644</eqn>
 				<range min="0.5" max="1"/>
@@ -1886,7 +2174,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="4" isee:page_rows="5" isee:scroll_x="600" isee:scroll_y="1567" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1027" page_height="787" isee:page_cols="4" isee:page_rows="5" isee:scroll_x="1357.5" isee:scroll_y="1977.5" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1998,7 +2286,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 						<pt x="1363.5" y="1333.09"/>
 					</pts>
 				</flow>
-				<aux x="656.667" y="727.834" name="20-40, 40-60 cohort length"/>
+				<aux x="476.667" y="222.834" name="20-40, 40-60 cohort length"/>
 				<aux label_side="right" label_angle="45" x="1056.5" y="1394.84" name="1 to 20 death\nrate"/>
 				<aux label_side="right" x="1387.83" y="1375.17" name="20 to 40 death\nrate"/>
 				<aux label_side="left" label_angle="225" x="1735.5" y="1357.17" name="40 to 60 death\nrate"/>
@@ -2023,26 +2311,26 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 					<from>&quot;60_to_65_normal_death_rate&quot;</from>
 					<to>&quot;60_to_65_death_rate&quot;</to>
 				</connector>
-				<connector uid="10" angle="81.6339">
+				<connector uid="10" angle="81.6337">
 					<from>&quot;1_to_20_death_rate&quot;</from>
 					<to>deaths_1_to_20_years</to>
 				</connector>
-				<connector uid="11" angle="76.8098">
+				<connector uid="11" angle="76.8102">
 					<from>&quot;20_to_40_death_rate&quot;</from>
 					<to>deaths_20_to_40_years</to>
 				</connector>
-				<connector uid="12" angle="71.5651">
+				<connector uid="12" angle="71.5654">
 					<from>&quot;40_to_60_death_rate&quot;</from>
 					<to>deaths_40_to_60_years</to>
 				</connector>
-				<connector uid="13" angle="49.9452">
+				<connector uid="13" angle="49.9448">
 					<from>&quot;60_to_65_death_rate&quot;</from>
 					<to>deaths_60_to_65_years</to>
 				</connector>
-				<aux label_side="bottom" x="656.667" y="779.833" name="Aged 20 to 40 in 1980"/>
-				<aux x="528" y="779.833" name="Aged 1 to 20 in 1980"/>
-				<aux x="787.667" y="779.833" name="Aged 40 to 60 in 1980"/>
-				<aux x="922.999" y="779.833" name="Aged 60 to 65 in 1980"/>
+				<aux label_side="bottom" x="476.667" y="274.833" name="Aged 20 to 40 in 1980"/>
+				<aux x="348" y="274.833" name="Aged 1 to 20 in 1980"/>
+				<aux x="607.667" y="274.833" name="Aged 40 to 60 in 1980"/>
+				<aux x="742.999" y="274.833" name="Aged 60 to 65 in 1980"/>
 				<stock label_side="center" x="2484.83" y="1197.83" width="144.167" height="36.6667" name="Aged Over 75 years"/>
 				<flow x="2666.25" y="1214" name="Passing 100">
 					<pts>
@@ -2056,7 +2344,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 						<pt x="2602.5" y="1354.5"/>
 					</pts>
 				</flow>
-				<aux x="1205.5" y="779.833" name="Aged Over 75 in 1980"/>
+				<aux x="1025.5" y="274.833" name="Aged Over 75 in 1980"/>
 				<stock label_side="center" x="724.833" y="1199.67" width="113.333" height="39.1667" name="Aged 0 years"/>
 				<flow x="904.999" y="1219.17" name="Passing 0">
 					<pts>
@@ -2064,8 +2352,8 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 						<pt x="983.833" y="1219.17"/>
 					</pts>
 				</flow>
-				<aux x="389.667" y="779.833" name="Aged 0 in 1980"/>
-				<aux x="510" y="727.834" name="1-20 cohort length"/>
+				<aux x="209.667" y="274.833" name="Aged 0 in 1980"/>
+				<aux x="330" y="222.834" name="1-20 cohort length"/>
 				<flow label_side="left" x="794" y="1286.17" name="deaths\n0 years">
 					<pts>
 						<pt x="794" y="1238.84"/>
@@ -2087,7 +2375,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 					<from>&quot;0_normal_death_rate&quot;</from>
 					<to>&quot;0_death_rate&quot;</to>
 				</connector>
-				<connector uid="20" angle="68.4836">
+				<connector uid="20" angle="68.4835">
 					<from>&quot;0_death_rate&quot;</from>
 					<to>deaths_0_years</to>
 				</connector>
@@ -2199,7 +2487,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 					<from>effect_of_GDP_per_person_on_Over_75_mortality</from>
 					<to>Over_75_death_rate</to>
 				</connector>
-				<connector uid="44" angle="94.4183">
+				<connector uid="44" angle="94.418">
 					<from>Over_75_death_rate</from>
 					<to>deaths_Over_75_years</to>
 				</connector>
@@ -2239,7 +2527,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 					</from>
 					<to>birth_rate</to>
 				</connector>
-				<connector uid="65" angle="78.9311">
+				<connector uid="65" angle="78.9312">
 					<from>fertility</from>
 					<to>Births</to>
 				</connector>
@@ -2482,9 +2770,9 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 					</from>
 					<to>Over_75_death_rate</to>
 				</connector>
-				<aux x="805.667" y="727.834" name="60-65 cohort length"/>
-				<aux x="927.749" y="727.834" name="65-75 cohort length"/>
-				<aux x="1060.5" y="779.833" name="Aged 65 to 75 in 1980"/>
+				<aux x="625.667" y="222.834" name="60-65 cohort length"/>
+				<aux x="747.749" y="222.834" name="65-75 cohort length"/>
+				<aux x="880.5" y="274.833" name="Aged 65 to 75 in 1980"/>
 				<stock label_side="center" x="2209.83" y="1192.5" width="144.167" height="36.6667" name="Aged 65 to 75 years"/>
 				<flow x="2413.41" y="1217.5" name="Passing 75">
 					<pts>
@@ -2492,7 +2780,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 						<pt x="2484.83" y="1217.5"/>
 					</pts>
 				</flow>
-				<aux x="1092.75" y="727.834" name="Over 75 cohort length"/>
+				<aux x="912.75" y="222.834" name="Over 75 cohort length"/>
 				<connector uid="171" angle="194.111">
 					<from>
 						<alias uid="170"/>
@@ -2505,7 +2793,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 					</from>
 					<to>&quot;60_to_65_death_rate&quot;</to>
 				</connector>
-				<flow background="white" label_side="left" x="2293" y="1277.36" name="deaths\n65 to 75 years">
+				<flow background="white" label_side="left" x="2293" y="1277.35" name="deaths\n65 to 75 years">
 					<pts>
 						<pt x="2293" y="1229.17"/>
 						<pt x="2293" y="1346.54"/>
@@ -2517,7 +2805,7 @@ Miladinov, G. 2020. Socioeconomic development and life expectancy relationship: 
 					<from>&quot;65_to_75_normal_death_rate&quot;</from>
 					<to>&quot;65_to_75_death_rate&quot;</to>
 				</connector>
-				<connector uid="175" angle="49.9452">
+				<connector uid="175" angle="49.9444">
 					<from>&quot;65_to_75_death_rate&quot;</from>
 					<to>deaths_65_to_75_years</to>
 				</connector>
