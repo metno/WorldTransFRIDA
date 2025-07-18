@@ -672,6 +672,10 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 				<connect2 to="Crop.selected_crops_damages_case" from="Climate_Units.selected_crops_damages_case"/>
 				<connect to="Crop.soil_carbon_cropland_1" from="cropland_soil_carbon.soil_carbon_cropland"/>
 				<connect2 to="Crop.soil_carbon_cropland_1" from="cropland_soil_carbon.soil_carbon_cropland"/>
+				<connect to="Crop.start_year" from="Government_Regulations.start_year"/>
+				<connect2 to="Crop.start_year" from="Government_Regulations.start_year"/>
+				<connect to="Crop.sustainable_farming_policy" from="Government_Regulations.sustainable_farming_policy"/>
+				<connect2 to="Crop.sustainable_farming_policy" from="Government_Regulations.sustainable_farming_policy"/>
 				<connect to="Crop.switch_landuse_damage" from="Climate.switch_landuse_damage"/>
 				<connect2 to="Crop.switch_landuse_damage" from="Climate.switch_landuse_damage"/>
 				<connect to="Crop.today" from="Climate.climate_impact_stoptime"/>
@@ -932,7 +936,7 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 				<connect to="Forest.young_forest_share" from="Land_Use.young_forest_share"/>
 				<connect2 to="Forest.young_forest_share" from="Land_Use.young_forest_share"/>
 			</module>
-			<module name="Biosphere\nIndicators" isee:label="" url="C:/Users/jannesbr/projects/worldtrans/FRIDA/JannesFRIDA/FRIDA_Modules/Biosphere Indicators.itmx">
+			<module name="Biosphere\nIndicators" isee:label="" url="/Users/bschoenberg/code/WorldTrans/clones/jannes/WorldTransFRIDA/FRIDA_Modules/Biosphere Indicators.itmx">
 				<doc>This module contains quantifications of planetary boundaries (PBs). The PB framework emphasises the many different components of the Earth system that are strongly influenced by human activities. To quantify each PB, one or more control variables are selected, for which a safe operating space, a zone of increasing risk and a high risk zone are defined, delimited by the boundary value (transition from safe operating space to zone of increasing risk) and the high risk value (transition from zone of increasing risk to high risk zone), as defined in the module. Each PB is quantified in a separate sector within the module. For more details, consult the documentation of variables within the module.
 
 Reference: Eriksson, A. (n.d.). Using the FRIDA systems dynamics model to simulate planetary boundary interactions. In Prep.
@@ -1016,7 +1020,7 @@ Corresponding author: Axel Eriksson, ax3635er-s@student.lu.se or j.axel.e.erikss
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1090" page_height="761" isee:page_cols="5" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1876,7 +1880,7 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>normal_crop_residue_on_field_fraction*(1-sustainable_farming) + sustainable_residue_on_field_fraction * sustainable_farming</eqn>
+				<eqn>normal_crop_residue_on_field_fraction*(1-sustainable_farming_fraction) + sustainable_residue_on_field_fraction * sustainable_farming_fraction</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="crop demand 1" access="input">
@@ -2451,20 +2455,6 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>dmnl</units>
 			</aux>
-			<aux name="initial sustainable (conservation\ntillage) share">
-				<eqn>0.15</eqn>
-				<units>dmnl</units>
-			</aux>
-			<stock name="sustainable farming">
-				<eqn>&quot;initial_sustainable_(conservation_tillage)_share&quot;</eqn>
-				<inflow>emulate_spreading</inflow>
-				<units>dmnl</units>
-			</stock>
-			<flow name="emulate spreading">
-				<eqn>0.005</eqn>
-				<non_negative/>
-				<units>1/year</units>
-			</flow>
 			<aux name="Residue coverage" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
@@ -2488,6 +2478,36 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 				</dimensions>
 				<eqn>MINSOFT(crop_residue_on_field_fraction * (1/ effect_of_crop_residue_production_on_field_fraction),  sustainable_residue_on_field_fraction, tolerance_of_the_cap_on_harvest_index_and_residue_on_field_fraction)</eqn>
 				<units>dmnl</units>
+			</aux>
+			<aux name="sustainable farming policy" access="input">
+				<eqn>TIME</eqn>
+				<gf>
+					<xscale min="1980" max="2150"/>
+					<yscale min="0" max="100"/>
+					<ypts>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</ypts>
+				</gf>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sustainable farming fraction">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF TIME &gt;= start_year THEN sustainable_farming_policy ELSE historical_sustainable_farming_fraction</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="historical sustainable farming fraction">
+				<doc>${Assumption}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>.15</eqn>
+				<range min="0.1" max="0.2"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="start year" access="input">
+				<eqn>2025</eqn>
+				<units>Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -2538,7 +2558,7 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1090" page_height="761" isee:page_cols="5" isee:page_rows="6" isee:scroll_x="1575.83" isee:scroll_y="536.667" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="6" isee:scroll_x="1420" isee:scroll_y="574.167" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2971,21 +2991,9 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 					<from>selected_crops_damages_case</from>
 					<to>rel_change_in_crop_productivity_from_climate</to>
 				</connector>
-				<aux x="2480.93" y="846.507" name="initial sustainable (conservation\ntillage) share"/>
 				<connector uid="68" angle="206.577">
 					<from>sensitivity_of_effect_of_crop_residue_production_on_field_fraction</from>
 					<to>effect_of_crop_residue_production_on_field_fraction</to>
-				</connector>
-				<stock x="2338.93" y="856.8" name="sustainable farming"/>
-				<flow x="2338.8" y="757.65" name="emulate spreading">
-					<pts>
-						<pt x="2338.8" y="676"/>
-						<pt x="2338.8" y="839.3"/>
-					</pts>
-				</flow>
-				<connector uid="212" angle="268.621">
-					<from>sustainable_farming</from>
-					<to>crop_residue_on_field_fraction</to>
 				</connector>
 				<aux x="2253" y="785.629" name="Residue coverage"/>
 				<connector uid="214" angle="75.7145">
@@ -3033,6 +3041,26 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 				<connector uid="230" angle="37.4009">
 					<from>tolerance_of_the_cap_on_harvest_index_and_residue_on_field_fraction</from>
 					<to>Residue_coverage</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="2421.83" y="656.201" name="sustainable farming policy"/>
+				<aux x="2386.07" y="785.629" name="sustainable farming fraction"/>
+				<connector uid="231" angle="267.053">
+					<from>sustainable_farming_policy</from>
+					<to>sustainable_farming_fraction</to>
+				</connector>
+				<aux x="2300.59" y="694.202" name="historical sustainable farming fraction"/>
+				<connector uid="232" angle="306.066">
+					<from>historical_sustainable_farming_fraction</from>
+					<to>sustainable_farming_fraction</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="2342.59" y="625.859" name="start year"/>
+				<connector uid="233" angle="289.017">
+					<from>start_year</from>
+					<to>sustainable_farming_fraction</to>
+				</connector>
+				<connector uid="234" angle="255.536">
+					<from>sustainable_farming_fraction</from>
+					<to>crop_residue_on_field_fraction</to>
 				</connector>
 				<alias font_style="italic" uid="72" x="2249.19" y="1887.51" width="18" height="18">
 					<of>crop_production</of>
@@ -5573,7 +5601,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1090" page_height="761" isee:page_cols="2" isee:page_rows="3" isee:scroll_y="108.571" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="323.571" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
