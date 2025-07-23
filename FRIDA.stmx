@@ -92,7 +92,7 @@
 			<isee:variable starting_value="1" ending_value="100" type="incremental" min="1" max="100" seed="12345" name="Climate_Units.selected_climate_case[1]" num_samples="100"/>
 		</isee:sensi_specs>
 	</isee:sensi_specs_list>
-	<isee:optimizer_specs_list active_index="7">
+	<isee:optimizer_specs_list active_index="14">
 		<isee:optimizer_specs name="Demographics Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
 			<isee:parameter name="Demographics.infant_mortality_alpha[1]" scaling="100000"/>
 			<isee:parameter name="Demographics.infant_mortality_gamma[1]" scaling="100000"/>
@@ -641,6 +641,21 @@
 			<isee:parameter name="Circular_Flow.normal_bottom_40_wages[1]" scaling="1000"/>
 			<isee:parameter name="Circular_Flow.time_for_bottom_40_to_be_affected[1]"/>
 			<isee:payoff name="SDG 10.1.1" action="min"/>
+		</isee:optimizer_specs>
+		<isee:optimizer_specs name="Fertilizer Demand Calibration" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
+			<isee:parameter name="Fertilizer_Demand.sensitivity_of_personal_norm_to_climate_risk[1]" scaling="10"/>
+			<isee:parameter name="Fertilizer_Demand.sensitivity_of_personal_norm_to_consumption_risk[1]" scaling="10"/>
+			<isee:parameter name="Fertilizer_Demand.sensitivity_of_personal_norm_to_social_value[1]" scaling="10"/>
+			<isee:parameter name="Fertilizer_Demand.time_horizon_for_long_term_perception[1]"/>
+			<isee:parameter name="Fertilizer_Demand.time_horizon_for_short_term_perception[1]"/>
+			<isee:parameter name="Fertilizer_Demand.time_to_adjust_value_perception[1]"/>
+			<isee:parameter name="Fertilizer_Demand.time_to_observe_consequences[1]"/>
+			<isee:parameter name="Fertilizer_Demand.time_to_adjust_desired_demand_from_accessibility[1]"/>
+			<isee:parameter name="Fertilizer_Demand.initial_fertilizer_demand_in_1980[1]" scaling="10"/>
+			<isee:parameter name="Fertilizer_Demand.elasticity_of_demand_to_GDP[1]" scaling="10"/>
+			<isee:parameter name="Fertilizer_Demand.sensitivity_of_social_value_perception[1]" scaling="10"/>
+			<isee:parameter name="Fertilizer_Demand.growth_rate_of_socioeconomic_effect[1]"/>
+			<isee:payoff name="Fertilizer Demand Payoff" action="min"/>
 		</isee:optimizer_specs>
 	</isee:optimizer_specs_list>
 	<isee:payoff_specs_list>
@@ -1304,6 +1319,11 @@
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
+		<isee:payoff_specs name="Fertilizer Demand Payoff" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
+			<isee:payoff_element name="Fertilizer_Demand.total_yearly_demand[1]" weight="0.0221995645686019">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+		</isee:payoff_specs>
 	</isee:payoff_specs_list>
 	<model_units>
 		<unit name="Gh">
@@ -1843,8 +1863,6 @@
 				<connect2 to="energy_demand.Population" from="Demographics.Population"/>
 				<connect to="energy_supply.Population" from="Demographics.Population"/>
 				<connect2 to="energy_supply.Population" from="Demographics.Population"/>
-				<connect to="Fertilizer_Demand.Population_1" from="Demographics.Population"/>
-				<connect2 to="Fertilizer_Demand.Population_1" from="Demographics.Population"/>
 				<connect to="Food_Demand.Population" from="Demographics.Population"/>
 				<connect2 to="Food_Demand.Population" from="Demographics.Population"/>
 				<connect to="Freshwater.Population_1" from="Demographics.Population"/>
@@ -2367,8 +2385,6 @@
 				<connect2 to="Animal_Products_Demand.animal_products_production_1" from="Animal_Products.animal_products_production"/>
 				<connect to="Emissions.livestock_production" from="Animal_Products.animal_products_production"/>
 				<connect2 to="Emissions.livestock_production" from="Animal_Products.animal_products_production"/>
-				<connect to="Fertilizer_Demand.animal_products_production_1" from="Animal_Products.animal_products_production"/>
-				<connect2 to="Fertilizer_Demand.animal_products_production_1" from="Animal_Products.animal_products_production"/>
 				<connect to="Inflation.animal_products_production" from="Animal_Products.animal_products_production"/>
 				<connect2 to="Inflation.animal_products_production" from="Animal_Products.animal_products_production"/>
 				<connect to="Total_Food_Demand.animal_products_production_1" from="Animal_Products.animal_products_production"/>
@@ -2433,8 +2449,6 @@
 				<connect2 to="bio_fuel_energy.crop_demand" from="Food_Demand.crop_demand"/>
 				<connect to="Inflation.crop_demand" from="Food_Demand.crop_demand"/>
 				<connect2 to="Inflation.crop_demand" from="Food_Demand.crop_demand"/>
-				<connect to="Fertilizer_Demand.crop_supply_for_vegetal_products_1" from="Food_Demand.crop_supply_for_vegetal_products"/>
-				<connect2 to="Fertilizer_Demand.crop_supply_for_vegetal_products_1" from="Food_Demand.crop_supply_for_vegetal_products"/>
 				<connect to="Total_Food_Demand.crop_supply_for_vegetal_products_1" from="Food_Demand.crop_supply_for_vegetal_products"/>
 				<connect2 to="Total_Food_Demand.crop_supply_for_vegetal_products_1" from="Food_Demand.crop_supply_for_vegetal_products"/>
 				<connect to="bio_fuel_energy.crops_for_energy" from="Food_Demand.crops_for_energy"/>
@@ -2549,6 +2563,8 @@
 				<connect2 to="Grass.switch_land_carbon_impact" from="Climate.switch_internal_to_climate_land_carbon_impact"/>
 				<connect to="Grass.today" from="Climate.climate_impact_stoptime"/>
 				<connect2 to="Grass.today" from="Climate.climate_impact_stoptime"/>
+				<connect to="Fertilizer_Demand.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
+				<connect2 to="Fertilizer_Demand.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
 				<connect to="Emissions.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
 				<connect2 to="Emissions.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
 				<connect to="Terrestrial_Carbon_Balance.clearing_forest_for_grassland" from="Land_Use.clearing_forest_for_grassland"/>
@@ -2557,6 +2573,8 @@
 				<connect2 to="Terrestrial_Carbon_Balance.clearing_forests_for_crops" from="Land_Use.clearing_forests_for_crops"/>
 				<connect to="Terrestrial_Carbon_Balance.clearing_grassland" from="Land_Use.clearing_grassland"/>
 				<connect2 to="Terrestrial_Carbon_Balance.clearing_grassland" from="Land_Use.clearing_grassland"/>
+				<connect to="Fertilizer_Demand.Cropland" from="Land_Use.Cropland"/>
+				<connect2 to="Fertilizer_Demand.Cropland" from="Land_Use.Cropland"/>
 				<connect to="Terrestrial_Carbon_Balance.Cropland" from="Land_Use.Cropland"/>
 				<connect2 to="Terrestrial_Carbon_Balance.Cropland" from="Land_Use.Cropland"/>
 				<connect to="Terrestrial_Carbon_Balance.fallowing_cropland" from="Land_Use.fallowing_cropland"/>
@@ -2942,12 +2960,10 @@
 				<connect2 to="Climate_Risk_Perception.switch_sea_level_rise_climate_risk_perception" from="Climate.switch_sea_level_rise_climate_risk_perception"/>
 				<connect to="Climate_Risk_Perception.today" from="Climate.climate_impact_stoptime"/>
 				<connect2 to="Climate_Risk_Perception.today" from="Climate.climate_impact_stoptime"/>
-				<connect to="Fertilizer_Demand.animal_products_production_1" from="Animal_Products.animal_products_production"/>
-				<connect2 to="Fertilizer_Demand.animal_products_production_1" from="Animal_Products.animal_products_production"/>
-				<connect to="Fertilizer_Demand.crop_supply_for_vegetal_products_1" from="Food_Demand.crop_supply_for_vegetal_products"/>
-				<connect2 to="Fertilizer_Demand.crop_supply_for_vegetal_products_1" from="Food_Demand.crop_supply_for_vegetal_products"/>
-				<connect to="Fertilizer_Demand.Population_1" from="Demographics.Population"/>
-				<connect2 to="Fertilizer_Demand.Population_1" from="Demographics.Population"/>
+				<connect to="Fertilizer_Demand.Cropland" from="Land_Use.Cropland"/>
+				<connect2 to="Fertilizer_Demand.Cropland" from="Land_Use.Cropland"/>
+				<connect to="Fertilizer_Demand.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
+				<connect2 to="Fertilizer_Demand.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
 				<connect to="Fertilizer_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
 				<connect2 to="Fertilizer_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
 				<connect to="Food_Demand.Average_Daily_Demand_Per_Capita" from="Total_Food_Demand.average_daily_demand_per_capita"/>
@@ -3290,7 +3306,7 @@
 			<aux name="Simulation End">
 				<doc>${No Sensi}
 This is what determines when the model stops calculating</doc>
-				<eqn>2150</eqn>
+				<eqn>2023</eqn>
 				<format precision="1"/>
 				<range min="2023" max="2200"/>
 				<units>years</units>
