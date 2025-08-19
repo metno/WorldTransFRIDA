@@ -542,18 +542,14 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 			</stock>
 			<module name="Land Nutrients" isee:label="">
 				<format scale_by="auto"/>
-				<connect to="Crop.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
-				<connect2 to="Crop.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
-				<connect to="Fertilizer_Demand.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
-				<connect2 to="Fertilizer_Demand.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
 				<connect to="Biosphere_Indicators.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
 				<connect2 to="Biosphere_Indicators.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
 				<connect to="Emissions.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
 				<connect2 to="Emissions.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
-				<connect to="Land_Nutrients.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
-				<connect2 to="Land_Nutrients.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
 				<connect to="Land_Nutrients.production" from="Animal_Products.animal_products_production"/>
 				<connect2 to="Land_Nutrients.production" from="Animal_Products.animal_products_production"/>
+				<connect to="Land_Nutrients.total_yearly_demand" from="Fertilizer_Demand.total_yearly_demand"/>
+				<connect2 to="Land_Nutrients.total_yearly_demand" from="Fertilizer_Demand.total_yearly_demand"/>
 			</module>
 			<module name="Freshwater" isee:label="">
 				<format scale_by="auto"/>
@@ -608,8 +604,6 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 				<connect2 to="Animal_Products_Demand.crop_balance_1" from="Crop.crop_balance"/>
 				<connect to="Animal_Products.crop_balance" from="Crop.crop_balance"/>
 				<connect2 to="Animal_Products.crop_balance" from="Crop.crop_balance"/>
-				<connect to="Land_Nutrients.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
-				<connect2 to="Land_Nutrients.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
 				<connect to="Land_Use.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
 				<connect2 to="Land_Use.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
 				<connect to="Animal_Products.crop_production" from="Crop.crop_production"/>
@@ -666,8 +660,8 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 				<connect2 to="Crop.crops_for_energy" from="Food_Demand.crops_for_energy"/>
 				<connect to="Crop.feed_production" from="Food_Demand.feed_production"/>
 				<connect2 to="Crop.feed_production" from="Food_Demand.feed_production"/>
-				<connect to="Crop.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
-				<connect2 to="Crop.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
+				<connect to="Crop.fertilizer_use" from="Fertilizer_Demand.total_yearly_demand"/>
+				<connect2 to="Crop.fertilizer_use" from="Fertilizer_Demand.total_yearly_demand"/>
 				<connect to="Crop.fraction_of_cropland_irrigated" from="Freshwater.fraction_of_cropland_irrigated"/>
 				<connect2 to="Crop.fraction_of_cropland_irrigated" from="Freshwater.fraction_of_cropland_irrigated"/>
 				<connect to="Crop.selected_crops_damages_case" from="Climate_Units.selected_crops_damages_case"/>
@@ -1132,10 +1126,6 @@ Corresponding author: Axel Eriksson, ax3635er-s@student.lu.se or j.axel.e.erikss
 					<from>Crop</from>
 					<to>Land_Use</to>
 				</connector>
-				<connector uid="20" isee:thickness="2" angle="62.9147">
-					<from>Land_Nutrients</from>
-					<to>Crop</to>
-				</connector>
 				<connector uid="21" isee:thickness="2" angle="28.216">
 					<from>Food_Demand</from>
 					<to>Crop</to>
@@ -1150,10 +1140,6 @@ Corresponding author: Axel Eriksson, ax3635er-s@student.lu.se or j.axel.e.erikss
 				</connector>
 				<connector uid="47" isee:thickness="2" angle="265.323" isee:autocreated="true">
 					<from>Animal_Products</from>
-					<to>Land_Nutrients</to>
-				</connector>
-				<connector uid="48" isee:thickness="2" angle="247.69" isee:autocreated="true">
-					<from>Crop</from>
 					<to>Land_Nutrients</to>
 				</connector>
 				<connector uid="49" isee:thickness="2" angle="9.68454" isee:autocreated="true">
@@ -1910,13 +1896,13 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>dmnl</units>
 			</aux>
-			<stock name="fertilizer use" access="input">
+			<aux name="fertilizer use" access="input">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>MtN/year</units>
-			</stock>
+			</aux>
 			<aux name="crop yield" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
@@ -2498,7 +2484,7 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="5" isee:page_rows="6" isee:scroll_x="858" isee:scroll_y="1340" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="5" isee:page_rows="6" isee:scroll_x="1049" isee:scroll_y="773" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2585,7 +2571,7 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 					<to>crop_production</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1035" y="1773.67" name="fraction of cropland\nirrigated"/>
-				<stock font_style="italic" font_weight="bold" x="1989.33" y="1656.67" name="fertilizer use"/>
+				<aux font_style="italic" font_weight="bold" x="1989.33" y="1656.67" name="fertilizer use"/>
 				<aux x="1550.71" y="1365.01" name="crop yield"/>
 				<connector uid="42" angle="94.8925">
 					<from>crop_yield</from>
@@ -6359,19 +6345,6 @@ Limits for extreme conditions in no feedback cases</doc>
 	</model>
 	<model name="Land_Nutrients">
 		<variables>
-			<stock name="fertilizer use" access="output">
-				<doc>${Calibrated Output}
-Calibration data from:
-Breier, J. (2023). Regionalisation of FAO &amp; Hyde data (Version 0.1.0) [Computer software]. https://github.com/jnnsbrr/reg_fao_hyde
-
-Includes Manure and Technological</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>man_made_fertilizer_use_1980 + manure_fertilizer_use_1980</eqn>
-				<inflow>change_in_fertilizer_user</inflow>
-				<units>MtN/year</units>
-			</stock>
 			<aux name="man made\nfertilizer use\n1980">
 				<doc>${External Parameter}
 From Calibration Data</doc>
@@ -6388,7 +6361,7 @@ From Calibration Data</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>fertilizer_use-manure_fertilizer_use</eqn>
+				<eqn>total_yearly_demand-manure_fertilizer_use</eqn>
 				<units>MtN/year</units>
 			</aux>
 			<aux name="manure\nfertilizer use\n1980">
@@ -6436,106 +6409,12 @@ From Calibration Data</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>PCal/Year</units>
 			</aux>
-			<aux name="crop balance\nwith reserves" access="input">
+			<aux name="total yearly demand" access="input">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>1</units>
-			</aux>
-			<flow name="change in\nfertilizer user">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(indicated_fertilizer_use-fertilizer_use)/time_to_change_fertilizer_use</eqn>
-				<units>MtN/year/Year</units>
-			</flow>
-			<aux name="indicated fertilizer use">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>MIN(fertilizer_use*(1+maximum_desired_growth_in_fertilizer_use), fertilizer_use*effect_of_crop_balance_on_indicated_fertilizer_use*effect_of_fertilizer_use_on_indicated_fertilizer_use)</eqn>
 				<units>MtN/year</units>
-			</aux>
-			<aux name="time to change fertilizer use">
-				<doc>${Internal Calibration Parameter}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<element subscript="1">
-					<eqn>2.99477652618579</eqn>
-				</element>
-				<range min="2" max="5"/>
-				<units>years</units>
-			</aux>
-			<aux name="effect of crop balance on\nindicated fertilizer use">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>1+sensitivity_of_fertilizer_use_to_crop_balance_with_reserves*(crop_balance_with_reserves-1)</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="sensitivity of fertilizer use to crop balance with reserves">
-				<doc>${Internal Calibration Parameter}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<element subscript="1">
-					<eqn>-1.85338957870363</eqn>
-				</element>
-				<range min="-10" max="-0.2"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="relative fertilizer use">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>fertilizer_use/reference_fertilizer_use</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="effect of fertilizer use on\nindicated fertilizer use">
-				<doc>Added Sept 13th 2024 b/c fertilizer we wanted to represent the relationship that more fertilizer use means more farmers using it, and as you have more farmers using it, you inevitably get to the point where poorer farmers cannot afford it.</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>relative_fertilizer_use^sensitivity_demand_to_relative_use</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="sensitivity demand to relative\nuse">
-				<doc>${Internal Calibration Parameter}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<element subscript="1">
-					<eqn>-0.0191652954443731</eqn>
-				</element>
-				<range min="-0.5" max="-0.001"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="maximum desired\ngrowth in fertilizer use">
-				<doc>${Internal Calibration Parameter}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<element subscript="1">
-					<eqn>0.0499909963335135</eqn>
-				</element>
-				<range min="0" max="0.05"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="reference fertilizer use">
-				<doc>${Assumption}
-An external reference point - this can be converted to the initial value for fertilizer use if we wish.</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>85</eqn>
-				<range min="60" max="120"/>
-				<units>MtN/Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -6625,11 +6504,10 @@ An external reference point - this can be converted to the initial value for fer
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<stock background="white" label_side="top" x="557.25" y="360" name="fertilizer use"/>
 				<aux label_side="bottom" x="779" y="577.5" name="man made\nfertilizer use\n1980"/>
 				<aux x="702" y="351.67" name="man made fertilizer use"/>
-				<aux label_side="bottom" x="708.75" y="494.5" name="manure\nfertilizer use\n1980"/>
-				<connector uid="1" angle="49.6717">
+				<aux label_side="bottom" x="710.75" y="494.5" name="manure\nfertilizer use\n1980"/>
+				<connector uid="1" angle="50.1412">
 					<from>manure_fertilizer_use_1980</from>
 					<to>manure_fertilizer_use</to>
 				</connector>
@@ -6653,77 +6531,10 @@ An external reference point - this can be converted to the initial value for fer
 					<from>manure_fertilizer_use</from>
 					<to>man_made_fertilizer_use</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="445.25" y="644" name="crop balance\nwith reserves"/>
-				<flow x="458.375" y="360" name="change in\nfertilizer user">
-					<pts>
-						<pt x="370" y="360"/>
-						<pt x="534.75" y="360"/>
-					</pts>
-				</flow>
-				<aux x="495" y="490" name="indicated fertilizer use"/>
-				<connector uid="6" angle="143.393">
-					<from>indicated_fertilizer_use</from>
-					<to>change_in_fertilizer_user</to>
-				</connector>
-				<aux x="394" y="277" name="time to change fertilizer use"/>
-				<connector uid="7" angle="307.797">
-					<from>time_to_change_fertilizer_use</from>
-					<to>change_in_fertilizer_user</to>
-				</connector>
-				<aux x="472.25" y="557" name="effect of crop balance on\nindicated fertilizer use"/>
-				<connector uid="8" angle="72.7585">
-					<from>crop_balance_with_reserves</from>
-					<to>effect_of_crop_balance_on_indicated_fertilizer_use</to>
-				</connector>
-				<aux x="320" y="604" name="sensitivity of fertilizer use to crop balance with reserves"/>
-				<connector uid="9" angle="17.1556">
-					<from>sensitivity_of_fertilizer_use_to_crop_balance_with_reserves</from>
-					<to>effect_of_crop_balance_on_indicated_fertilizer_use</to>
-				</connector>
-				<connector uid="10" angle="69.8374">
-					<from>effect_of_crop_balance_on_indicated_fertilizer_use</from>
-					<to>indicated_fertilizer_use</to>
-				</connector>
-				<connector uid="11" angle="135.802">
-					<from>fertilizer_use</from>
-					<to>change_in_fertilizer_user</to>
-				</connector>
-				<connector uid="12" angle="287.182">
-					<from>fertilizer_use</from>
-					<to>indicated_fertilizer_use</to>
-				</connector>
-				<connector uid="13" angle="1.22539">
-					<from>fertilizer_use</from>
+				<aux font_style="italic" font_weight="bold" x="769" y="218" name="total yearly demand"/>
+				<connector uid="21" angle="281.31">
+					<from>total_yearly_demand</from>
 					<to>man_made_fertilizer_use</to>
-				</connector>
-				<aux x="520" y="163" name="relative fertilizer use"/>
-				<aux x="378" y="163" name="effect of fertilizer use on\nindicated fertilizer use"/>
-				<connector uid="15" angle="139.268">
-					<from>relative_fertilizer_use</from>
-					<to>effect_of_fertilizer_use_on_indicated_fertilizer_use</to>
-				</connector>
-				<aux x="352" y="88" name="sensitivity demand to relative\nuse"/>
-				<connector uid="16" angle="289.12">
-					<from>sensitivity_demand_to_relative_use</from>
-					<to>effect_of_fertilizer_use_on_indicated_fertilizer_use</to>
-				</connector>
-				<connector uid="17" angle="66.9417">
-					<from>fertilizer_use</from>
-					<to>relative_fertilizer_use</to>
-				</connector>
-				<connector uid="18" angle="228.366">
-					<from>effect_of_fertilizer_use_on_indicated_fertilizer_use</from>
-					<to>indicated_fertilizer_use</to>
-				</connector>
-				<aux x="581" y="529" name="maximum desired\ngrowth in fertilizer use"/>
-				<connector uid="19" angle="156.801">
-					<from>maximum_desired_growth_in_fertilizer_use</from>
-					<to>indicated_fertilizer_use</to>
-				</connector>
-				<aux x="684" y="141" name="reference fertilizer use"/>
-				<connector uid="20" angle="166.759">
-					<from>reference_fertilizer_use</from>
-					<to>relative_fertilizer_use</to>
 				</connector>
 			</view>
 		</views>
