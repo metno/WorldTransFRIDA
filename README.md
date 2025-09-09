@@ -63,3 +63,7 @@ You can run and use the model locally without purchasing Stella Architect using 
 
 See the Documentation tab in the <a href="https://github.com/metno/WorldTransFRIDA/blob/main/Data/Calibration%20Data.csv">Calibration Data file</a>
  
+## Standalone Climate Model
+
+The standalone climate model based on the climate and land use components of FRIDA, <a href="https://github.com/chrisdwells/FRIDA-Clim">FRIDA-Clim</a>
+ 
