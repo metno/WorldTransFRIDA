@@ -34,6 +34,7 @@ You can run and use the model locally without purchasing Stella Architect using 
     Climate Impacts processing
     <ul>
       <li><a href="https://github.com/chrisdwells/climate-labour-impacts">Labour Productivity</a></li>
+      <li><a href="https://github.com/chrisdwells/climate-crops-impacts">Crop Yield</a></li>
       <li><a href="https://github.com/chrisdwells/temperature-mortality">Mortality</a></li>
       <li><a href="https://github.com/chrisdwells/climate-energy-supply">Energy Supply</a></li>
       <li><a href="https://github.com/chrisdwells/extremes-exposure">Exposure to Climate Extremes</a></li>
