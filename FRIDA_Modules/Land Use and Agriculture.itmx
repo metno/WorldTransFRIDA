@@ -3,10 +3,13 @@
 	<header>
 		<smile version="1.0" namespace="std, isee" uses_arrays="1" uses_submodels=""/>
 		<name>Land Use and Agriculture</name>
-		<uuid>fe807591-4e3d-4e2c-b464-70ec4fb12094</uuid>
+		<uuid>1af1d70a-e4ea-41ed-9719-22fe81950b37</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.8.1" isee:build_number="development" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="4.0" isee:build_number="3710" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
+	<ai_information>
+		<status verified="false"/>
+	</ai_information>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
 		<stop>2100</stop>
@@ -16,7 +19,7 @@
 		<dim name="CropImpactsCase" size="11"/>
 		<dim name="Run" size="1"/>
 	</dimensions>
-	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_secure_mode="true" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true">
+	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_secure_mode="true" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rifp="true">
 		<isee:ignored_words>
 			<isee:ignored_word>WolrdTrans</isee:ignored_word>
 			<isee:ignored_word>WorldTrans</isee:ignored_word>
@@ -319,6 +322,8 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 				<connect2 to="Animal_Products.switch_animal_product_efficiency_policy" from="Government_Regulations.switch_animal_product_efficiency_policy"/>
 				<connect to="Animal_Products.switch_aquatic_animal_products_fraction_policy" from="Behavioral_Choices.switch_aquatic_animal_products_fraction_policy"/>
 				<connect2 to="Animal_Products.switch_aquatic_animal_products_fraction_policy" from="Behavioral_Choices.switch_aquatic_animal_products_fraction_policy"/>
+				<connect to="Animal_Products.time_to_change_demand_for_feed" from="Food_Demand.time_to_change_demand_for_feed"/>
+				<connect2 to="Animal_Products.time_to_change_demand_for_feed" from="Food_Demand.time_to_change_demand_for_feed"/>
 			</module>
 			<module name="Food Demand" isee:label="">
 				<format scale_by="auto"/>
@@ -350,8 +355,12 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 				<connect2 to="Animal_Products.initial_crop_demand_for_feed_offset" from="Food_Demand.initial_crop_demand_for_feed_offset"/>
 				<connect to="Animal_Products.perceived_GDP_per_person" from="Food_Demand.perceived_GDP_per_person"/>
 				<connect2 to="Animal_Products.perceived_GDP_per_person" from="Food_Demand.perceived_GDP_per_person"/>
+				<connect to="Fertilizer_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
+				<connect2 to="Fertilizer_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
 				<connect to="Total_Food_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
 				<connect2 to="Total_Food_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
+				<connect to="Animal_Products.time_to_change_demand_for_feed" from="Food_Demand.time_to_change_demand_for_feed"/>
+				<connect2 to="Animal_Products.time_to_change_demand_for_feed" from="Food_Demand.time_to_change_demand_for_feed"/>
 				<connect to="Food_Demand.actual_animal_product_growth_efficiency" from="Animal_Products.actual_animal_product_growth_efficiency"/>
 				<connect2 to="Food_Demand.actual_animal_product_growth_efficiency" from="Animal_Products.actual_animal_product_growth_efficiency"/>
 				<connect to="Food_Demand.animal_products_balance" from="Animal_Products.animal_products_balance"/>
@@ -423,6 +432,8 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 				<connect2 to="Crop.Cropland" from="Land_Use.Cropland"/>
 				<connect to="cropland_soil_carbon.Cropland" from="Land_Use.Cropland"/>
 				<connect2 to="cropland_soil_carbon.Cropland" from="Land_Use.Cropland"/>
+				<connect to="Fertilizer_Demand.Cropland" from="Land_Use.Cropland"/>
+				<connect2 to="Fertilizer_Demand.Cropland" from="Land_Use.Cropland"/>
 				<connect to="Freshwater.Cropland" from="Land_Use.Cropland"/>
 				<connect2 to="Freshwater.Cropland" from="Land_Use.Cropland"/>
 				<connect to="Land_Use_and_Agriculture.Cropland" from="Land_Use.Cropland"/>
@@ -538,16 +549,16 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 			</stock>
 			<module name="Land Nutrients" isee:label="">
 				<format scale_by="auto"/>
-				<connect to="Crop.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
-				<connect2 to="Crop.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
 				<connect to="Biosphere_Indicators.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
 				<connect2 to="Biosphere_Indicators.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
 				<connect to="Emissions.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
 				<connect2 to="Emissions.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
-				<connect to="Land_Nutrients.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
-				<connect2 to="Land_Nutrients.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
+				<connect to="Crop.total_yearly_demand" from="Land_Nutrients.total_yearly_demand"/>
+				<connect2 to="Crop.total_yearly_demand" from="Land_Nutrients.total_yearly_demand"/>
 				<connect to="Land_Nutrients.production" from="Animal_Products.animal_products_production"/>
 				<connect2 to="Land_Nutrients.production" from="Animal_Products.animal_products_production"/>
+				<connect to="Land_Nutrients.total_yearly_demand" from="Fertilizer_Demand.total_yearly_demand"/>
+				<connect2 to="Land_Nutrients.total_yearly_demand" from="Fertilizer_Demand.total_yearly_demand"/>
 			</module>
 			<module name="Freshwater" isee:label="">
 				<format scale_by="auto"/>
@@ -575,6 +586,8 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 				<connect2 to="Freshwater.Population_1" from="Demographics.Population"/>
 				<connect to="Freshwater.real_GDP_per_person" from="Demographics.real_GDP_per_person"/>
 				<connect2 to="Freshwater.real_GDP_per_person" from="Demographics.real_GDP_per_person"/>
+				<connect to="Freshwater.Residue_coverage" from="Crop.Residue_coverage"/>
+				<connect2 to="Freshwater.Residue_coverage" from="Crop.Residue_coverage"/>
 				<connect to="Freshwater.SLR_from_LWS" from="Sea_Level.Sea_level_anomaly_from_LWS"/>
 				<connect2 to="Freshwater.SLR_from_LWS" from="Sea_Level.Sea_level_anomaly_from_LWS"/>
 				<connect to="Freshwater.start_year" from="Government_Regulations.start_year"/>
@@ -602,8 +615,6 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 				<connect2 to="Animal_Products_Demand.crop_balance_1" from="Crop.crop_balance"/>
 				<connect to="Animal_Products.crop_balance" from="Crop.crop_balance"/>
 				<connect2 to="Animal_Products.crop_balance" from="Crop.crop_balance"/>
-				<connect to="Land_Nutrients.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
-				<connect2 to="Land_Nutrients.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
 				<connect to="Land_Use.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
 				<connect2 to="Land_Use.crop_balance_with_reserves" from="Crop.crop_balance_with_reserves"/>
 				<connect to="Animal_Products.crop_production" from="Crop.crop_production"/>
@@ -640,6 +651,8 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 				<connect2 to="Land_Use.initial_crop_yield" from="Crop.initial_crop_yield"/>
 				<connect to="Inflation.irrigation_water_used_per_unit_of_crop_production" from="Crop.irrigation_water_used_per_unit_of_crop_production"/>
 				<connect2 to="Inflation.irrigation_water_used_per_unit_of_crop_production" from="Crop.irrigation_water_used_per_unit_of_crop_production"/>
+				<connect to="Freshwater.Residue_coverage" from="Crop.Residue_coverage"/>
+				<connect2 to="Freshwater.Residue_coverage" from="Crop.Residue_coverage"/>
 				<connect to="Cropland_Carbon_Balance.UNIT_GtC_per_PCal_1" from="Crop.UNIT_GtC_per_PCal_crop"/>
 				<connect2 to="Cropland_Carbon_Balance.UNIT_GtC_per_PCal_1" from="Crop.UNIT_GtC_per_PCal_crop"/>
 				<connect to="Grass.UNIT_GtC_per_PCal" from="Crop.UNIT_GtC_per_PCal_crop"/>
@@ -660,18 +673,22 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 				<connect2 to="Crop.crops_for_energy" from="Food_Demand.crops_for_energy"/>
 				<connect to="Crop.feed_production" from="Food_Demand.feed_production"/>
 				<connect2 to="Crop.feed_production" from="Food_Demand.feed_production"/>
-				<connect to="Crop.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
-				<connect2 to="Crop.fertilizer_use" from="Land_Nutrients.fertilizer_use"/>
 				<connect to="Crop.fraction_of_cropland_irrigated" from="Freshwater.fraction_of_cropland_irrigated"/>
 				<connect2 to="Crop.fraction_of_cropland_irrigated" from="Freshwater.fraction_of_cropland_irrigated"/>
 				<connect to="Crop.selected_crops_damages_case" from="Climate_Units.selected_crops_damages_case"/>
 				<connect2 to="Crop.selected_crops_damages_case" from="Climate_Units.selected_crops_damages_case"/>
 				<connect to="Crop.soil_carbon_cropland_1" from="cropland_soil_carbon.soil_carbon_cropland"/>
 				<connect2 to="Crop.soil_carbon_cropland_1" from="cropland_soil_carbon.soil_carbon_cropland"/>
+				<connect to="Crop.start_year" from="Government_Regulations.start_year"/>
+				<connect2 to="Crop.start_year" from="Government_Regulations.start_year"/>
+				<connect to="Crop.sustainable_farming_policy" from="Government_Regulations.sustainable_farming_policy"/>
+				<connect2 to="Crop.sustainable_farming_policy" from="Government_Regulations.sustainable_farming_policy"/>
 				<connect to="Crop.switch_landuse_damage" from="Climate.switch_landuse_damage"/>
 				<connect2 to="Crop.switch_landuse_damage" from="Climate.switch_landuse_damage"/>
 				<connect to="Crop.today" from="Climate.climate_impact_stoptime"/>
 				<connect2 to="Crop.today" from="Climate.climate_impact_stoptime"/>
+				<connect to="Crop.total_yearly_demand" from="Land_Nutrients.total_yearly_demand"/>
+				<connect2 to="Crop.total_yearly_demand" from="Land_Nutrients.total_yearly_demand"/>
 			</module>
 			<module name="Soil" isee:label="">
 				<format scale_by="auto"/>
@@ -928,7 +945,7 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 				<connect to="Forest.young_forest_share" from="Land_Use.young_forest_share"/>
 				<connect2 to="Forest.young_forest_share" from="Land_Use.young_forest_share"/>
 			</module>
-			<module name="Biosphere\nIndicators" isee:label="" url="/Users/bschoenberg/code/WorldTrans/Frida/FRIDA_Modules/Biosphere Indicators.itmx">
+			<module name="Biosphere\nIndicators" isee:label="" url="/Users/bschoenberg/code/WorldTrans/clones/wanderson/WorldTransFRIDA/FRIDA_Modules/Biosphere Indicators.itmx">
 				<doc>This module contains quantifications of planetary boundaries (PBs). The PB framework emphasises the many different components of the Earth system that are strongly influenced by human activities. To quantify each PB, one or more control variables are selected, for which a safe operating space, a zone of increasing risk and a high risk zone are defined, delimited by the boundary value (transition from safe operating space to zone of increasing risk) and the high risk value (transition from zone of increasing risk to high risk zone), as defined in the module. Each PB is quantified in a separate sector within the module. For more details, consult the documentation of variables within the module.
 
 Reference: Eriksson, A. (n.d.). Using the FRIDA systems dynamics model to simulate planetary boundary interactions. In Prep.
@@ -1012,7 +1029,7 @@ Corresponding author: Axel Eriksson, ax3635er-s@student.lu.se or j.axel.e.erikss
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1090" page_height="761" isee:page_cols="5" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1126,10 +1143,6 @@ Corresponding author: Axel Eriksson, ax3635er-s@student.lu.se or j.axel.e.erikss
 					<from>Crop</from>
 					<to>Land_Use</to>
 				</connector>
-				<connector uid="20" isee:thickness="2" angle="62.9147">
-					<from>Land_Nutrients</from>
-					<to>Crop</to>
-				</connector>
 				<connector uid="21" isee:thickness="2" angle="28.216">
 					<from>Food_Demand</from>
 					<to>Crop</to>
@@ -1144,10 +1157,6 @@ Corresponding author: Axel Eriksson, ax3635er-s@student.lu.se or j.axel.e.erikss
 				</connector>
 				<connector uid="47" isee:thickness="2" angle="265.323" isee:autocreated="true">
 					<from>Animal_Products</from>
-					<to>Land_Nutrients</to>
-				</connector>
-				<connector uid="48" isee:thickness="2" angle="247.69" isee:autocreated="true">
-					<from>Crop</from>
 					<to>Land_Nutrients</to>
 				</connector>
 				<connector uid="49" isee:thickness="2" angle="9.68454" isee:autocreated="true">
@@ -1226,6 +1235,14 @@ Corresponding author: Axel Eriksson, ax3635er-s@student.lu.se or j.axel.e.erikss
 					<from>Freshwater</from>
 					<to>Biosphere_Indicators</to>
 				</connector>
+				<connector uid="87" isee:thickness="2" angle="52.1842">
+					<from>Land_Nutrients</from>
+					<to>Crop</to>
+				</connector>
+				<connector uid="87" isee:thickness="2" angle="110.507" isee:autocreated="true">
+					<from>Crop</from>
+					<to>Freshwater</to>
+				</connector>
 			</view>
 		</views>
 	</model>
@@ -1260,10 +1277,10 @@ Corresponding author: Axel Eriksson, ax3635er-s@student.lu.se or j.axel.e.erikss
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.960417911929394</eqn>
+					<eqn>1.06179221632254</eqn>
 				</element>
 				<format precision="0.001"/>
-				<range min="0.6" max="1"/>
+				<range min="0.6" max="1.6"/>
 				<units>PCal/Mha/Year</units>
 			</aux>
 			<aux name="animal products balance\nwith reserves" access="output">
@@ -1280,7 +1297,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.0725050241819243</eqn>
+					<eqn>0.0828654877116942</eqn>
 				</element>
 				<range min="0" max="0.1"/>
 				<units>1</units>
@@ -1333,7 +1350,7 @@ aquatic_animal_product_share_1980*(perceived_GDP_per_person/INIT(perceived_GDP_p
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.394319330814918</eqn>
+					<eqn>0.392162007291419</eqn>
 				</element>
 				<range min="0" max="1"/>
 				<units>dmnl</units>
@@ -1345,7 +1362,7 @@ aquatic_animal_product_share_1980*(perceived_GDP_per_person/INIT(perceived_GDP_p
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.0609962335002205</eqn>
+					<eqn>0.061</eqn>
 				</element>
 				<range min="0.059" max="0.061"/>
 				<units>dmnl</units>
@@ -1357,7 +1374,7 @@ aquatic_animal_product_share_1980*(perceived_GDP_per_person/INIT(perceived_GDP_p
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.152342090865498</eqn>
+					<eqn>0.149141821290084</eqn>
 				</element>
 				<format precision="0.001"/>
 				<range min="0.01" max="0.25"/>
@@ -1434,9 +1451,9 @@ average_animal_product_growth_efficiency[Run]</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.0299527655360562</eqn>
+					<eqn>0.0500733932687739</eqn>
 				</element>
-				<range min="0.01" max="0.1"/>
+				<range min="0.0001" max="0.1"/>
 				<units>1/year</units>
 			</aux>
 			<aux name="rate of change in grazing land yield">
@@ -1460,7 +1477,7 @@ average_animal_product_growth_efficiency[Run]</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>-69.8418280979725</eqn>
+					<eqn>-73.7036327053866</eqn>
 				</element>
 				<range min="-100" max="0"/>
 				<units>dmnl</units>
@@ -1514,7 +1531,7 @@ average_animal_product_growth_efficiency[Run]</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>4.89771767092869</eqn>
+					<eqn>4.7028436976862</eqn>
 				</element>
 				<range min="2" max="8"/>
 				<units>years</units>
@@ -1530,6 +1547,13 @@ Not in sensi analysis because this is so far outside the range of where calibrat
 Not in sensi analysis because this is so far outside the range of where calibration goes.  This is just for a &quot;vegan&quot; world</doc>
 				<eqn>.1</eqn>
 				<units>dmnl</units>
+			</aux>
+			<aux name="time to change demand\nfor feed" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>years</units>
 			</aux>
 		</variables>
 		<views>
@@ -1580,7 +1604,7 @@ Not in sensi analysis because this is so far outside the range of where calibrat
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="643.571" isee:scroll_y="326.429" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="609.286" isee:scroll_y="242.143" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1776,7 +1800,7 @@ Not in sensi analysis because this is so far outside the range of where calibrat
 				<aux font_style="italic" font_weight="bold" x="862" y="117" name="initial crop yield"/>
 				<aux font_style="italic" font_weight="bold" x="729" y="97" name="crop production"/>
 				<aux font_style="italic" font_weight="bold" x="637" y="108" name="crop balance"/>
-				<aux font_style="italic" font_weight="bold" x="1129" y="233" name="initial crop demand for\nfeed offset"/>
+				<aux font_style="italic" font_weight="bold" x="1212" y="193.677" name="initial crop demand for\nfeed offset"/>
 				<aux label_side="bottom" x="663" y="676.857" name="effective average\nanimal products\nbalance"/>
 				<connector uid="74" angle="262.948">
 					<from>effective_average_animal_products_balance</from>
@@ -1797,6 +1821,7 @@ Not in sensi analysis because this is so far outside the range of where calibrat
 					<from>tolerance_of_maximum_effective_animal_products_balance</from>
 					<to>effective_average_animal_products_balance</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" x="1052.74" y="193.677" name="time to change demand\nfor feed"/>
 				<alias font_style="italic" uid="36" x="276" y="269" width="18" height="18">
 					<of>animal_products_production</of>
 				</alias>
@@ -1864,11 +1889,12 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<eqn>crop_residue_production*crop_residue_on_field_fraction</eqn>
 				<units>GtC/Year</units>
 			</aux>
-			<aux name="crop residue on field fraction">
+			<aux name="crop residue on\nfield init fraction">
+				<doc>static crop fraction of residues that is initialized (independently of increasing/decreasing overall crop production)</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>MINSOFT(normal_crop_residue_on_field_fraction*effect_of_crop_residue_production_on_field_fraction, max_crop_residue_on_field_fraction, tolerance_of_the_cap_on_harvest_index_and_residue_on_field_fraction)</eqn>
+				<eqn>normal_crop_residue_on_field_fraction*(1-sustainable_farming_fraction) + sustainable_residue_on_field_fraction * sustainable_farming_fraction</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="crop demand 1" access="input">
@@ -1885,7 +1911,7 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.00578654384682234</eqn>
+					<eqn>0.0113269707304923</eqn>
 				</element>
 				<range min="0" max="0.1"/>
 				<units>1</units>
@@ -1904,13 +1930,13 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>dmnl</units>
 			</aux>
-			<stock name="fertilizer use" access="input">
+			<aux name="fertilizer use">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<eqn>total_yearly_demand</eqn>
 				<units>MtN/year</units>
-			</stock>
+			</aux>
 			<aux name="crop yield" access="output" isee:autocreated="true">
 				<dimensions>
 					<dim name="Run"/>
@@ -1948,7 +1974,7 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.44990066007591</eqn>
+					<eqn>0.449999858056912</eqn>
 				</element>
 				<range min="0.4" max="0.45"/>
 				<units>dmnl</units>
@@ -1967,7 +1993,7 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.0989407396381699</eqn>
+					<eqn>0.1</eqn>
 				</element>
 				<range min="0.05" max="0.1"/>
 				<units>dmnl</units>
@@ -1979,7 +2005,7 @@ Food and Agriculture Organization of the United Nations (2023)</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.559909570253009</eqn>
+					<eqn>0.561849905915116</eqn>
 				</element>
 				<range min="0" max="0.75"/>
 				<units>dmnl</units>
@@ -2272,7 +2298,7 @@ rel_change_in_crop_productivity_from_climate * initial_crop_yield</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.0191871944846803</eqn>
+					<eqn>0.00410003305594922</eqn>
 				</element>
 				<range min="1e-8" max="0.2"/>
 				<units>1/GtC</units>
@@ -2291,7 +2317,7 @@ rel_change_in_crop_productivity_from_climate * initial_crop_yield</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>2.50055038934869</eqn>
+					<eqn>3.32500588213916</eqn>
 				</element>
 				<range min="2.5" max="9"/>
 				<units>dmnl</units>
@@ -2324,7 +2350,7 @@ rel_change_in_crop_productivity_from_climate * initial_crop_yield</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.0163103521043001</eqn>
+					<eqn>0.0101487756256158</eqn>
 				</element>
 				<range min="0.00001" max="0.1"/>
 				<units>1/MtN*year</units>
@@ -2336,7 +2362,7 @@ rel_change_in_crop_productivity_from_climate * initial_crop_yield</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>5.90574472508119</eqn>
+					<eqn>5.95164836968152</eqn>
 				</element>
 				<format precision="0.01"/>
 				<range min="5.5" max="6.5"/>
@@ -2362,15 +2388,15 @@ Hay RKM. Harvest index: a review of its use in plant breeding and crop physiolog
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.0488017706603499</eqn>
+					<eqn>0.0486386729229023</eqn>
 				</element>
 				<range min="0.03" max="0.08"/>
 				<units>dmnl</units>
 			</aux>
-			<aux name="max crop residue on field fraction">
+			<aux name="sustainable residue\non field fraction">
 				<doc>${External Parameter}
 Karstens, K., Bodirsky, B. L., Dietrich, J. P., Dondini, M., Heinke, J., Kuhnert, M., ... &amp; Popp, A. (2022). Management-induced changes in soil organic carbon on global croplands. Biogeosciences, 19(21), 5125-5149. https://doi.org/10.5194/bg-19-5125-2022</doc>
-				<eqn>.6</eqn>
+				<eqn>.75</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="feed production" access="input">
@@ -2408,7 +2434,7 @@ Karstens, K., Bodirsky, B. L., Dietrich, J. P., Dondini, M., Heinke, J., Kuhnert
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.946146343585683</eqn>
+					<eqn>0.94865410306545</eqn>
 				</element>
 				<range min="0.6" max="0.95"/>
 				<units>1</units>
@@ -2420,7 +2446,7 @@ Karstens, K., Bodirsky, B. L., Dietrich, J. P., Dondini, M., Heinke, J., Kuhnert
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.799444218938155</eqn>
+					<eqn>0.799996661492075</eqn>
 				</element>
 				<range min="0.5" max="0.8"/>
 				<units>1</units>
@@ -2442,6 +2468,68 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>dmnl</units>
+			</aux>
+			<aux name="total yearly demand" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>MtN/year</units>
+			</aux>
+			<aux name="Residue coverage" access="output" isee:autocreated="true">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MINSOFT(crop_residue_on_field_init_fraction * effect_of_crop_residue_production_on_field_fraction,  sustainable_residue_on_field_fraction, tolerance_of_the_cap_on_harvest_index_and_residue_on_field_fraction)-mass_to_coverage</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="mass to coverage">
+				<doc>${Assumption}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0.1</eqn>
+				<range min="0.05" max="0.2"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="crop residue on\nfield fraction">
+				<doc>crop fraction of residues compared to the changing (increasing/decreasing) overall production</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>MINSOFT(crop_residue_on_field_init_fraction * (1/ effect_of_crop_residue_production_on_field_fraction),  sustainable_residue_on_field_fraction, tolerance_of_the_cap_on_harvest_index_and_residue_on_field_fraction)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sustainable farming policy" access="input">
+				<eqn>TIME</eqn>
+				<gf>
+					<xscale min="1980" max="2150"/>
+					<yscale min="0" max="100"/>
+					<ypts>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0</ypts>
+				</gf>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sustainable farming fraction">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF TIME &gt;= start_year THEN sustainable_farming_policy ELSE historical_sustainable_farming_fraction</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="historical sustainable farming fraction">
+				<doc>${Assumption}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>.15</eqn>
+				<range min="0.1" max="0.2"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="start year" access="input">
+				<eqn>2025</eqn>
+				<units>Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -2492,7 +2580,7 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="5" isee:page_rows="6" isee:scroll_x="858" isee:scroll_y="1340" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="6" isee:scroll_x="1245" isee:scroll_y="533" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -2553,13 +2641,9 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 					<from>crop_production</from>
 					<to>crop_balance</to>
 				</connector>
-				<aux x="2179.33" y="977.67" name="crop residue litter"/>
-				<aux label_side="bottom" x="2271" y="1030.67" name="crop residue on field fraction"/>
-				<connector uid="6" angle="149.965">
-					<from>crop_residue_on_field_fraction</from>
-					<to>crop_residue_litter</to>
-				</connector>
-				<connector uid="7" angle="14.3253">
+				<aux x="2020.13" y="971.34" name="crop residue litter"/>
+				<aux label_side="bottom" x="2293.5" y="1014.84" name="crop residue on\nfield init fraction"/>
+				<connector uid="7" angle="22.3178">
 					<from>crop_residue_production</from>
 					<to>crop_residue_litter</to>
 				</connector>
@@ -2579,7 +2663,7 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 					<to>crop_production</to>
 				</connector>
 				<aux font_style="italic" font_weight="bold" x="1035" y="1773.67" name="fraction of cropland\nirrigated"/>
-				<stock font_style="italic" font_weight="bold" x="1989.33" y="1656.67" name="fertilizer use"/>
+				<aux x="1989.33" y="1656.67" name="fertilizer use"/>
 				<aux x="1550.71" y="1365.01" name="crop yield"/>
 				<connector uid="42" angle="94.8925">
 					<from>crop_yield</from>
@@ -2599,13 +2683,9 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 					<from>UNIT_GtC_per_PCal_crop</from>
 					<to>cropland_net_primary_production</to>
 				</connector>
-				<aux x="2143.67" y="1063.17" name="crop residue other use"/>
-				<connector uid="60" angle="4.35843">
+				<aux x="2008.47" y="1086.84" name="crop residue other use"/>
+				<connector uid="60" angle="1.73672">
 					<from>crop_residue_production</from>
-					<to>crop_residue_other_use</to>
-				</connector>
-				<connector uid="61" angle="194.319">
-					<from>crop_residue_on_field_fraction</from>
 					<to>crop_residue_other_use</to>
 				</connector>
 				<aux x="1636.75" y="1216.84" name="normal harvest index for food crops"/>
@@ -2628,23 +2708,15 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 					<to>effect_of_crop_yield_on_harvest_index</to>
 				</connector>
 				<aux x="2480.93" y="1068.84" name="sensitivity of effect of crop\nresidue production on field fraction"/>
-				<aux label_side="right" label_angle="315" x="2282.25" y="1133.84" name="effect of crop residue\nproduction on field fraction"/>
-				<connector uid="67" angle="340.067">
+				<aux label_side="right" label_angle="315" x="2247.05" y="1185.84" name="effect of crop residue\nproduction on field fraction"/>
+				<connector uid="67" angle="334.273">
 					<from>crop_residue_production</from>
 					<to>effect_of_crop_residue_production_on_field_fraction</to>
 				</connector>
-				<connector uid="68" angle="198.116">
-					<from>sensitivity_of_effect_of_crop_residue_production_on_field_fraction</from>
-					<to>effect_of_crop_residue_production_on_field_fraction</to>
-				</connector>
-				<connector uid="69" angle="76.8034">
-					<from>effect_of_crop_residue_production_on_field_fraction</from>
-					<to>crop_residue_on_field_fraction</to>
-				</connector>
-				<aux x="2370.43" y="972.14" name="normal crop residue on field fraction"/>
-				<connector uid="70" angle="199.502">
+				<aux x="2399.33" y="955.507" name="normal crop residue on field fraction"/>
+				<connector uid="70" angle="198.294">
 					<from>normal_crop_residue_on_field_fraction</from>
-					<to>crop_residue_on_field_fraction</to>
+					<to>crop_residue_on_field_init_fraction</to>
 				</connector>
 				<aux x="2372.47" y="1756.96" name="fertilizer used per\nunit of crop production"/>
 				<connector uid="71" angle="50.6854">
@@ -2653,7 +2725,7 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 					</from>
 					<to>fertilizer_used_per_unit_of_crop_production</to>
 				</connector>
-				<connector uid="73" angle="344.993">
+				<connector uid="73" angle="343.196">
 					<from>
 						<alias uid="74"/>
 					</from>
@@ -2856,13 +2928,9 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 					<from>tolerance_of_the_cap_on_harvest_index_and_residue_on_field_fraction</from>
 					<to>harvest_index_for_food_crops</to>
 				</connector>
-				<connector uid="189" angle="34.0822">
-					<from>tolerance_of_the_cap_on_harvest_index_and_residue_on_field_fraction</from>
-					<to>crop_residue_on_field_fraction</to>
-				</connector>
-				<aux x="2275.71" y="915.667" name="max crop residue on field fraction"/>
-				<connector uid="190" angle="251.524">
-					<from>max_crop_residue_on_field_fraction</from>
+				<aux x="2075.67" y="826.753" name="sustainable residue\non field fraction"/>
+				<connector uid="190" angle="343.378">
+					<from>sustainable_residue_on_field_fraction</from>
 					<to>crop_residue_on_field_fraction</to>
 				</connector>
 				<connector uid="191" angle="102.466">
@@ -2945,10 +3013,86 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 					<from>selected_crops_damages_case</from>
 					<to>rel_change_in_crop_productivity_from_climate</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" x="2176.27" y="1610.23" name="total yearly demand"/>
+				<connector uid="208" angle="200.845">
+					<from>total_yearly_demand</from>
+					<to>fertilizer_use</to>
+				</connector>
+				<connector uid="68" angle="206.577">
+					<from>sensitivity_of_effect_of_crop_residue_production_on_field_fraction</from>
+					<to>effect_of_crop_residue_production_on_field_fraction</to>
+				</connector>
+				<aux x="2253" y="785.629" name="Residue coverage"/>
+				<connector uid="214" angle="75.7145">
+					<from>crop_residue_on_field_init_fraction</from>
+					<to>Residue_coverage</to>
+				</connector>
+				<aux x="2122" y="725.139" name="mass to coverage"/>
+				<connector uid="215" angle="307.74">
+					<from>mass_to_coverage</from>
+					<to>Residue_coverage</to>
+				</connector>
+				<connector uid="220" angle="23.2568">
+					<from>tolerance_of_the_cap_on_harvest_index_and_residue_on_field_fraction</from>
+					<to>crop_residue_on_field_fraction</to>
+				</connector>
+				<connector uid="221" angle="55.4097">
+					<from>effect_of_crop_residue_production_on_field_fraction</from>
+					<to>crop_residue_on_field_fraction</to>
+				</connector>
+				<aux x="2143.5" y="997.622" name="crop residue on\nfield fraction"/>
+				<connector uid="224" angle="128.245">
+					<from>crop_residue_on_field_init_fraction</from>
+					<to>crop_residue_on_field_fraction</to>
+				</connector>
+				<connector uid="225" angle="147.109">
+					<from>crop_residue_on_field_fraction</from>
+					<to>crop_residue_litter</to>
+				</connector>
+				<connector uid="226" angle="213.454">
+					<from>crop_residue_on_field_fraction</from>
+					<to>crop_residue_other_use</to>
+				</connector>
+				<connector uid="227" angle="10.5695">
+					<from>sustainable_residue_on_field_fraction</from>
+					<to>crop_residue_on_field_init_fraction</to>
+				</connector>
+				<connector uid="228" angle="23.4911">
+					<from>sustainable_residue_on_field_fraction</from>
+					<to>Residue_coverage</to>
+				</connector>
+				<connector uid="229" angle="51.5063">
+					<from>effect_of_crop_residue_production_on_field_fraction</from>
+					<to>Residue_coverage</to>
+				</connector>
+				<connector uid="230" angle="37.4009">
+					<from>tolerance_of_the_cap_on_harvest_index_and_residue_on_field_fraction</from>
+					<to>Residue_coverage</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="2421.83" y="656.201" name="sustainable farming policy"/>
+				<aux x="2386.07" y="785.629" name="sustainable farming fraction"/>
+				<connector uid="231" angle="267.053">
+					<from>sustainable_farming_policy</from>
+					<to>sustainable_farming_fraction</to>
+				</connector>
+				<aux x="2300.59" y="694.202" name="historical sustainable farming fraction"/>
+				<connector uid="232" angle="306.066">
+					<from>historical_sustainable_farming_fraction</from>
+					<to>sustainable_farming_fraction</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="2342.59" y="625.859" name="start year"/>
+				<connector uid="233" angle="289.017">
+					<from>start_year</from>
+					<to>sustainable_farming_fraction</to>
+				</connector>
+				<connector uid="234" angle="248.008">
+					<from>sustainable_farming_fraction</from>
+					<to>crop_residue_on_field_init_fraction</to>
+				</connector>
 				<alias font_style="italic" uid="72" x="2249.19" y="1887.51" width="18" height="18">
 					<of>crop_production</of>
 				</alias>
-				<alias font_style="italic" font_weight="bold" uid="74" x="2219.26" y="1704.41" width="45" height="35">
+				<alias font_style="italic" font_weight="bold" uid="74" x="2219.26" y="1704.41" width="18" height="18">
 					<of>fertilizer_use</of>
 				</alias>
 				<alias font_style="italic" font_weight="bold" uid="77" x="2560.79" y="1118.36" width="45" height="35">
@@ -3065,7 +3209,7 @@ crop_used_for_non_energy_other</eqn>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>6.71244517171147</eqn>
+					<eqn>6.72404784944285</eqn>
 				</element>
 				<range min="5" max="20"/>
 				<units>years</units>
@@ -3278,7 +3422,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.402627060131928</eqn>
+					<eqn>0.393776862877883</eqn>
 				</element>
 				<range min="0" max="2"/>
 				<units>dmnl</units>
@@ -3290,7 +3434,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.127318786431931</eqn>
+					<eqn>0.128077955086202</eqn>
 				</element>
 				<range min="0" max="1"/>
 				<units>PCal/Mp/Year</units>
@@ -3347,7 +3491,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.362230160734174</eqn>
+					<eqn>0.358163688638236</eqn>
 				</element>
 				<range min="0" max="2"/>
 				<units>dmnl</units>
@@ -3359,7 +3503,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.544013209683342</eqn>
+					<eqn>0.56502329926806</eqn>
 				</element>
 				<range min="0" max="1"/>
 				<units>PCal/Mp/Year</units>
@@ -3406,14 +3550,14 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>(desired_crop_demand_for_feed-crop_demand_for_feed)/time_to_change_demand_for_feed</eqn>
 				<units>PCal/Year/Year</units>
 			</flow>
-			<aux name="time to change demand\nfor feed">
+			<aux name="time to change demand\nfor feed" access="output" isee:autocreated="true">
 				<doc>${Internal Calibration Parameter}
 </doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>9.86970946764368</eqn>
+					<eqn>8.35645654892217</eqn>
 				</element>
 				<range min="1" max="10"/>
 				<units>years</units>
@@ -3432,9 +3576,9 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.979604148171561</eqn>
+					<eqn>0.989998841158624</eqn>
 				</element>
-				<range min="0.9" max="0.98"/>
+				<range min="0.9" max="0.99"/>
 				<units>dmnl</units>
 			</aux>
 			<aux name="Average Daily\nDemand Per Capita" access="input">
@@ -3502,7 +3646,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="15" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="166" isee:scroll_y="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3885,7 +4029,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>animal_products_calorie_requirements_met_via_grazing</from>
 					<to>desired_crop_demand_for_feed</to>
 				</connector>
-				<flow x="910.75" y="393.75" name="change in crop\ndemand for feed">
+				<flow x="910.751" y="393.75" name="change in crop\ndemand for feed">
 					<pts>
 						<pt x="974.001" y="393.75"/>
 						<pt x="859.5" y="393.75"/>
@@ -3900,7 +4044,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<to>change_in_crop_demand_for_feed</to>
 				</connector>
 				<aux x="861.321" y="503.893" name="time to change demand\nfor feed"/>
-				<connector uid="107" angle="65.8308">
+				<connector uid="107" angle="65.8306">
 					<from>time_to_change_demand_for_feed</from>
 					<to>change_in_crop_demand_for_feed</to>
 				</connector>
@@ -4454,7 +4598,7 @@ Limits for extreme conditions in no feedback cases</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_x="13" isee:scroll_y="82" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1090" page_height="761" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="82" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4956,7 +5100,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.0108421901817229</eqn>
+					<eqn>0.0188686493441728</eqn>
 				</element>
 				<range min="0.01" max="0.5"/>
 				<units>dmnl</units>
@@ -4968,7 +5112,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>170884178.399796</eqn>
+					<eqn>167541025.618914</eqn>
 				</element>
 				<range min="50000000" max="400000000"/>
 				<units>m^3/Mp/year</units>
@@ -5021,7 +5165,7 @@ ELSE
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.00372796642741939</eqn>
+					<eqn>0.00372749983726037</eqn>
 				</element>
 				<range min="0" max="0.01"/>
 				<units>1/year</units>
@@ -5052,7 +5196,7 @@ ELSE
 				<eqn>IF (switch_landuse_damage = 0) AND TIME &gt; today THEN
 PREVIOUS(SELF, 1)
 ELSE
-1 + sensitivity_of_surface_temperature_anomaly_on_water_used_per_Mtcrop* Surface_Temperature_Anomaly</eqn>
+1 + sensitivity_of_surface_temperature_anomaly_on_water_used_per_Mtcrop* Surface_Temperature_Anomaly * residue_coverage_effect_on_evapotranspiration</eqn>
 				<units>1</units>
 			</aux>
 			<aux name="water withdrawal per\nMHa irrigated 1980" access="output" isee:autocreated="true">
@@ -5062,7 +5206,7 @@ ELSE
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>9447671449.83665</eqn>
+					<eqn>9473679096.41624</eqn>
 				</element>
 				<range min="1000000000" max="100000000000"/>
 				<units>m^3/MHa/year</units>
@@ -5098,7 +5242,7 @@ fraction_of_cropland_irrigated_indicated_by_GDP_per_person*effect_of_available_w
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>1.03717417070288</eqn>
+					<eqn>1.05797393674332</eqn>
 				</element>
 				<range min="0.5" max="1.5"/>
 				<units>dmnl</units>
@@ -5118,7 +5262,7 @@ Old value from calibration: 164600402563.243</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>30519841631.7115</eqn>
+					<eqn>30492845749.5219</eqn>
 				</element>
 				<range min="10000000000" max="1000000000000"/>
 				<units>m^3/year</units>
@@ -5130,7 +5274,7 @@ Old value from calibration: 164600402563.243</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>-0.0162923325605105</eqn>
+					<eqn>-0.0124189645103748</eqn>
 				</element>
 				<range min="-0.02" max="0"/>
 				<units>1/year</units>
@@ -5156,7 +5300,7 @@ Old value from calibration: 164600402563.243</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>-2.94827673721631</eqn>
+					<eqn>-2.95222187107779</eqn>
 				</element>
 				<range min="-3" max="0"/>
 				<units>dmnl</units>
@@ -5168,7 +5312,7 @@ Old value from calibration: 164600402563.243</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>48246098907318.8</eqn>
+					<eqn>48246098665181.8</eqn>
 				</element>
 				<range min="30000000000000" max="120000000000000"/>
 				<units>m^3</units>
@@ -5210,7 +5354,7 @@ Old value from calibration: 164600402563.243</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.139661067358513</eqn>
+					<eqn>0.121297827811965</eqn>
 				</element>
 				<range min="0.01" max="1"/>
 				<units>dmnl</units>
@@ -5222,7 +5366,7 @@ Old value from calibration: 164600402563.243</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.185580542606732</eqn>
+					<eqn>0.192676501326141</eqn>
 				</element>
 				<range min="0" max="0.3"/>
 				<units>dmnl</units>
@@ -5283,7 +5427,7 @@ The range is amply wide to account for reasonable possibilities</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.0505261471847029</eqn>
+					<eqn>0.0497282778640428</eqn>
 				</element>
 				<range min="0" max="0.3"/>
 				<units>dmnl</units>
@@ -5397,7 +5541,7 @@ ELSE
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>7.01821871951311</eqn>
+				<eqn>8.56781069587798</eqn>
 				<range min="3" max="15"/>
 				<units>years</units>
 			</aux>
@@ -5407,8 +5551,32 @@ ELSE
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>0.833626372509192</eqn>
+				<eqn>0.765663508752395</eqn>
 				<range min="0.5" max="1"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="Residue coverage" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="sensitivity residue coverage effect">
+				<doc>${Assumption}
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0.4</eqn>
+				<range min="0.2" max="0.6"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="residue coverage effect on evapotranspiration">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>1-Residue_coverage*sensitivity_residue_coverage_effect</eqn>
 				<units>dmnl</units>
 			</aux>
 		</variables>
@@ -5460,7 +5628,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="17" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_x="323.571" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -5838,6 +6006,21 @@ the less future investment due to crowding out of more profitable forms of inves
 				<connector uid="77" angle="137.241">
 					<from>initial_average_relative_real_gdp_per_person</from>
 					<to>average_relative_real_GDP_per_person</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="928.761" y="624.75" name="Residue coverage"/>
+				<aux x="838.4" y="569.45" name="sensitivity residue coverage effect"/>
+				<aux x="856.4" y="469.6" name="residue coverage effect on evapotranspiration"/>
+				<connector uid="78" angle="81.7469">
+					<from>sensitivity_residue_coverage_effect</from>
+					<to>residue_coverage_effect_on_evapotranspiration</to>
+				</connector>
+				<connector uid="79" angle="98.5446">
+					<from>Residue_coverage</from>
+					<to>residue_coverage_effect_on_evapotranspiration</to>
+				</connector>
+				<connector uid="80" angle="42.1376">
+					<from>residue_coverage_effect_on_evapotranspiration</from>
+					<to>effect_of_surface_temperature_anomaly_on_water_lost_to_evapotranspiration</to>
 				</connector>
 				<alias font_style="italic" uid="36" x="1328.66" y="844.667" width="18" height="18">
 					<of>total_water_withdrawal</of>
@@ -6353,36 +6536,13 @@ Limits for extreme conditions in no feedback cases</doc>
 	</model>
 	<model name="Land_Nutrients">
 		<variables>
-			<stock name="fertilizer use" access="output">
-				<doc>${Calibrated Output}
-Calibration data from:
-Breier, J. (2023). Regionalisation of FAO &amp; Hyde data (Version 0.1.0) [Computer software]. https://github.com/jnnsbrr/reg_fao_hyde
-
-Includes Manure and Technological</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>man_made_fertilizer_use_1980 + manure_fertilizer_use_1980</eqn>
-				<inflow>change_in_fertilizer_user</inflow>
-				<units>MtN/year</units>
-			</stock>
-			<aux name="man made\nfertilizer use\n1980">
-				<doc>${External Parameter}
-From Calibration Data</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>60.6</eqn>
-				<range min="58" max="64"/>
-				<units>MtN/year</units>
-			</aux>
 			<aux name="man made fertilizer use" access="output">
 				<doc>${Calibrated Output}
 </doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>fertilizer_use-manure_fertilizer_use</eqn>
+				<eqn>total_yearly_demand-manure_fertilizer_use</eqn>
 				<units>MtN/year</units>
 			</aux>
 			<aux name="manure\nfertilizer use\n1980">
@@ -6395,7 +6555,7 @@ From Calibration Data</doc>
 				<range min="20" max="25"/>
 				<units>MtN/year</units>
 			</aux>
-			<aux name="manure fertilizer use" access="output">
+			<aux name="manure fertilizer use">
 				<doc>${Calibrated Output}
 </doc>
 				<dimensions>
@@ -6411,7 +6571,7 @@ From Calibration Data</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.0970036314376746</eqn>
+					<eqn>0.0930348689514105</eqn>
 				</element>
 				<range min="0.01" max="1.5"/>
 				<units>dmnl</units>
@@ -6430,106 +6590,12 @@ From Calibration Data</doc>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>PCal/Year</units>
 			</aux>
-			<aux name="crop balance\nwith reserves" access="input">
+			<aux name="total yearly demand" access="output" throughput="true">
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
-				<units>1</units>
-			</aux>
-			<flow name="change in\nfertilizer user">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>(indicated_fertilizer_use-fertilizer_use)/time_to_change_fertilizer_use</eqn>
-				<units>MtN/year/Year</units>
-			</flow>
-			<aux name="indicated fertilizer use">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>MIN(fertilizer_use*(1+maximum_desired_growth_in_fertilizer_use), fertilizer_use*effect_of_crop_balance_on_indicated_fertilizer_use*effect_of_fertilizer_use_on_indicated_fertilizer_use)</eqn>
 				<units>MtN/year</units>
-			</aux>
-			<aux name="time to change fertilizer use">
-				<doc>${Internal Calibration Parameter}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<element subscript="1">
-					<eqn>2.99477652618579</eqn>
-				</element>
-				<range min="2" max="5"/>
-				<units>years</units>
-			</aux>
-			<aux name="effect of crop balance on\nindicated fertilizer use">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>1+sensitivity_of_fertilizer_use_to_crop_balance_with_reserves*(crop_balance_with_reserves-1)</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="sensitivity of fertilizer use to crop balance with reserves">
-				<doc>${Internal Calibration Parameter}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<element subscript="1">
-					<eqn>-1.85338957870363</eqn>
-				</element>
-				<range min="-10" max="-0.2"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="relative fertilizer use">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>fertilizer_use/reference_fertilizer_use</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="effect of fertilizer use on\nindicated fertilizer use">
-				<doc>Added Sept 13th 2024 b/c fertilizer we wanted to represent the relationship that more fertilizer use means more farmers using it, and as you have more farmers using it, you inevitably get to the point where poorer farmers cannot afford it.</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>relative_fertilizer_use^sensitivity_demand_to_relative_use</eqn>
-				<units>dmnl</units>
-			</aux>
-			<aux name="sensitivity demand to relative\nuse">
-				<doc>${Internal Calibration Parameter}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<element subscript="1">
-					<eqn>-0.0191652954443731</eqn>
-				</element>
-				<range min="-0.5" max="-0.001"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="maximum desired\ngrowth in fertilizer use">
-				<doc>${Internal Calibration Parameter}
-</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<element subscript="1">
-					<eqn>0.0499909963335135</eqn>
-				</element>
-				<range min="0" max="0.05"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="reference fertilizer use">
-				<doc>${Assumption}
-An external reference point - this can be converted to the initial value for fertilizer use if we wish.</doc>
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
-				<eqn>85</eqn>
-				<range min="60" max="120"/>
-				<units>MtN/Year</units>
 			</aux>
 		</variables>
 		<views>
@@ -6580,7 +6646,7 @@ An external reference point - this can be converted to the initial value for fer
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="116" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="385" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -6619,11 +6685,9 @@ An external reference point - this can be converted to the initial value for fer
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<stock background="white" label_side="top" x="557.25" y="360" name="fertilizer use"/>
-				<aux label_side="bottom" x="779" y="577.5" name="man made\nfertilizer use\n1980"/>
 				<aux x="702" y="351.67" name="man made fertilizer use"/>
-				<aux label_side="bottom" x="708.75" y="494.5" name="manure\nfertilizer use\n1980"/>
-				<connector uid="1" angle="49.6717">
+				<aux label_side="bottom" x="710.75" y="494.5" name="manure\nfertilizer use\n1980"/>
+				<connector uid="1" angle="50.1412">
 					<from>manure_fertilizer_use_1980</from>
 					<to>manure_fertilizer_use</to>
 				</connector>
@@ -6647,77 +6711,10 @@ An external reference point - this can be converted to the initial value for fer
 					<from>manure_fertilizer_use</from>
 					<to>man_made_fertilizer_use</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="445.25" y="644" name="crop balance\nwith reserves"/>
-				<flow x="458.375" y="360" name="change in\nfertilizer user">
-					<pts>
-						<pt x="370" y="360"/>
-						<pt x="534.75" y="360"/>
-					</pts>
-				</flow>
-				<aux x="495" y="490" name="indicated fertilizer use"/>
-				<connector uid="6" angle="143.393">
-					<from>indicated_fertilizer_use</from>
-					<to>change_in_fertilizer_user</to>
-				</connector>
-				<aux x="394" y="277" name="time to change fertilizer use"/>
-				<connector uid="7" angle="307.797">
-					<from>time_to_change_fertilizer_use</from>
-					<to>change_in_fertilizer_user</to>
-				</connector>
-				<aux x="472.25" y="557" name="effect of crop balance on\nindicated fertilizer use"/>
-				<connector uid="8" angle="72.7585">
-					<from>crop_balance_with_reserves</from>
-					<to>effect_of_crop_balance_on_indicated_fertilizer_use</to>
-				</connector>
-				<aux x="320" y="604" name="sensitivity of fertilizer use to crop balance with reserves"/>
-				<connector uid="9" angle="17.1556">
-					<from>sensitivity_of_fertilizer_use_to_crop_balance_with_reserves</from>
-					<to>effect_of_crop_balance_on_indicated_fertilizer_use</to>
-				</connector>
-				<connector uid="10" angle="69.8374">
-					<from>effect_of_crop_balance_on_indicated_fertilizer_use</from>
-					<to>indicated_fertilizer_use</to>
-				</connector>
-				<connector uid="11" angle="135.802">
-					<from>fertilizer_use</from>
-					<to>change_in_fertilizer_user</to>
-				</connector>
-				<connector uid="12" angle="287.182">
-					<from>fertilizer_use</from>
-					<to>indicated_fertilizer_use</to>
-				</connector>
-				<connector uid="13" angle="1.22539">
-					<from>fertilizer_use</from>
+				<aux font_style="italic" font_weight="bold" x="516.77" y="354.73" name="total yearly demand"/>
+				<connector uid="21" angle="0.946583">
+					<from>total_yearly_demand</from>
 					<to>man_made_fertilizer_use</to>
-				</connector>
-				<aux x="520" y="163" name="relative fertilizer use"/>
-				<aux x="378" y="163" name="effect of fertilizer use on\nindicated fertilizer use"/>
-				<connector uid="15" angle="139.268">
-					<from>relative_fertilizer_use</from>
-					<to>effect_of_fertilizer_use_on_indicated_fertilizer_use</to>
-				</connector>
-				<aux x="352" y="88" name="sensitivity demand to relative\nuse"/>
-				<connector uid="16" angle="289.12">
-					<from>sensitivity_demand_to_relative_use</from>
-					<to>effect_of_fertilizer_use_on_indicated_fertilizer_use</to>
-				</connector>
-				<connector uid="17" angle="66.9417">
-					<from>fertilizer_use</from>
-					<to>relative_fertilizer_use</to>
-				</connector>
-				<connector uid="18" angle="228.366">
-					<from>effect_of_fertilizer_use_on_indicated_fertilizer_use</from>
-					<to>indicated_fertilizer_use</to>
-				</connector>
-				<aux x="581" y="529" name="maximum desired\ngrowth in fertilizer use"/>
-				<connector uid="19" angle="156.801">
-					<from>maximum_desired_growth_in_fertilizer_use</from>
-					<to>indicated_fertilizer_use</to>
-				</connector>
-				<aux x="684" y="141" name="reference fertilizer use"/>
-				<connector uid="20" angle="166.759">
-					<from>reference_fertilizer_use</from>
-					<to>relative_fertilizer_use</to>
 				</connector>
 			</view>
 		</views>
@@ -6829,7 +6826,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.510511456217934</eqn>
+					<eqn>0.510197983610937</eqn>
 				</element>
 				<range min="0.2" max="0.8"/>
 				<units>dmnl</units>
@@ -6857,7 +6854,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>966.048326007073</eqn>
+					<eqn>963.363325136356</eqn>
 				</element>
 				<range min="100" max="1000"/>
 				<units>years</units>
@@ -6876,7 +6873,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.412578004548668</eqn>
+					<eqn>0.412677053407745</eqn>
 				</element>
 				<range min="0.2" max="0.8"/>
 				<units>dmnl</units>
@@ -6904,7 +6901,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.672311080417832</eqn>
+					<eqn>0.675156124228173</eqn>
 				</element>
 				<range min="0.6" max="0.8"/>
 				<units>dmnl</units>
@@ -6938,7 +6935,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>8.51420168264695</eqn>
+					<eqn>8.51882318999719</eqn>
 				</element>
 				<range min="2" max="10"/>
 				<units>years</units>
@@ -7010,7 +7007,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.0863642445555122</eqn>
+					<eqn>0.0867624892342647</eqn>
 				</element>
 				<range min="0.01" max="0.5"/>
 				<units>dmnl</units>
@@ -7029,7 +7026,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>2.85632402447486</eqn>
+					<eqn>2.85534365730374</eqn>
 				</element>
 				<range min="1" max="10"/>
 				<units>years</units>
@@ -7105,7 +7102,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>0.708983972802554</eqn>
+				<eqn>0.716931612862606</eqn>
 				<range min="0.2" max="2"/>
 				<units>dmnl</units>
 			</aux>
@@ -7129,7 +7126,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>0.866410252363501</eqn>
+				<eqn>0.865391997072204</eqn>
 				<range min="0.2" max="2"/>
 				<units>dmnl</units>
 			</aux>
@@ -7158,7 +7155,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>-0.314437630068299</eqn>
+					<eqn>-0.309023528906778</eqn>
 				</element>
 				<range min="-1" max="0"/>
 				<units>1</units>
@@ -7191,7 +7188,7 @@ Calibration Parameter: forest land &amp; CO2 emissions from land cover change &a
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>-0.152244737461254</eqn>
+					<eqn>-0.1351490899484</eqn>
 				</element>
 				<range min="-1" max="0"/>
 				<units>1</units>
@@ -7298,7 +7295,7 @@ Used for policy implementation only.</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>599.441148339866</eqn>
+					<eqn>605.171160502607</eqn>
 				</element>
 				<range min="100" max="1000"/>
 				<units>years</units>
@@ -7331,7 +7328,7 @@ Used for policy implementation only.</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>1.61188503044571</eqn>
+					<eqn>1.6067611332019</eqn>
 				</element>
 				<range min="0" max="5"/>
 				<units>dmnl</units>
@@ -7357,7 +7354,7 @@ Used for policy implementation only.</doc>
 					<dim name="Run"/>
 				</dimensions>
 				<element subscript="1">
-					<eqn>0.613486442667746</eqn>
+					<eqn>0.00342628970999703</eqn>
 				</element>
 				<range min="0" max="10"/>
 				<units>dmnl</units>
@@ -7418,7 +7415,7 @@ Used for policy implementation only.</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="810" isee:scroll_y="342" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="371" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -8433,7 +8430,7 @@ Used for policy implementation only.</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="576" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1090" page_height="761" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="713.75" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -8911,7 +8908,7 @@ Used for policy implementation only.</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="576" isee:page_cols="3" isee:page_rows="2" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1090" page_height="761" isee:page_cols="3" isee:page_rows="2" isee:scroll_y="165" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
