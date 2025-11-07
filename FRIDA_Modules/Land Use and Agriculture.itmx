@@ -692,6 +692,8 @@ This isn&apos;t in the uncertainty analysis b/c it needs to be integrated with t
 				<connect2 to="Crop.sustainable_farming_policy" from="Government_Regulations.sustainable_farming_policy"/>
 				<connect to="Crop.switch_landuse_damage" from="Climate.switch_landuse_damage"/>
 				<connect2 to="Crop.switch_landuse_damage" from="Climate.switch_landuse_damage"/>
+				<connect to="Crop.switch_sustainable_farming_policy" from="Government_Regulations.switch_sustainable_farming_policy"/>
+				<connect2 to="Crop.switch_sustainable_farming_policy" from="Government_Regulations.switch_sustainable_farming_policy"/>
 				<connect to="Crop.today" from="Climate.climate_impact_stoptime"/>
 				<connect2 to="Crop.today" from="Climate.climate_impact_stoptime"/>
 				<connect to="Crop.total_yearly_demand" from="Land_Nutrients.total_yearly_demand"/>
@@ -1070,7 +1072,7 @@ Corresponding author: Axel Eriksson, ax3635er-s@student.lu.se or j.axel.e.erikss
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="5" isee:page_rows="2" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="2" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4950,9 +4952,6 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 				<units>dmnl</units>
 			</aux>
 			<aux name="sustainable farming policy" access="input">
-				<dimensions>
-					<dim name="Run"/>
-				</dimensions>
 				<eqn>TIME</eqn>
 				<gf>
 					<xscale min="1980" max="2150"/>
@@ -4965,7 +4964,7 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>IF TIME &gt;= start_year THEN sustainable_farming_policy[Run] ELSE historical_sustainable_farming_fraction[selected_climate_case]</eqn>
+				<eqn>IF TIME &gt;= start_year AND switch_sustainable_farming_policy &lt;&gt; 0 THEN sustainable_farming_policy ELSE historical_sustainable_farming_fraction [selected_climate_case]</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="historical sustainable farming fraction">
@@ -5300,6 +5299,10 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>1-EXP(-((crop_residue_litter*sustainable_farming_fraction)/Cropland)*mass_to_coverage[selected_climate_case])</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="switch sustainable farming policy" access="input">
+				<eqn>0</eqn>
 				<units>dmnl</units>
 			</aux>
 		</variables>
@@ -5913,6 +5916,11 @@ harvest_index_for_food_crops * (1 - Fraction_of_crop_production_for_energy - Fra
 						<alias uid="241"/>
 					</from>
 					<to>Residue_coverage</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="2603.65" y="706.045" name="switch sustainable farming policy"/>
+				<connector uid="254" angle="199.138">
+					<from>switch_sustainable_farming_policy</from>
+					<to>sustainable_farming_fraction</to>
 				</connector>
 				<alias font_style="italic" uid="72" x="2249.19" y="1887.51" width="18" height="18">
 					<of>crop_production</of>
