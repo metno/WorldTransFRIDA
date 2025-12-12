@@ -5,8 +5,11 @@
 		<name>Behavioral Change</name>
 		<uuid>08e7c7a9-280f-4118-9453-f8d00de54419</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.8.1" isee:build_number="3632" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="4.1.2" isee:build_number="3810" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
+	<ai_information>
+		<status verified="false"/>
+	</ai_information>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
 		<stop>2100</stop>
@@ -20,6 +23,20 @@
 		<dim name="Run" size="1"/>
 	</dimensions>
 	<isee:prefs saved_runs="10" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_secure_mode="true" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rifp="true">
+		<isee:tag_styles>
+			<isee:tag_style tag="Assumption"/>
+			<isee:tag_style tag="Calibrated Output"/>
+			<isee:tag_style tag="Climate Impact Parameter"/>
+			<isee:tag_style tag="Explanatory Variable"/>
+			<isee:tag_style tag="External Parameter"/>
+			<isee:tag_style tag="Interface"/>
+			<isee:tag_style tag="Internal Calibration Parameter"/>
+			<isee:tag_style tag="No Sensi"/>
+			<isee:tag_style tag="Output"/>
+			<isee:tag_style tag="Parameter"/>
+			<isee:tag_style tag="Policy"/>
+			<isee:tag_style tag="Unit"/>
+		</isee:tag_styles>
 		<isee:ignored_words>
 			<isee:ignored_word>WolrdTrans</isee:ignored_word>
 			<isee:ignored_word>WorldTrans</isee:ignored_word>
@@ -310,6 +327,8 @@
 				<connect2 to="Fertilizer_Demand.Fossil_Fuel_Extraction_Carbon" from="Fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Fertilizer_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
 				<connect2 to="Fertilizer_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
+				<connect to="Fertilizer_Demand.share_of_man_made_fertilizer" from="Land_Nutrients.share_of_man_made_fertilizer"/>
+				<connect2 to="Fertilizer_Demand.share_of_man_made_fertilizer" from="Land_Nutrients.share_of_man_made_fertilizer"/>
 			</module>
 		</variables>
 		<views>
@@ -360,7 +379,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="91.4286" isee:scroll_y="25.7143" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="91.4286" isee:scroll_y="25.7143" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3171,7 +3190,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>(Price_of_fertilizer_feedstock/INIT(Price_of_fertilizer_feedstock))^elasticity_of_demand_to_natural_gas</eqn>
+				<eqn>1 + ((((Price_of_fertilizer_feedstock/INIT(Price_of_fertilizer_feedstock))^elasticity_of_demand_to_natural_gas)-1)*share_of_man_made_fertilizer)</eqn>
 				<units>dmnl</units>
 			</aux>
 			<aux name="elasticity of demand\nto natural gas">
@@ -3261,6 +3280,13 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<eqn>1-Ratio_of_natural_gas_needed_for_fertilizer_over_natural_gas_production</eqn>
 				<units>Dimensionless</units>
 			</aux>
+			<aux name="share of man made fertilizer" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>dmnl</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -3310,7 +3336,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1056" page_height="816" isee:page_cols="3" isee:page_rows="3" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="3" isee:page_rows="3" isee:scroll_y="557.143" zoom="140" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3805,13 +3831,13 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>sensitivity_scarcity_to_changes_in_demand</from>
 					<to>effect_of_scarcity_on_demand</to>
 				</connector>
-				<aux x="178.5" y="837.544" name="effect of cost of natural gas\non demand"/>
+				<aux x="183.905" y="836.858" name="effect of cost of natural gas\non demand"/>
 				<aux x="55.3571" y="818.858" name="elasticity of demand\nto natural gas"/>
-				<connector uid="122" angle="351.372">
+				<connector uid="122" angle="352.029">
 					<from>elasticity_of_demand_to_natural_gas</from>
 					<to>effect_of_cost_of_natural_gas_on_demand</to>
 				</connector>
-				<connector uid="124" angle="19.5367">
+				<connector uid="124" angle="19.8502">
 					<from>effect_of_cost_of_natural_gas_on_demand</from>
 					<to>indicated_demand_from_accessibility</to>
 				</connector>
@@ -3842,7 +3868,7 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					<from>UNIT_tN_per_MtN</from>
 					<to>UNIT_GtC_per_MtN_in_fertilizer</to>
 				</connector>
-				<connector uid="135" angle="34.5277">
+				<connector uid="135" angle="32.5566">
 					<from>Price_of_fertilizer_feedstock</from>
 					<to>effect_of_cost_of_natural_gas_on_demand</to>
 				</connector>
@@ -3894,6 +3920,11 @@ Calibration Parameter: fertilizer use &amp; crop production</doc>
 					</pts>
 					<from>effect_of_natural_gas_scarcity_on_accessibility</from>
 					<to>indicated_demand_from_accessibility</to>
+				</connector>
+				<aux font_style="italic" font_weight="bold" x="281.333" y="764.858" name="share of man made fertilizer"/>
+				<connector uid="149" angle="214.681">
+					<from>share_of_man_made_fertilizer</from>
+					<to>effect_of_cost_of_natural_gas_on_demand</to>
 				</connector>
 				<alias font_style="italic" uid="137" x="397.025" y="1516" width="18" height="18">
 					<of>total_yearly_consumption</of>
