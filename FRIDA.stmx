@@ -5,8 +5,14 @@
 		<name>FRIDA</name>
 		<uuid>fe807591-4e3d-4e2c-b464-70ec4fb12094</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.8.1" isee:build_number="3632" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="4.1.2" isee:build_number="3810" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
+	<ai_information>
+		<status verified="false" trusted="false" tampered="false" uses="false" analyzed="false" log_truncated="true" timestamp="1771253593" algorithm="ed25519" keyurl="https://iseesystems.com/keys/stella01.txt" want_var_info="true" want_var_status="false" want_log="false" sampling="8" signature="PtwKUFKF3VPZ6YvhLcT/Ah8p/7PvoH1Fdm6WjAI907VSZ472YL0/GDGV5IegZ89VyOR9pP8KhmNJKWh8rnDyCA=="/>
+		<settings>
+			<isee:setting key="ltm-narrative/underlyingModel" value="gemini-2.5-flash-preview-09-2025"/>
+		</settings>
+	</ai_information>
 	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" isee:save_interval="1" method="RK4" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="false" isee:loop_exhaustive_allowed="1000">
 		<start>1980</start>
 		<stop>Simulation_End</stop>
@@ -32,6 +38,16 @@
 			<elem name="Bio"/>
 			<elem name="Solar"/>
 			<elem name="Wind"/>
+		</dim>
+		<dim name="EnergySourceGas">
+			<elem name="Gas_fuel_extraction"/>
+		</dim>
+		<dim name="EnergySourceLiquid">
+			<elem name="Oil_fuel_extraction"/>
+			<elem name="Bio"/>
+		</dim>
+		<dim name="EnergySourceSolid">
+			<elem name="Coal_fuel_extraction"/>
 		</dim>
 		<dim name="EnergySupplyHydroDamage" size="11"/>
 		<dim name="EnergySupplyThermoDamage" size="11"/>
@@ -62,10 +78,28 @@
 		<dim name="PopCohortLen20" size="20"/>
 		<dim name="PopCohortLen25" size="25"/>
 		<dim name="PopCohortLen5" size="5"/>
+		<dim name="PrimaryFuelUse">
+			<elem name="Fuel"/>
+			<elem name="Electricity"/>
+		</dim>
 		<dim name="Renewable_Age_Group" size="7"/>
 		<dim name="Run" size="1"/>
 	</dimensions>
 	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_secure_mode="true" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rifp="true">
+		<isee:tag_styles>
+			<isee:tag_style tag="Assumption"/>
+			<isee:tag_style tag="Calibrated Output"/>
+			<isee:tag_style tag="Climate Impact Parameter"/>
+			<isee:tag_style tag="Explanatory Variable"/>
+			<isee:tag_style tag="External Parameter"/>
+			<isee:tag_style tag="Interface"/>
+			<isee:tag_style tag="Internal Calibration Parameter"/>
+			<isee:tag_style tag="No Sensi"/>
+			<isee:tag_style tag="Output"/>
+			<isee:tag_style tag="Parameter"/>
+			<isee:tag_style tag="Policy"/>
+			<isee:tag_style tag="Unit"/>
+		</isee:tag_styles>
 		<isee:ignored_words>
 			<isee:ignored_word>WolrdTrans</isee:ignored_word>
 			<isee:ignored_word>WorldTrans</isee:ignored_word>
@@ -630,20 +664,33 @@
 			<isee:parameter name="Circular_Flow.time_for_bottom_40_to_be_affected[1]"/>
 			<isee:payoff name="SDG 10.1.1" action="min"/>
 		</isee:optimizer_specs>
-		<isee:optimizer_specs name="Energy Demand Parameters" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
-			<isee:parameter name="Energy_demand.effect_of_GDP_on_Buildings_energy_demand_alpha[1]" scaling="10"/>
-			<isee:parameter name="Energy_demand.effect_of_GDP_on_Buildings_energy_demand_beta[1]" scaling="10"/>
-			<isee:parameter name="Energy_demand.effect_of_GDP_on_Industry_and_Other_energy_demand_alpha[1]" scaling="10"/>
-			<isee:parameter name="Energy_demand.effect_of_GDP_on_Industry_and_Other_energy_demand_beta[1]" scaling="10"/>
-			<isee:parameter name="Energy_demand.effect_of_GDP_on_Transport_energy_demand_alpha[1]" scaling="10"/>
-			<isee:parameter name="Energy_demand.effect_of_GDP_on_Transport_energy_demand_beta[1]" scaling="10"/>
-			<isee:parameter name="Energy_demand.normal_energy_demand_for_buildings_necessities[1]" scaling="1e-8"/>
-			<isee:parameter name="Energy_demand.normal_per_sector_energy_demand_for_Industry_and_Other[1]" scaling="1e-9"/>
-			<isee:parameter name="Energy_demand.normal_per_sector_energy_demand_for_Transport[1]" scaling="1e-8"/>
-			<isee:parameter name="Energy_demand.sensitivity_of_effect_of_energy_prices_on_energy_demand_for_Transport[1]" scaling="1000"/>
-			<isee:parameter name="Energy_demand.sensitivity_of_effect_of_energy_prices_on_energy_demand_of_Industry_and_Other[1]" scaling="1000"/>
-			<isee:parameter name="Energy_demand.sensitivity_of_effect_of_energy_prices_on_energy_demand_of_Buildings[1]" scaling="1000"/>
-			<isee:payoff name="Energy Payoff" action="min"/>
+		<isee:optimizer_specs name="Transport Energy Behaviour" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
+			<isee:parameter name="Transportation_Energy_Demand.sensitivity_of_personal_norm_to_social_value[1]" scaling="10"/>
+			<isee:parameter name="Transportation_Energy_Demand.sensitivity_of_personal_norm_to_climate_risk[1]" scaling="10"/>
+			<isee:parameter name="Transportation_Energy_Demand.elasticity_of_demand_to_GDP[1]"/>
+			<isee:parameter name="Transportation_Energy_Demand.growth_rate_of_socioeconomic_effect[1]"/>
+			<isee:parameter name="Transportation_Energy_Demand.average_daily_demand_per_capita_in_1980[1]" scaling="10"/>
+			<isee:parameter name="Transportation_Energy_Demand.sensitivity_of_demand_to_scarcity[1]"/>
+			<isee:parameter name="Transportation_Energy_Demand.time_to_adjust_desired_demand_from_accessibility[1]"/>
+			<isee:parameter name="Transportation_Energy_Demand.time_to_perceive_average_consumption[1]"/>
+			<isee:parameter name="Transportation_Energy_Demand.sensitivity_of_social_value_perception[1]"/>
+			<isee:parameter name="Transportation_Energy_Demand.time_horizon_for_long_term_perception[1]" scaling="0.1"/>
+			<isee:parameter name="Transportation_Energy_Demand.time_horizon_for_short_term_perception[1]"/>
+			<isee:parameter name="Transportation_Energy_Demand.time_to_adjust_value_perception[1]"/>
+			<isee:parameter name="Transportation_Energy_Demand.sensitivity_of_personal_norm_to_consumption_risk[1]"/>
+			<isee:parameter name="Fossil_energy_gas.PM_per_fuel_extracted[1]"/>
+			<isee:parameter name="Fossil_energy_oil.PM_per_fuel_extracted[1]"/>
+			<isee:parameter name="Fossil_energy_coal.PM_per_fuel_extracted[1]" scaling="0.1"/>
+			<isee:parameter name="Transportation_Energy_Demand.Delay_for_clean_energy_to_be_perceived_in_transportation[1]"/>
+			<isee:parameter name="Transportation_Energy_Demand.base_of_health_risk_of_emissions[1]"/>
+			<isee:parameter name="Transportation_Energy_Demand.start_value_of_Health_risk_of_emissions[1]"/>
+			<isee:payoff name="Transportation Energy Behaviour" action="min"/>
+		</isee:optimizer_specs>
+		<isee:optimizer_specs name="Transport Energy Behaviour 2" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0" maxiter="0">
+			<isee:parameter name="Fossil_energy_gas.PM_per_fuel_extracted[1]"/>
+			<isee:parameter name="Fossil_energy_oil.PM_per_fuel_extracted[1]"/>
+			<isee:parameter name="Fossil_energy_coal.PM_per_fuel_extracted[1]" scaling="0.1"/>
+			<isee:payoff name="Transportation Energy Behaviour" action="min"/>
 		</isee:optimizer_specs>
 	</isee:optimizer_specs_list>
 	<isee:payoff_specs_list>
@@ -1100,9 +1147,6 @@
 			<isee:payoff_element name="Energy_demand.energy_demand_for_Industry_and_Other[1]" weight="1.46904910997965e-20">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
-			<isee:payoff_element name="Energy_demand.energy_demand_for_Transport[1]" weight="8.19203445481606e-19">
-				<isee:time_range type="terminal_value"/>
-			</isee:payoff_element>
 			<isee:payoff_element name="Energy_demand.energy_demand_for_Buildings[1]" weight="9.60840238342558e-21">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
@@ -1301,8 +1345,18 @@
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
-		<isee:payoff_specs name="SDG 10.1.1" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
+		<isee:payoff_specs name="SDG 10.1.1" calibration="true" recompute_weights="false" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
 			<isee:payoff_element name="Circular_Flow.bottom_40_share_of_real_income[1]" weight="558203.1452268">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+		</isee:payoff_specs>
+		<isee:payoff_specs name="Energy Disaggregation" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data"/>
+		<isee:payoff_specs name="Energy Disaggregation just investments" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data"/>
+		<isee:payoff_specs name="Transportation Energy Behaviour" calibration="true" recompute_weights="true" compare_tolerance="0" compare_type="ls" compare_run="Calibration Data">
+			<isee:payoff_element name="Emissions.pm25_emissions_from_energy[1]" weight="0.0883126756011086">
+				<isee:time_range type="terminal_value"/>
+			</isee:payoff_element>
+			<isee:payoff_element name="Transportation_Energy_Demand.total_yearly_demand[1]" weight="4.05926524650434e-19">
 				<isee:time_range type="terminal_value"/>
 			</isee:payoff_element>
 		</isee:payoff_specs>
@@ -1507,6 +1561,8 @@
 				<connect2 to="Emissions.CDD_preindustrial" from="Energy_demand.CDD_preindustrial"/>
 				<connect to="Inflation.demand_for_energy" from="Energy_demand.demand_for_energy"/>
 				<connect2 to="Inflation.demand_for_energy" from="Energy_demand.demand_for_energy"/>
+				<connect to="Energy_demand.average_yearly_demand_per_capita" from="Transportation_Energy_Demand.average_yearly_demand_per_capita"/>
+				<connect2 to="Energy_demand.average_yearly_demand_per_capita" from="Transportation_Energy_Demand.average_yearly_demand_per_capita"/>
 				<connect to="Energy_demand.Converter_1" from='GDP."Real_GDP_in_2021c$"'/>
 				<connect2 to="Energy_demand.Converter_1" from='GDP."Real_GDP_in_2021c$"'/>
 				<connect to="Energy_demand.Converter_2" from="Demographics.UNIT_p_per_mp"/>
@@ -1597,6 +1653,8 @@
 				<connect2 to="Energy_investments.tax_revenue_on_investments_in_Solar_energy_capacity" from="Government.tax_revenue_on_investments_in_solar_energy_capacity"/>
 				<connect to="Energy_investments.tax_revenue_on_investments_in_wind_energy_capacity" from="Government.tax_revenue_on_investments_in_wind_energy_capacity"/>
 				<connect2 to="Energy_investments.tax_revenue_on_investments_in_wind_energy_capacity" from="Government.tax_revenue_on_investments_in_wind_energy_capacity"/>
+				<connect to="Transportation_Energy_Demand.Clean_energy_Output_share" from="Energy_supply.Clean_energy_Output_share"/>
+				<connect2 to="Transportation_Energy_Demand.Clean_energy_Output_share" from="Energy_supply.Clean_energy_Output_share"/>
 				<connect to="Inflation.Total_Energy_Output" from="Energy_supply.Total_Energy_Output"/>
 				<connect2 to="Inflation.Total_Energy_Output" from="Energy_supply.Total_Energy_Output"/>
 				<connect to="Energy_supply.Population" from="Demographics.Population"/>
@@ -1619,12 +1677,16 @@
 				<connect2 to="Efficiency_reduction_in_power_plants.today" from="Climate.climate_impact_stoptime"/>
 				<connect to="Finance.stranded_capital" from="Fossil_energy.stranded_capital"/>
 				<connect2 to="Finance.stranded_capital" from="Fossil_energy.stranded_capital"/>
+				<connect to="Emissions.Emissions_from_fossil_energy_coal" from="Fossil_energy_coal.Emissions_from_fossil_energy_coal"/>
+				<connect2 to="Emissions.Emissions_from_fossil_energy_coal" from="Fossil_energy_coal.Emissions_from_fossil_energy_coal"/>
 				<connect to="Government.energy_conversion_tax_rate" from="Fossil_energy_coal.energy_conversion_effective_tax_rate"/>
 				<connect2 to="Government.energy_conversion_tax_rate" from="Fossil_energy_coal.energy_conversion_effective_tax_rate"/>
 				<connect to="Emissions.Fossil_Energy_Extraction_1" from="Fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
 				<connect2 to="Emissions.Fossil_Energy_Extraction_1" from="Fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Government.fuel_extraction_tax_rate" from="Fossil_energy_coal.fuel_extraction_effective_tax_rate"/>
 				<connect2 to="Government.fuel_extraction_tax_rate" from="Fossil_energy_coal.fuel_extraction_effective_tax_rate"/>
+				<connect to="Emissions.PM_per_fuel_extracted" from="Fossil_energy_coal.PM_per_fuel_extracted"/>
+				<connect2 to="Emissions.PM_per_fuel_extracted" from="Fossil_energy_coal.PM_per_fuel_extracted"/>
 				<connect to="Fossil_energy_coal.cost_of_storing_CO2_per_unit" from="CCS.cost_of_storing_CO2_per_unit"/>
 				<connect2 to="Fossil_energy_coal.cost_of_storing_CO2_per_unit" from="CCS.cost_of_storing_CO2_per_unit"/>
 				<connect to="Fossil_energy_coal.coupling_factor_of_fossil_fuels_and_CH4_emissions" from="Emissions.coupling_factor_of_fossil_fuels_and_CH4_emissions"/>
@@ -1657,12 +1719,16 @@
 				<connect2 to="Fossil_energy_coal.UNIT_MtCH4_to_tCO2e" from="Climate_Units.UNIT_MtCH4_to_tCO2e"/>
 				<connect to="Fossil_energy_coal.UNIT_MtCO2_to_tCO2e" from="Climate_Units.UNIT_MtCO2_to_tCO2e"/>
 				<connect2 to="Fossil_energy_coal.UNIT_MtCO2_to_tCO2e" from="Climate_Units.UNIT_MtCO2_to_tCO2e"/>
+				<connect to="Emissions.Emissions_from_fossil_energy_coal_1" from="Fossil_energy_gas.Emissions_from_fossil_energy_coal"/>
+				<connect2 to="Emissions.Emissions_from_fossil_energy_coal_1" from="Fossil_energy_gas.Emissions_from_fossil_energy_coal"/>
 				<connect to="Government.energy_conversion_tax_rate_2" from="Fossil_energy_gas.energy_conversion_effective_tax_rate"/>
 				<connect2 to="Government.energy_conversion_tax_rate_2" from="Fossil_energy_gas.energy_conversion_effective_tax_rate"/>
 				<connect to="Emissions.Fossil_Energy_Extraction_3" from="Fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
 				<connect2 to="Emissions.Fossil_Energy_Extraction_3" from="Fossil_energy_gas.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Government.fuel_extraction_tax_rate_2" from="Fossil_energy_gas.fuel_extraction_effective_tax_rate"/>
 				<connect2 to="Government.fuel_extraction_tax_rate_2" from="Fossil_energy_gas.fuel_extraction_effective_tax_rate"/>
+				<connect to="Emissions.PM_per_fuel_extracted_2" from="Fossil_energy_gas.PM_per_fuel_extracted"/>
+				<connect2 to="Emissions.PM_per_fuel_extracted_2" from="Fossil_energy_gas.PM_per_fuel_extracted"/>
 				<connect to="Fossil_energy_gas.cost_of_storing_CO2_per_unit" from="CCS.cost_of_storing_CO2_per_unit"/>
 				<connect2 to="Fossil_energy_gas.cost_of_storing_CO2_per_unit" from="CCS.cost_of_storing_CO2_per_unit"/>
 				<connect to="Fossil_energy_gas.coupling_factor_of_fossil_fuels_and_CH4_emissions" from="Emissions.coupling_factor_of_fossil_fuels_and_CH4_emissions"/>
@@ -1697,12 +1763,16 @@
 				<connect2 to="Fossil_energy_gas.tax_on_SO2_emissions" from="Government_Regulations.tax_on_SO2_emissions"/>
 				<connect to="Emissions.Carbon_Intensity_1" from="Fossil_energy_oil.Carbon_Intensity"/>
 				<connect2 to="Emissions.Carbon_Intensity_1" from="Fossil_energy_oil.Carbon_Intensity"/>
+				<connect to="Emissions.Emissions_from_fossil_energy_oil" from="Fossil_energy_oil.Emissions_from_fossil_energy_oil"/>
+				<connect2 to="Emissions.Emissions_from_fossil_energy_oil" from="Fossil_energy_oil.Emissions_from_fossil_energy_oil"/>
 				<connect to="Government.energy_conversion_tax_rate_1" from="Fossil_energy_oil.energy_conversion_effective_tax_rate"/>
 				<connect2 to="Government.energy_conversion_tax_rate_1" from="Fossil_energy_oil.energy_conversion_effective_tax_rate"/>
 				<connect to="Emissions.Fossil_Energy_Extraction_2" from="Fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
 				<connect2 to="Emissions.Fossil_Energy_Extraction_2" from="Fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Government.fuel_extraction_tax_rate_1" from="Fossil_energy_oil.fuel_extraction_effective_tax_rate"/>
 				<connect2 to="Government.fuel_extraction_tax_rate_1" from="Fossil_energy_oil.fuel_extraction_effective_tax_rate"/>
+				<connect to="Emissions.PM_per_fuel_extracted_1" from="Fossil_energy_oil.PM_per_fuel_extracted"/>
+				<connect2 to="Emissions.PM_per_fuel_extracted_1" from="Fossil_energy_oil.PM_per_fuel_extracted"/>
 				<connect to="Fossil_energy_oil.cost_of_storing_CO2_per_unit" from="CCS.cost_of_storing_CO2_per_unit"/>
 				<connect2 to="Fossil_energy_oil.cost_of_storing_CO2_per_unit" from="CCS.cost_of_storing_CO2_per_unit"/>
 				<connect to="Fossil_energy_oil.coupling_factor_of_fossil_fuels_and_CH4_emissions" from="Emissions.coupling_factor_of_fossil_fuels_and_CH4_emissions"/>
@@ -1805,6 +1875,8 @@
 				<connect2 to="Wind_energy.start_year" from="Government_Regulations.start_year"/>
 				<connect to="Wind_energy.subsidy_for_newly_installed_solar_and_wind_energy_capacity" from="Government_Regulations.tax_rate_on_newly_installed_wind_energy_capacity"/>
 				<connect2 to="Wind_energy.subsidy_for_newly_installed_solar_and_wind_energy_capacity" from="Government_Regulations.tax_rate_on_newly_installed_wind_energy_capacity"/>
+				<connect to="Transportation_Energy_Demand.Energy_Balance" from="Energy_supply_vs_demand.Energy_Balance"/>
+				<connect2 to="Transportation_Energy_Demand.Energy_Balance" from="Energy_supply_vs_demand.Energy_Balance"/>
 			</module>
 			<isee:placeholder name="Calibrated Variables">
 				<eqn>GDP.Nominal_GDP[1] + GDP.nominal_GDP_growth_rate[1] + GDP.nominal_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1] + GDP.&quot;Real_GDP_in_2021c$&quot;[1] + GDP.real_GDP_growth_rate[1] + GDP.real_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1] + Inflation.gdp_difference[1] + Government.debt_to_GDP_ratio[1] + Government.government_consumption[1] + Finance.total_investment[1] + Circular_Flow.private_consumption[1] + Circular_Flow.Labour_share_of_GDP[1] + Employment.annual_aggregate_wages[1] + Employment.Employed[1] + Employment.Unemployed[1] + Employment.unemployment_rate[1] + Employment.share_of_employment_in_agriculture[1] + Employment.share_of_employment_in_industry[1] + Employment.share_of_employment_in_services[1] + Inflation.agriculture_percentage_of_GDP[1] + Demographics.nominal_GDP_per_person[1] + Demographics.real_GDP_per_person[1] + Demographics.Aged_0_years[1] + Demographics.Aged_1_to_20_years[1] + Demographics.Aged_20_to_40_years[1] + Demographics.Aged_40_to_60_years[1] + Demographics.Aged_60_to_65_years[1] + Demographics.Aged_65_to_75_years[1] + Demographics.Aged_Over_75_years[1] + Demographics.deaths_0_years[1] + Demographics.deaths_1_to_20_years[1] + Demographics.deaths_20_to_40_years[1] + Demographics.deaths_40_to_60_years[1] + Demographics.deaths_60_to_65_years[1] + Demographics.deaths_65_to_75_years[1] + Demographics.deaths_Over_75_years[1] + Demographics.Population[1] + Demographics.fertility[1] + Demographics.Births[1] + Demographics.total_deaths[1] + Demographics.female_population_literacy_percentage[1] + Land_Use.Forest_Land[1] + Crop.crop_production[1] + Crop.cropland_net_primary_production[1] + Food_Demand.crop_demand_for_food[1] + Food_Demand.Crops_used_for_Seed_or_Lost[1] + Food_Demand.feed_production[1] + Land_Use.Cropland[1] + Animal_Products.animal_products_production[1] + Animal_Products_Demand.average_daily_demand_per_capita[1] + Food_Demand.animal_products_demand[1] + Food_Demand.vegetal_product_demand_per_person_per_day[1] + Food_Demand.direct_food_demand_per_person_per_day[1] + Freshwater.total_water_withdrawal[1] + Freshwater.fraction_of_water_withdrawal_for_agriculture[1] + Freshwater.available_water_supply[1] + Freshwater.irrigated_cropland[1] + Animal_Products.aquatic_animal_product_share[1] + Land_Nutrients.man_made_fertilizer_use[1] + Land_Nutrients.manure_fertilizer_use[1] + Land_Nutrients.fertilizer_use[1] + Fossil_energy.Secondary_Fossil_Energy_Output[1] + Fossil_energy_coal.Secondary_Fossil_Energy_Output[1] + Fossil_energy_oil.Secondary_Fossil_Energy_Output[1] + Fossil_energy_gas.Secondary_Fossil_Energy_Output[1] + Renewable_energy.Renewable_Energy_Output[1] + Wind_energy.Wind_Energy_Output[1] + Solar_energy.Solar_Energy_Output[1] + Hydropower_energy.Hydropower_Energy_Output[1] + Nuclear_energy.Nuclear_Energy_Output[1] + Bio_fuel_energy.bio_fuel_primary_energy[1] + Bio_fuel_energy.bio_fuel_secondary_energy_output[1] + Energy_supply.Total_Energy_Output[1] + Renewable_energy.Total_Renewable_Energy_Capacity[1] + Solar_energy.Solar_Energy_Capacity[1] + Wind_energy.Wind_Energy_Capacity[1] + Hydropower_energy.Hydropower_Energy_Capacity[1] + Bio_fuel_energy.bio_fuel_production[1] + Nuclear_energy.Nuclear_Energy_Capacity[1] + Fossil_energy.Primary_Fossil_Energy_FUEL[1] + Fossil_energy_coal.Primary_Fossil_Energy_FUEL[1] + Fossil_energy_oil.Primary_Fossil_Energy_FUEL[1] + Fossil_energy_gas.Primary_Fossil_Energy_FUEL[1] + Energy_demand.demand_for_energy[1] + Energy_investments.Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1] + Energy_investments.Coal_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1] + Energy_investments.Oil_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1] + Energy_investments.Gas_Gross_Investments_in_Fossil_Fuel_Extraction_Capital[1] + Energy_investments.Gross_Investments_in_Fossil_Energy_Capital[1] + Energy_investments.Coal_Gross_Investments_in_Fossil_Energy_Capital[1] + Energy_investments.Gross_Investments_in_Fossil_Energy_Capital_oil_and_gas[1] + Energy_investments.Gross_Investments_in_Renewables[1] + Energy_investments.Investments_in_Nuclear_Capacity[1] + Energy_investments.Gross_Investments_in_Hydropower_Energy_capacity[1] + Energy_investments.Gross_Investments_in_Solar_Energy_Capacity[1] + Energy_investments.Gross_Investments_in_wind_Energy_Capacity[1] + Energy_investments.Gross_Investments_in_Biofuel_Capacity[1] + Wind_energy.Installation_Cost_of_Wind_capacity[1] + Solar_energy.Installation_Cost_of_Solar_capacity[1] + Hydropower_energy.Hydropower_Installation_Costs[1] + Nuclear_energy.Nuclear_Installation_Costs[1] + Energy_investments.share_of_GDP_invested_in_fuel_extraction[1] + Energy_investments.share_of_GDP_invested_in_Energy_without_fuel[1] + Fossil_energy_coal.Fossil_Fuel_Extraction_Carbon[1] + Fossil_energy_oil.Fossil_Fuel_Extraction_Carbon[1] + Fossil_energy_gas.Fossil_Fuel_Extraction_Carbon[1] + Fossil_energy.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1] + Fossil_energy_coal.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1] + Fossil_energy_oil.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1] + Fossil_energy_gas.conversion_efficiency_of_fossil_fuels_to_secondary_fossil_energy[1] + Sea_Level.Sea_level_anomaly_from_thermal_expansion[1] + Sea_Level.Sea_level_anomaly_from_mountain_glaciers[1] + Sea_Level.Sea_level_anomaly_from_Greenland_Ice_Sheet[1] + Sea_Level.Sea_level_anomaly_from_Antarctic_Ice_Sheet[1] + Sea_Level.Sea_level_anomaly_from_LWS[1] + Sea_Level.Total_global_sea_level_anomaly[1] + Sea_Level.Land_water_storage_from_water_impoundment[1] + Ocean.Air_sea_co2_flux[1] + Emissions.land_carbon_sink[1] + Terrestrial_Carbon_Balance.Terrestrial_carbon_balance[1] + Terrestrial_Carbon_Balance.Terrestrial_net_primary_production[1] + Terrestrial_Carbon_Balance.deforestation_carbon_loss[1] + Terrestrial_Carbon_Balance.forest_regrowth_carbon_uptake[1] + Concrete.total_yearly_concrete_use[1] + Concrete.residential_concrete_stock_in_use[1] + Concrete.Infrastructure_concrete_stock_in_use[1] + Concrete.In_use_concrete_stock[1] + Concrete.concrete_waste_generation[1] + Concrete.new_RS_construction[1] + Concrete.CO2_emissions[1] + Emissions.CO2_emissions_from_Energy[1] + Emissions.CO2_Emissions_from_Food_and_Land_Use[1] + Emissions.N2O_Emissions_from_Food_and_Land_Use[1] + Emissions.N2O_Emissions_from_Other[1] + Emissions.N2O_Emissions_from_Energy[1] + Emissions.CH4_Emissions_from_Energy[1] + Emissions.CH4_Emissions_from_Food_and_Land_Use[1] + Emissions.CH4_Emissions_from_Other[1] + Emissions.SO2_Emissions_from_Energy[1] + Emissions.SO2_Emissions_from_Food_and_Land_Use[1] + Emissions.CO_Emissions[1] + Emissions.VOC_Emissions[1] + Emissions.NOx_non_AFOLU_Emissions[1] + Emissions.NOx_AFOLU_Emissions[1] + Emissions.HFC134a_eq_Emissions[1] + Emissions.Total_CH4_Emissions[1] + Emissions.Total_CO2_Emissions[1] + Emissions.Total_SO2_Emissions[1] + Emissions.Total_N2O_Emissions[1] + Emissions.Total_NOx_Emissions[1] + CO2_Forcing.CO2_Effective_Radiative_Forcing[1] + CH4_Forcing.CH4_Effective_Radiative_Forcing[1] + N2O_Forcing.N2O_Effective_Radiative_Forcing[1] + CO2_Forcing.Atmospheric_CO2_Concentration[1] + N2O_Forcing.Atmospheric_N2O_Concentration[1] + CH4_Forcing.Atmospheric_CH4_Concentration[1] + Energy_Balance_Model.Surface_Temperature_Anomaly[1]</eqn>
@@ -1859,6 +1931,8 @@
 				<connect2 to="Sea_level_rise_costs_and_impacts.Population_1" from="Demographics.Population"/>
 				<connect to="Total_Food_Demand.Population_1" from="Demographics.Population"/>
 				<connect2 to="Total_Food_Demand.Population_1" from="Demographics.Population"/>
+				<connect to="Transportation_Energy_Demand.Population_1" from="Demographics.Population"/>
+				<connect2 to="Transportation_Energy_Demand.Population_1" from="Demographics.Population"/>
 				<connect to="Coastal_population.population_growth_rate" from="Demographics.population_growth_rate"/>
 				<connect2 to="Coastal_population.population_growth_rate" from="Demographics.population_growth_rate"/>
 				<connect to='Inflation."Real_GDP_in_2021c$"' from='Demographics."Real_GDP_in_2021c$"'/>
@@ -2070,6 +2144,8 @@
 				<connect2 to="Fossil_energy_gas.GtC_to_MtCO2" from="Emissions.GtC_to_MtCO2"/>
 				<connect to="Fossil_energy_oil.GtC_to_MtCO2" from="Emissions.GtC_to_MtCO2"/>
 				<connect2 to="Fossil_energy_oil.GtC_to_MtCO2" from="Emissions.GtC_to_MtCO2"/>
+				<connect to="Transportation_Energy_Demand.pm25_emissions" from="Emissions.pm25_emissions"/>
+				<connect2 to="Transportation_Energy_Demand.pm25_emissions" from="Emissions.pm25_emissions"/>
 				<connect to="Employment.Population_1" from="Emissions.Population"/>
 				<connect2 to="Employment.Population_1" from="Emissions.Population"/>
 				<connect to="Coastal_sea_level_rise.Total_CO2_Emissions" from="Emissions.Total_CO2_Emissions"/>
@@ -2086,6 +2162,12 @@
 				<connect2 to="Emissions.CO2_emissions" from="Concrete.CO2_emissions"/>
 				<connect to="Emissions.CO2_emissions_from_degraded_land_1" from="degraded_land_soil_carbon.CO2_emissions_from_degraded_land"/>
 				<connect2 to="Emissions.CO2_emissions_from_degraded_land_1" from="degraded_land_soil_carbon.CO2_emissions_from_degraded_land"/>
+				<connect to="Emissions.Emissions_from_fossil_energy_oil" from="Fossil_energy_oil.Emissions_from_fossil_energy_oil"/>
+				<connect2 to="Emissions.Emissions_from_fossil_energy_oil" from="Fossil_energy_oil.Emissions_from_fossil_energy_oil"/>
+				<connect to="Emissions.Emissions_from_fossil_energy_coal" from="Fossil_energy_coal.Emissions_from_fossil_energy_coal"/>
+				<connect2 to="Emissions.Emissions_from_fossil_energy_coal" from="Fossil_energy_coal.Emissions_from_fossil_energy_coal"/>
+				<connect to="Emissions.Emissions_from_fossil_energy_coal_1" from="Fossil_energy_gas.Emissions_from_fossil_energy_coal"/>
+				<connect2 to="Emissions.Emissions_from_fossil_energy_coal_1" from="Fossil_energy_gas.Emissions_from_fossil_energy_coal"/>
 				<connect to="Emissions.Fossil_Energy_Extraction_1" from="Fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
 				<connect2 to="Emissions.Fossil_Energy_Extraction_1" from="Fossil_energy_coal.Fossil_Fuel_Extraction_Carbon"/>
 				<connect to="Emissions.Fossil_Energy_Extraction_2" from="Fossil_energy_oil.Fossil_Fuel_Extraction_Carbon"/>
@@ -2098,6 +2180,12 @@
 				<connect2 to="Emissions.livestock_production" from="Animal_Products.animal_products_production"/>
 				<connect to="Emissions.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
 				<connect2 to="Emissions.man_made_fertilizer_use" from="Land_Nutrients.man_made_fertilizer_use"/>
+				<connect to="Emissions.PM_per_fuel_extracted" from="Fossil_energy_coal.PM_per_fuel_extracted"/>
+				<connect2 to="Emissions.PM_per_fuel_extracted" from="Fossil_energy_coal.PM_per_fuel_extracted"/>
+				<connect to="Emissions.PM_per_fuel_extracted_1" from="Fossil_energy_oil.PM_per_fuel_extracted"/>
+				<connect2 to="Emissions.PM_per_fuel_extracted_1" from="Fossil_energy_oil.PM_per_fuel_extracted"/>
+				<connect to="Emissions.PM_per_fuel_extracted_2" from="Fossil_energy_gas.PM_per_fuel_extracted"/>
+				<connect2 to="Emissions.PM_per_fuel_extracted_2" from="Fossil_energy_gas.PM_per_fuel_extracted"/>
 				<connect to="Emissions.Population" from="Demographics.Population"/>
 				<connect2 to="Emissions.Population" from="Demographics.Population"/>
 				<connect to="Emissions.real_GDP_per_person" from="Demographics.real_GDP_per_person"/>
@@ -2441,6 +2529,8 @@
 				<connect2 to="Animal_Products_Demand.Average_Daily_Demand_Per_Capita_1" from="Food_Demand.direct_food_demand_per_person_per_day"/>
 				<connect to="Total_Food_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
 				<connect2 to="Total_Food_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
+				<connect to="Transportation_Energy_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
+				<connect2 to="Transportation_Energy_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
 				<connect to="Food_Demand.animal_products_fraction_policy" from="Behavioral_Choices.animal_products_fraction_policy"/>
 				<connect2 to="Food_Demand.animal_products_fraction_policy" from="Behavioral_Choices.animal_products_fraction_policy"/>
 				<connect to="Food_Demand.Average_Daily_Demand_Per_Capita" from="Total_Food_Demand.average_daily_demand_per_capita"/>
@@ -2948,6 +3038,18 @@
 				<connect2 to="Total_Food_Demand.Population_1" from="Demographics.Population"/>
 				<connect to="Total_Food_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
 				<connect2 to="Total_Food_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
+				<connect to="Energy_demand.average_yearly_demand_per_capita" from="Transportation_Energy_Demand.average_yearly_demand_per_capita"/>
+				<connect2 to="Energy_demand.average_yearly_demand_per_capita" from="Transportation_Energy_Demand.average_yearly_demand_per_capita"/>
+				<connect to="Transportation_Energy_Demand.Clean_energy_Output_share" from="Energy_supply.Clean_energy_Output_share"/>
+				<connect2 to="Transportation_Energy_Demand.Clean_energy_Output_share" from="Energy_supply.Clean_energy_Output_share"/>
+				<connect to="Transportation_Energy_Demand.Energy_Balance" from="Energy_supply_vs_demand.Energy_Balance"/>
+				<connect2 to="Transportation_Energy_Demand.Energy_Balance" from="Energy_supply_vs_demand.Energy_Balance"/>
+				<connect to="Transportation_Energy_Demand.pm25_emissions" from="Emissions.pm25_emissions"/>
+				<connect2 to="Transportation_Energy_Demand.pm25_emissions" from="Emissions.pm25_emissions"/>
+				<connect to="Transportation_Energy_Demand.Population_1" from="Demographics.Population"/>
+				<connect2 to="Transportation_Energy_Demand.Population_1" from="Demographics.Population"/>
+				<connect to="Transportation_Energy_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
+				<connect2 to="Transportation_Energy_Demand.real_GDP_per_person_1" from="Food_Demand.real_GDP_per_person"/>
 			</module>
 			<module name="Resources" isee:label="" url="r../FRIDA_Modules/Resources.itmx">
 				<format scale_by="auto"/>
@@ -3340,7 +3442,7 @@ This is what determines when the model stops calculating</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="8" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1024" page_height="784" isee:page_cols="5" isee:page_rows="9" isee:scroll_x="49.1667" isee:scroll_y="450" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4190,6 +4292,14 @@ This is what determines when the model stops calculating</doc>
 				</connector>
 				<aux x="1006.5" y="48.1667" name="Simulation End"/>
 				<isee:placeholder x="1014.5" y="927.583" name="Dashboard Right Placeholder"/>
+				<connector uid="173" isee:thickness="2" angle="359.737" isee:autocreated="true">
+					<from>Behavioral_Change</from>
+					<to>Energy</to>
+				</connector>
+				<connector uid="174" isee:thickness="2" angle="179.737" isee:autocreated="true">
+					<from>Energy</from>
+					<to>Behavioral_Change</to>
+				</connector>
 			</view>
 			<view isee:template_view="template:1" isee:name="Landing Page without image" isee:original_design="Deluxe Prev-Next Blue Green Pastel" background="white" page_width="1066" page_height="600" home_view="true" type="interface">
 				<style>
@@ -4213,7 +4323,7 @@ Lorem ipsum dolor sit amet</text_box>
 					</style>
 					<isee:shape background="#F7F7F7" border_width="thin" border_style="none" transparent_background="false" x="0" y="0" width="1066" height="600" kind="rectangle"/>
 					<graphics_frame z_index="2" fill="none" x="12.4806" y="16.9825" width="166" height="34">
-						<image width="121" height="20" size_to_parent="false" isee:transparency="0" isee:fixed_aspect_ratio="true">/Applications/Stella Architect.app/Contents/Resources/designs/Deluxe Prev-Next Blue Green Pastel_Graphics/Your logo dark.png</image>
+						<image width="121" height="20" size_to_parent="false" isee:transparency="0" isee:fixed_aspect_ratio="true">C:/Program Files/isee systems/Stella Architect/designs/Deluxe Prev-Next Blue Green Pastel_Graphics/Your logo dark.png</image>
 					</graphics_frame>
 				</view>
 			</isee:templates>
@@ -4221,25 +4331,25 @@ Lorem ipsum dolor sit amet</text_box>
 		</views>
 	</model>
 	<isee:user_controlled>
-		<ent name="Simulation End" preserve="true"/>
-		<ent name="Government Regulations.tax on CO2e emissions" preserve="true"/>
-		<ent name="Government Regulations.tax rate on newly installed solar energy capacity" preserve="true"/>
-		<ent name="Government Regulations.tax rate on newly installed wind energy capacity" preserve="true"/>
-		<ent name="Climate.switch sea level rise protection cost damage" preserve="true"/>
-		<ent name="Climate.switch sea level rise fatalities damage" preserve="true"/>
-		<ent name="Climate.switch sea level rise relocation cost damage" preserve="true"/>
-		<ent name="Climate.switch sea level rise productivity reduction damage" preserve="true"/>
-		<ent name="Climate.switch sea level rise finance damage" preserve="true"/>
-		<ent name="Climate.switch sea level rise damage" preserve="true"/>
-		<ent name="Climate.switch government damage" preserve="true"/>
-		<ent name="Climate.switch demography damage" preserve="true"/>
-		<ent name="Climate.switch finance damage" preserve="true"/>
-		<ent name="Climate.switch labor damage" preserve="true"/>
-		<ent name="Climate.switch energy damage" preserve="true"/>
-		<ent name="Climate.switch concrete impact" preserve="true"/>
-		<ent name="Climate.switch landuse damage" preserve="true"/>
-		<ent name="Climate.switch behavioral impact" preserve="true"/>
-		<ent name="Climate.climate impact stoptime" preserve="true"/>
+		<ent name="Simulation End" preserve="true" lock="false"/>
+		<ent name="Government Regulations.tax on CO2e emissions" preserve="true" lock="false"/>
+		<ent name="Government Regulations.tax rate on newly installed solar energy capacity" preserve="true" lock="false"/>
+		<ent name="Government Regulations.tax rate on newly installed wind energy capacity" preserve="true" lock="false"/>
+		<ent name="Climate.switch sea level rise protection cost damage" preserve="true" lock="false"/>
+		<ent name="Climate.switch sea level rise fatalities damage" preserve="true" lock="false"/>
+		<ent name="Climate.switch sea level rise relocation cost damage" preserve="true" lock="false"/>
+		<ent name="Climate.switch sea level rise productivity reduction damage" preserve="true" lock="false"/>
+		<ent name="Climate.switch sea level rise finance damage" preserve="true" lock="false"/>
+		<ent name="Climate.switch sea level rise damage" preserve="true" lock="false"/>
+		<ent name="Climate.switch government damage" preserve="true" lock="false"/>
+		<ent name="Climate.switch demography damage" preserve="true" lock="false"/>
+		<ent name="Climate.switch finance damage" preserve="true" lock="false"/>
+		<ent name="Climate.switch labor damage" preserve="true" lock="false"/>
+		<ent name="Climate.switch energy damage" preserve="true" lock="false"/>
+		<ent name="Climate.switch concrete impact" preserve="true" lock="false"/>
+		<ent name="Climate.switch landuse damage" preserve="true" lock="false"/>
+		<ent name="Climate.switch behavioral impact" preserve="true" lock="false"/>
+		<ent name="Climate.climate impact stoptime" preserve="true" lock="false"/>
 	</isee:user_controlled>
 	<macro name="INFLATION_IMPACT_GROWTH_RATE">
 		<eqn>trend in input</eqn>
