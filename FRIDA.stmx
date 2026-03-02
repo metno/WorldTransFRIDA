@@ -5,7 +5,7 @@
 		<name>FRIDA</name>
 		<uuid>fe807591-4e3d-4e2c-b464-70ec4fb12094</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="4.2" isee:build_number="3855" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="4.1.2" isee:build_number="3810" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<ai_information>
 		<status verified="false"/>
@@ -426,7 +426,6 @@
 			<isee:parameter name="Bio_fuel_energy.Initial_Installation_Costs[1]" scaling="0.00001"/>
 			<isee:parameter name="Bio_fuel_energy.bio_fuel_primary_energy_content[1]" scaling="1000000"/>
 			<isee:parameter name="Wind_energy.Renewable_Energy_Floor_Costs[1]" scaling="0.01"/>
-			<isee:parameter name="Wind_energy.Wind_Energy_Full_Load_Hours[1]" scaling="0.01"/>
 			<isee:parameter name="Wind_energy.sensitivity_of_renewable_floor_costs_to_grid_storage_needs_non_linear_part[1]" scaling="10"/>
 			<isee:parameter name="Wind_energy.sensitivity_of_renewable_floor_costs_to_grid_storage_needs[1]" scaling="10"/>
 			<isee:parameter name="Solar_energy.Renewable_Energy_Floor_Costs[1]" scaling="0.01"/>
@@ -564,7 +563,6 @@
 			<isee:parameter name="Bio_fuel_energy.Initial_Installation_Costs[1]" scaling="0.00001"/>
 			<isee:parameter name="Bio_fuel_energy.bio_fuel_primary_energy_content[1]" scaling="1000000"/>
 			<isee:parameter name="Wind_energy.Renewable_Energy_Floor_Costs[1]" scaling="0.01"/>
-			<isee:parameter name="Wind_energy.Wind_Energy_Full_Load_Hours[1]" scaling="0.01"/>
 			<isee:parameter name="Wind_energy.sensitivity_of_renewable_floor_costs_to_grid_storage_needs_non_linear_part[1]" scaling="10"/>
 			<isee:parameter name="Wind_energy.sensitivity_of_renewable_floor_costs_to_grid_storage_needs[1]" scaling="10"/>
 			<isee:parameter name="Solar_energy.Renewable_Energy_Floor_Costs[1]" scaling="0.01"/>
@@ -2071,6 +2069,8 @@
 				<connect2 to="Nuclear_energy.tax_for_newly_installed_nuclear" from="Government_Regulations.tax_rate_on_newly_installed_nuclear_energy_capacity"/>
 				<connect to="Emissions.bio_fuel_primary_energy" from="Bio_fuel_energy.bio_fuel_primary_energy"/>
 				<connect2 to="Emissions.bio_fuel_primary_energy" from="Bio_fuel_energy.bio_fuel_primary_energy"/>
+				<connect to="Emissions.Carbon_content_of_crops_going_into_biofuel_production" from="Bio_fuel_energy.Carbon_content_of_crops_going_into_biofuel_production"/>
+				<connect2 to="Emissions.Carbon_content_of_crops_going_into_biofuel_production" from="Bio_fuel_energy.Carbon_content_of_crops_going_into_biofuel_production"/>
 				<connect to="Food_Demand.crops_needed_for_bio_fuel" from="Bio_fuel_energy.crops_demanded_for_bio_fuel"/>
 				<connect2 to="Food_Demand.crops_needed_for_bio_fuel" from="Bio_fuel_energy.crops_demanded_for_bio_fuel"/>
 				<connect to="Emissions.relative_carbon_intensity_of_biofuels_to_petroleum_fuels" from="Bio_fuel_energy.relative_carbon_intensity_of_biofuels_to_petroleum_fuels"/>
@@ -2091,8 +2091,12 @@
 				<connect2 to="Bio_fuel_energy.coupling_factor_of_fossil_fuels_and_SO2_emissions" from="Emissions.coupling_factor_of_fossil_fuels_and_SO2_emissions"/>
 				<connect to="Bio_fuel_energy.crop_demand" from="Food_Demand.crop_demand"/>
 				<connect2 to="Bio_fuel_energy.crop_demand" from="Food_Demand.crop_demand"/>
+				<connect to="Bio_fuel_energy.crop_production_GtC" from="Terrestrial_Carbon_Balance.crop_production_GtC"/>
+				<connect2 to="Bio_fuel_energy.crop_production_GtC" from="Terrestrial_Carbon_Balance.crop_production_GtC"/>
 				<connect to="Bio_fuel_energy.crops_for_energy" from="Food_Demand.crops_for_energy"/>
 				<connect2 to="Bio_fuel_energy.crops_for_energy" from="Food_Demand.crops_for_energy"/>
+				<connect to="Bio_fuel_energy.Fraction_of_crop_production_for_energy" from="Crop.Fraction_of_crop_production_for_energy"/>
+				<connect2 to="Bio_fuel_energy.Fraction_of_crop_production_for_energy" from="Crop.Fraction_of_crop_production_for_energy"/>
 				<connect to="Bio_fuel_energy.GtC_to_MtCO2" from="Emissions.GtC_to_MtCO2"/>
 				<connect2 to="Bio_fuel_energy.GtC_to_MtCO2" from="Emissions.GtC_to_MtCO2"/>
 				<connect to="Bio_fuel_energy.ktN2O_to_tCO2e" from="Climate_Units.UNIT_ktN2O_to_tCO2e"/>
@@ -2137,6 +2141,8 @@
 				<connect2 to="Wind_energy.start_year" from="Government_Regulations.start_year"/>
 				<connect to="Wind_energy.subsidy_for_newly_installed_solar_and_wind_energy_capacity" from="Government_Regulations.tax_rate_on_newly_installed_wind_energy_capacity"/>
 				<connect2 to="Wind_energy.subsidy_for_newly_installed_solar_and_wind_energy_capacity" from="Government_Regulations.tax_rate_on_newly_installed_wind_energy_capacity"/>
+				<connect to="Wind_energy.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Wind_energy.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Transportation_Energy_Demand.Energy_Balance" from="Energy_supply_vs_demand.Energy_Balance"/>
 				<connect2 to="Transportation_Energy_Demand.Energy_Balance" from="Energy_supply_vs_demand.Energy_Balance"/>
 				<connect to="Inflation.UNIT_TWh_to_kWh" from="Energy_Units.UNIT_TWh_to_kWh"/>
@@ -2386,8 +2392,10 @@
 				<connect2 to="Fossil_energy_gas.MtCO2_to_tCO2e" from="Climate_Units.UNIT_MtCO2_to_tCO2e"/>
 				<connect to="Fossil_energy_oil.MtCO2_to_tCO2e" from="Climate_Units.UNIT_MtCO2_to_tCO2e"/>
 				<connect2 to="Fossil_energy_oil.MtCO2_to_tCO2e" from="Climate_Units.UNIT_MtCO2_to_tCO2e"/>
-				<connect to="CCS.CO2_emissions_from_biofuels" from="Emissions.CO2_emissions_from_biofuels"/>
-				<connect2 to="CCS.CO2_emissions_from_biofuels" from="Emissions.CO2_emissions_from_biofuels"/>
+				<connect to="CCS.CO2_emissions_from_biofuels_processes" from="Emissions.CO2_emissions_from_biofuels_processes"/>
+				<connect2 to="CCS.CO2_emissions_from_biofuels_processes" from="Emissions.CO2_emissions_from_biofuels_processes"/>
+				<connect to="CCS.CO2_emissions_from_burning_biofuels" from="Emissions.CO2_emissions_from_burning_biofuels"/>
+				<connect2 to="CCS.CO2_emissions_from_burning_biofuels" from="Emissions.CO2_emissions_from_burning_biofuels"/>
 				<connect to="CCS.CO2_emissions_from_coal" from="Emissions.CO2_emissions_from_coal"/>
 				<connect2 to="CCS.CO2_emissions_from_coal" from="Emissions.CO2_emissions_from_coal"/>
 				<connect to="CCS.CO2_emissions_from_gas" from="Emissions.CO2_emissions_from_gas"/>
@@ -2436,6 +2444,8 @@
 				<connect2 to="Coastal_sea_level_rise.Total_CO2_Emissions" from="Emissions.Total_CO2_Emissions"/>
 				<connect to="Emissions.bio_fuel_primary_energy" from="Bio_fuel_energy.bio_fuel_primary_energy"/>
 				<connect2 to="Emissions.bio_fuel_primary_energy" from="Bio_fuel_energy.bio_fuel_primary_energy"/>
+				<connect to="Emissions.Carbon_content_of_crops_going_into_biofuel_production" from="Bio_fuel_energy.Carbon_content_of_crops_going_into_biofuel_production"/>
+				<connect2 to="Emissions.Carbon_content_of_crops_going_into_biofuel_production" from="Bio_fuel_energy.Carbon_content_of_crops_going_into_biofuel_production"/>
 				<connect to="Emissions.Carbon_Intensity_1" from="Fossil_energy_oil.Carbon_Intensity"/>
 				<connect2 to="Emissions.Carbon_Intensity_1" from="Fossil_energy_oil.Carbon_Intensity"/>
 				<connect to="Emissions.CDD" from="Energy_demand.CDD"/>
@@ -2508,6 +2518,8 @@
 				<connect2 to="Government.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Land_Use.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect2 to="Land_Use.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect to="Wind_energy.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
+				<connect2 to="Wind_energy.Surface_Temperature_Anomaly" from="Energy_Balance_Model.Surface_Temperature_Anomaly"/>
 				<connect to="Forest.Surface_Temperature_Anomaly_relative_to_1750" from="Energy_Balance_Model.Surface_Temperature_Anomaly_relative_to_1750"/>
 				<connect2 to="Forest.Surface_Temperature_Anomaly_relative_to_1750" from="Energy_Balance_Model.Surface_Temperature_Anomaly_relative_to_1750"/>
 				<connect to="Grass.Surface_Temperature_Anomaly_relative_to_1750" from="Energy_Balance_Model.Surface_Temperature_Anomaly_relative_to_1750"/>
@@ -2548,6 +2560,8 @@
 				<connect2 to="Sea_Level.Installation_of_Hydropower_Capacity" from="Hydropower_energy.Installation_of_Hydropower_Capacity"/>
 				<connect to="Sea_Level.total_groundwater_anomaly" from="Freshwater.total_groundwater_anomaly"/>
 				<connect2 to="Sea_Level.total_groundwater_anomaly" from="Freshwater.total_groundwater_anomaly"/>
+				<connect to="Bio_fuel_energy.crop_production_GtC" from="Terrestrial_Carbon_Balance.crop_production_GtC"/>
+				<connect2 to="Bio_fuel_energy.crop_production_GtC" from="Terrestrial_Carbon_Balance.crop_production_GtC"/>
 				<connect to="Biosphere_Indicators.Terrestrial_net_primary_production" from="Terrestrial_Carbon_Balance.Terrestrial_net_primary_production"/>
 				<connect2 to="Biosphere_Indicators.Terrestrial_net_primary_production" from="Terrestrial_Carbon_Balance.Terrestrial_net_primary_production"/>
 				<connect to="Terrestrial_Carbon_Balance.animal_grazing" from="Grass.animal_grazing"/>
@@ -2775,6 +2789,8 @@
 				<connect2 to="Terrestrial_Carbon_Balance.cropland_net_primary_production" from="Crop.cropland_net_primary_production"/>
 				<connect to="Inflation.fertilizer_used_per_unit_of_crop_production" from="Crop.fertilizer_used_per_unit_of_crop_production"/>
 				<connect2 to="Inflation.fertilizer_used_per_unit_of_crop_production" from="Crop.fertilizer_used_per_unit_of_crop_production"/>
+				<connect to="Bio_fuel_energy.Fraction_of_crop_production_for_energy" from="Crop.Fraction_of_crop_production_for_energy"/>
+				<connect2 to="Bio_fuel_energy.Fraction_of_crop_production_for_energy" from="Crop.Fraction_of_crop_production_for_energy"/>
 				<connect to="Inflation.irrigation_water_used_per_unit_of_crop_production" from="Crop.irrigation_water_used_per_unit_of_crop_production"/>
 				<connect2 to="Inflation.irrigation_water_used_per_unit_of_crop_production" from="Crop.irrigation_water_used_per_unit_of_crop_production"/>
 				<connect to="Cropland_Carbon_Balance.UNIT_GtC_per_PCal_1" from="Crop.UNIT_GtC_per_PCal_crop"/>
@@ -3409,8 +3425,10 @@
 				<connect2 to="Fossil_energy_gas.UNIT_ton_to_Mton" from="CCS.UNIT_ton_to_Mton"/>
 				<connect to="Fossil_energy_oil.UNIT_ton_to_Mton" from="CCS.UNIT_ton_to_Mton"/>
 				<connect2 to="Fossil_energy_oil.UNIT_ton_to_Mton" from="CCS.UNIT_ton_to_Mton"/>
-				<connect to="CCS.CO2_emissions_from_biofuels" from="Emissions.CO2_emissions_from_biofuels"/>
-				<connect2 to="CCS.CO2_emissions_from_biofuels" from="Emissions.CO2_emissions_from_biofuels"/>
+				<connect to="CCS.CO2_emissions_from_biofuels_processes" from="Emissions.CO2_emissions_from_biofuels_processes"/>
+				<connect2 to="CCS.CO2_emissions_from_biofuels_processes" from="Emissions.CO2_emissions_from_biofuels_processes"/>
+				<connect to="CCS.CO2_emissions_from_burning_biofuels" from="Emissions.CO2_emissions_from_burning_biofuels"/>
+				<connect2 to="CCS.CO2_emissions_from_burning_biofuels" from="Emissions.CO2_emissions_from_burning_biofuels"/>
 				<connect to="CCS.CO2_emissions_from_coal" from="Emissions.CO2_emissions_from_coal"/>
 				<connect2 to="CCS.CO2_emissions_from_coal" from="Emissions.CO2_emissions_from_coal"/>
 				<connect to="CCS.CO2_emissions_from_gas" from="Emissions.CO2_emissions_from_gas"/>
@@ -3818,7 +3836,7 @@ This is what determines when the model stops calculating</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="9" isee:scroll_y="225" zoom="80" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1024" page_height="784" isee:page_cols="5" isee:page_rows="9" isee:scroll_x="157" isee:scroll_y="88" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -4472,9 +4490,7 @@ This is what determines when the model stops calculating</doc>
 						<plot color="fuchsia" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
 							<entity name="Emissions.CO2_emissions_from_gas[1]"/>
 						</plot>
-						<plot color="#008F44" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
-							<entity name="Emissions.CO2_emissions_from_biofuels[1]"/>
-						</plot>
+						<plot color="#008F44" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true"/>
 					</graph>
 					<graph width="570" height="470" type="area" isee:sum_stacked_legend="true" isee:stacked_show_hover_values="true" show_grid="true" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="13" num_y_grid_lines="5" num_x_labels="13" num_y_labels="5" title="CH4 Emissions from Energy" isee:fill_intensity="1" to="2100" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
@@ -4699,7 +4715,7 @@ Lorem ipsum dolor sit amet</text_box>
 					</style>
 					<isee:shape background="#F7F7F7" border_width="thin" border_style="none" transparent_background="false" x="0" y="0" width="1066" height="600" kind="rectangle"/>
 					<graphics_frame z_index="2" fill="none" x="12.4806" y="16.9825" width="166" height="34">
-						<image width="121" height="20" size_to_parent="false" isee:transparency="0" isee:fixed_aspect_ratio="true">/Applications/Stella Architect.app/Contents/Resources/designs/Deluxe Prev-Next Blue Green Pastel_Graphics/Your logo dark.png</image>
+						<image width="121" height="20" size_to_parent="false" isee:transparency="0" isee:fixed_aspect_ratio="true">C:/Program Files/isee systems/Stella Architect/designs/Deluxe Prev-Next Blue Green Pastel_Graphics/Your logo dark.png</image>
 					</graphics_frame>
 				</view>
 			</isee:templates>
