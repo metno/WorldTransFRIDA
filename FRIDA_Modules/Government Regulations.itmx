@@ -5,7 +5,7 @@
 		<name>Government Regulations</name>
 		<uuid>309c5090-8988-4575-b19f-edb0ca37529d</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="4.2" isee:build_number="3874" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="4.2.1" isee:build_number="3906" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<ai_information>
 		<status verified="false"/>
@@ -898,76 +898,15 @@ RAMP((government_debt_to_GDP_ratio_target-calibration_period_government_debt_to_
 				<range min="2025" max="2100"/>
 				<units>Year</units>
 			</aux>
-			<aux name="private insurance\npolicy start year" access="output" isee:autocreated="true">
-				<doc>${Policy}
-This  parameter marks the year when the private insurance policy becomes active in the simulation.
-</doc>
-				<eqn>2175</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="central bank insurance\npolicy start year" access="output" isee:autocreated="true">
-				<doc>${Policy}
-It defines the year when the central bank insurance policy becomes active.</doc>
-				<eqn>2175</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="government insurance\npolicy start year" access="output" isee:autocreated="true">
-				<doc>${Policy}
-This parameter specifies when the government insurance policy begins.</doc>
-				<eqn>2175</eqn>
-				<units>year</units>
-			</aux>
-			<aux name="fraction of default covered\nby government insurance" access="output" isee:autocreated="true">
-				<doc>${Policy}
-This parameter determines the share of climate-caused risky defaults that the government agrees to absorb. It</doc>
-				<eqn>0.5</eqn>
-				<format precision="0.01"/>
-				<range min="0" max="1"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="fraction of default covered\nby central bank insurance" access="output" isee:autocreated="true">
-				<doc>${Policy}
-This parameter specifies the share of climate-caused risky defaults that the central bank agrees to cover through its insurance intervention.</doc>
-				<eqn>0.5</eqn>
-				<format precision="0.01"/>
-				<range min="0" max="1"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="fraction of default\ncovered by private insurance" access="output" isee:autocreated="true">
-				<doc>${Policy}
-A policy parameter sets how much of climate-caused risky defaults private insurance absorbs.</doc>
-				<eqn>0.5</eqn>
-				<format precision="0.01"/>
-				<range min="0" max="1"/>
-				<units>dmnl</units>
-			</aux>
-			<aux name="constant central\nbank led public investment" access="output" isee:autocreated="true">
-				<doc>${Policy}
-</doc>
-				<eqn>0.05</eqn>
-				<format precision="0.01"/>
-				<units>dmnl</units>
-			</aux>
 			<aux name="central bank led investment\npolicy start year" access="output" isee:autocreated="true">
 				<doc>${Policy}
 </doc>
 				<eqn>2175</eqn>
 				<units>year</units>
 			</aux>
-			<group name="Climate-driven default\ninsurance policy" run="false">
-				<format scale_by="auto"/>
-				<entity name="central_bank_insurance_policy_start_year"/>
-				<entity name="fraction_of_default_covered_by_central_bank_insurance"/>
-				<entity name="fraction_of_default_covered_by_government_insurance"/>
-				<entity name="fraction_of_default_covered_by_private_insurance"/>
-				<entity name="fraction_of_loans_insured"/>
-				<entity name="government_insurance_policy_start_year"/>
-				<entity name="private_insurance_policy_start_year"/>
-			</group>
 			<group name="Climate-driven default\npublic investment policy" run="false">
 				<format scale_by="auto"/>
 				<entity name="central_bank_led_investment_policy_start_year"/>
-				<entity name="constant_central_bank_led_public_investment"/>
 				<entity name="fraction_of_public_investments_financed_by_taxation"/>
 				<entity name="government_run_investment_policy_start_year"/>
 				<entity name="growth_rate_target_for_government_public_investments"/>
@@ -1048,10 +987,101 @@ This is the desired annual real GDP growth rate the policy tries to support.</do
 				<range min="0" max="0.1"/>
 				<units>1/year</units>
 			</aux>
+			<group name="Climate-driven default\ninsurance policy" run="false">
+				<format scale_by="auto"/>
+				<entity name="decision_fraction_of_default_covered_by_central_bank_insurance"/>
+				<entity name="decision_fraction_of_default_covered_by_government_insurance"/>
+				<entity name="decision_fraction_of_default_covered_by_private_insurance"/>
+				<entity name="fraction_of_default_covered_by_central_bank_insurance"/>
+				<entity name="fraction_of_default_covered_by_government_insurance"/>
+				<entity name="fraction_of_default_covered_by_private_insurance"/>
+				<entity name="fraction_of_loans_insured"/>
+				<entity name="insurance_coverage_level"/>
+				<entity name="insurance_coverage_start_year"/>
+				<entity name="insurance_coverage_time_to_implement"/>
+				<entity name="total_insurance_coverage"/>
+			</group>
 			<aux name="fraction of loans insured" access="output" isee:autocreated="true">
-				<eqn>(IF TIME &gt;= government_insurance_policy_start_year THEN fraction_of_default_covered_by_government_insurance ELSE 0) +
-(IF TIME &gt;= central_bank_insurance_policy_start_year THEN fraction_of_default_covered_by_central_bank_insurance ELSE 0) +
-(IF TIME &gt;= private_insurance_policy_start_year THEN fraction_of_default_covered_by_private_insurance ELSE 0)</eqn>
+				<eqn>RAMP(insurance_coverage_level / insurance_coverage_time_to_implement,
+insurance_coverage_start_year,
+insurance_coverage_start_year + insurance_coverage_time_to_implement)
+/ 100</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="insurance coverage time\nto implement">
+				<doc>${Policy}
+A policy parameter sets how long (duration) it takes to ramp from 0 to first-level coverage</doc>
+				<eqn>1</eqn>
+				<format precision="0.01"/>
+				<units>Year</units>
+			</aux>
+			<aux name="insurance coverage\nstart year">
+				<doc>${Policy}
+A policy parameter sets the year the insurance policy starts.</doc>
+				<eqn>2035.26</eqn>
+				<format precision="1"/>
+				<units>Year</units>
+			</aux>
+			<aux name="insurance coverage level">
+				<doc>${Policy}
+A policy parameter sets how much the first target coverage level, in percent</doc>
+				<eqn>70</eqn>
+				<format precision="0.01"/>
+				<range min="0" max="100"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="decision fraction of default\ncovered by government insurance">
+				<doc>${Policy}
+A policy parameter sets how much of climate-caused risky defaults  absorbed or funded by government  insurance absorbs.</doc>
+				<eqn>0</eqn>
+				<format precision="0.01"/>
+				<range min="0" max="1"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="decision fraction of default\ncovered by central\nbank insurance">
+				<doc>${Policy}
+A policy parameter sets how much of climate-caused risky defaults  absorbed or funded by central bank insurance.</doc>
+				<eqn>0</eqn>
+				<format precision="0.01"/>
+				<range min="0" max="1"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="decision fraction of default\ncovered by private insurance">
+				<doc>${Policy}
+A policy parameter sets how much of climate-caused risky defaults absorbed or funded by private insurance.</doc>
+				<eqn>0</eqn>
+				<format precision="0.01"/>
+				<range min="0" max="1"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="total insurance coverage">
+				<doc>This variable is the total of funding-share decisions.
+</doc>
+				<eqn>decision_fraction_of_default_covered_by_private_insurance + decision_fraction_of_default_covered_by_central_bank_insurance + decision_fraction_of_default_covered_by_government_insurance</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="fraction of default\ncovered by private insurance" access="output" isee:autocreated="true">
+				<doc>${Policy}
+A policy parameter sets how much of climate-caused risky defaults private insurance absorbs.</doc>
+				<eqn>decision_fraction_of_default_covered_by_private_insurance//total_insurance_coverage*fraction_of_loans_insured</eqn>
+				<format precision="0.01"/>
+				<range min="0" max="1"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="fraction of default covered\nby central bank insurance" access="output" isee:autocreated="true">
+				<doc>${Policy}
+This parameter specifies the share of climate-caused risky defaults that the central bank agrees to cover through its insurance intervention.</doc>
+				<eqn>decision_fraction_of_default_covered_by_central_bank_insurance//total_insurance_coverage*fraction_of_loans_insured</eqn>
+				<format precision="0.01"/>
+				<range min="0" max="1"/>
+				<units>dmnl</units>
+			</aux>
+			<aux name="fraction of default covered\nby government insurance" access="output" isee:autocreated="true">
+				<doc>${Policy}
+This parameter determines the share of climate-caused risky defaults that the government agrees to absorb.</doc>
+				<eqn>decision_fraction_of_default_covered_by_government_insurance//total_insurance_coverage*fraction_of_loans_insured</eqn>
+				<format precision="0.01"/>
+				<range min="0" max="1"/>
 				<units>dmnl</units>
 			</aux>
 		</variables>
@@ -1103,7 +1133,7 @@ This is the desired annual real GDP growth rate the policy tries to support.</do
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="3" isee:scroll_x="1272" isee:scroll_y="61" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="5" isee:page_rows="4" isee:scroll_x="863" isee:scroll_y="60" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1280,15 +1310,7 @@ Negative taxes are subsidies</text_box>
 				<aux x="278.444" y="1047.92" name="profit tax policy start year"/>
 				<aux x="175.5" y="1171.14" name="time to implement\nwealth tax policy"/>
 				<aux x="78.1107" y="1219.75" name="wealth tax policy start year"/>
-				<aux color="black" background="#00F900" font_color="black" x="1831.77" y="441.515" name="private insurance\npolicy start year"/>
-				<aux color="black" background="#00F900" font_color="black" x="1644.34" y="440.285" name="central bank insurance\npolicy start year"/>
-				<aux color="black" background="#00F900" font_color="black" x="1446.92" y="445.172" name="government insurance\npolicy start year"/>
-				<aux color="black" background="#00F900" font_color="black" x="1453.18" y="368.699" name="fraction of default covered\nby government insurance"/>
-				<aux color="black" background="#00F900" font_color="black" x="1644.34" y="367.171" name="fraction of default covered\nby central bank insurance"/>
-				<aux color="black" background="#00F900" font_color="black" x="1831.77" y="367.171" name="fraction of default\ncovered by private insurance"/>
-				<aux color="black" background="#00F900" font_color="black" x="2014.03" y="359.333" name="constant central\nbank led public investment"/>
 				<aux color="black" background="#00F900" font_color="black" x="2017.33" y="433.427" name="central bank led investment\npolicy start year"/>
-				<group locked="true" color="black" font_color="black" x="1355.13" y="268.857" width="568.002" height="250.143" name="Climate-driven default\ninsurance policy"/>
 				<group locked="true" color="black" font_color="black" x="1936.12" y="266.855" width="1028.88" height="489.086" name="Climate-driven default\npublic investment policy"/>
 				<aux color="black" background="#00F900" font_color="black" x="2203.99" y="441.515" name="government run investment\npolicy start year"/>
 				<aux color="black" background="#FFD479" font_color="black" x="2191.42" y="510.324" name="fraction of public investments\nfinanced by taxation"/>
@@ -1314,30 +1336,77 @@ Negative taxes are subsidies</text_box>
 					<to>sum_of_public_investment_tax_share</to>
 				</connector>
 				<aux color="black" background="#FFD479" font_color="black" x="2191.42" y="667.321" name="growth rate target for\ngovernment public investments"/>
-				<aux x="1639.13" y="298.273" name="fraction of loans insured"/>
-				<connector uid="51" angle="26.6602">
-					<from>fraction_of_default_covered_by_government_insurance</from>
+				<group locked="true" color="black" font_color="black" x="1183.81" y="251.478" width="751.311" height="506.815" name="Climate-driven default\ninsurance policy"/>
+				<aux color="black" background="#00F900" font_color="black" x="1556.29" y="536.244" name="fraction of loans insured"/>
+				<aux color="black" background="#D4FB79" font_color="black" label_side="bottom" x="1697.03" y="655.835" name="insurance coverage time\nto implement"/>
+				<connector uid="57" angle="139.645">
+					<from>insurance_coverage_time_to_implement</from>
 					<to>fraction_of_loans_insured</to>
 				</connector>
-				<connector uid="52" angle="46.4043">
-					<from>government_insurance_policy_start_year</from>
+				<aux color="black" background="#D4FB79" font_color="black" label_side="bottom" x="1417.26" y="652.054" name="insurance coverage\nstart year"/>
+				<connector uid="58" angle="39.7941">
+					<from>insurance_coverage_start_year</from>
 					<to>fraction_of_loans_insured</to>
 				</connector>
-				<connector uid="53" angle="99.5252">
-					<from>fraction_of_default_covered_by_central_bank_insurance</from>
+				<aux color="black" background="#D4FB79" font_color="black" label_side="bottom" x="1556.29" y="655.835" name="insurance coverage level"/>
+				<connector uid="59" angle="88.9877">
+					<from>insurance_coverage_level</from>
 					<to>fraction_of_loans_insured</to>
 				</connector>
-				<connector uid="54" angle="97.8062">
-					<from>central_bank_insurance_policy_start_year</from>
-					<to>fraction_of_loans_insured</to>
+				<aux color="black" background="#D4FB79" font_color="black" label_side="top" x="1732.87" y="319.497" name="decision fraction of default\ncovered by government insurance"/>
+				<aux color="black" background="#D4FB79" font_color="black" label_side="top" x="1556.7" y="319.497" name="decision fraction of default\ncovered by central\nbank insurance"/>
+				<aux color="black" background="#D4FB79" font_color="black" label_side="top" x="1371.57" y="326.542" name="decision fraction of default\ncovered by private insurance"/>
+				<aux color="black" background="#00F900" font_color="black" x="1556.29" y="385.778" name="total insurance coverage"/>
+				<connector uid="60" angle="200.575">
+					<from>decision_fraction_of_default_covered_by_government_insurance</from>
+					<to>total_insurance_coverage</to>
 				</connector>
-				<connector uid="55" angle="160.461">
-					<from>fraction_of_default_covered_by_private_insurance</from>
-					<to>fraction_of_loans_insured</to>
+				<connector uid="61" angle="269.646">
+					<from>decision_fraction_of_default_covered_by_central_bank_insurance</from>
+					<to>total_insurance_coverage</to>
 				</connector>
-				<connector uid="56" angle="144.898">
-					<from>private_insurance_policy_start_year</from>
-					<to>fraction_of_loans_insured</to>
+				<connector uid="62" angle="342.22">
+					<from>decision_fraction_of_default_covered_by_private_insurance</from>
+					<to>total_insurance_coverage</to>
+				</connector>
+				<aux color="black" background="#00F900" font_color="black" label_side="bottom" x="1371.57" y="451.139" name="fraction of default\ncovered by private insurance"/>
+				<connector uid="63" angle="155.263">
+					<from>fraction_of_loans_insured</from>
+					<to>fraction_of_default_covered_by_private_insurance</to>
+				</connector>
+				<connector uid="64" angle="199.486">
+					<from>total_insurance_coverage</from>
+					<to>fraction_of_default_covered_by_private_insurance</to>
+				</connector>
+				<connector uid="65" angle="270">
+					<from>decision_fraction_of_default_covered_by_private_insurance</from>
+					<to>fraction_of_default_covered_by_private_insurance</to>
+				</connector>
+				<aux color="black" background="#00F900" font_color="black" label_side="bottom" x="1558.56" y="451.139" name="fraction of default covered\nby central bank insurance"/>
+				<connector uid="66" angle="88.4721">
+					<from>fraction_of_loans_insured</from>
+					<to>fraction_of_default_covered_by_central_bank_insurance</to>
+				</connector>
+				<connector uid="67" angle="271.989">
+					<from>total_insurance_coverage</from>
+					<to>fraction_of_default_covered_by_central_bank_insurance</to>
+				</connector>
+				<connector uid="68" angle="234.155">
+					<from>decision_fraction_of_default_covered_by_central_bank_insurance</from>
+					<to>fraction_of_default_covered_by_central_bank_insurance</to>
+				</connector>
+				<aux color="black" background="#00F900" font_color="black" label_side="bottom" x="1728.21" y="451.139" name="fraction of default covered\nby government insurance"/>
+				<connector uid="69" angle="26.3369">
+					<from>fraction_of_loans_insured</from>
+					<to>fraction_of_default_covered_by_government_insurance</to>
+				</connector>
+				<connector uid="70" angle="339.184">
+					<from>total_insurance_coverage</from>
+					<to>fraction_of_default_covered_by_government_insurance</to>
+				</connector>
+				<connector uid="71" angle="267.975">
+					<from>decision_fraction_of_default_covered_by_government_insurance</from>
+					<to>fraction_of_default_covered_by_government_insurance</to>
 				</connector>
 			</view>
 		</views>
