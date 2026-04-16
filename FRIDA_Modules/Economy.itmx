@@ -13538,6 +13538,164 @@ ELSE
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$</units>
 			</aux>
+			<aux name="objective evaluation\nstart year">
+				<doc>It is to define the year when the composite policy objective begins to be evaluated.</doc>
+				<eqn>2030</eqn>
+				<units>Year</units>
+			</aux>
+			<stock name="Cumulative Discount Exponent">
+				<doc>The stock is just a memory of how much discounting has accumulated so far. Because safe interest rate is dynamic, it changes over time in the model. This stock answers: “How much total discounting has built up since 2030/ NPV start year?” The initial value is 0 because before policy start year/ 2030, we do not want any accumulated discounting yet.
+
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0</eqn>
+				<inflow>discount_rate_accumulation</inflow>
+				<units>dmnl</units>
+			</stock>
+			<flow name="discount\nrate accumulation">
+				<doc>Instantaneous discount rate applied from the NPV evaluation start year onward.</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF TIME &gt;= objective_evaluation_start_year
+THEN ramp_discount_rate
+ELSE 0</eqn>
+				<units>1/year</units>
+			</flow>
+			<aux name="NPV discount factor">
+				<doc>This is the continuous-time discount factor based on the accumulated safe interest rate.</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>EXP(-Cumulative_Discount_Exponent)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<stock name="NPV of Real GDP">
+				<doc>Cumulative net present value of real GDP from the NPV evaluation start year to the end of the simulation.
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0</eqn>
+				<inflow>discounted_real_GDP</inflow>
+				<units>bc$</units>
+			</stock>
+			<flow name="discounted real GDP">
+				<doc>Real GDP in 2021 prices, discounted back to the NPV base (effectively from NPV evaluation start year in this setup).</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF TIME &gt;= objective_evaluation_start_year
+THEN NPV_discount_factor * &quot;Real_GDP_in_2021c$&quot;
+ELSE 0</eqn>
+				<units>bc$/year</units>
+			</flow>
+			<group name="Objective 2:\nMaximize NPV of Real GDP" run="false">
+				<format scale_by="auto"/>
+				<entity name="average_NPV_of_real_GDP"/>
+				<entity name="Cumulative_Discount_Exponent"/>
+				<entity name="discount_rate_accumulation"/>
+				<entity name="discounted_real_GDP"/>
+				<entity name="fixed_discount_rate"/>
+				<entity name="NPV_discount_factor"/>
+				<entity name="NPV_of_Real_GDP"/>
+				<entity name="objective_evaluation_start_year"/>
+				<entity name="ramp_converter"/>
+				<entity name="ramp_discount_rate"/>
+			</group>
+			<aux name="ramp discount rate">
+				<eqn>fixed_discount_rate - RAMP(ramp_converter,  objective_evaluation_start_year)</eqn>
+				<units>dmnl/year</units>
+			</aux>
+			<aux name="ramp converter">
+				<eqn>0.000155</eqn>
+				<units>1/year^2</units>
+			</aux>
+			<aux name="fixed discount rate">
+				<eqn>0.025</eqn>
+				<units>dmnl/year</units>
+			</aux>
+			<stock name="Cumulative Welfare\nDiscount Exponent">
+				<doc>This stock keeps track of how much discounting has built up since 2030. Initial value is 0 because there is no discounted accumulated yet. Because safe interest rate is dynamic, it changes over time in the model. This stock answers: “How much total discounting has built up since 2030/ welfare start year?” 
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0</eqn>
+				<inflow>welfare_discount_rate_accumulation</inflow>
+				<units>dmnl</units>
+			</stock>
+			<flow name="welfare discount\nrate accumulation">
+				<doc>Instantaneous discount rate applied from the welfare evaluation start year onward. Before 2030, no welfare discounting and from 2030 onward, discount using the safe interest rate.</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF TIME &gt;= objective_evaluation_start_year
+THEN ramp_discount_rate
+ELSE 0</eqn>
+				<units>1/year</units>
+			</flow>
+			<aux name="instantaneous\nwelfare from real GDP">
+				<doc>This variable converts GDP into a welfare score. Each year’s welfare is the log of real GDP in 2021 prices (diminishing marginal welfare of extra GDP). Higher GDP still means higher welfare, but extra GDP has smaller additional value.</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>LN(MAX(&quot;Real_GDP_in_2021c$&quot;, 1e-06))</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="welfare discount factor">
+				<doc>This tells the model how much to discount future welfare each year, using the safe interest rate from the Government sector. This gives the shrinking weight over time: at 2030, factor = 1. Later, factor gets smaller so later welfare counts less.</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>EXP(-Cumulative_Welfare_Discount_Exponent)</eqn>
+				<units>dmnl</units>
+			</aux>
+			<stock name="Discounted Welfare\nof Real GDP">
+				<doc>Cumulative welfare from the objective evaluation start year to the end of the simulation.
+</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>0</eqn>
+				<inflow>discounted_welfare</inflow>
+				<units>dmnl</units>
+			</stock>
+			<flow name="discounted welfare">
+				<doc>This is the welfare contribution in each year after applying the concave transformation and applying the discount factor.</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>IF TIME &gt;= objective_evaluation_start_year
+THEN (instantaneous_welfare_from_real_GDP*welfare_discount_factor) / time_unit_correction
+ELSE 0</eqn>
+				<units>1/year</units>
+			</flow>
+			<aux name="time unit correction">
+				<eqn>1</eqn>
+				<units>Year</units>
+			</aux>
+			<group name="Objective 3:\nMaximize Welfare of Real GDP" run="false">
+				<format scale_by="auto"/>
+				<entity name="average_Discounted_Welfare_of_Real_GDP"/>
+				<entity name="Cumulative_Welfare_Discount_Exponent"/>
+				<entity name="discounted_welfare"/>
+				<entity name="Discounted_Welfare_of_Real_GDP"/>
+				<entity name="instantaneous_welfare_from_real_GDP"/>
+				<entity name="time_unit_correction"/>
+				<entity name="welfare_discount_factor"/>
+				<entity name="welfare_discount_rate_accumulation"/>
+			</group>
+			<aux name="average NPV of real GDP">
+				<eqn>MEAN(NPV_of_Real_GDP[*])</eqn>
+				<units>bc$</units>
+			</aux>
+			<aux name="average Discounted Welfare\nof Real GDP">
+				<eqn>MEAN(Discounted_Welfare_of_Real_GDP[*])</eqn>
+				<units>bc$</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -14060,6 +14218,142 @@ ELSE
 					</from>
 					<to>&quot;net_bank_assets_in_2021c$&quot;</to>
 				</connector>
+				<aux color="black" font_color="black" label_side="top" x="1577" y="1510.52" name="objective evaluation\nstart year"/>
+				<stock color="black" font_color="black" label_side="center" x="1741.1" y="1555.36" width="176.865" height="37.7474" name="Cumulative Discount Exponent"/>
+				<flow color="black" font_color="black" x="1661.79" y="1573.46" name="discount\nrate accumulation">
+					<pts>
+						<pt x="1570.47" y="1573.46"/>
+						<pt x="1741.1" y="1573.46"/>
+					</pts>
+				</flow>
+				<aux color="black" font_color="black" x="1887.74" y="1648.08" name="NPV discount factor"/>
+				<stock color="black" font_color="black" label_side="center" x="1641.77" y="1699.86" width="99.3357" height="41.5527" name="NPV of Real GDP"/>
+				<flow color="black" font_color="black" x="1832.18" y="1711.19" width="18" height="18" name="discounted real GDP">
+					<pts>
+						<pt x="1953.24" y="1720.19"/>
+						<pt x="1741.11" y="1720.19"/>
+					</pts>
+				</flow>
+				<connector uid="116" angle="355.958">
+					<from>
+						<alias uid="117"/>
+					</from>
+					<to>discounted_real_GDP</to>
+				</connector>
+				<connector uid="118" angle="286.43">
+					<from>NPV_discount_factor</from>
+					<to>discounted_real_GDP</to>
+				</connector>
+				<connector uid="119" angle="89.997">
+					<from>
+						<alias uid="120"/>
+					</from>
+					<to>discounted_real_GDP</to>
+				</connector>
+				<connector uid="121" angle="323.412">
+					<from>objective_evaluation_start_year</from>
+					<to>discount_rate_accumulation</to>
+				</connector>
+				<connector uid="122" angle="328.95">
+					<from>Cumulative_Discount_Exponent</from>
+					<to>NPV_discount_factor</to>
+				</connector>
+				<group locked="true" color="black" font_color="black" x="1505.44" y="1435.2" width="491.27" height="510.279" name="Objective 2:\nMaximize NPV of Real GDP">
+					<item uid="117"/>
+					<item uid="120"/>
+				</group>
+				<aux color="black" font_color="black" label_side="bottom" x="1679.78" y="1510.52" name="ramp discount rate"/>
+				<aux color="black" font_color="black" label_side="top" x="1679.78" y="1470.42" name="ramp converter"/>
+				<connector uid="123" angle="270">
+					<from>ramp_converter</from>
+					<to>ramp_discount_rate</to>
+				</connector>
+				<connector uid="124" angle="0">
+					<from>objective_evaluation_start_year</from>
+					<to>ramp_discount_rate</to>
+				</connector>
+				<aux color="black" font_color="black" label_side="right" x="1761.21" y="1510.52" name="fixed discount rate"/>
+				<connector uid="125" angle="180">
+					<from>fixed_discount_rate</from>
+					<to>ramp_discount_rate</to>
+				</connector>
+				<connector uid="126" angle="276.908">
+					<from>ramp_discount_rate</from>
+					<to>discount_rate_accumulation</to>
+				</connector>
+				<stock color="black" font_color="black" label_side="center" x="2266.83" y="1533.06" width="176.865" height="37.7474" name="Cumulative Welfare\nDiscount Exponent"/>
+				<flow color="black" font_color="black" x="2187.52" y="1551.16" name="welfare discount\nrate accumulation">
+					<pts>
+						<pt x="2096.2" y="1551.16"/>
+						<pt x="2266.83" y="1551.16"/>
+					</pts>
+				</flow>
+				<connector uid="127" angle="332.71">
+					<from>
+						<alias uid="128"/>
+					</from>
+					<to>welfare_discount_rate_accumulation</to>
+				</connector>
+				<aux color="black" font_color="black" x="2272.4" y="1649.26" name="instantaneous\nwelfare from real GDP"/>
+				<connector uid="129" angle="28.8846">
+					<from>
+						<alias uid="130"/>
+					</from>
+					<to>instantaneous_welfare_from_real_GDP</to>
+				</connector>
+				<aux color="black" font_color="black" x="2417.64" y="1627.93" name="welfare discount factor"/>
+				<connector uid="131" angle="329.734">
+					<from>Cumulative_Welfare_Discount_Exponent</from>
+					<to>welfare_discount_factor</to>
+				</connector>
+				<stock color="black" font_color="black" label_side="center" x="2162.58" y="1717.88" width="99.3357" height="41.5527" name="Discounted Welfare\nof Real GDP"/>
+				<flow color="black" font_color="black" x="2361.98" y="1738.21" name="discounted welfare">
+					<pts>
+						<pt x="2474.05" y="1738.21"/>
+						<pt x="2261.92" y="1738.21"/>
+					</pts>
+				</flow>
+				<connector uid="132" angle="155.132">
+					<from>
+						<alias uid="133"/>
+					</from>
+					<to>discounted_welfare</to>
+				</connector>
+				<connector uid="134" angle="12.4072">
+					<from>instantaneous_welfare_from_real_GDP</from>
+					<to>discounted_welfare</to>
+				</connector>
+				<connector uid="135" angle="283.857">
+					<from>welfare_discount_factor</from>
+					<to>discounted_welfare</to>
+				</connector>
+				<aux color="black" font_color="black" x="2306.37" y="1787.37" name="time unit correction"/>
+				<connector uid="136" angle="41.4757">
+					<from>time_unit_correction</from>
+					<to>discounted_welfare</to>
+				</connector>
+				<group locked="true" color="black" font_color="black" x="2029.25" y="1439.88" width="546.195" height="504.447" name="Objective 3:\nMaximize Welfare of Real GDP">
+					<item uid="128"/>
+					<item uid="130"/>
+					<item uid="133"/>
+					<item uid="137"/>
+				</group>
+				<connector uid="138" angle="286.392">
+					<from>
+						<alias uid="137"/>
+					</from>
+					<to>welfare_discount_rate_accumulation</to>
+				</connector>
+				<aux x="1691.44" y="1858.96" name="average NPV of real GDP"/>
+				<connector uid="139" angle="270">
+					<from>NPV_of_Real_GDP</from>
+					<to>average_NPV_of_real_GDP</to>
+				</connector>
+				<aux x="2212.25" y="1858.96" name="average Discounted Welfare\nof Real GDP"/>
+				<connector uid="140" angle="270">
+					<from>Discounted_Welfare_of_Real_GDP</from>
+					<to>average_Discounted_Welfare_of_Real_GDP</to>
+				</connector>
 				<alias font_style="italic" label_side="top" uid="9" x="659.453" y="202.596" width="18" height="18">
 					<of>Nominal_GDP</of>
 				</alias>
@@ -14092,6 +14386,24 @@ ELSE
 				</alias>
 				<alias font_style="italic" label_side="top" uid="85" x="949.804" y="388.813" width="18" height="18">
 					<of>nominal_GDP_growth_rate</of>
+				</alias>
+				<alias color="black" font_style="italic" font_color="black" label_side="left" label_angle="135" uid="117" x="1780.56" y="1666.18" width="18" height="18">
+					<of>&quot;Real_GDP_in_2021c$&quot;</of>
+				</alias>
+				<alias color="black" font_style="italic" font_color="black" uid="120" x="1832.17" y="1765.7" width="18" height="18">
+					<of>objective_evaluation_start_year</of>
+				</alias>
+				<alias color="black" font_style="italic" font_color="black" label_side="top" uid="128" x="2089.51" y="1496.24" width="18" height="18">
+					<of>objective_evaluation_start_year</of>
+				</alias>
+				<alias color="black" font_style="italic" font_color="black" label_side="top" uid="130" x="2177.23" y="1640.26" width="18" height="18">
+					<of>&quot;Real_GDP_in_2021c$&quot;</of>
+				</alias>
+				<alias color="black" font_style="italic" font_color="black" uid="133" x="2436.8" y="1768.06" width="18" height="18">
+					<of>objective_evaluation_start_year</of>
+				</alias>
+				<alias color="black" font_style="italic" font_color="black" uid="137" x="2195.23" y="1478.24" width="18" height="18">
+					<of>ramp_discount_rate</of>
 				</alias>
 			</view>
 		</views>
