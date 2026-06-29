@@ -7,6 +7,8 @@ The model is being developed using <a href="https://www.iseesystems.com/store/pr
 
 You can run and use the model locally without purchasing Stella Architect using the <a href="https://www.iseesystems.com/softwares/player/iseeplayer.aspx">isee Player</a>
 
+This research was supported by the Horizon Europe research and innovation programs under grant agreement no. 101081661 (WorldTrans).
+
 ## Input data processing
 <ul>
   <li>
