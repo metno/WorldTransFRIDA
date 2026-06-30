@@ -1,0 +1,61 @@
+name: Deploy docs to GitHub Pages
+
+# Builds the FRIDA documentation site and publishes each branch to its own
+# versioned subdirectory of the gh-pages branch using `mike`, e.g.
+#   https://metno.github.io/WorldTransFRIDA/main/
+#   https://metno.github.io/WorldTransFRIDA/doc_site/
+# The site root redirects to whichever version is the default (main).
+
+on:
+  push:
+    branches:
+      - main
+      - doc_site
+  workflow_dispatch:        # allow manual runs from the Actions tab
+
+# mike commits the built site to the gh-pages branch, so the token needs write access.
+permissions:
+  contents: write
+
+# Every branch writes to the same gh-pages branch — never run two deploys at once.
+# cancel-in-progress: false lets an in-flight deploy finish before the next starts.
+concurrency:
+  group: deploy-docs
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # mike needs history to read/update gh-pages
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install MkDocs Material and mike
+        run: pip install mkdocs-material mike
+
+      - name: Generate the docs from the FRIDA model
+        # Rewrites mkdocs.yml + the generated content (both gitignored), so this
+        # must run before the build.
+        run: python docs/gen_docs.py
+
+      - name: Configure git identity for mike
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch existing versions (preserve other branches' subdirectories)
+        run: git fetch origin gh-pages --depth=1 || true
+
+      - name: Deploy this branch as its own version
+        run: mike deploy --push "${{ github.ref_name }}"
+
+      - name: Point the site root at the main version
+        if: github.ref_name == 'main'
+        run: mike set-default --push main

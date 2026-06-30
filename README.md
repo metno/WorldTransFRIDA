@@ -9,6 +9,43 @@ You can run and use the model locally without purchasing Stella Architect using 
 
 This research was supported by the Horizon Europe research and innovation programs under grant agreement no. 101081661 (WorldTrans).
 
+## Documentation website
+
+A browsable [MkDocs](https://www.mkdocs.org/) + [Material](https://squidfunk.github.io/mkdocs-material/)
+documentation site is generated from the model files (`FRIDA.stmx`, `FRIDA_Modules/*.itmx`)
+and authored module narratives. Everything for the site lives in [`docs/`](docs/):
+
+| Path | Purpose |
+|---|---|
+| `docs/gen_docs.py` | Generator — writes the pages and `mkdocs.yml`. |
+| `docs/parse_frida_model.py` | Parses the XMILE model into modules, variables, equations, and connections. |
+| `docs/science/*.md` | Authored, paper-grounded module overviews (inlined into the pages). |
+| `docs/images/`, `docs/stylesheets/` | Diagrams and styling. |
+
+The generated pages (`docs/index.md`, `docs/architecture.md`, `docs/conventions.md`,
+`docs/modules/`), `mkdocs.yml`, and the built site (`docs-site/`) are **not** tracked —
+regenerate them as below.
+
+### Generating the docs-site
+
+```bash
+# one-time setup
+python3 -m venv .venv
+.venv/bin/python -m pip install mkdocs-material
+
+# regenerate the pages + nav from the model (run after any model change)
+.venv/bin/python docs/gen_docs.py
+
+# live preview at http://127.0.0.1:8000/
+.venv/bin/python -m mkdocs serve
+
+# or build the static site into docs-site/
+.venv/bin/python -m mkdocs build
+```
+
+To extend a module's narrative, edit the matching `docs/science/<module>.md` partial and
+re-run `docs/gen_docs.py`; hand edits to the generated pages are overwritten.
+
 ## Input data processing
 <ul>
   <li>

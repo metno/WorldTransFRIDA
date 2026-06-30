@@ -1,0 +1,64 @@
+name: Remove a deleted branch's docs
+
+# When a branch is deleted, remove its versioned subdirectory from the gh-pages
+# branch so its doc site disappears too.
+#
+# IMPORTANT: the `delete` event only triggers a workflow that exists on the
+# repository's DEFAULT branch (main). This cleanup therefore only takes effect
+# once this file has been merged into main.
+
+on:
+  delete:
+
+# mike rewrites the gh-pages branch, so the token needs write access.
+permissions:
+  contents: write
+
+# Share the deploy workflow's concurrency group so a cleanup and a deploy never
+# touch the gh-pages branch at the same time.
+concurrency:
+  group: deploy-docs
+  cancel-in-progress: false
+
+jobs:
+  remove-version:
+    # Only branch deletions (not tags), and never auto-remove the main site.
+    if: github.event.ref_type == 'branch' && github.event.ref != 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install MkDocs Material and mike
+        run: pip install mkdocs-material mike
+
+      - name: Generate mkdocs.yml (gitignored; mike needs a config file)
+        run: python docs/gen_docs.py
+
+      - name: Configure git identity for mike
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Delete the deleted branch's version (if it was ever published)
+        run: |
+          set -euo pipefail
+          ref="${{ github.event.ref }}"
+          # Bring the gh-pages branch local so mike can read the version list.
+          if ! git fetch origin gh-pages:gh-pages 2>/dev/null; then
+            echo "No gh-pages branch exists yet; nothing to clean up."
+            exit 0
+          fi
+          if mike list 2>/dev/null | sed 's/ .*//' | grep -qx "$ref"; then
+            mike delete --push "$ref"
+            echo "Removed published docs for deleted branch '$ref'."
+          else
+            echo "No published docs for branch '$ref'; nothing to delete."
+          fi

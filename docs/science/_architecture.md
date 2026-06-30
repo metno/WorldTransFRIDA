@@ -1,0 +1,98 @@
+FRIDA is a fully coupled, global-scale System Dynamics model of the joint human and Earth system. Its defining architectural commitment is that the human economy and the biophysical climate are not treated as separate worlds connected by a one-way damage estimate, but as a single circulating system in which socio-economic activity and climate physics drive one another through closed, two-way feedback loops. Rather than reading growth pathways in from the outside, FRIDA lets the trajectory of the global system emerge from the internally represented processes that link macroeconomics, population, energy, land use, and climate. The result is a model whose long-run behavior is governed not by any single sector but by the ordering of feedbacks — which loops dominate, and when.
+
+## Design philosophy
+
+Three principles shape how FRIDA is built.
+
+**Fully endogenous and feedback-based.** FRIDA closes the key two-way feedback loops between socio-economic activity and biophysical climate dynamics, so that human–Earth co-evolution is generated from within the model itself. Climate impacts are not bolted on as an external correction; they are integral components of the feedback structures that govern the system. Damages from a warming climate directly alter economic development, population dynamics, and the demand for energy and land-based goods, and those altered human activities in turn change emissions, warming, and the impacts that follow. The only exogenous drivers in the model are the solar radiation cycle, Montreal Protocol greenhouse gases, and forcing from volcanic eruptions. Everything else — including demographics and investment — is endogenized, which means the model can produce futures where climate change slows or reverses economic growth, weakens investment capacity, reshapes consumption patterns, and shifts interconnected sectors such as land use, all without any exogenously imposed shock or policy input.
+
+**Adaptive and path-dependent human systems.** Because growth pathways are not specified from outside, the human side of the model is represented as adaptive and path-dependent. Expectations form, investments accumulate, behavior adapts to perceived risk, and the system carries the memory of its past choices forward. This path dependence is central to FRIDA's behavior: historical investments lock in trajectories, and long-lived physical capital, institutional and cultural inertia, and signal-to-noise challenges produce hysteresis, so that even after incentives flip, reallocation takes years to decades.
+
+**One global, aggregated region.** FRIDA represents the world as a single coupled human–Earth system rather than a set of interacting regions. This aggregation is a deliberate strength: the global scale is appropriate for identifying the dominant system-wide feedback structures, which are more easily observed and measured in an aggregated global representation than in a regionalized one. The trade-off is that the single-region view masks regional heterogeneity in trade, geopolitics, and human and biophysical responses to environmental change.
+
+## The coupled subsystems
+
+FRIDA explicitly links Earth system processes with population dynamics, economics, agriculture, and energy use. These domains are wired together so that human processes that emit also depend, directly or indirectly, on the climate they help to change. The major subsystems and the roles they play in the architecture are:
+
+- **The macroeconomy and finance.** The economic core is a self-reinforcing growth engine in which investment drives employment, production, and wages, which fuel consumption, which generates demand pressures that fuel further investment. Tightly coupled to this is a financial sector that allocates surplus through lending: loan failure rates, observed defaults, lending standards, and risk premiums together regulate how much investment the economy can sustain. This financial machinery is what later transmits climate stress into the economy — it does not ignore climate risk, but internalizes it late and nonlinearly.
+
+- **Energy.** Energy supply is split between fossil and renewable sources, with the balance between them governed by the relative attractiveness of renewable investment. Both fossil and renewable energy are subject to learning-by-doing: accumulated experience drives down costs, which reinforces further investment in whichever source is already ahead. Early on, accumulated fossil investment and the low marginal cost of fossil fuels create a path dependency that suppresses renewable adoption.
+
+- **Land use and agriculture.** The agricultural sector must feed a growing and increasingly wealthy population — including rising demand for animal products — while also supplying biofuels for the energy transition. These competing demands press against the finite supply of arable land, producing competition for land, agricultural intensification, deforestation, and soil carbon depletion. Land use is thus both a driver of emissions and a source of biophysical constraint.
+
+- **Population and demographics.** Population is endogenous, rising with wealth through a demographic transition and falling under climate-driven mortality. It both scales demand in the economy and responds, through life expectancy and mortality, to surface temperature anomaly and sea-level rise.
+
+- **The climate and Earth system.** Emissions from energy, land use, and economic activity accumulate and drive surface temperature anomaly and sea-level rise through a process-based carbon cycle and climate core. These biophysical states are the channel through which the accumulated "externalities" of economic activity return to the human system as climate impacts.
+
+- **Climate impacts and behavioral adaptation.** Impacts of warming feed back into the human system through multiple channels — labour productivity, mortality, infrastructure, and financial stability — rather than through a single aggregate damage function. Alongside these physical impacts, a climate-risk-perception process allows behavior (notably diet and demand) to adapt endogenously once perceived risk becomes strong enough to override income-driven preferences.
+
+## Feedback structure: from accelerating growth to biophysical brakes
+
+The signature of FRIDA's architecture is a shift in feedback loop dominance over the simulation horizon (1980–2150): the system moves from being governed by reinforcing growth loops to being governed by balancing, climate-impact loops. The same structure, run forward, produces a self-referential economic growth engine in its early decades and a climate-impact-dominated regime in its later ones. Three broad phases capture this transition.
+
+### Late 20th to mid 21st century: the growth engine dominates
+
+[![Causal loop diagram for Phase 1: the core economic growth engine](images/cld-phase-1.png){ .cld }](images/cld-phase-1.png)
+
+*Phase 1 causal loop diagram — the core of the human economic system, which determines outcomes throughout the simulation. Grey links and loops become relevant only later.*
+
+In the opening phase, warming is still modest and climate change appears to have limited influence on the human system. Behavior across the ensemble is dominated by reinforcing economic feedbacks that seem to operate independently of environmental constraints. The **core economic engine** — investment → employment → wages → consumption → investment — drives quantitative expansion and qualitative development together. On the energy side, **learning-by-doing in fossils** entrenches a path dependency: experience-driven cost reductions in fossil energy make renewables relatively less attractive, drawing further investment into fossil capacity and locking in the emissions trajectories that define the rest of the simulation. This creates a sunk-cost dynamic that resists transition.
+
+Balancing loops are present in this phase, but they are *macroeconomic governors, not Earth system limits*. The **inflation governor** moderates demand-driven growth by letting inflation rise when income growth outpaces productive capacity. The **overheated investment response** and the **credit cycle** let banks adjust lending standards in reaction to defaults, restraining over-investment. Crucially, these governors regulate the *rate* of growth without constraining economic activity itself, so the system overshoots biophysical limits while environmental externalities accumulate largely unchecked — their societal and economic costs delayed and uncertain. The loops that will later become decisive are already wired into the structure; they are simply latent.
+
+### Mid 21st century: the phase transition
+
+[![Causal loop diagram for Phase 2: the mid-century phase transition](images/cld-phase-2.png){ .cld }](images/cld-phase-2.png)
+
+*Phase 2 causal loop diagram — strong balancing climate-impact processes (shown in grey) begin to slow the momentum of the economic growth engine.*
+
+The mid-century is a phase transition in which Earth system constraints begin to compete with the inertia of the growth engine. The outcome of a given trajectory now turns on the strength of the biophysically-driven balancing loops and on how sensitive the economic system is to changes in the Earth system. Several mechanisms switch on:
+
+- **Land-use competition.** As agriculture tries to feed a wealthier population more animal products while also supplying biofuels, it runs into limits on arable-land expansion. The **biofuel land-use competition** loop is reinforcing: biofuel expansion competes with food, drives intensification and deforestation, worsens warming, and — by forcing the energy transition — creates further incentive to invest in biofuels. The result is an *energy transition gap*, where reductions in fossil fuels are not immediately offset by renewables because learning-by-doing is weakened, inducing volatility and inflation.
+
+- **Behavioral phase shift.** Initially rising incomes drive higher animal-product consumption (the **income-driven behavior change** loop). But as warming breaches 1.5 °C and approaches 2.5 °C, **climate-driven behavior change** takes over: rising climate risk perception counteracts income-driven preferences, animal-product demand peaks and then falls, and land-use pressure eases. This is a societal phase shift in which perceived climate risk overrides income-elastic demand.
+
+- **Financial devaluation.** As investment moves toward renewables, historical fossil capital is stranded. The **fossil devaluation** loop propagates this through bankruptcies, defaults, and tighter lending, while **interest-caused failures** amplify downturns — higher loan failure rates raise risk premiums and the cost of credit, inducing still more failures. The financial sector, formerly an engine of growth, begins diverting surplus away from innovation to protect existing wealth, slowing the very transition the system needs.
+
+This is the point at which "drag-inducing" climate-driven governors first begin to significantly reduce investment, and the natural environment shifts from a passive sink to an active constraint — though the coupled system still retains enough robustness to absorb these impacts at first.
+
+### Late 21st to mid 22nd century: climate damages dominate
+
+[![Causal loop diagram for Phase 3: climate-damage-driven dynamics](images/cld-phase-3.png){ .cld }](images/cld-phase-3.png)
+
+*Phase 3 causal loop diagram — new strong balancing climate-impact loops dominate, and climate-damage-driven dynamics largely supplant the core economic growth engine.*
+
+In the final phase the system settles into a new regime in which climate-damage-driven dynamics have largely supplanted the core economic engine. Growth is significantly reduced and marked by more pronounced boom-and-bust cycles. The dominant loops are now climate-impact loops that work through finance, productivity, and mortality:
+
+- The **investment spiral** is a reinforcing trap: climate-induced financial damages tighten credit, which suppresses investment in mitigation and adaptation (including renewables), which permits further warming and further damage.
+- The **climate-driven credit governor** and **climate-driven consumption governor** are balancing loops in which climate damages induce bankruptcies and tighten lending standards (credit) or directly limit consumption growth (consumption), constraining investment growth either way.
+- The **labour productivity spiral** is reinforcing: warming lowers labour productivity, cutting the output available for consumption and investment, reducing investment in renewables, and slowing emissions mitigation — which permits more warming.
+- The **climate-driven mortality** loop is balancing: rising temperature and sea level raise mortality and lower life expectancy, reducing population and thereby tempering future warming.
+
+Together these loops constrain economic output and the capacity to renew damaged infrastructure or invest in mitigation, creating a vicious cycle in which the economy progressively loses its ability to sustain growth; the spirals only begin to slow once demand for emission-intensive goods falls substantially. The outcome is tighter lending, reduced investment, and persistent unemployment. Population dynamics shift in parallel from reinforcing growth to balancing decline, peaking in the 10–12 billion range around 2080–2090 before sustained decline; in cooler runs the decline follows a standard demographic transition driven by wealth, while in the hottest runs climate-driven mortality accelerates it.
+
+## How impacts feed back onto the human system
+
+What makes FRIDA distinct from reduced-form damage approaches is that it attributes changes in system behavior to traceable feedback structures rather than to single reduced-form coefficients. Climate impacts re-enter the human system through several explicit channels, each embedded in a loop:
+
+- **Finance.** Impacts raise loan failure rates and observed defaults, which tighten lending standards and raise risk premiums. The deepest mechanism here is the suppression of *exploratory investment* — the investment that drives innovation and productivity growth. When climate stress chokes off exploratory investment, it removes the very engine of continued economic growth. This is described not as market failure in a narrow sense but as a mismatch of financial time-constants: a system optimized for risk control is ill-suited to manage slow-accumulating, system-wide uncertainty, so financial markets internalize climate risk late and nonlinearly, often remaining exposed to fossil capital until devaluation arrives abruptly.
+- **Labour productivity.** Heat-induced declines in labour productivity reduce output available for both consumption and investment.
+- **Mortality and demographics.** Rising warming raises mortality and lowers life expectancy, reshaping the population trajectory and, through it, demand.
+- **Infrastructure.** Climate impacts and sea-level rise damage infrastructure, and the constrained economy struggles to renew it.
+- **Behavior.** Climate risk perception strengthens behavioral feedbacks (diet shift, demand moderation), but only once perceived risk overwhelms income-elastic preferences — typically after the system has crossed 1.5–2.5 °C.
+
+A recurring theme across all of these channels is timing. Climate impacts accumulate faster than societal, technological, and financial systems can adjust, so mitigation, innovation, and behavioral change arrive only after the system has already entered a climate-impact-dominated regime. Technological scaling is slowed by the sunk costs of historical fossil investment, financing headwinds, the resource intensity of the build-out, and weakened learning-by-doing under macro stress. Both mitigation deployment and behavioral adaptation occur in every run — but too late to prevent the system from re-coupling to Earth-system constraints under duress.
+
+## Interpreting the coupled dynamics
+
+A few structural points are essential for reading FRIDA's output correctly.
+
+**Calibration and the ensemble.** FRIDA is calibrated against historical data and run forward from 1980 to 2150. Its behavior is explored through a large endogenous model behavior (EMB) ensemble — a 100,000-member set of internally generated futures that samples uncertainty across all domains. Because uncertainty propagates through the coupled feedback structure rather than through exogenous scenario assumptions, the spread of outcomes is itself a product of the architecture: in warmer runs, climate-driven mortality and productivity losses accelerate the descent toward low-growth equilibria; in cooler runs, demographic transitions occur, but too late to offset the inertia of 20th-century emissions and fossil investments.
+
+**Loop dominance, not single-channel damages.** FRIDA's value lies in making explicit *which* feedback processes govern behavior at each moment of the coupled system's evolution. By representing the full circuit rather than isolated channels — and by tracing how loop dominance shifts from growth-seeking and financially-moderated dynamics early on to impact-limited and volatility-prone dynamics later — the architecture provides traceability and interpretability that reduced-form damage functions and top-down statistical estimates cannot. Single-channel damage representations risk understating system-wide effects by omitting feedback complexity, which can produce optimistic baselines.
+
+**Volatility, not smoothness.** The re-coupling of the macroeconomy to Earth-system constraints is not a smooth glide path. Endogenous delays, long-lived capital, and institutional inertia produce hysteresis and punctuate the trajectory with volatility in output, inflation, and employment.
+
+**Why ordering implies that policy is not optional.** The decisive factor in FRIDA is not a lack of solutions but the lag in their deployment relative to accumulating damages: reinforcing growth dynamics stockpile risk that later manifests as dominant biophysical governors. The strategic question is therefore not *whether* biophysical constraints will bind, but whether agency is exercised early enough to shape *how* they bind — coupling to limits "by design or by disaster." Because the binding constraints are feedback loops, the leverage points are also feedback loops, which is why the model points toward three feedback-targeted policy domains: financial-system changes that prevent climate-induced credit tightening from choking mitigation (addressing the credit-governor and interest-failure loops); energy-system policy that breaks fossil learning-by-doing and preserves renewable investment through downturns; and demand-side and behavioral policy that accelerates dietary and energy-use shifts before climate damages force them, weakening the biophysical feedback loops directly.
+
+**Known structural limits.** The architecture internalizes many impact channels but is acknowledged to be incomplete. Energy-service demand remains tied closely to GDP, so reductions in energy demand are largely mediated through macroeconomic contraction rather than through richer behavioral feedbacks — which means late-century reinforcing processes such as the investment spiral and labour productivity spiral carry more weight than they might with better demand-side representation. The set of modelled impact channels, while large, currently excludes highly localized impacts and Earth-system tipping points, and the single-region aggregation, though ideal for surfacing global feedbacks, cannot resolve distributional or regional dynamics.
