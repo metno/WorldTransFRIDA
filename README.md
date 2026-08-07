@@ -97,6 +97,10 @@ re-run `docs/gen_docs.py`; hand edits to the generated pages are overwritten.
   <li>
     <a href="https://github.com/BenjaminBlanz/WorldTransFRIDA-ILE">Interactive Learning Environment</a>
   </li>
+  <li>
+    <a href="https://github.com/alecceckert/FRIDA-IAMC-Post-Processing">Post Processing for Scenario Compass and IAM Diagnostics
+    </a>
+  </li>
 </ul>
  
 ## Calibration Data
