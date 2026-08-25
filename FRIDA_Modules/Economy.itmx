@@ -5,7 +5,7 @@
 		<name>Economy</name>
 		<uuid>656dacef-005e-41a3-aedc-d19f6fd6e9f6</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="4.3.1" isee:build_number="3962" isee:saved_by_v1="true" lang="en">Stella_Architect</product>
+		<product version="4.4" isee:build_number="4016" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
 	<ai_information>
 		<status verified="false"/>
@@ -237,6 +237,18 @@
 			<eqn>1</eqn>
 			<alias>dmnl</alias>
 			<alias>unitless</alias>
+		</unit>
+		<unit name="G">
+			<eqn>Giga</eqn>
+		</unit>
+		<unit name="GtCO2">
+			<eqn>Giga*tCO2</eqn>
+		</unit>
+		<unit name="GtCH4">
+			<eqn>Giga*tCH4</eqn>
+		</unit>
+		<unit name="GtN2O">
+			<eqn>Giga*tN2O</eqn>
 		</unit>
 	</model_units>
 	<model name="Economy">
@@ -741,6 +753,8 @@
 				<connect2 to='Circular_Flow."inflation_adjustment_b$_per_bc$_1"' from='Inflation."inflation_adjustment_b$_per_bc$"'/>
 				<connect to="Circular_Flow.Inflation_Rate" from="Inflation.Inflation_Rate"/>
 				<connect2 to="Circular_Flow.Inflation_Rate" from="Inflation.Inflation_Rate"/>
+				<connect to="Circular_Flow.insurance_premiums" from="Private_Insurance.insurance_premiums"/>
+				<connect2 to="Circular_Flow.insurance_premiums" from="Private_Insurance.insurance_premiums"/>
 				<connect to="Circular_Flow.Nominal_GDP" from="GDP.Nominal_GDP"/>
 				<connect2 to="Circular_Flow.Nominal_GDP" from="GDP.Nominal_GDP"/>
 				<connect to="Circular_Flow.Population_1" from="Demographics.Population"/>
@@ -1173,7 +1187,7 @@
 			<isee:placeholder name="Economy 2 Outputs">
 				<eqn>GDP.Nominal_GDP[1] + GDP.&quot;Real_GDP_in_2021c$&quot;[1] + Circular_Flow.private_consumption[1] + Government.government_consumption[1] + Finance.total_investment[1] + Employment.annual_aggregate_wages[1] + Circular_Flow.Labour_share_of_GDP[1] + Employment.Employed[1] + Employment.Unemployed[1] + Employment.unemployment_rate[1] + Government.debt_to_GDP_ratio[1] + GDP.nominal_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1] + GDP.real_gdp_growth_rate_deviation_from_average_in_calibration_period_summed[1] + Inflation.gdp_difference[1] + Circular_Flow.bottom_40_share_of_real_income[1]</eqn>
 			</isee:placeholder>
-			<module name="Sea level rise Impacts\nand Adaptation" isee:label="" url="/home/benjamin/Documents/UHH/FNU/FNK/WordTrans/FRIDA/fridaGitWD-mainline development/FRIDA_Modules/Sea level rise Impacts and Adaptation.itmx">
+			<module name="Sea level rise Impacts\nand Adaptation" isee:label="" url="/Users/bschoenberg/code/WorldTrans/Frida/FRIDA_Modules/Sea level rise Impacts and Adaptation.itmx">
 				<format scale_by="auto"/>
 				<connect to="Sea_level_rise_Impacts_and_Adaptation.No_SLR_adaptation_strategy" from="Government_Regulations.No_SLR_adaptation_strategy"/>
 				<connect2 to="Sea_level_rise_Impacts_and_Adaptation.No_SLR_adaptation_strategy" from="Government_Regulations.No_SLR_adaptation_strategy"/>
@@ -1256,6 +1270,8 @@
 				<format scale_by="auto"/>
 				<connect to="Finance.Insurance_Deposits" from="Private_Insurance.Insurance_Deposits"/>
 				<connect2 to="Finance.Insurance_Deposits" from="Private_Insurance.Insurance_Deposits"/>
+				<connect to="Circular_Flow.insurance_premiums" from="Private_Insurance.insurance_premiums"/>
+				<connect2 to="Circular_Flow.insurance_premiums" from="Private_Insurance.insurance_premiums"/>
 				<connect to="Finance.insurance_payouts" from="Private_Insurance.private_insurance_payouts"/>
 				<connect2 to="Finance.insurance_payouts" from="Private_Insurance.private_insurance_payouts"/>
 				<connect to="GDP.private_insurance_payouts" from="Private_Insurance.private_insurance_payouts"/>
@@ -1357,7 +1373,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1097" page_height="767" isee:page_cols="2" isee:page_rows="3" isee:scroll_y="61" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="3" isee:scroll_y="61" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="12.51pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -1631,6 +1647,10 @@
 				<connector uid="73" isee:thickness="2" angle="46.6695">
 					<from>Private_Insurance</from>
 					<to>GDP</to>
+				</connector>
+				<connector uid="75" isee:thickness="2" angle="358.798" isee:autocreated="true">
+					<from>Private_Insurance</from>
+					<to>Circular_Flow</to>
 				</connector>
 			</view>
 		</views>
@@ -2320,6 +2340,7 @@ Regardless of savings goals, households must allocate at least 35% of income to 
 				<inflow>wages</inflow>
 				<inflow>worker_savings_interest</inflow>
 				<inflow>transfers</inflow>
+				<inflow>wages_from_insurance</inflow>
 				<outflow>worker_consumption</outflow>
 				<outflow>wage_tax</outflow>
 				<units>b$</units>
@@ -3665,6 +3686,31 @@ ELSE 0</eqn>
 				<eqn>&quot;real_private_consumption_2021c$&quot;/Population_1</eqn>
 				<units>bc$/Mp/year</units>
 			</aux>
+			<aux name="insurance premiums" access="input">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="wages share of\ninsurance premiums">
+				<doc>${Assumption}
+Portion of insurance premiums that are costs paid to workers eventually</doc>
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>1</eqn>
+				<range min="0.05" max="0.4"/>
+				<units>dmnl</units>
+			</aux>
+			<flow name="wages from insurance">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>wages_share_of_insurance_premiums*insurance_premiums + wages_share_of_insurance_premiums*insurance_taxation</eqn>
+				<non_negative/>
+				<units>b$/year</units>
+			</flow>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -3714,7 +3760,7 @@ ELSE 0</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1097" page_height="767" isee:page_cols="6" isee:page_rows="8" isee:scroll_y="150" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="8" isee:scroll_x="2093.33" isee:scroll_y="1054.17" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -3847,10 +3893,10 @@ ELSE 0</eqn>
 						<pt x="1844.56" y="1748.32"/>
 					</pts>
 				</flow>
-				<flow label_side="bottom" x="2547.54" y="1272.26" name="worker savings\ninterest">
+				<flow label_side="bottom" x="2547.55" y="1254.26" name="worker savings\ninterest">
 					<pts>
-						<pt x="2482.42" y="1272.26"/>
-						<pt x="2600.67" y="1272.26"/>
+						<pt x="2482.42" y="1254.26"/>
+						<pt x="2600.67" y="1254.26"/>
 					</pts>
 				</flow>
 				<flow label_side="top" x="1412.83" y="1364.35" name="owner savings interest">
@@ -3882,7 +3928,7 @@ ELSE 0</eqn>
 					</from>
 					<to>wage_tax</to>
 				</connector>
-				<connector uid="18" angle="123.283">
+				<connector uid="18" angle="115.26">
 					<from>Worker_Savings</from>
 					<to>worker_savings_interest</to>
 				</connector>
@@ -3938,10 +3984,10 @@ ELSE 0</eqn>
 					<to>private_consumption</to>
 				</connector>
 				<aux label_side="right" label_angle="315" x="2587.27" y="1033.54" name="net worker income"/>
-				<flow label_side="top" x="2550.13" y="1364.5" name="transfers">
+				<flow label_side="top" x="2548.41" y="1386.91" name="transfers">
 					<pts>
-						<pt x="2499.6" y="1364.5"/>
-						<pt x="2600.67" y="1364.5"/>
+						<pt x="2496.14" y="1386.91"/>
+						<pt x="2600.67" y="1386.91"/>
 					</pts>
 				</flow>
 				<connector uid="31" angle="34.2348">
@@ -4011,8 +4057,8 @@ ELSE 0</eqn>
 					<from>public_investment_1</from>
 					<to>government_spending</to>
 				</connector>
-				<aux font_style="italic" font_weight="bold" x="2523.9" y="1414.18" name="government\ntransfers 1"/>
-				<connector uid="57" angle="90.8277">
+				<aux font_style="italic" font_weight="bold" x="2507.95" y="1429.46" name="government\ntransfers 1"/>
+				<connector uid="57" angle="75.1056">
 					<from>government_transfers_1</from>
 					<to>transfers</to>
 				</connector>
@@ -4703,7 +4749,7 @@ ELSE 0</eqn>
 					<from>average_private_debt_interest</from>
 					<to>firms_paying_interest</to>
 				</connector>
-				<connector uid="250" angle="328.972">
+				<connector uid="250" angle="341.437">
 					<from>
 						<alias uid="251"/>
 					</from>
@@ -5231,6 +5277,28 @@ ELSE 0</eqn>
 					</from>
 					<to>&quot;real_private_consumption_2021c$_pc&quot;</to>
 				</connector>
+				<aux font_style="italic" font_weight="bold" x="2374.25" y="1272.26" name="insurance premiums"/>
+				<aux x="2392.25" y="1382.5" name="wages share of\ninsurance premiums"/>
+				<flow x="2545.93" y="1319.26" name="wages from insurance">
+					<pts>
+						<pt x="2491.18" y="1319.26"/>
+						<pt x="2600.67" y="1319.26"/>
+					</pts>
+				</flow>
+				<connector uid="533" angle="22.3674">
+					<from>wages_share_of_insurance_premiums</from>
+					<to>wages_from_insurance</to>
+				</connector>
+				<connector uid="534" angle="344.69">
+					<from>insurance_premiums</from>
+					<to>wages_from_insurance</to>
+				</connector>
+				<connector uid="535" angle="10.6104">
+					<from>
+						<alias uid="536"/>
+					</from>
+					<to>wages_from_insurance</to>
+				</connector>
 				<alias label_side="bottom" uid="8" x="3390.96" y="1872.37" width="18" height="18">
 					<of>time_to_reach_savings_goal</of>
 				</alias>
@@ -5422,6 +5490,9 @@ ELSE 0</eqn>
 				</alias>
 				<alias font_style="italic" font_weight="bold" uid="529" x="503.5" y="573.666" width="18" height="18">
 					<of>Population_1</of>
+				</alias>
+				<alias color="black" background="#00F900" font_style="italic" font_color="black" uid="536" x="2295.43" y="1355.5" width="18" height="18">
+					<of>insurance_taxation</of>
 				</alias>
 			</view>
 		</views>
@@ -7081,7 +7152,7 @@ Interface explosion stopper</doc>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1097" page_height="767" isee:page_cols="6" isee:page_rows="6" isee:scroll_x="1954.17" isee:scroll_y="980" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="6" isee:page_rows="6" isee:scroll_x="1879.17" isee:scroll_y="830" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -11146,7 +11217,7 @@ average_private_debt_safe_interest</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1097" page_height="767" isee:page_cols="7" isee:page_rows="9" isee:scroll_x="734.167" isee:scroll_y="3130.83" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="7" isee:page_rows="9" isee:scroll_x="4171.67" isee:scroll_y="1830" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -17725,7 +17796,7 @@ ELSE
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1097" page_height="767" isee:page_cols="9" isee:page_rows="7" isee:scroll_x="182.5" isee:scroll_y="547.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="9" isee:page_rows="7" isee:scroll_x="2581.67" isee:scroll_y="947.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -22459,7 +22530,7 @@ It represents:
 				<outflow>private_insurance_payouts</outflow>
 				<units>b$</units>
 			</stock>
-			<flow name="insurance premiums">
+			<flow name="insurance premiums" access="output" isee:autocreated="true">
 				<doc>It is the inflow to insurance deposit each year. It exists because private insurance must be financed by agents in the economy and coverage cannot be provided for free. The equation says that after policy start year, premiums are calculated as normal investment × premium rate. This means premium collection scales with the amount of normal investment activity in the economy, so a larger investment base generates a larger premium base. Conceptually, the model treats premiums as the price paid for transferring climate-related default risk away from the banking system.
 </doc>
 				<dimensions>
@@ -22748,14 +22819,6 @@ Its value is 0.001, meaning the model imposes a minimum premium of 0.1% of the r
 					<from>effect_of_years_of_coverage_on_premiums</from>
 					<to>insurance_premium_rate</to>
 				</connector>
-				<connector uid="34" angle="82.0756">
-					<from>insurance_premium_rate</from>
-					<to>insurance_premiums</to>
-				</connector>
-				<connector uid="35" angle="303.816">
-					<from>normal_investment</from>
-					<to>insurance_premiums</to>
-				</connector>
 				<aux color="black" background="#FFD479" font_color="black" label_side="bottom" x="258.229" y="640.24" name="sensitivity of premiums\nto years of coverage"/>
 				<connector uid="36" angle="56.5646">
 					<from>sensitivity_of_premiums_to_years_of_coverage</from>
@@ -22776,8 +22839,16 @@ Its value is 0.001, meaning the model imposes a minimum premium of 0.1% of the r
 					<from>fraction_of_default_covered_private_insurance</from>
 					<to>private_insurance_payouts</to>
 				</connector>
-				<connector uid="40" angle="123.428">
+				<connector uid="35" angle="303.816">
+					<from>normal_investment</from>
+					<to>insurance_premiums</to>
+				</connector>
+				<connector uid="40" angle="118.622">
 					<from>fraction_of_default_covered_private_insurance</from>
+					<to>insurance_premiums</to>
+				</connector>
+				<connector uid="34" angle="82.0756">
+					<from>insurance_premium_rate</from>
 					<to>insurance_premiums</to>
 				</connector>
 			</view>
