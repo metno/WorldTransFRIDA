@@ -8993,7 +8993,7 @@ This variable is the bank/market’s perceived net credit loss signal that is us
 					<dim name="Run"/>
 				</dimensions>
 				<eqn>SMTH1(total_risky_asset_defaults-
-(insurance_payouts + climate_induced_bankruptcies + government_insurance_payout)
+insurance_payouts_recieved
 *fraction_of_insurance_payouts_not_influencing_risk_premium, reporting_delay)</eqn>
 				<isee:delay_aux/>
 				<units>b$/year</units>
@@ -9604,7 +9604,7 @@ It means, when GDP growth slows down, exploratory loans start to fail more often
 				<non_negative/>
 				<units>1/year</units>
 			</flow>
-			<flow name="decline in\nbank exploration\norientation">
+			<flow name="profit driven\ndecline in\nbank exploration\norientation">
 				<doc>Banks pull back from exploratory activities when profits decline or when financial stress increases.</doc>
 				<dimensions>
 					<dim name="Run"/>
@@ -9663,7 +9663,8 @@ This orientation directly controls how much of total bank investment goes into e
 				</dimensions>
 				<eqn>0.5</eqn>
 				<inflow>increase_in_bank_exploration_orientation</inflow>
-				<outflow>decline_in_bank_exploration_orientation</outflow>
+				<outflow>profit_driven_decline_in_bank_exploration_orientation</outflow>
+				<outflow>insurance_driven_decline_in_bank_exploration_orientation</outflow>
 				<units>dmnl</units>
 			</stock>
 			<aux name="max\nbank exploration\norientation">
@@ -10792,8 +10793,7 @@ Loans that default today were not created today because they were created many y
 				<dimensions>
 					<dim name="Run"/>
 				</dimensions>
-				<eqn>SMTH1(total_risky_asset_defaults -
-(insurance_payouts +climate_induced_bankruptcies + government_insurance_payout),
+				<eqn>SMTH1(total_risky_asset_defaults - insurance_payouts_recieved,
  reporting_delay)</eqn>
 				<isee:delay_aux/>
 				<units>b$/year</units>
@@ -11164,7 +11164,9 @@ average_private_debt_safe_interest</eqn>
 				<format scale_by="auto"/>
 				<entity name="climate_induced_bankruptcies"/>
 				<entity name="government_insurance_payout"/>
+				<entity name="insurance_paid_out_share_of_risky_defaults"/>
 				<entity name="insurance_payouts"/>
+				<entity name="insurance_payouts_recieved"/>
 				<entity name="perceived_defaults_of_risky_assets_for_lending_standards"/>
 			</group>
 			<aux name="fraction of loans insured" access="input">
@@ -11228,6 +11230,36 @@ average_private_debt_safe_interest</eqn>
 				<eqn>{Enter equation for use when not hooked up to other models}</eqn>
 				<units>b$</units>
 			</stock>
+			<flow name="insurance driven\ndecline in bank exploration\norientation">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>Bank_Exploration_Orientation*insurance_paid_out_share_of_risky_defaults/insurance_driven_exploration_orientation_delay</eqn>
+				<non_negative/>
+				<units>1/year</units>
+			</flow>
+			<aux name="insurance payouts\nrecieved">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>government_insurance_payout+climate_induced_bankruptcies+insurance_payouts</eqn>
+				<units>b$/year</units>
+			</aux>
+			<aux name="insurance paid\nout share of\nrisky defaults">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>insurance_payouts_recieved/total_risky_asset_defaults</eqn>
+				<units>dmnl</units>
+			</aux>
+			<aux name="insurance driven\nexploration\norientation\ndelay">
+				<dimensions>
+					<dim name="Run"/>
+				</dimensions>
+				<eqn>5</eqn>
+				<range min="1" max="10"/>
+				<units>years</units>
+			</aux>
 		</variables>
 		<views>
 			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
@@ -11277,7 +11309,7 @@ average_private_debt_safe_interest</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="7" isee:page_rows="9" isee:scroll_x="3805" isee:scroll_y="2080" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="768" page_height="588" isee:page_cols="7" isee:page_rows="9" isee:scroll_x="590.833" isee:scroll_y="790" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="11pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -11764,7 +11796,7 @@ average_private_debt_safe_interest</eqn>
 						<pt x="1061.28" y="1045.81"/>
 					</pts>
 				</flow>
-				<flow label_side="bottom" x="1056.56" y="1168.84" name="decline in\nbank exploration\norientation">
+				<flow label_side="bottom" x="1056.56" y="1168.84" name="profit driven\ndecline in\nbank exploration\norientation">
 					<pts>
 						<pt x="1056.56" y="1102.26"/>
 						<pt x="1056.56" y="1256.41"/>
@@ -11794,7 +11826,7 @@ average_private_debt_safe_interest</eqn>
 				</connector>
 				<connector uid="150" angle="328.88">
 					<from>Bank_Exploration_Orientation</from>
-					<to>decline_in_bank_exploration_orientation</to>
+					<to>profit_driven_decline_in_bank_exploration_orientation</to>
 				</connector>
 				<aux label_side="bottom" x="828.965" y="1009.1" name="effect investment\nand GDP difference\non bank exploration"/>
 				<connector uid="153" angle="2.15748">
@@ -11831,9 +11863,9 @@ average_private_debt_safe_interest</eqn>
 					<from>sensitivity_of_bank_exploration_to_profit_decline</from>
 					<to>effect_profit_decline_on_bank_exploration</to>
 				</connector>
-				<connector uid="161" angle="9.87651">
+				<connector uid="161" angle="9.8756">
 					<from>effect_profit_decline_on_bank_exploration</from>
-					<to>decline_in_bank_exploration_orientation</to>
+					<to>profit_driven_decline_in_bank_exploration_orientation</to>
 				</connector>
 				<aux label_side="right" x="1539.26" y="1383.91" name="investment fraction to\nexploration"/>
 				<aux label_side="right" x="1545.04" y="1086.66" name="normal exploration rate"/>
@@ -12724,7 +12756,7 @@ SDG 10.5.1</text_box>
 					</from>
 					<to>fraction_of_defaults_that_are_caused_by_climate</to>
 				</connector>
-				<aux color="black" background="#00F900" font_style="italic" font_weight="bold" font_color="black" x="2168.62" y="3099.1" name="insurance payouts"/>
+				<aux color="black" background="#00F900" font_style="italic" font_weight="bold" font_color="black" x="1945.82" y="3152.83" name="insurance payouts"/>
 				<aux color="black" background="#00F900" font_color="black" x="2067.98" y="3008.78" name="perceived\ndefaults of risky assets\nfor lending standards"/>
 				<connector uid="639" angle="209.54">
 					<from>total_risky_asset_defaults</from>
@@ -12734,9 +12766,9 @@ SDG 10.5.1</text_box>
 					<from>reporting_delay</from>
 					<to>perceived_defaults_of_risky_assets_for_lending_standards</to>
 				</connector>
-				<connector uid="759" angle="138.094">
+				<connector uid="759" angle="11.282">
 					<from>insurance_payouts</from>
-					<to>perceived_defaults_of_risky_assets_for_lending_standards</to>
+					<to>insurance_payouts_recieved</to>
 				</connector>
 				<aux label_side="bottom" x="1786.65" y="2993.13" name="measured\ndefault rate of risky assets\nfor lending standards"/>
 				<connector uid="760" angle="200.879">
@@ -12753,23 +12785,15 @@ SDG 10.5.1</text_box>
 					</from>
 					<to>measured_default_rate_of_risky_assets_for_lending_standards</to>
 				</connector>
-				<connector uid="762" angle="253.075">
-					<from>insurance_payouts</from>
-					<to>perceived_defaults_of_risky_assets_for_interest_rate</to>
-				</connector>
 				<aux label_side="bottom" x="2144.73" y="3381.67" name="fraction of insurance\npayouts not influencing\nrisk premium"/>
 				<connector uid="763" angle="169.405">
 					<from>fraction_of_insurance_payouts_not_influencing_risk_premium</from>
 					<to>perceived_defaults_of_risky_assets_for_interest_rate</to>
 				</connector>
-				<aux color="black" background="#00F900" font_style="italic" font_weight="bold" font_color="black" x="2062.34" y="3134.39" name="climate induced\nbankruptcies"/>
-				<connector uid="648" angle="87.4291">
+				<aux color="black" background="#00F900" font_style="italic" font_weight="bold" font_color="black" x="1945.82" y="3047.43" name="climate induced\nbankruptcies"/>
+				<connector uid="648" angle="314.127">
 					<from>climate_induced_bankruptcies</from>
-					<to>perceived_defaults_of_risky_assets_for_lending_standards</to>
-				</connector>
-				<connector uid="649" angle="275.713">
-					<from>climate_induced_bankruptcies</from>
-					<to>perceived_defaults_of_risky_assets_for_interest_rate</to>
+					<to>insurance_payouts_recieved</to>
 				</connector>
 				<stock background="#00F900" font_style="italic" font_weight="bold" label_side="left" x="4539.96" y="2503.61" name="Central Bank Deposits"/>
 				<connector uid="650" angle="32.5143">
@@ -12777,13 +12801,9 @@ SDG 10.5.1</text_box>
 					<to>Bank_Assets</to>
 				</connector>
 				<aux color="black" background="#00F900" font_style="italic" font_weight="bold" font_color="black" x="1945.82" y="3105.74" name="government insurance payout"/>
-				<connector uid="651" angle="38.4363">
+				<connector uid="651" angle="337.638">
 					<from>government_insurance_payout</from>
-					<to>perceived_defaults_of_risky_assets_for_lending_standards</to>
-				</connector>
-				<connector uid="652" angle="297.881">
-					<from>government_insurance_payout</from>
-					<to>perceived_defaults_of_risky_assets_for_interest_rate</to>
+					<to>insurance_payouts_recieved</to>
 				</connector>
 				<stacked_container uid="496" x="377.16" y="4272.92" width="532.461" height="351.503">
 					<graph width="532.461" height="351.503" type="scatter" x_axis_auto_scale="true" connect_dots="false" single_point="false" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
@@ -13278,6 +13298,45 @@ SDG 10.5.1</text_box>
 					<from>Central_Bank_Insurance_overhead_held_by_Private_Banks</from>
 					<to>Bank_Assets</to>
 				</connector>
+				<flow x="1183.5" y="1072.67" name="insurance driven\ndecline in bank exploration\norientation">
+					<pts>
+						<pt x="1097.52" y="1072.67"/>
+						<pt x="1293.47" y="1072.67"/>
+					</pts>
+				</flow>
+				<aux x="2063.64" y="3129.33" name="insurance payouts\nrecieved"/>
+				<connector uid="812" angle="82.7747">
+					<from>insurance_payouts_recieved</from>
+					<to>perceived_defaults_of_risky_assets_for_lending_standards</to>
+				</connector>
+				<connector uid="813" angle="275.289">
+					<from>insurance_payouts_recieved</from>
+					<to>perceived_defaults_of_risky_assets_for_interest_rate</to>
+				</connector>
+				<aux x="2169.27" y="3087.74" name="insurance paid\nout share of\nrisky defaults"/>
+				<connector uid="814" angle="30.8995">
+					<from>insurance_payouts_recieved</from>
+					<to>insurance_paid_out_share_of_risky_defaults</to>
+				</connector>
+				<connector uid="815" angle="272.623">
+					<from>total_risky_asset_defaults</from>
+					<to>insurance_paid_out_share_of_risky_defaults</to>
+				</connector>
+				<connector uid="816" angle="336.091">
+					<from>Bank_Exploration_Orientation</from>
+					<to>insurance_driven_decline_in_bank_exploration_orientation</to>
+				</connector>
+				<connector uid="817" angle="147.997">
+					<from>
+						<alias uid="818"/>
+					</from>
+					<to>insurance_driven_decline_in_bank_exploration_orientation</to>
+				</connector>
+				<aux x="1236.65" y="981.946" name="insurance driven\nexploration\norientation\ndelay"/>
+				<connector uid="819" angle="272.748">
+					<from>insurance_driven_exploration_orientation_delay</from>
+					<to>insurance_driven_decline_in_bank_exploration_orientation</to>
+				</connector>
 				<alias label_side="right" uid="27" x="2212.67" y="2150.55" width="18" height="18">
 					<of>loan_maturation_time</of>
 				</alias>
@@ -13475,6 +13534,10 @@ SDG 10.5.1</text_box>
 				<alias color="blue" background="white" font_style="italic" uid="807" x="1412.67" y="3479.33" width="18" height="18">
 					<shape type="circle" radius="18"/>
 					<of>perceived_defaults_of_risky_assets</of>
+				</alias>
+				<alias color="blue" background="white" font_style="italic" uid="818" x="1281.3" y="1137.35" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>insurance_paid_out_share_of_risky_defaults</of>
 				</alias>
 			</view>
 		</views>
