@@ -488,6 +488,14 @@ def page_index() -> str:
     )
     return f"""# FRIDA model documentation
 
+!!! info "Publications and how to cite"
+    FRIDA and its components — the climate model, the economy, the impact channels,
+    sea level rise, and dietary behaviour change — are documented in the
+    Geoscientific Model Development collection
+    **[The FRIDA model](https://gmd.copernicus.org/articles/collection12.html)**,
+    which lists every paper as it is published, along with the citation to use for
+    the model as a whole. All papers are open access, with BibTeX/RIS export.
+
 {intro}
 
 !!! tip "Try the interactive simulator"
@@ -515,15 +523,6 @@ with a complete, auto-generated reference of every stock, flow, and parameter.
 The model comprises **{tot_models} sub-models** containing roughly
 **{tot_s} stocks**, **{tot_f} flows**, and **{tot_a} auxiliary variables and
 parameters**.
-
-## How to cite
-
-If you use FRIDA in your work, please cite the model description paper:
-
-> Schoenberg, W., Blanz, B., Rajah, J. K., Callegari, B., Wells, C., Breier, J., Grimeland, M. B., Lindqvist, A. N., Ramme, L., Smith, C., Li, C., Mashhadi, S., Muralidhar, A., and Mauritzen, C.: [An overview of FRIDA v2.1: a feedback-based, fully coupled, global integrated assessment model of climate and humans](https://gmd.copernicus.org/articles/18/8047/2025/gmd-18-8047-2025.html), Geoscientific Model Development, 18, 8047–8069, 2025. doi:[10.5194/gmd-18-8047-2025](https://doi.org/10.5194/gmd-18-8047-2025).
-
-The complete set of papers documenting FRIDA is collected in the
-[GMD FRIDA special issue](https://gmd.copernicus.org/articles/collection12.html).
 
 !!! info "Source"
     Generated from `FRIDA.stmx` and `FRIDA_Modules/*.itmx`. FRIDA is developed by the

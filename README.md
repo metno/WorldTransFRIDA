@@ -9,6 +9,14 @@ You can run and use the model locally without purchasing Stella Architect using 
 
 This research was supported by the Horizon Europe research and innovation programs under grant agreement no. 101081661 (WorldTrans).
 
+## Publications
+
+FRIDA and its components are documented in the Geoscientific Model Development
+collection
+**[The FRIDA model – a.k.a. "Feedback-based knowledge Repository for IntegrateD Assessments"](https://gmd.copernicus.org/articles/collection12.html)**,
+which lists every paper as it is published, along with the citation to use for the
+model as a whole. All papers are open access, with BibTeX/RIS export.
+
 ## Documentation website
 
 A browsable [MkDocs](https://www.mkdocs.org/) + [Material](https://squidfunk.github.io/mkdocs-material/)
