@@ -2,13 +2,19 @@ name: Deploy docs to GitHub Pages
 
 # Builds the FRIDA documentation site and publishes each branch to its own
 # versioned subdirectory of the gh-pages branch using `mike`, e.g.
-#   https://metno.github.io/WorldTransFRIDA/main/
+#   https://metno.github.io/WorldTransFRIDA/main/   shown in the selector as "v3.1"
+#   https://metno.github.io/WorldTransFRIDA/v2/     shown in the selector as "v2.1"
 # The site root redirects to whichever version is the default (main).
+#
+# This file is intentionally identical on main and v2: a push only ever runs the
+# copy on the branch that was pushed, so one shared file covers both and will not
+# conflict if the branches are merged.
 
 on:
   push:
     branches:
       - main
+      - v2
   workflow_dispatch:        # allow manual runs from the Actions tab
 
 # mike commits the built site to the gh-pages branch, so the token needs write access.
@@ -52,7 +58,16 @@ jobs:
         run: git fetch origin gh-pages --depth=1 || true
 
       - name: Deploy this branch as its own version
-        run: mike deploy --push "${{ github.ref_name }}"
+        # The version id stays the branch name: cleanup-docs.yml matches on it to
+        # remove a deleted branch's docs, and it is what the /main/ and /v2/ URLs
+        # are built from. --title only changes the label in the version selector.
+        run: |
+          case "${{ github.ref_name }}" in
+            main) title="v3.1" ;;
+            v2)   title="v2.1" ;;
+            *)    title="${{ github.ref_name }}" ;;
+          esac
+          mike deploy --push --title "$title" "${{ github.ref_name }}"
 
       - name: Point the site root at the main version
         if: github.ref_name == 'main'
