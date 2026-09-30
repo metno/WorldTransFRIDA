@@ -61,6 +61,30 @@ and explore it locally without purchasing Stella Architect using the free
 [isee Player](https://www.iseesystems.com/softwares/player/iseeplayer.aspx) — or online, with no
 install at all, at [frida.earth](https://frida.earth/).
 
+## How to cite
+
+To cite the individual papers describing FRIDA and its components, see the Geoscientific Model
+Development collection
+[The FRIDA model – a.k.a. "Feedback-based knowledge Repository for IntegrateD Assessments"](https://gmd.copernicus.org/articles/collection12.html).
+To cite the model software itself, use the references below.
+
+**Current version (v3.1)**
+
+Schoenberg, W., Blanz, B., Ramme, L., Wells, C., Grimeland, M., Callegari, B., Breier, J., Rajah, J., Nicolaidis Lindqvist, A., Mashhadi, S., Muralidhar, A., Eriksson, A., Putranti, T., Mahu, F., Molina, M., Li, C., & Zwetsloot, K. (2026). *FRIDA: Feedback-based knowledge Repository for IntegrateD Assessments* (Version v3.1) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22916394
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22916394.svg)](https://doi.org/10.5281/zenodo.22916394)
+
+**Previous version (v2.1)**
+
+Schoenberg, W., Blanz, B., Ramme, L., Wells, C., Grimeland, M., Callegari, B., Breier, J., Rajah, J., Nicolaidis Lindqvist, A., Mashhadi, S., Muralidhar, A., & Eriksson, A. (2025). *FRIDA: Feedback-based knowledge Repository for IntegrateD Assessments* (Version v2.1) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.15310860
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15310860.svg)](https://doi.org/10.5281/zenodo.15310860)
+
+**All versions**
+
+For all versions of this repository, see:
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15310859.svg)](https://doi.org/10.5281/zenodo.15310859)
+
 ## Publications
 
 FRIDA and its components are documented in the Geoscientific Model Development
